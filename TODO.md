@@ -21,6 +21,8 @@ mindmap
             Usage Tutorials
         [Functionality]
             Domain-Specific Libraries
+    (Observational and Dated Notes)
+        [PENDING LOCATION - Use ADO Wiki for now]
 ```
 
 ## Current(<3)

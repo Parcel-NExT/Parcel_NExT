@@ -19,7 +19,11 @@ A node is essentially a container of reference and data.
 {
     "displayName": "<Display Name>", // Empty value signify use default
     "metadata": {
-
+        
     }
 }
 ```
+
+## Parcel File Format Storage Requirements Specification
+
+* Take Blender style file blocks that allows easier and more selective use of data and arbitrary data payload
