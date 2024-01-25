@@ -1,0 +1,1 @@
+Those notes are migrated from design notes for Parcel.V6.

@@ -5,6 +5,20 @@ Parcel Open Standard is the core specification of expected behaviors for interop
 The core aspect of this standard is **graph behavior compatibility**, which refers to and contains directly **user-authored contents**, while all frontend and backends are generally tolerant and free-for-all-kinds-of-implementations.  
 In general, any successful Parcel implementation should have a super lightweight, fast and efficient core engine, versatile backend services, and very heavy and powerful and intelligent frontend.
 
+## Premise: High-Level Design Goal
+
+The goal of Parcel is to drastically improve data analysis efficiency by introducing a lower or zero entry barrier while at the same time fostering high solution maintainability. It's our goal to introduce a new role named "Technical Analyst" into the industry, bridging between traditional analysts and tool/engine/software developers. It's parallel to artist-technical artist-developer relation in VFX and game industry. Conceptually, (in terms of abstraction level) Parcel sits between Python/MATLAB and Excel.
+
+Parcel is intended for non-programmers while with a focus to "technical-design" perspective. The main problem it tries to solve is for teams with very liquid personnel and a need for maintainable automated software solutions without the involvement of strong IT support. 
+
+~~The major inspiration for Parcel is Houdini, along with many other node-based content editing tools. Due to the nature of 2D graphical node-based representation, Parcel's data is inherently unfriendly to version control and maybe subject to potential limits in scalability - however this problem is alleviated internally through unique asset ID per document; Even so, it's recognized that for those well versed in the art of programming, it might be more efficient to write well-organized codes instead of using Parcel for sophisticated software solutions.~~
+
+## Topics
+
+* Typical Implementation Architecture
+* File Format
+* File Sections
+
 ## Parcel Solution Architecture
 
 A typical parcel implementation includes an editor, an execution engine, and a graph description.
@@ -15,6 +29,7 @@ A typical parcel implementation includes an editor, an execution engine, and a g
 Execution of the graph may be interpreted, or compiled, or sent to backend service for execution.  
 For functional graphs, no debugging facility is needed.
 For procedural graphs, the front end need to be able to send only the needed nodes for execution, while the backend need to be able to maintain current execution state.
+The engine should generally make ZERO assumption of whether a node/function is pure - because it's responsible for only executing things.
 
 Parcel has three distinct models of execution (called Interpretation Modes) that's applied on the graph level and mostly defined by the GUI that can be used independently and mixed together through GUI support - fundamentally everything is just a node. The declarative/functional model can be considered one, while the procedural model is distinct.
 All parcel native frameworks will be declarative and functional. Procedural contexts (when supported by the GUI) can usually be used directly as anonymous sub-graphs for drop-in logics (whenever a variable is declared, or any sort of flow control is used, they are automatically encapsulated inside a procedural context with drawn boundaries to the rest of the context, with explicit input and return nodes).
@@ -121,6 +136,7 @@ A node is essentially a container of reference and data. EVERYTHING IS A NODE.
     "class": "",
         
     },
+    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document
     "inputs": { // User authored input definitions and connections
 
     },
@@ -156,3 +172,28 @@ ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 ## Parcel Frontends
 
 Any functional frontend should NOT ONLY target node-graph drafting completeness but take the efficiency of such construction - both in terms of keyboard shortcuts, non-mouse usage, and version control capabilities - to the highest standard. Houdini is a decent but not good enough example, Unreal Engine Blueprint is an exceptionally bad despite pretty looking example.
+
+## Reference Implementation - Parcel NExT (2024)
+
+This section documents a reference implementation, known as Parcel NExT, based on **latest version of .Net** (at the moment it's .Net 8). It includes complete suite of core engine, back end, front end, and domain specific libraries.
+
+### Caching
+
+All computed node result within a functional graph for all pure functions are automatically cached to avoid unnecessary re-computation.  
+Anything that takes more than 5 seconds to execute are automatically cached permanent within the document during saving.
+
+### Tagging
+
+Tagging is used to both modify interface display and interactive behaviors.
+
+* Pure: Pure functions have reusable caches. A function can be marked pure or not pure.
+
+## References
+
+Resources and Parcel Development References.
+
+Reference implementations:
+
+* SWIProlog
+* Elixir
+* Haskell
