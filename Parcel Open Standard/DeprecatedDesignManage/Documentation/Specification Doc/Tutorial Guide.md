@@ -1,0 +1,1 @@
+* For beginner introduction: don't introduce subgraphs and anything more than basic numerical and data grid processing logic.

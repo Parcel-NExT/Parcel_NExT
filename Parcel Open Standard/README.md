@@ -39,6 +39,12 @@ In terms of procedural context, certain flow control constructs and variable rel
 
 * Parcel Backends: Parcel Backends provide services for frontends to be built upon. Certain frontends may also directly use Core Engine.
 
+### Parcel Nodes
+
+Everything is a node - nodes are responsible for declarations, definitions, constructions, and procedural actions.
+
+Nodes are just subroutines as in a typical procedural language; Nodes can be pure, in the sense that given certain inputs it always generates the same outputs. Nodes (even pure nodes) can have IO and all bunch of other procedural actions in it.
+
 ## File Structure
 
 Parcel features a maintenance-free file format:
@@ -136,7 +142,7 @@ A node is essentially a container of reference and data. EVERYTHING IS A NODE.
     "class": "",
         
     },
-    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document
+    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations)
     "inputs": { // User authored input definitions and connections
 
     },
@@ -173,7 +179,7 @@ ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 
 Any functional frontend should NOT ONLY target node-graph drafting completeness but take the efficiency of such construction - both in terms of keyboard shortcuts, non-mouse usage, and version control capabilities - to the highest standard. Houdini is a decent but not good enough example, Unreal Engine Blueprint is an exceptionally bad despite pretty looking example.
 
-## Reference Implementation - Parcel NExT (2024)
+## Canonical Implementation: Parcel NExT (2024)
 
 This section documents a reference implementation, known as Parcel NExT, based on **latest version of .Net** (at the moment it's .Net 8). It includes complete suite of core engine, back end, front end, and domain specific libraries.
 
@@ -181,6 +187,10 @@ This section documents a reference implementation, known as Parcel NExT, based o
 
 All computed node result within a functional graph for all pure functions are automatically cached to avoid unnecessary re-computation.  
 Anything that takes more than 5 seconds to execute are automatically cached permanent within the document during saving.
+
+### Node Attributes
+
+Because nodes are just subroutines, there is no inherent inputs and outputs - there are however archetypical inputs and outputs in the sense of a typical programming subroutine. The provision of node inputs and output pins and node properties panel is entirely for the sake of interface and simplicity of construction of nodes.
 
 ### Tagging
 
