@@ -1,5 +1,7 @@
 # Parcel Open Standard
 
+> (Motto) Make advanced data analysis easy and fun. Use visual and graphical programming to solve common problems.
+
 Parcel Open Standard is the core specification of expected behaviors for interoperability and observability of the entire Parcel platform and ecosystem.
 
 The core aspect of this standard is **graph behavior compatibility**, which refers to and contains directly **user-authored contents**, while all frontend and backends are generally tolerant and free-for-all-kinds-of-implementations.  
@@ -50,18 +52,25 @@ Nodes are just subroutines as in a typical procedural language; Nodes can be pur
 Parcel features a maintenance-free file format:
 
 ```
-Parcel Graph
-    Document Properties
-    Graphs (Including subgraphs)
-    Nodes
-    Revisions (Graphs)
-    Revisions (Nodes)
-    (Internalized) Payloads
-
+MAGIC
+Parcel Document (Magic: DOCU)
+    Document Properties (Magic: PROP)
+    Graphs (Including subgraphs) (Magic: GRAP)
+    Nodes (Magic: NODE)
+    Revisions (Graphs) (Magic: REVG)
+    Revisions (Nodes) (Magic: REVN)
+    (Internalized) Payloads (Magic: PAYL)
 (Optional) Parcel Graph External Payload Pack
-    (Internalized) Payloads
+    (Internalized) Payloads (Magic: PAYL)
 ```
-Parcel supports those serialization: Binary, (JSON), YAML, (RTS).
+
+Parcel supports those serialization: Binary (C# style/.Net core/.Net standard, little endian), (JSON), YAML, (RTS). Additional types might be provided through converters (if necessary). Parcel MAGIC number is `PARCEL WORKFLOW ENGINE - BINARY` for binary file, and `PARCEL WORKFLOW ENGINE - TEXT\n` for text file.
+
+We use those somewhat confusing extensions for official parcel file format:
+
+* `.parcel` for generic file extension (either `.document` or `.graph`)
+* `.document` for text-based storage
+* `.graph` for binary files storage
 
 ### Parcel File Format Storage Requirements Specification
 
@@ -183,6 +192,10 @@ Any functional frontend should NOT ONLY target node-graph drafting completeness 
 
 This section documents a reference implementation, known as Parcel NExT, based on **latest version of .Net** (at the moment it's .Net 8). It includes complete suite of core engine, back end, front end, and domain specific libraries.
 
+### Core Engine
+
+The core engine will be an interpretative engine with support for (final) code generation. This is chosen so debugging is possible and easier - if we were to actually compile the code, then it's harder to set breakpoints and have meaningful intermediate REPL-like prompts. The interpretation engine is based on Roslyn and implementation is similar to Pure.
+
 ### Caching
 
 All computed node result within a functional graph for all pure functions are automatically cached to avoid unnecessary re-computation.  
@@ -198,9 +211,15 @@ Tagging is used to both modify interface display and interactive behaviors.
 
 * Pure: Pure functions have reusable caches. A function can be marked pure or not pure.
 
+### Front End
+
+Cached results can be viewed either as a pop-up window (like original Parcel) or as an in-graph Preview Node (which can also be used to view any other properties of a node).
+
+The graph itself is an object which can be exposed as reference through a node (which constructs and overrides default), which can then be pulled properties out and attach properties to (key:value pairs).
+
 ## References
 
-Resources and Parcel Development References.
+Resources and Parcel development related references.
 
 Reference implementations:
 
