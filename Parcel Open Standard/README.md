@@ -69,6 +69,7 @@ Notice even though not all nodes are "logic" or "execution" related, the engine 
 
 Here we provide a specific protocol that most implementations should respect: `[Engine Symbol]Optional File Protocol://Assembly Path:Object or Function Name.In-Content Navigation Paths`.  
 A default scheme is always for referencing C# classes/functions: `Assembly.dll:namespace.class.function`. Full path for this would be: `[Parcel/C#]Assembly.dll:namespace.class.function`.
+A proper protocol format provides failure-remedies in the sense that in case of missing references, it should provide enough information to an experienced human technical analyst what's the originally intended reference source.
 
 Some other examples include: 
 
@@ -84,15 +85,17 @@ The `[Engine Symbol]` part may be optional when contexts are clear. Notice certa
 
 Parcel features a edge-definition-free scheme for node connections.
 
-Inputs have name and source. Values are feed automatically to attribute with the same name. Source can be used to refer to document/graph environment variables, or other nodes. Sources can fetch data DIRECTLY from attributes - it's just if an output node with same name was defined, then it has a different visual appearance. Any inputs automatically becomes an attribute (if it's not already defined).
+Inputs have name and source. Values are feed automatically to attribute with the same name. Source can be used to refer to graph variables, or other nodes. Sources can fetch data DIRECTLY from attributes - it's just if an output node with same name was defined, then it has a different visual appearance. Any inputs automatically becomes an attribute (if it's not already defined).
 Outputs have name ~~and source~~ (might be enough just having a name). Values are fetched automatically from sources with the same name. Outputs just provide named definitions, but not actual connections. In fact, outputs are not even necessary for other nodes to connect and fetch data from a given node - it's mostly for visual purpose.
 The assumption here is that the same output may be used multiple times, yet the same input can have only one source connection.
 
 Attribute values are string representations ALWAYS and should follow the following syntax guides:
 
 * Plain, literal values start with `:`, e.g. `:15`, `:This is a string`
-* Environment variables or graph variable reading uses `$`, e.g. `$graphVariable`
+* Graph variables reading uses `$`, e.g. `$graphVariable`
 * Node reference uses `@`: `@node.attribute`
+
+Attribute accessor is a descriptor that can reference either (in terms of underlying construct) parameters or return values, or (in terms of PVM) node attributes or payloads. It's entirely string based. If an accessor contains an object (rather than string-serialized primitive), it will be passing the reference address of that object, then get dereferenced at the time of invocation.
 
 ## File Structure
 
@@ -128,9 +131,21 @@ We use those somewhat confusing extensions for official parcel file format:
 
 * Take Blender style file blocks that allows easier and more selective use of data and arbitrary data payload
 
+## Text-Based File Format
+
+(Pending consolidating with Mini Parcel)
+
+Requirements:
+
+1. As capable as the binary format, with a binary payload as seperate file
+2. Must be declarative
+3. Must be as clean and short as possible, must be human readable and human-modifiable (generated document can be edited by a text editor), but do NOT necessarily need to be human authorizable (do not need to be efficient if a human were to be author from scratch) - that's the purpose of Mini Parcel.
+
 ## Parcel Objects -> File Sections
 
 If we consider Parcel as a loosely typed scripting engine, then nodes define basic binding points for specific APIs. Nodes themselves do not have inherent types.
+
+Notice the revision feature is not necessary for all implementations.
 
 ### Document Meta-Data
 
@@ -160,13 +175,7 @@ Document should be lean and contains no logic-critical data - all those are stor
         ]
     },
     "comment": "", // Usually not used and not accessed
-    "userVersion": "",
-    "parameters": {   // Simple key-value environments that are not modifiable in graphs
-
-    },
-    "environmentVariables": {   // Overrides of system/process environment variables
-
-    }
+    "userVersion": ""
 }
 ```
 
@@ -200,9 +209,6 @@ Graphs are containers of nodes and provide layout and position for nodes - predo
         }
     ],
     "packages": [],  // Reference package list
-    "environments": {   // Graph-local environment attributes, can override document; Read-only
-
-    },
     "inputs": { // User authored input definitions and connections
 
     },
@@ -224,7 +230,7 @@ Nodes themselves should provide complete description to where to find (the proto
 
 Notice that a node target path CAN NEVER refer to anything but (exposed) classes and class methods. Aka. it is invalid to try to use a node to access (instance or static) class (C#) properties or attributes - or even if it does, it works like a function.
 
-When referencing/invoking a subgraph, the referee must be able to provide environment/graph-level overrides (pending deciding where are those values located - it's either on the document aka. whole document, or on the graph). This provides a very handy meta-programming.
+Referencing/invoking a subgraph is just like calling a function, and the referee can provide parameters.
 
 ```json
 {
@@ -251,7 +257,7 @@ When referencing/invoking a subgraph, the referee must be able to provide enviro
         "style": "",
         "class": "",
     },
-    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations)
+    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations), lazy (caches are preview only and won't save to document payload), deligent (caches are always saved to document payload)
     "inputs": { // User authored input definitions and connections
 
     },
@@ -274,6 +280,8 @@ Node attribute names are camelCased! (Because that matches more directly to JSON
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
 All nodes will have some sort of `value`/`returnResult` attribute, which will map automatically to `payload:value` if not explicitly defined.
+
+Nodes boundaries are entirely string based! It is NOT possible (out of box) to pass objects directly through input/output/attribute connections! Everything must be referenced by primitive values or as strings (names). In the case of calling instance functions, assuming an attribute accessor contains a valid object, it will be passing the reference address of that object, then get dereferenced at the time of invocation.
 
 ### Revisions
 
@@ -358,6 +366,14 @@ Preview node is an engine construct and handled in such a way that it takes refe
 
 Because nodes are just subroutines, there is no inherent inputs and outputs - there are however archetypical inputs and outputs in the sense of a typical programming subroutine. The provision of node inputs and output pins and node properties panel is entirely for the sake of interface and simplicity of construction of nodes.
 
+### Node Execution
+
+All node execution results are immediately cached in-memory, but deleted if computation was fast, or nodes are marked `lazy`.
+
+### Payloads
+
+(If needed, payloads can contain Pure scripts, caching executions instead of saving results - although this is not necessary if we have lazy/diligent tag)
+
 ### Tagging
 
 Tagging is used to both modify interface display and interactive behaviors.
@@ -388,6 +404,8 @@ A typical usage scenario goes like this:
 ### MiniParcel
 
 Either the text format proper, or a REPL DSL frontend.
+
+MiniParcel is human-oriented declarative scripting language that provides a quick interface into graph authorization. It is less verbose to proper text-based format.
 
 ## Key Design Decisions
 
@@ -420,6 +438,12 @@ We realized that For procedural context, we just need (un)conditional jump and v
 
 The latest specification/implementation in Parcel.NExT however, handles conditions inside flow control implementation using attribute values, and the paths defined are just for reference purpose only. This way there is no need for DSL, and everything is declarative. 
 The maintainence of current flow control state can be managed inside payload as a localized state, and the flow control element itself decides which next step to take based on its current state, and flow control logic.
+
+## Further Proposals
+
+### Parcel Native Instruction Set
+
+(See ADO Item)
 
 ## References
 
