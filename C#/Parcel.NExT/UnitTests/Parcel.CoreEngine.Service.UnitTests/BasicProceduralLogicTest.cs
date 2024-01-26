@@ -52,17 +52,14 @@ namespace Parcel.CoreEngine.Service.UnitTests
 
             // Create document
             ParcelDocument document = new();
-            var layout = document.MainGraph.Layouts.First();
+            var graph = document.MainGraph;
 
             // Add nodes
             ParcelNode[] nodes = [n1, n2, n3, n4, n5];
             for (int i = 0; i < nodes.Length; i++)
             {
                 ParcelNode node = nodes[i];
-                layout.Nodes.Add(new Layouts.CanvasElement(node)
-                {
-                    Position = new System.Numerics.Vector2(i * 50, i * 50)
-                });
+                document.AddNode(graph, node, new System.Numerics.Vector2(i * 50, i * 50));
             }
 
             return document;
