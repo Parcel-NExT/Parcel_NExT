@@ -1,6 +1,16 @@
 ﻿namespace Parcel.CoreEngine.Document
 {
-    public sealed class ParcelNodeInputDefinition(string Name, string Source);
+    public sealed class ParcelNodeInputDefinition
+    {
+        public ParcelNodeInputDefinition(string name, string source)
+        {
+            Name = name;
+            Source = source;
+        }
+
+        public string Name { get; set; }
+        public string Source { get; set; }
+    }
 
     public sealed class ParcelNode
     {

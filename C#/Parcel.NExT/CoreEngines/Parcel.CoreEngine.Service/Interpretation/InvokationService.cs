@@ -10,7 +10,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
     {
         public static void InvokeRemoteFunction(string assemblyPath, string functionPath, params object[] arguments)
         {
-            int splitterIndex = functionPath.LastIndexOf('.'); ;
+            int splitterIndex = functionPath.LastIndexOf('.');
             string typeName = functionPath.Substring(0, splitterIndex);
             string function = functionPath.Substring(splitterIndex + 1);
 

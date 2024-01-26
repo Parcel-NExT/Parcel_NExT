@@ -13,9 +13,14 @@
         public double Value { get; private set; }
         #endregion
 
-        #region Methods
-        public static Number Add(Number A, Number B)
-            => new Number(A.Value + B.Value);
+        #region Methods (Object)
+        public static Number Add(Number a, Number b)
+            => new Number(a.Value + b.Value);
+        #endregion
+
+        #region Methods (Primitives)
+        public static double Add(params double[] arguments)
+            => arguments.Sum();
         #endregion
     }
 }

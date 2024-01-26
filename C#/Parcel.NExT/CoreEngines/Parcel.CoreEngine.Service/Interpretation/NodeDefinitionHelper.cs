@@ -6,7 +6,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
     {
         public static string[] SimpleExtractParameters(ParcelNode node)
         {
-            return [.. node.Attributes.Values];
+            return [.. node.Attributes.Values, .. node.Inputs.Select(i => i.Source)];
         }
     }
 }

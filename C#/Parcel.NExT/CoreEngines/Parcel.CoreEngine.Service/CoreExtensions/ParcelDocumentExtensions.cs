@@ -6,7 +6,7 @@ namespace Parcel.CoreEngine.Service.CoreExtensions
     {
         public static void Execute(this ParcelDocument document)
         {
-            new GraphRuntime(document.MainGraph).Execute();
+            new GraphRuntime(document.MainGraph, document.NodePayloadLookUps).Execute();
         }
     }
 }
