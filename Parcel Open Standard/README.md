@@ -53,14 +53,19 @@ Parcel features a maintenance-free file format:
 
 ```
 MAGIC
+(Pure Declarative Sections)
 Parcel Document (Magic: DOCU)
     Document Properties (Magic: PROP)
     Graphs (Including subgraphs) (Magic: GRAP)
     Nodes (Magic: NODE)
+(Automatic Change Sections)
     Revisions (Graphs) (Magic: REVG)
     Revisions (Nodes) (Magic: REVN)
+(Optionally Externalized and Binary)
+    (Internalized) Current Graph Runtime (RUNT)
     (Internalized) Payloads (Magic: PAYL)
 (Optional) Parcel Graph External Payload Pack
+    (Internalized) Current Graph Runtime (RUNT)
     (Internalized) Payloads (Magic: PAYL)
 ```
 
@@ -133,7 +138,7 @@ Nodes themselves should provide complete description to where to find (the proto
 ```json
 {
     "displayName": "<Display Name>", // Empty value signify use default, which usually just shows the node type
-    "guid": "<Node GUID>",
+    "guid": "<Node GUID>",  // Only need to guarantee unique within document, since all nodes are stored in a single section
     "revision": "<Revision Number>",
     "metadata": {
         "creationData": "<Creation Date>",
@@ -145,7 +150,7 @@ Nodes themselves should provide complete description to where to find (the proto
 
     },
     "content": "<Node Content>",    // Text-based contents and context-free definitions, notice this is NOT payloads
-    "payload": "<Node Payload Reference>",
+    // "payload": "<Node Payload Reference>", // Notice payload reference should NOT be in node section otherwise it changes all the time when new payloads are created
     "attributes": {
 
     // Front-end use; Works just like as in CSS for HTML
@@ -184,7 +189,22 @@ Revisions are plain text copies of entire definition of nodes from an earlier re
 ### Payloads
 
 Payloads are execution results and are arbitrary binary data or cache and are stored in dedicated file sections. They are "attachments" to node definitions.  
-They can be either internal (in binary graph), or external binary file (in plain-text graph).  
+They can be either internal (in binary graph), or external binary file (in plain-text graph).
+
+```json
+{
+    "guid": "<Payload GUID>",
+    "node": "<Target Node>",
+    "data": "<Payload Data>"
+}
+```
+
+Payload data is either plain string or full binary data (we have to support binary format for storage efficiency because Parcel WILL deal with large tabular data):
+
+1. Either format must indicate whether its TEXT or BINA in ASCII at the beginning.
+2. Either format must hint on potential data type for deserialization (C# string type name)
+3. Text format can be plain data or in YAML format
+4. Binary format must also indicate content length in bytes
 
 ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 
@@ -238,6 +258,29 @@ A typical usage scenario goes like this:
 ### MiniParcel
 
 Either the text format proper, or a REPL DSL frontend.
+
+## Key Design Decisions
+
+### Parcel Node ID Uniqueness
+
+Theoretically when referencing external documents we can be specific to specific graph and node id to reference (in terms of protocol string). Practically when we reference external documents we reference the graph, not the ID.
+On the other hand, we wish to have a flat, non-hierarchical storage scheme for easier parsing of document storage contents, so all nodes reside in a single section, instead of having nodes for each section for each graph.
+
+Because of the way storage is done, nodes must have unique IDs cross the document scope, not graph scope.
+
+### Necessity of Graph Runtime and Node Payload
+
+Like Excel, Pure Notebook, and Jupyter Notebook, we wish to and must keep non-code and non-logic part of runtime-only content for self-contained documentation of the entire Parcel Document. However, those things changes and those things are not USER-SPECIFIED CONTENT DATA, but runtime results.
+Those can be binary, and thus should be able to be stored in separate file sections or as externalized files.
+
+The need for graph runtime is a complexity due to requirements of procedural contexts's state bookkeeping, and it apparently can involve dynamic type of intermediate state objects as such.
+
+### Per Parcel document file structure, Where do we put payload reference? (Similarly, where do we keep graph runtime)
+
+If payload reference is put directly as node attribute, then it could often change when nodes are executed - though if we are careful in implementation, then we could avoid reference id change by reuse existing payload objects. On the other hand, things like Revision ID changes anyway - but things like revision and last modification only changes when there are actual user content change.
+
+Since payloads are attachments, and from a lean structure perspective nodes DO NOT NEED to be aware of underlying implementation and content styles and payload type, it makes sense to keep payloads completeme separate to nodes and make nodes NOT aware of payloads.
+Similarly, graph runtime should store in separate file data section.
 
 ## References
 
