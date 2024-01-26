@@ -2,7 +2,7 @@
 
 namespace Parcel.CoreEngine.Document
 {
-    public class ParcelGraph
+    public sealed class ParcelGraph
     {
         #region Constructors
         public ParcelGraph() 

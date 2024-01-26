@@ -2,7 +2,7 @@
 
 namespace Parcel.CoreEngine
 {
-    public class ParcelDocument
+    public sealed class ParcelDocument
     {
         #region Constructors
         public ParcelDocument()
@@ -12,13 +12,24 @@ namespace Parcel.CoreEngine
         }
         #endregion
 
-        #region Sections
+        #region Static Sections
         public List<ParcelGraph> Graphs = new();
         public List<ParcelNode> Nodes = new();
         #endregion
 
+        #region Version Control Sections
+
+        #endregion
+
+        #region Runtime Data Sections
+        public List<ParcelGraphRuntime> GraphRuntimes = new();
+        public List<ParcelPayload> Payloads = new();
+        #endregion
+
         #region Document Properties
         public ParcelGraph MainGraph { get; set; }
+        public Dictionary<ParcelNode, ParcelPayload> NodePayloadLookUps { get; set; }
+        public Dictionary<ParcelGraph, ParcelGraphRuntime> GraphRuntimeLookUps { get; set; }
         #endregion
     }
 }
