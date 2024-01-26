@@ -41,11 +41,44 @@ In terms of procedural context, certain flow control constructs and variable rel
 
 * Parcel Backends: Parcel Backends provide services for frontends to be built upon. Certain frontends may also directly use Core Engine.
 
-### Parcel Nodes
+### Parcel Nodes as Subroutines
 
 Everything is a node - nodes are responsible for declarations, definitions, constructions, and procedural actions.
 
 Nodes are just subroutines as in a typical procedural language; Nodes can be pure, in the sense that given certain inputs it always generates the same outputs. Nodes (even pure nodes) can have IO and all bunch of other procedural actions in it.
+
+### Node Content Types
+
+Node content types (or "type path") is a protocol and should satisfy the following purposes: (Notice that nodes are not always implemented as typical objects or functions, e.g. they can be specially handled by frontend/backend/engine)
+
+1. They should be able to reference global assemblies (including .Net standard/system assemblies), and name specific classes and functions that they reference
+2. They should be able to reference external graphs, C#/Pure/Parcel scripts, and Python scripts
+3. They should be able to reference external files
+4. They should be able to serve "special purpose" frontend/backend construct usages; One example of this is the famous Preview node, which is a construct.
+5. They should also be able to serve arbitrary user-payload use purpose and thus custom data; One example of this are the annotations, which are Parcel-document specific constructs and do not serve as coding/logic purpose, and do not correspond to any implemented-based classes or functions.
+6. The referencing file/assembly paths may either be absolute, global, relative, or even URL based.
+7. The referencing behaviors may be either specified as tagging or as attributes; The referenced data may be cached or explicitly stored inside a Payload
+
+Notice even though not all nodes are "logic" or "execution" related, the engine need to be able to handle all of them (e.g. loading images and store them in payloads) and recognize and disregard irrelevant ones.
+
+Here we provide a specific protocol: `[Engine Symbol]Optional File Protocol://Assembly Path:Object or Function Name.In-Content Navigation Paths`. A default scheme is always for referencing C# classes/functions: `Assembly.dll:namespace.class.function`. Full path for this would be: `[Parcel/C#]Assembly.dll:namespace.class.function`.
+
+Some other examples include: 
+
+* `[Python]Module Path:Function` for executable python functions (which may be implemented as a plain C# routine eventually).
+* `[Parcel]Document Location:Graph Name` for parcel graphs.
+* `[Special]Preview` for Preview nodes.
+* `[Annotation]Text` for annotation nodes.
+
+The `[Engine Symbol]` part may be optional when contexts are clear. Notice certain node attributes may be used for additional identification and behavior customization purpose per specific usages.
+
+### Node Inputs, Outputs and Inter-Node References
+
+Parcel features a edge-definition-free scheme for node connections.
+
+Inputs have name and source. Values are feed automatically to attribute with the same name. Source can be used to refer to document/graph environment variables, or other nodes. Sources can fetch data DIRECTLY from attributes - it's just if an output node with same name was defined, then it has a different visual appearance. Any inputs automatically becomes an attribute (if it's not already defined).
+Outputs have name ~~and source~~ (might be enough just having a name). Values are fetched automatically from sources with the same name. Outputs just provide named definitions, but not actual connections. In fact, outputs are not even necessary for other nodes to connect and fetch data from a given node - it's mostly for visual purpose.
+The assumption here is that the same output may be used multiple times, yet the same input can have only one source connection.
 
 ## File Structure
 
@@ -86,6 +119,8 @@ We use those somewhat confusing extensions for official parcel file format:
 If we consider Parcel as a loosely typed scripting engine, then nodes define basic binding points for specific APIs. Nodes themselves do not have inherent types.
 
 ### Graphs
+
+> (Idea) Everything is a graph. (Like blocks in Ruby.)
 
 Graphs are containers of nodes and provide layout and position for nodes - predominantly in a Canvas layout. They serve both as document graphs, special purpose graphs (e.g. HUD), and as functions/macros.
 
@@ -131,7 +166,7 @@ In terms of GUI, it's possible to "embed"/"inline" subgraphs on current graph, t
 
 ### Nodes
 
-A node is essentially a container of reference and data. EVERYTHING IS A NODE.
+A node is essentially a container of reference and anchor of data. EVERYTHING IS A NODE.
 
 Nodes themselves should provide complete description to where to find (the protocol) and which class/function the node is referring to. From the perspective of Core Engine, it's not necessary to tell which modules/mega-packages to import - because such information is available completely from node definitions themselves alone.
 
@@ -142,21 +177,23 @@ Nodes themselves should provide complete description to where to find (the proto
     "revision": "<Revision Number>",
     "metadata": {
         "creationData": "<Creation Date>",
-        "lastModifyDate": "<Last Modify Date>"
+        "lastModifyDate": "<Last Modify Date>",
+        "comment": "<Node Comment>"
     },
 
-    "type": "<Node Content Type>",  // Path to type
-    "construct": { // Used especially for declarative usages, provides explicitly typed and named construction parameters
-
-    },
-    "content": "<Node Content>",    // Text-based contents and context-free definitions, notice this is NOT payloads
-    // "payload": "<Node Payload Reference>", // Notice payload reference should NOT be in node section otherwise it changes all the time when new payloads are created
+    "type": "<Node Content Type>",  // Path to type    
+    // Provides misc. key:value specifications for all kinds of purposes; Notice this is NOT payloads
+    // - For function calls, provides arguments mapping
+    // - For class instance construction, provides construction parameters
+    // - For declarative usages, provides explicitly typed and named construction parameters, or contents
+    // - For potential payload reference, defines output binding points
+    // - For whatever other arbitrary user-created custom purpose, this can hold context-free definitions
+    // - For annotations, those host text-based contents and other specifications
+    // May optionally be type-hinted, we will simplify things by just putting it as part of name decoration
     "attributes": {
-
-    // Front-end use; Works just like as in CSS for HTML
-    "style": "",
-    "class": "",
-        
+        // Front-end use; Works just like as in CSS for HTML
+        "style": "",
+        "class": "",
     },
     "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations)
     "inputs": { // User authored input definitions and connections
@@ -176,9 +213,11 @@ Nodes themselves should provide complete description to where to find (the proto
 }
 ```
 
-NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time!
+Node attribute names are camelCased! (Because that matches more directly to JSON representation, C# function parameter name, and feels more scripting like)
 
-Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
+NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
+
+All nodes will have some sort of `value`/`returnResult` attribute, which will map automatically to `payload:value` if not explicitly defined.
 
 ### Revisions
 
@@ -188,14 +227,16 @@ Revisions are plain text copies of entire definition of nodes from an earlier re
 
 ### Payloads
 
-Payloads are execution results and are arbitrary binary data or cache and are stored in dedicated file sections. They are "attachments" to node definitions.  
-They can be either internal (in binary graph), or external binary file (in plain-text graph).
+Payloads are execution results and may represent either arbitrary binary data or runtime cache and are stored in dedicated file sections. Payloads are NOT just for cache! PAYLOADS MAY BE USED TO STORE APPLICATION-CRITICAL DATA SO EVEN THOUGH IT'S NOT IN TEXT-BASED VERSION CONTROL (LIKE GIT AND PARCEL NATIVE REVISIONS SYSTEM), IT DOESN'T MEAN THEY ARE COMPLETELY UNNECESSARY. Notably, payloads will be used to store spreadsheet data and image data.
+They are "attachments" to node definitions. They can be either internal (in binary graph), or external binary file (in plain-text graph).
 
 ```json
 {
     "guid": "<Payload GUID>",
     "node": "<Target Node>",
-    "data": "<Payload Data>"
+    "data": {   // "<Payload Data Sections>"
+        "name": "<Value>", 
+    }
 }
 ```
 
@@ -207,6 +248,8 @@ Payload data is either plain string or full binary data (we have to support bina
 4. Binary format must also indicate content length in bytes
 
 ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
+
+ALL PAYLOADS WILL HAVE A `value` section.
 
 ## Parcel Frontends
 
@@ -227,10 +270,20 @@ This section documents a reference implementation, known as Parcel NExT, based o
 
 The core engine will be an interpretative engine with support for (final) code generation. This is chosen so debugging is possible and easier - if we were to actually compile the code, then it's harder to set breakpoints and have meaningful intermediate REPL-like prompts. The interpretation engine is based on Roslyn and implementation is similar to Pure.
 
+#### Numerical Handling
+
+All in-transit numbers are represented as string, and all default number representations are double. A single `Number` class is defined to encapsulate this construct and **provide all primitive mathematical operations as functions**. A meta-layer could be provided, which on the frontend when performing number operations special nodes are created which by default maps to the `Number` class functions as mentioned above, but otherwise during code generation gets converted directly to C# basic operators.
+
 ### Caching
 
 All computed node result within a functional graph for all pure functions are automatically cached to avoid unnecessary re-computation.  
 Anything that takes more than 5 seconds to execute are automatically cached permanent within the document during saving.
+
+### Special Nodes
+
+#### Preview Node
+
+Preview node is an engine construct and handled in such a way that it takes reference of the incoming nodes' payload.
 
 ### Node Attributes
 
