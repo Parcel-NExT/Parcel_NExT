@@ -128,6 +128,8 @@ In terms of GUI, it's possible to "embed"/"inline" subgraphs on current graph, t
 
 A node is essentially a container of reference and data. EVERYTHING IS A NODE.
 
+Nodes themselves should provide complete description to where to find (the protocol) and which class/function the node is referring to. From the perspective of Core Engine, it's not necessary to tell which modules/mega-packages to import - because such information is available completely from node definitions themselves alone.
+
 ```json
 {
     "displayName": "<Display Name>", // Empty value signify use default, which usually just shows the node type
@@ -169,6 +171,8 @@ A node is essentially a container of reference and data. EVERYTHING IS A NODE.
 }
 ```
 
+NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time!
+
 Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
 ### Revisions
@@ -187,6 +191,13 @@ ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 ## Parcel Frontends
 
 Any functional frontend should NOT ONLY target node-graph drafting completeness but take the efficiency of such construction - both in terms of keyboard shortcuts, non-mouse usage, and version control capabilities - to the highest standard. Houdini is a decent but not good enough example, Unreal Engine Blueprint is an exceptionally bad despite pretty looking example.
+
+## Parcel Native Style Libraries/Frameworks
+
+It makes lots of assumptions that's how it takes minimal setup to get most complicated things done.
+It greatly streamlines getting common things done faster while providing room for customization.
+It usually provides lots of customization options - so without modifying modular pieces, one can already further customize the behaviors.
+It usually provides "macros/template/preset" setups that allows direct implementation-level customizations.
 
 ## Canonical Implementation: Parcel NExT (2024)
 
@@ -216,6 +227,17 @@ Tagging is used to both modify interface display and interactive behaviors.
 Cached results can be viewed either as a pop-up window (like original Parcel) or as an in-graph Preview Node (which can also be used to view any other properties of a node).
 
 The graph itself is an object which can be exposed as reference through a node (which constructs and overrides default), which can then be pulled properties out and attach properties to (key:value pairs).
+
+A typical usage scenario goes like this:
+
+1. User open a document or creates and saves a new empty document (through GUI or CLI)
+2. User selects from and drops a few module nodes to define which modules to discover ("import") - this is only significant to the front end
+3. User optionally imports existing user libraries from discovery paths, or drag in directly (will referecence as relative path by default)
+4. User keeps adding nodes and complete the graph functionalities.
+
+### MiniParcel
+
+Either the text format proper, or a REPL DSL frontend.
 
 ## References
 
