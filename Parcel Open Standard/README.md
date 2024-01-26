@@ -21,6 +21,12 @@ Parcel is intended for non-programmers while with a focus to "technical-design" 
 * File Format
 * File Sections
 
+## The Parcel Virtual Machine
+
+The Parcel virtual machine (PVM) defines an intermediate layer between higher level instructions and lower level implementations. This document describes the structure, elements, description and behavior of such a virtual machine. Essentially, PVM is a very simple graph-like node-based structure describing instructions encapsulated as nodes - some of those nodes have processing impacts, others are merely descriptive (e.g. annotations).
+
+A proper parcel program is thus just the description in the form of this node graph - called "Parcel Node Graph (PNG)", and nothing more, and nothing less. The material behavior of such a parcel program when executed by an execution engine depends on implementation. This specifically specifies how any particular implementation should interpret the contents of a parcel program.
+
 ## Parcel Solution Architecture
 
 A typical parcel implementation includes an editor, an execution engine, and a graph description.
@@ -61,7 +67,8 @@ Node content types (or "type path") is a protocol and should satisfy the followi
 
 Notice even though not all nodes are "logic" or "execution" related, the engine need to be able to handle all of them (e.g. loading images and store them in payloads) and recognize and disregard irrelevant ones.
 
-Here we provide a specific protocol: `[Engine Symbol]Optional File Protocol://Assembly Path:Object or Function Name.In-Content Navigation Paths`. A default scheme is always for referencing C# classes/functions: `Assembly.dll:namespace.class.function`. Full path for this would be: `[Parcel/C#]Assembly.dll:namespace.class.function`.
+Here we provide a specific protocol that most implementations should respect: `[Engine Symbol]Optional File Protocol://Assembly Path:Object or Function Name.In-Content Navigation Paths`.  
+A default scheme is always for referencing C# classes/functions: `Assembly.dll:namespace.class.function`. Full path for this would be: `[Parcel/C#]Assembly.dll:namespace.class.function`.
 
 Some other examples include: 
 
@@ -69,6 +76,7 @@ Some other examples include:
 * `[Parcel]Document Location:Graph Name` for parcel graphs.
 * `[Special]Preview` for Preview nodes.
 * `[Annotation]Text` for annotation nodes.
+* `{System}`: For system stuff
 
 The `[Engine Symbol]` part may be optional when contexts are clear. Notice certain node attributes may be used for additional identification and behavior customization purpose per specific usages.
 
@@ -79,6 +87,12 @@ Parcel features a edge-definition-free scheme for node connections.
 Inputs have name and source. Values are feed automatically to attribute with the same name. Source can be used to refer to document/graph environment variables, or other nodes. Sources can fetch data DIRECTLY from attributes - it's just if an output node with same name was defined, then it has a different visual appearance. Any inputs automatically becomes an attribute (if it's not already defined).
 Outputs have name ~~and source~~ (might be enough just having a name). Values are fetched automatically from sources with the same name. Outputs just provide named definitions, but not actual connections. In fact, outputs are not even necessary for other nodes to connect and fetch data from a given node - it's mostly for visual purpose.
 The assumption here is that the same output may be used multiple times, yet the same input can have only one source connection.
+
+Attribute values are string representations ALWAYS and should follow the following syntax guides:
+
+* Plain, literal values start with `:`, e.g. `:15`, `:This is a string`
+* Environment variables or graph variable reading uses `$`, e.g. `$graphVariable`
+* Node reference uses `@`: `@node.attribute`
 
 ## File Structure
 
@@ -118,6 +132,44 @@ We use those somewhat confusing extensions for official parcel file format:
 
 If we consider Parcel as a loosely typed scripting engine, then nodes define basic binding points for specific APIs. Nodes themselves do not have inherent types.
 
+### Document Meta-Data
+
+Document should be lean and contains no logic-critical data - all those are stored in graphs and nodes.
+
+```json
+{
+    "metaData": {
+        "creationDate": "",
+        "lastModifyDate": "",
+        "editHistory": [
+            {
+                "date": "",
+                "graphUpdates": [
+                    {
+                        "graph": "",
+                        "revision": "",
+                    }
+                ],
+                "nodeUpdates": [
+                    {
+                        "node": "",
+                        "revision": "",
+                    }
+                ]
+            }
+        ]
+    },
+    "comment": "", // Usually not used and not accessed
+    "userVersion": "",
+    "parameters": {   // Simple key-value environments that are not modifiable in graphs
+
+    },
+    "environmentVariables": {   // Overrides of system/process environment variables
+
+    }
+}
+```
+
 ### Graphs
 
 > (Idea) Everything is a graph. (Like blocks in Ruby.)
@@ -148,7 +200,7 @@ Graphs are containers of nodes and provide layout and position for nodes - predo
         }
     ],
     "packages": [],  // Reference package list
-    "environments": {   // Environment attributes
+    "environments": {   // Graph-local environment attributes, can override document; Read-only
 
     },
     "inputs": { // User authored input definitions and connections
@@ -169,6 +221,10 @@ In terms of GUI, it's possible to "embed"/"inline" subgraphs on current graph, t
 A node is essentially a container of reference and anchor of data. EVERYTHING IS A NODE.
 
 Nodes themselves should provide complete description to where to find (the protocol) and which class/function the node is referring to. From the perspective of Core Engine, it's not necessary to tell which modules/mega-packages to import - because such information is available completely from node definitions themselves alone.
+
+Notice that a node target path CAN NEVER refer to anything but (exposed) classes and class methods. Aka. it is invalid to try to use a node to access (instance or static) class (C#) properties or attributes - or even if it does, it works like a function.
+
+When referencing/invoking a subgraph, the referee must be able to provide environment/graph-level overrides (pending deciding where are those values located - it's either on the document aka. whole document, or on the graph). This provides a very handy meta-programming.
 
 ```json
 {
@@ -203,11 +259,11 @@ Nodes themselves should provide complete description to where to find (the proto
 
     },
 
-    "proceduralSteps": [ // For procedural context, we just need (un)conditional jump, and variable read/write
-        // The first valid option is taken as next step
+    "proceduralSteps": [ // For procedural context, we just need jump; The (un)conditions and variable read/write are handled inside flow control implementation using attribute values
+        // The specific path to take is determined by implementation
         { 
-            "condition" : "",
-            "nextNode": 
+            "pathName" : "",
+            "nextNode": "<Node Name>"
         },
     ]
 }
@@ -255,12 +311,25 @@ ALL PAYLOADS WILL HAVE A `value` section.
 
 Any functional frontend should NOT ONLY target node-graph drafting completeness but take the efficiency of such construction - both in terms of keyboard shortcuts, non-mouse usage, and version control capabilities - to the highest standard. Houdini is a decent but not good enough example, Unreal Engine Blueprint is an exceptionally bad despite pretty looking example.
 
-## Parcel Native Style Libraries/Frameworks
+## Parcel Back-Ends
+
+Unless explicitly running node by node or as interpretative mode, type check for all nodes should happen at compile time.
+
+## Parcel Native Style/Original Standard Libraries and Frameworks
 
 It makes lots of assumptions that's how it takes minimal setup to get most complicated things done.
 It greatly streamlines getting common things done faster while providing room for customization.
 It usually provides lots of customization options - so without modifying modular pieces, one can already further customize the behaviors.
 It usually provides "macros/template/preset" setups that allows direct implementation-level customizations.
+
+Parcel will dedicate development effort into standalone libraries in the following domains:....
+
+Even though it's legit to reference runtime C# and even Python functions directly in a node, it's never recommended - except those part of the implementation hosting environment RAW standard libraries, e.g. all dotnet runtime libraries and all standard Python distribution libraries - those can expect long-term support. Whenever a Parcel Original library is available, users should preferably use those higher level wrappers.
+
+Only specific subset of runtime and derived functionalities will be exposed through Parcel native libraries/wrappers. Those include those areas:
+* File IO
+* Socket IO
+* Web Services
 
 ## Canonical Implementation: Parcel NExT (2024)
 
@@ -296,6 +365,14 @@ Tagging is used to both modify interface display and interactive behaviors.
 * Pure: Pure functions have reusable caches. A function can be marked pure or not pure.
 
 ### Front End
+
+Parcel.NExT is a professional and developer-style frontend suitable for distraction-free and productive work.
+
+Node attributes can be selectively exposed as inputs/ouputs and edited either in property panel/window or directly on the node.
+
+The frontend also features real-time progress indicator and node highlight for currently executing graph.
+
+The Front End also features a top-level left-side current active preview pane, and a terminal pane.
 
 Cached results can be viewed either as a pop-up window (like original Parcel) or as an in-graph Preview Node (which can also be used to view any other properties of a node).
 
@@ -334,6 +411,15 @@ If payload reference is put directly as node attribute, then it could often chan
 
 Since payloads are attachments, and from a lean structure perspective nodes DO NOT NEED to be aware of underlying implementation and content styles and payload type, it makes sense to keep payloads completeme separate to nodes and make nodes NOT aware of payloads.
 Similarly, graph runtime should store in separate file data section.
+
+### Procedural Context: Implementation
+
+(Also see Observation 20240126, pending rephrasing and documenting it here)
+
+We realized that For procedural context, we just need (un)conditional jump and variable read/write - like any typical minimal turing complete logic. A DSL based approach is to define conditions and potential paths in a list and the first valid option is taken as next step.
+
+The latest specification/implementation in Parcel.NExT however, handles conditions inside flow control implementation using attribute values, and the paths defined are just for reference purpose only. This way there is no need for DSL, and everything is declarative. 
+The maintainence of current flow control state can be managed inside payload as a localized state, and the flow control element itself decides which next step to take based on its current state, and flow control logic.
 
 ## References
 
