@@ -1,4 +1,4 @@
-# Parcel Open Standard
+# Parcel Open Standard (POS)
 
 > (Motto) Make advanced data analysis easy and fun. Use visual and graphical programming to solve common problems.
 
@@ -94,6 +94,9 @@ Attribute values are string representations ALWAYS and should follow the followi
 * Plain, literal values start with `:`, e.g. `:15`, `:This is a string`
 * Graph variables reading uses `$`, e.g. `$graphVariable`
 * Node reference uses `@`: `@node.attribute`
+* Reserved: `!` - for lambdas, e.g. `!Apply`
+* Reserved: `!#` - for lambdas referencing graphs, e.g. `!#MyGraph`
+* (Notice essentially attributes must start with a special symbol)
 
 Attribute accessor is a descriptor that can reference either (in terms of underlying construct) parameters or return values, or (in terms of PVM) node attributes or payloads. It's entirely string based. If an accessor contains an object (rather than string-serialized primitive), it will be passing the reference address of that object, then get dereferenced at the time of invocation.
 
@@ -341,6 +344,8 @@ Only specific subset of runtime and derived functionalities will be exposed thro
 
 ## Canonical Implementation: Parcel NExT (2024)
 
+> Parcel NExT is a C# based hybrid-functional-procedural-logical-OOP graphical scripting platform designed for high-level automation and data analytics.
+
 This section documents a reference implementation, known as Parcel NExT, based on **latest version of .Net** (at the moment it's .Net 8). It includes complete suite of core engine, back end, front end, and domain specific libraries.
 
 ### Core Engine
@@ -400,6 +405,8 @@ A typical usage scenario goes like this:
 2. User selects from and drops a few module nodes to define which modules to discover ("import") - this is only significant to the front end
 3. User optionally imports existing user libraries from discovery paths, or drag in directly (will referecence as relative path by default)
 4. User keeps adding nodes and complete the graph functionalities.
+
+Annoymous/In-line graphs are supported to keep lambda-like references simple and clean.
 
 ### MiniParcel
 
