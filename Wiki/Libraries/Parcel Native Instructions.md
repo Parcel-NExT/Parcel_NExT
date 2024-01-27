@@ -19,6 +19,7 @@ One feature of Parcel original functions are:
 |Name|Alias|Signature|Description|Options/Attributes|Additional Returns|NExT Mapping|
 |-|-|-|-|-|-|-|
 |**GetFiles**|*ls*|`GetFiles Folder`<br/>`GetFiles Folders`|Get an array of file paths within folder.|`No Additional Returns = false`|File paths<br/>File names<br/>File names without extentions<br/>File extensions<br/>File sizes|`System.IO.Directory.EnumerateFiles`|
-|**Rename**|*Move*, *mv*|`Rename OldPath NewPath`<br/>`Rename PathPairTuples`<br/>`Rename DataTable`<br/>`Rename ObjectsArray`|Rename files from a variety of permissible sources.|`Use Positional = true`<br/>`Default Source Attribute Names = [:Source, :From]`<br/>`Default Destination Attribute Names = [:Destination, :To]`||`System.IO.Directory.EnumerateFiles`|
+|**Rename**|*RenameFile*|`Rename OldPath NewPath`<br/>`Rename PathPairTuples`<br/>`Rename DataTable`<br/>`Rename ObjectsArray`|Rename files from a variety of permissible sources.|`Use Positional = true`<br/>`Default Source Attribute Names = [:Source, :From]`<br/>`Default Destination Attribute Names = [:Destination, :To]`||`System.IO.Directory.EnumerateFiles`|
+|**Move**|*mv*|`Move OldPath NewPath`<br/>`Move PathPairTuples`<br/>`Move DataTable`<br/>`Move ObjectsArray`|Moves files as defined in a variety of permissible sources. Notice this is different from `Rename`.|`Use Positional = true`<br/>`Default Source Attribute Names = [:Source, :From]`<br/>`Default Destination Attribute Names = [:Destination, :To]`||`System.IO.Directory.EnumerateFiles`|
 
 **Directory Manipulation**

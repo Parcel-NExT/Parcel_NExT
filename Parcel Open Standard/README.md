@@ -122,25 +122,37 @@ Parcel Document (Magic: DOCU)
     (Internalized) Payloads (Magic: PAYL)
 ```
 
-Parcel supports those serialization: Binary (C# style/.Net core/.Net standard, little endian), (JSON), YAML, (RTS). Additional types might be provided through converters (if necessary). Parcel MAGIC number is `PARCEL WORKFLOW ENGINE - BINARY` for binary file, and `PARCEL WORKFLOW ENGINE - TEXT\n` for text file.
+Parcel supports those serialization: Binary (C# style/.Net core/.Net standard, little endian), (JSON), YAML, (RTS). Additional types might be provided through converters (if necessary). Parcel MAGIC number is ~~`PARCEL WORKFLOW ENGINE - BINARY`~~ `PSF-B` for binary file, and ~~`PARCEL WORKFLOW ENGINE - TEXT\n`~~ `PSF-T` for text file.
 
 We use those somewhat confusing extensions for official parcel file format:
 
-* `.parcel` for generic file extension (either `.document` or `.graph`)
-* `.document` for text-based storage
-* `.graph` for binary files storage
+* ~~`.parcel`~~ `.psf` for generic file extension (either ~~`.document`~~ `.psft` or ~~`.graph`~~ `.psfb`)
+* ~~`.document`~~ `.psft` for text-based storage
+* ~~`.graph`~~ `.psfb` for binary files storage
 
 ### Parcel File Format Storage Requirements Specification
 
 * Take Blender style file blocks that allows easier and more selective use of data and arbitrary data payload
 
-## Text-Based File Format
+## Parcel Serialization Formats
+
+### Text-Based Command-Line Format (MiniParcel)
 
 (Pending consolidating with Mini Parcel)
 
+MiniParcel is not suited for full serialization notably because: 1) It's instruction only and intended to be simply and high level, 2) It doesn't not name specific end targets, 3) It doesn't have concept of binary payload, 4) It's node invocation is positional based and not Parcel document graph-based and key:value attribute based.
+
+### General Serialization Formats
+
+* Header takes two lines
+* May contain (file-format-level) comments: just ignore when parsing
+* Empty spaces are used for readability for text format. Ignore empty spaces when parsing
+
+### Parcel Serialization Formats - Text (PSF-T)
+
 Requirements:
 
-1. As capable as the binary format, with a binary payload as seperate file
+1. As capable as the binary format, with a binary payload as separate file
 2. Must be declarative
 3. Must be as clean and short as possible, must be human readable and human-modifiable (generated document can be edited by a text editor), but do NOT necessarily need to be human authorizable (do not need to be efficient if a human were to be author from scratch) - that's the purpose of Mini Parcel.
 
