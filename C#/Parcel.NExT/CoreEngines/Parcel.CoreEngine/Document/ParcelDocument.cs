@@ -28,7 +28,7 @@ namespace Parcel.CoreEngine
         #region Constructors
         public ParcelDocumentBase()
         {
-            MainGraph = new ();
+            MainGraph = new("Default");
             Graphs.Add(MainGraph);
         }
         #endregion
