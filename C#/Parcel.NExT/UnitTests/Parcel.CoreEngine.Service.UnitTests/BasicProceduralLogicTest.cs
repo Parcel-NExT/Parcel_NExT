@@ -14,7 +14,7 @@ namespace Parcel.CoreEngine.Service.UnitTests
             // Creates and executes a graph that writes references the final output in a preview node
             ParcelDocument document = CreateGraph();
             document.Execute();
-            ParcelNode previewNode = document.MainGraph.MainLayout.Nodes.Single(n => n.Node.Target == "Preview").Node!;
+            ParcelNode previewNode = document.MainGraph.MainLayout.Placements.Single(n => n.Node.Target == "Preview").Node!;
             Assert.Equal(5 + 12 + 15, (double)document.NodePayloadLookUps[previewNode].PayloadData.First().Value);
         }
 

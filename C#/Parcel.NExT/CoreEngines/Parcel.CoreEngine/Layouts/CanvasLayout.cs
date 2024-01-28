@@ -3,7 +3,7 @@
     public sealed class CanvasLayout
     {
         #region Properties
-        public List<CanvasElement> Nodes { get; set; } = new();
+        public List<CanvasElement> Placements { get; set; } = new();
         #endregion
     }
 }

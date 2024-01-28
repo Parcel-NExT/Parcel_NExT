@@ -23,6 +23,18 @@ namespace Parcel.CoreEngine.Serialization
             // TODO: YAML
             writer.WriteLine();
 
+            // Nodes
+            writer.WriteLine("# Nodes Section");
+            writer.WriteLine($"Nodes Count: {document.Nodes.Count}");
+            foreach (ParcelNode node in document.Nodes)
+            {
+                string attributesText = string.Join(", ", node.Attributes.Select(a => $"{a.Key}: {a.Value}"));
+
+                // TODO: Below is just placeholder implementation
+                writer.WriteLine($" {node.Name} [{node.Target}] {{{attributesText}}}");
+            }
+            writer.WriteLine();
+
             // Graphs
             writer.WriteLine("# Graphs Section");
             writer.WriteLine($"Graphs Count: {document.Graphs.Count}");
@@ -32,22 +44,10 @@ namespace Parcel.CoreEngine.Serialization
                 writer.WriteLine($"{graph.Name}:");
                 foreach (CanvasLayout layout in graph.Layouts)
                 {
-                    writer.WriteLine($"- {layout.GetType().Name} (x{layout.Nodes.Count})");
-                    foreach (CanvasElement element in layout.Nodes)
+                    writer.WriteLine($"- {layout.GetType().Name} (x{layout.Placements.Count})");
+                    foreach (CanvasElement element in layout.Placements)
                         writer.WriteLine($"  {element.Position} {element.Node.Name}"); // TODO: Placeholder implementation; pending using node id.
                 }
-            }
-            writer.WriteLine();
-
-            // Nodes
-            writer.WriteLine("# Nodes Section");
-            writer.WriteLine($"Nodes Count: {document.Nodes.Count}");
-            foreach(ParcelNode node in document.Nodes)
-            {
-                string attributesText = string.Join(", ", node.Attributes.Select(a => $"{a.Key}: {a.Value}"));
-
-                // TODO: Below is just placeholder implementation
-                writer.WriteLine($" {node.Name} [{node.Target}] {{{attributesText}}}");
             }
             writer.WriteLine();
 
@@ -73,6 +73,8 @@ namespace Parcel.CoreEngine.Serialization
             _ = reader.ReadLine();
             _ = reader.ReadLine();
 
+            throw new NotImplementedException();
+
             return new ParcelDocument();
         }
         #endregion
@@ -81,7 +83,22 @@ namespace Parcel.CoreEngine.Serialization
         private static void WriteAdditionalSoftwareAndFileFormatInformation(StreamWriter writer)
         {
             writer.WriteLine($"Engine Version: {EngineVersion.Version}");
+            WritePoem(writer);
+
+            static void WritePoem(StreamWriter writer)
+            {
+                writer.WriteLine(ChatGPTPoem);
+            }
         }
+        #endregion
+
+        #region Contents
+        public const string ChatGPTPoem =
+            """
+            # In data's tapestry, numbers dance and weave,
+            # Mathematical tools, the threads they retrieve,
+            # In their elegant patterns, truths they conceive.
+            """;
         #endregion
     }
 }

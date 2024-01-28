@@ -14,7 +14,7 @@ namespace Parcel.CoreEngine.Service.UnitTests
             // Creates and executes a graph that just computes something trivial
             ParcelDocument document = CreateGraph();
             document.Execute();
-            ParcelNode previewNode = document.MainGraph.MainLayout.Nodes.Single(n => n.Node.Target == "{Preview}").Node!;
+            ParcelNode previewNode = document.MainGraph.MainLayout.Placements.Single(n => n.Node.Target == "{Preview}").Node!;
             string? value = ParcelNodeUnifiedAttributesHelper.GetFromUnifiedAttribute(previewNode, document.NodePayloadLookUps[previewNode], "value");
             Assert.Equal(5 + 12 + 15, double.Parse(value));
         }

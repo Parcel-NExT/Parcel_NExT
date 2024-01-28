@@ -15,10 +15,16 @@ namespace Parcel.CoreEngine
         #region Construction API
         public void AddNode(ParcelGraph graph, ParcelNode node, Vector2 position)
         {
-            graph.MainLayout.Nodes.Add(new CanvasElement(node)
+            // Add to layout
+            graph.MainLayout.Placements.Add(new CanvasElement(node)
             {
                 Position = position
             });
+
+            // Add to main data
+            Nodes.Add(node);
+
+            // Add to runtime bookkeeeping
             NodeGraph.Add(node, graph);
         }
         #endregion
@@ -31,6 +37,11 @@ namespace Parcel.CoreEngine
             MainGraph = new("Default");
             Graphs.Add(MainGraph);
         }
+        #endregion
+
+        #region Meta-Data
+        public DateTime CreationTime { get; set; } = DateTime.Now;
+        public DateTime LastModificationTime { get; set; }
         #endregion
 
         #region Static Sections

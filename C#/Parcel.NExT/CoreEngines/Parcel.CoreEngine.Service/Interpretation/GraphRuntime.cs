@@ -33,7 +33,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
         #region Methods
         public void Execute()
         {
-            foreach (ParcelNode node in Graph.MainLayout.Nodes.Select(n => n.Node))
+            foreach (ParcelNode node in Graph.MainLayout.Placements.Select(n => n.Node))
                 ExecuteNode(node);
         }
         #endregion
@@ -114,7 +114,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
                     else if (a.StartsWith('$'))
                         return Variables[a.TrimStart('$')];
                     else if (a.StartsWith('@'))
-                        return ParcelNodeUnifiedAttributesHelper.GetFromUnifiedAttribute(Payloads, Graph.MainLayout.Nodes.Select(n => n.Node).ToArray(), a.TrimStart('@'));
+                        return ParcelNodeUnifiedAttributesHelper.GetFromUnifiedAttribute(Payloads, Graph.MainLayout.Placements.Select(n => n.Node).ToArray(), a.TrimStart('@'));
                     else throw new ArgumentException($"Invalid argument: {a}");
                 })
                 .ToArray();

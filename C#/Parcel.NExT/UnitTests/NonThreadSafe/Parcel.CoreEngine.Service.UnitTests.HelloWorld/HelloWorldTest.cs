@@ -34,7 +34,7 @@ namespace Parcel.CoreEngine.Service.UnitTests.HelloWorld
             node.Attributes.Add("value", "Hello World!");
 
             ParcelDocument document = new();
-            document.MainGraph.Layouts.First().Nodes.Add(new Layouts.CanvasElement(node));
+            document.MainGraph.Layouts.First().Placements.Add(new Layouts.CanvasElement(node));
             return document;
         }
         #endregion
