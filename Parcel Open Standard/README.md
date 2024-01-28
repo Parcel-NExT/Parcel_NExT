@@ -102,15 +102,15 @@ Attribute accessor is a descriptor that can reference either (in terms of underl
 
 ## File Structure
 
-Parcel features a maintenance-free file format:
+Parcel features a maintenance-free file format: (Note that nodes must be serialized BEFORE graphs section)
 
 ```
 MAGIC
 (Pure Declarative Sections)
 Parcel Document (Magic: DOCU)
     Document Properties (Magic: PROP)
-    Graphs (Including subgraphs) (Magic: GRAP)
     Nodes (Magic: NODE)
+    Graphs (Including subgraphs) (Magic: GRAP)
 (Automatic Change Sections)
     Revisions (Graphs) (Magic: REVG)
     Revisions (Nodes) (Magic: REVN)
@@ -354,11 +354,20 @@ Only specific subset of runtime and derived functionalities will be exposed thro
 * Socket IO
 * Web Services
 
-## Canonical Implementation: Parcel NExT (2024)
+## Canonical Implementation: Parcel NExT (2024) - Reference Implementation
 
 > Parcel NExT is a C# based hybrid-functional-procedural-logical-OOP graphical scripting platform designed for high-level automation and data analytics.
+> Motto: Parcel is the best of all worlds, easy to get in, easier to get out, addictive to use, impossible to abuse, and requires knowledge of all domains to go deep. All your olf knowledge and scripts from C#, Python, and MATLAB will still applu and work, better, and more harmoniously.
 
 This section documents a reference implementation, known as Parcel NExT, based on **latest version of .Net** (at the moment it's .Net 8). It includes complete suite of core engine, back end, front end, and domain specific libraries.
+
+### Parcel.NExT
+
+This suite is collectively known as Parcel.NExT, including following notable components:
+* xxx Engine (Pheonix)
+* xxx Editor (Fox)
+* (Lightening Browser)
+(Use Medalian and myth names)
 
 ### Core Engine
 
@@ -399,9 +408,19 @@ Tagging is used to both modify interface display and interactive behaviors.
 
 ### Front End
 
+> The GUI is all about producitivty, comfort, and efficiency.
+
 Parcel.NExT is a professional and developer-style frontend suitable for distraction-free and productive work.
 
-Node attributes can be selectively exposed as inputs/ouputs and edited either in property panel/window or directly on the node.
+Key design guidelines for Parcel.NExT Front-end Node Editor:
+
+1. Avoid clustering, show only key information
+2. Quick, easy, multidimensional preview of many nodes data.
+3. Everything is a node.
+4. Utilize visual location memory.
+5. Offering node editing, node organization, node execution, node debugging, annotations, real-time collaboration, presentation, and learning, documentation, IDE, refactoring functionalities.
+
+Node attributes can be selectively exposed as inputs/outputs and edited either in property panel/window or directly on the node.
 
 The frontend also features real-time progress indicator and node highlight for currently executing graph.
 
@@ -415,10 +434,12 @@ A typical usage scenario goes like this:
 
 1. User open a document or creates and saves a new empty document (through GUI or CLI)
 2. User selects from and drops a few module nodes to define which modules to discover ("import") - this is only significant to the front end
-3. User optionally imports existing user libraries from discovery paths, or drag in directly (will referecence as relative path by default)
+3. User optionally imports existing user libraries from discovery paths, or drag in directly (will reference as relative path by default)
 4. User keeps adding nodes and complete the graph functionalities.
 
 Annoymous/In-line graphs are supported to keep lambda-like references simple and clean.
+
+When promoting user to select node, Parcel.NExT presents the nodes through three different dimensions: by application domain, by (operating) object types, and by high-level libraries/categories. One can also search for nodes by name and tags, have favorites, and have history sorted by most frequent use, and show nodes already used in current document.
 
 ### MiniParcel
 

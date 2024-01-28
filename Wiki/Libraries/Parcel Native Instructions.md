@@ -8,6 +8,14 @@ One feature of Parcel original functions are:
 2. Supports simple and straightforward and common-place syntax like typical languages
 3. Feature packed with options and customizable behaviors with lots of defaults
 
+## Standard Constructions
+
+|Name|Signature|Function|
+|-|-|-|
+|Parameters||Groups incoming parameters onto a single node and creates the same output parameters. Can also define new outputs through GUI (provide default values), or define new attributes.|
+|Initialize||Provide the same functionality as Parameters, plus it allow using simple code to initialize and define many variables (instead of doing it through GUI).|
+|Preview||Feedforward and preview an incoming node's value.|
+
 ## File System IO
 
 **File Path**
