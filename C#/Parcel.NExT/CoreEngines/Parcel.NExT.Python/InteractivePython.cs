@@ -88,6 +88,7 @@ namespace Parcel.NExT.Python
 
     public sealed class InteractivePython
     {
+        #region Construction
         public InteractivePython()
         {
             var installedPython = RuntimeHelper.FindPythonDLL();
@@ -99,19 +100,20 @@ namespace Parcel.NExT.Python
             using (Py.GIL())
             {
                 PythonScope = Py.CreateScope();
-                PythonScope.Exec("""
-                    import clr
-                    clr.AddReference("Parcel.NExT.Python")
-                    from PythonNetPrintImplementation import PrintImplementation
-                    def print2(o):
-                    	PrintImplementation.Print(o)
-                    import sys
-                    #sys.displayhook = PrintImplementation.Print
-                    """);
+                // Remark: Below seems no longer necessary since latest Python.net does implement print()
+                //PythonScope.Exec("""
+                //    import clr
+                //    clr.AddReference("Parcel.NExT.Python")
+                //    from PythonNetPrintImplementation import PrintImplementation
+                //    import sys
+                //    sys.displayhook = PrintImplementation.Print
+                //    """);
             }
         }
         PyModule PythonScope;
+        #endregion
 
+        #region Methods
         public object? Evaluate(string scripts)
         {
             if (PythonScope == null)
@@ -135,7 +137,7 @@ namespace Parcel.NExT.Python
                     {
                         Console.WriteLine(realException.Message);
                     }
-                
+
                     return null;
                 }
 
@@ -143,5 +145,10 @@ namespace Parcel.NExT.Python
                 // But do notice that `a = 5` in both python repl and ipython returns None
             }
         }
+        public void Shutdown()
+        {
+            PythonEngine.Shutdown(); // Remark: This cause binary serialization exception
+        }
+        #endregion
     }
 }
