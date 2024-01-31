@@ -1,3 +1,4 @@
+using Merlin.Helpers;
 using Merlin.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,28 +8,53 @@ namespace Merlin.Controllers
     [Route("[controller]")]
     public class PythonController : ControllerBase
     {
-        private static readonly string[] Summaries =
-        [
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        ];
-
+        #region Construction
         private readonly ILogger<PythonController> _logger;
-
         public PythonController(ILogger<PythonController> logger)
         {
             _logger = logger;
         }
+        #endregion
 
+        #region Data
+        public static Dictionary<string, InteractiveProcess> Sessions = [];
+        #endregion
+
+        #region Gets
         [HttpGet(Name = "GetPythonTargets")]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<NodeDefinition> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            return NodeDefinitions.Samples;
+        }
+        #endregion
+
+        #region Posts
+        [HttpPost(Name = "Execute")]
+        public async Task<string> Execute([FromQuery]string session)
+        {
+            string scripts = await Request.Body.ReadAsStringAsync();
+
+            if (!Sessions.ContainsKey(session))
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                var intermediaryPath = DependencyLocator.GetIntermediaryPath();
+                var newSession = new InteractiveProcess(Path.Combine(intermediaryPath, "InteractivePython.exe"));
+                newSession.Start();
+                Sessions[session] = newSession;
+            }
+
+            InteractiveProcess process = Sessions[session];
+            return process.SendCommand(scripts);
+        }
+        #endregion
+    }
+
+    public static class RequestExtensions
+    {
+        public static async Task<string> ReadAsStringAsync(this Stream requestBody, bool leaveOpen = false)
+        {
+            using StreamReader reader = new(requestBody, leaveOpen: leaveOpen);
+            var bodyAsString = await reader.ReadToEndAsync();
+            return bodyAsString;
         }
     }
 }

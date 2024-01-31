@@ -4,6 +4,8 @@ namespace InteractivePython
 {
     internal class Program
     {
+        private const string EndOfMessageSymbol = "[EOF]";
+
         static void Main(string[] args)
         {
             // Instantiate single instance
@@ -14,7 +16,7 @@ namespace InteractivePython
             while (true)
             {
                 string? input = Console.ReadLine();
-                if (input != null)
+                if (input != null && input != EndOfMessageSymbol)
                     scripts.AppendLine(input);
                 else if (!string.IsNullOrEmpty(scripts.ToString()))
                 {
@@ -29,6 +31,7 @@ namespace InteractivePython
             object? result = RunScript(python, script);
             if (result != null)
                 Console.WriteLine(result.ToString());
+            Console.WriteLine(EndOfMessageSymbol);
         }
 
         private static object? RunScript(Parcel.NExT.Python.InteractivePython python, string scripts)

@@ -103,9 +103,17 @@ public sealed class InteractivePython
             {
                 return PythonScope.Eval(scripts);
             }
-            catch (Exception e)
+            catch (Exception nonExpression)
             {
-                PythonScope.Exec(scripts); 
+                try
+                {
+                    PythonScope.Exec(scripts);
+                }
+                catch (Exception realException)
+                {
+                    Console.WriteLine(realException.Message);
+                }
+                
                 return null;
             }
 
