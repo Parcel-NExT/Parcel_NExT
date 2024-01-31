@@ -56,9 +56,6 @@ namespace Merlin.Helpers
         {
             InputStream.WriteLine(command);
             InputStream.WriteLine(EndOfMessageSymbol);
-            // Simulate EOF by sending Ctrl+Z and flushing
-            //InputStream.Write((char)26); // ASCII code for Ctrl+Z
-            //InputStream.Flush();
 
             StringBuilder output = new();
             string? line = OutputStream.ReadLine();
@@ -71,7 +68,7 @@ namespace Merlin.Helpers
         }
         public void Stop()
         {
-            ChildProcess.Kill(); // ChildProcess.WaitForExit();
+            ChildProcess.Kill();
 
             // Close the streams
             InputStream.Close();
