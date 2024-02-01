@@ -24,6 +24,7 @@ In Parcel, there are six distinct patterns when dealing with large tabular data,
 5. SQL based (nodal and functional and delayed)
 6. Espresso context (procedural)
 7. Plan Based
+8. Matrix based (purely numerical)
 
 One should keep functional and use object based with delayed plan if performance is concern. In general, to keep the code clean, it's better to keep a single pattern inside a single graph.
 

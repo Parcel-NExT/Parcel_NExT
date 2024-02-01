@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Merlin.Controllers
 {
+    /// <summary>
+    /// This provides standalone Python evaluation services based on local system python
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class PythonController : ControllerBase
@@ -26,11 +29,45 @@ namespace Merlin.Controllers
         {
             return NodeDefinitions.Samples;
         }
+        public IEnumerable<NodeDefinition> GetTopLevelModules()
+        {
+            throw new NotImplementedException();
+        }
+        public IEnumerable<NodeDefinition> GetSubmodules(string module)
+        {
+            throw new NotImplementedException();
+        }
+        public IEnumerable<NodeDefinition> GetTypesInModule(string module)
+        {
+            throw new NotImplementedException();
+        }
+        public IEnumerable<NodeDefinition> GetTopLevelMethodsInModule(string module)
+        {
+            throw new NotImplementedException();
+        }
+        public IEnumerable<NodeDefinition> GetMethodsForType(string type)
+        {
+            throw new NotImplementedException();
+        }
+        public IEnumerable<NodeDefinition> GetMethodAttributes(string method)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attribute for type instancing node
+        /// </summary>
+        public IEnumerable<NodeDefinition> GetTypeAttributes(string method)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Posts
+        /// <summary>
+        /// Continue or create new execution session
+        /// </summary>
         [HttpPost(Name = "Execute")]
-        public async Task<string> Execute([FromQuery]string session)
+        public async Task<string> ExecuteSesion([FromQuery]string session)
         {
             string scripts = await Request.Body.ReadAsStringAsync();
 
@@ -44,6 +81,13 @@ namespace Merlin.Controllers
 
             InteractiveProcess process = Sessions[session];
             return process.SendCommand(scripts);
+        }
+        /// <summary>
+        /// Execute and get result in a throw-away session/standalone invokation
+        /// </summary>
+        public async Task<string> ExecuteOnce()
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

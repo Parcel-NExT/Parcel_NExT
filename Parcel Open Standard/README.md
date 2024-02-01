@@ -363,11 +363,21 @@ This section documents a reference implementation, known as Parcel NExT, based o
 
 ### Parcel.NExT
 
-This suite is collectively known as Parcel.NExT, including following notable components:
-* xxx Engine (Pheonix)
+<!-- Naming -->
+
+This suite is collectively known as **Parcel.NExT**, including following notable components:
+* xxx Engine (Pheonix) <!--Exparcelo (from Expresso and Parcel)-->
+* Backend: Merlin
 * xxx Editor (Fox)
 * (Lightening Browser)
+* Frontend: Paper Space
+* Agent/Deskmate: Airi
 (Use Medalian and myth names)
+
+Additional frontends:
+
+* Relic
+* Gospel
 
 ### Core Engine
 
