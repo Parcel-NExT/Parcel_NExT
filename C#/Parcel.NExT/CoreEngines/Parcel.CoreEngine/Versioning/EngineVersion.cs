@@ -1,7 +1,7 @@
 ﻿namespace Parcel.CoreEngine.Versioning
 {
     /// <summary>
-    /// This is the only version across the entire Parcel.NExT implementation and considers changes to all components including front-end and back-end
+    /// This is the only version across the entire Parcel.NExT implementation and considers changes to all components including (canonical) front-end and back-end; (This version number may exclude certain front-ends)
     /// The version number should match release number on Github, and match the csproj build version
     /// </summary>
     public static class EngineVersion
