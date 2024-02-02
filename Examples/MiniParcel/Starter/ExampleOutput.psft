@@ -1,0 +1,27 @@
+PSF-T
+PARCEL WORKFLOW ENGINE
+Engine Version: Parcel.NExT v0.0.1 (Build: 2024.01)
+# In data's tapestry, numbers dance and weave,
+# Mathematical tools, the threads they retrieve,
+# In their elegant patterns, truths they conceive.
+
+# Document Meta-Data
+Document:
+
+# Nodes Section
+Nodes Count: 1
+ Print [Print] {Attribute 0: "Hello, Attribute 1: World!"}
+
+# Graphs Section
+Graphs Count: 1
+Main Graph: Default
+Default:
+- CanvasLayout (x1)
+  <0, 0> Print
+
+# Graph Revisions
+
+# Node Revisions
+
+# Payloads Section
+

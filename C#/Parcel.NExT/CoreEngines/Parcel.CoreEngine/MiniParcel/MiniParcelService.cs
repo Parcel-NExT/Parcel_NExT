@@ -1,4 +1,5 @@
 ﻿using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.Helpers;
 
 namespace Parcel.CoreEngine.MiniParcel
 {
@@ -33,11 +34,8 @@ namespace Parcel.CoreEngine.MiniParcel
         #region Routines
         private static ParcelNode ParseNode(string line)
         {
-            List<string> parts = [];
-            // TODO: pending more robust handling and parse quoted strings properly with state machine
-            parts = new List<string>(line.Split(' '));
-
-            return new ParcelNode(parts.First(), Enumerable.Range(0, parts.Count - 1).ToDictionary(i => $"Attribute {i}", i => parts[i + 1]));
+            string[] parts = line.SplitCommandLineArguments();
+            return new ParcelNode(parts.First(), Enumerable.Range(0, parts.Length - 1).ToDictionary(i => $"${i}", i => parts[i + 1]));
         }
         #endregion
     }

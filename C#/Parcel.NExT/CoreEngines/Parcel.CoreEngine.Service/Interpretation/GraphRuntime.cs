@@ -1,4 +1,5 @@
 ﻿using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.InstructionSets;
 using Parcel.CoreEngine.Service.CoreExtensions;
 using System;
 using System.Reflection;
@@ -48,9 +49,12 @@ namespace Parcel.CoreEngine.Service.Interpretation
             // Typical C#
             else if (string.IsNullOrEmpty(targets.EngineSymbol) || targets.EngineSymbol.ToUpper() == "C#")
             {
+                // TODO: THIS SHOULD NOT BE HANDLED BY THE ENGINE
+                string fullTargetPath = InstructionSetMapping.ParcelCustomNameMappings.ContainsKey(targets.TargetPath) ? InstructionSetMapping.ParcelCustomNameMappings[targets.TargetPath] : targets.TargetPath;
+
                 // TODO: Might isolate those into core library?
                 Assembly? core = Assembly.GetAssembly(typeof(Primitives.Number));
-                Type? type = core.GetType(targets.TargetPath);
+                Type? type = core.GetType(fullTargetPath);
                 string[] arguments = NodeDefinitionHelper.SimpleExtractParameters(node);
                 arguments = DereferenceParameters(arguments);
                 if (type != null)
@@ -64,11 +68,13 @@ namespace Parcel.CoreEngine.Service.Interpretation
                 }
                 else
                 {
-                    int splitterIndex = targets.TargetPath.LastIndexOf('.');
-                    string typeName = targets.TargetPath.Substring(0, splitterIndex);
-                    string function = targets.TargetPath.Substring(splitterIndex + 1);
+                    int splitterIndex = fullTargetPath.LastIndexOf('.');
+                    string typeName = fullTargetPath.Substring(0, splitterIndex);
+                    string function = fullTargetPath.Substring(splitterIndex + 1);
 
                     type = core.GetType(typeName);
+                    if (type == null)
+                        throw new ApplicationException("(Need handling)");
                     MethodInfo staticMethod = FindBestMatchingMethod(type, function, arguments);
                     object[] typedArguments = PackArguments(staticMethod, arguments);
                     object returnValue = CallMethodWithParamsHandling(type, staticMethod, typedArguments);
@@ -115,7 +121,9 @@ namespace Parcel.CoreEngine.Service.Interpretation
                         return Variables[a.TrimStart('$')];
                     else if (a.StartsWith('@'))
                         return ParcelNodeUnifiedAttributesHelper.GetFromUnifiedAttribute(Payloads, Graph.MainLayout.Placements.Select(n => n.Node).ToArray(), a.TrimStart('@'));
-                    else throw new ArgumentException($"Invalid argument: {a}");
+                    else if (a.StartsWith('!'))
+                        throw new NotImplementedException();
+                    else throw new ArgumentException($"Invalid argument (unrecognized format): {a}. Use : for literals, $ for variables, @ for nodes/attributes, and ! for actions/graphs.");
                 })
                 .ToArray();
         }

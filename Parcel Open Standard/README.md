@@ -1,6 +1,7 @@
 # Parcel Open Standard (POS)
 
 > (Motto) Make advanced data analysis easy and fun. Use visual and graphical programming to solve common problems.
+> A scripting platform is just one-third of the solution: the other two is domain specific methods, and actually getting the work done. But a good platform can make one start far.
 
 Parcel Open Standard is the core specification of expected behaviors for interoperability and observability of the entire Parcel platform and ecosystem.
 
@@ -31,7 +32,7 @@ A proper parcel program is thus just the description in the form of this node gr
 
 A typical parcel implementation includes an editor, an execution engine, and a graph description.
 
-```mermaid
+```mermaid (mindgraph?)
 ```
 
 Execution of the graph may be interpreted, or compiled, or sent to backend service for execution.  
@@ -330,7 +331,13 @@ ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 
 ALL PAYLOADS WILL HAVE A `value` section.
 
-## Parcel Frontends
+## Engine (Execution Behavior)
+
+In this section we document and specifies some expected engine behavior:
+
+* ALWAYS-EXECUTE (TAG) node in a graph are always executed before any other nodes in the order they are defined in the graph.
+
+## Parcel Front-Ends
 
 Any functional frontend should NOT ONLY target node-graph drafting completeness but take the efficiency of such construction - both in terms of keyboard shortcuts, non-mouse usage, and version control capabilities - to the highest standard. Houdini is a decent but not good enough example, Unreal Engine Blueprint is an exceptionally bad despite pretty looking example.
 
@@ -456,6 +463,8 @@ When promoting user to select node, Parcel.NExT presents the nodes through three
 Either the text format proper, or a REPL DSL frontend.
 
 MiniParcel is human-oriented declarative scripting language that provides a quick interface into graph authorization. It is less verbose to proper text-based format.
+
+MiniParcel makes assumptions about target names and function calling signatures and greatly simplifes syntax.
 
 ## Key Design Decisions
 

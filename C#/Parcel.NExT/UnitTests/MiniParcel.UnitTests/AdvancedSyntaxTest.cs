@@ -54,6 +54,20 @@ namespace MiniParcel.UnitTests
                 """).Execute();
             VerifyFolderFiles(tempFolderPath);
         }
+
+        [Fact]
+        public void InlineCSharpSnippetInAdvancedSyntax()
+        {
+            string outputPath = Path.GetTempFileName();
+            MiniParcelService.Parse($""""
+                Enumeration 1 10
+                | """
+                    !C#
+                    return int.Parse(Arguments[0]) + 5;
+                    """
+                | AppendFileLine {outputPath}
+                """").Execute();
+        }
         #endregion
 
         #region Routines
