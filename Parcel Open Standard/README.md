@@ -274,6 +274,8 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
         "class": "",
     },
     "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations), lazy (caches are preview only and won't save to document payload), deligent (caches are always saved to document payload)
+
+    // [Deprecating] Deprecate Input/Output, use "<Input/Output>" syntax for attributes.
     "inputs": { // User authored input definitions and connections
 
     },
@@ -281,6 +283,7 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
 
     },
 
+    // This section can be replaced with special symbols for attributes
     "proceduralSteps": [ // For procedural context, we just need jump; The (un)conditions and variable read/write are handled inside flow control implementation using attribute values
         // The specific path to take is determined by implementation
         { 
@@ -292,6 +295,11 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
 ```
 
 Node attribute names are camelCased! (Because that matches more directly to JSON representation, C# function parameter name, and feels more scripting like)
+
+Certain attribute names have special meanings:
+
+* `$1, $2, $3...` such numbered attribute names are reserved for positional attribute matching for functions
+* `#<Name>`: Such hash names are reserved for execution pins and denotes executional paths
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
@@ -373,7 +381,7 @@ This section documents a reference implementation, known as Parcel NExT, based o
 <!-- Naming -->
 
 This suite is collectively known as **Parcel.NExT**, including following notable components:
-* xxx Engine (Pheonix) <!--Exparcelo (from Expresso and Parcel)-->
+* Core Engine - xxx Engine (Pheonix) <!--Exparcelo (from Expresso and Parcel)-->
 * Backend: Merlin
 * xxx Editor (Fox)
 * (Lightening Browser)
@@ -385,6 +393,10 @@ Additional frontends:
 
 * Relic
 * Gospel
+
+Experimental services:
+
+* Arcadia (Parcel Hive/Sanctuary): Simple universal websocket text-chat server with multiple channels providing live-online community support.
 
 ### Core Engine
 
