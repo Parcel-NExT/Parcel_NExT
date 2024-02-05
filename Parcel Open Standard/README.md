@@ -250,7 +250,7 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
 
 ```json
 {
-    "displayName": "<Display Name>", // Empty value signify use default, which usually just shows the node type
+    "displayName/name": "<Display Name>", // Empty value signify use default, which usually just shows the node type; Notice (display)name has significannce beyond just used for display - when unique, it COULD serve as unit ID for the node, and is the preferred instance name used in MiniParcel and during code generation.
     "guid": "<Node GUID>",  // Only need to guarantee unique within document, since all nodes are stored in a single section
     "revision": "<Revision Number>",
     "metadata": {
@@ -300,6 +300,10 @@ Certain attribute names have special meanings:
 
 * `$1, $2, $3...` such numbered attribute names are reserved for positional attribute matching for functions
 * `#<Name>`: Such hash names are reserved for execution pins and denotes executional paths
+* `<Name`: Indicates an attribute should be exposed as input (in the front end).
+* `Name>`: Indicates an attribute should be exposed as output (in the front end).
+* `<Name>`: Indicates an attribute should be exposed as both input and output (in the front end).
+* `~Name`: Indicates a front-end only attribute (core engine will just ignore), useful for things like front-end native behaviors and styling attributes.
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
