@@ -52,6 +52,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.CoreEngine.StandardL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tranquility", "BackEnds\Tranquility\Tranquility.csproj", "{EDBBF224-1E70-48F3-A26B-50073BC8FB75}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.NExT.Python.UnitTests", "UnitTests\Parcel.NExT.Python.UnitTests\Parcel.NExT.Python.UnitTests.csproj", "{34CC3EA7-2131-447B-8DA7-C2D5D8B1C828}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,10 @@ Global
 		{EDBBF224-1E70-48F3-A26B-50073BC8FB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDBBF224-1E70-48F3-A26B-50073BC8FB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDBBF224-1E70-48F3-A26B-50073BC8FB75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34CC3EA7-2131-447B-8DA7-C2D5D8B1C828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34CC3EA7-2131-447B-8DA7-C2D5D8B1C828}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34CC3EA7-2131-447B-8DA7-C2D5D8B1C828}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34CC3EA7-2131-447B-8DA7-C2D5D8B1C828}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +142,7 @@ Global
 		{C3F5CA8B-F113-4940-B0D7-3A251B084F0B} = {5643984C-7F96-4208-B484-07E84BAF15B9}
 		{754FF267-3C43-4C80-A59A-F3AC83B6DA9F} = {5643984C-7F96-4208-B484-07E84BAF15B9}
 		{EDBBF224-1E70-48F3-A26B-50073BC8FB75} = {50DFDC8F-6028-4C89-9447-114BDD78E45F}
+		{34CC3EA7-2131-447B-8DA7-C2D5D8B1C828} = {8F3A7F53-BBB3-4A53-844A-DD0E933D1EC0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}

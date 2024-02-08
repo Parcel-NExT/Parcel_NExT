@@ -14,9 +14,9 @@ namespace Parcel.CoreEngine.UnitTests
         [Fact]
         public void ParametersSplitShouldConsiderIncludeQuotes()
         {
-            Assert.Equal(2, "hello world".SplitCommandLineArguments(true).Length);
-            Assert.Equal(2, "Command \"Argument 1\"".SplitCommandLineArguments(true).Length);
-            Assert.Equal("\"Argument 2\"", "Command \"Argument 1\" \"Argument 2\"".SplitCommandLineArguments(true).Last());
+            Assert.Equal(2, "hello world".SplitCommandLineArguments(includeQuotesInString: true).Length);
+            Assert.Equal(2, "Command \"Argument 1\"".SplitCommandLineArguments(includeQuotesInString: true).Length);
+            Assert.Equal("\"Argument 2\"", "Command \"Argument 1\" \"Argument 2\"".SplitCommandLineArguments(includeQuotesInString: true).Last());
         }
     }
 }
