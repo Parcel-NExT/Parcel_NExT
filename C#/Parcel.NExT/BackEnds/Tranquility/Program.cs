@@ -1,4 +1,6 @@
-﻿using WebSocketSharp.Server;
+﻿using System.Net.Sockets;
+using System.Net;
+using WebSocketSharp.Server;
 
 namespace Tranquility
 {
@@ -11,9 +13,15 @@ namespace Tranquility
     {
         static void Main(string[] args)
         {
-            if (args.Length == 0 || args.FirstOrDefault() == "--help")
+            if (args.Length == 0 || args.First() == "--help")
             {
                 PrintHelp();
+                return;
+            }
+            else if (args.First() == "--get_port")
+            {
+                int nextPort = FindNextFreeTcpPort();
+                Console.WriteLine(nextPort);
                 return;
             }
 
@@ -30,6 +38,7 @@ namespace Tranquility
             wssv.Stop();
         }
 
+        #region Routines
         private static void PrintHelp()
         {
             Console.WriteLine("""
@@ -39,6 +48,7 @@ namespace Tranquility
                     --help: Print this help message.
                     --address: The address to listen on. Default is ws://localhost:9915.
                     --default: Start tranquility using default options.
+                    --get_port: Print a free port number and exit.
                 """);
         }
 
@@ -78,5 +88,14 @@ namespace Tranquility
                 ServerAddress = serverAddress
             };
         }
+        public static int FindNextFreeTcpPort()
+        {
+            TcpListener listener = new(IPAddress.Loopback, 0);
+            listener.Start();
+            int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            listener.Stop();
+            return port;
+        }
+        #endregion
     }
 }
