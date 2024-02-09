@@ -11,8 +11,4 @@
     <ProjectReference Include="..\Parcel.NExT.Interpreter\Parcel.NExT.Interpreter.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Compilation\" />
-  </ItemGroup>
-
 </Project>
