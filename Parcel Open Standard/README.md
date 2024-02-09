@@ -54,6 +54,8 @@ Everything is a node - nodes are responsible for declarations, definitions, cons
 
 Nodes are just subroutines as in a typical procedural language; Nodes can be pure, in the sense that given certain inputs it always generates the same outputs. Nodes (even pure nodes) can have IO and all bunch of other procedural actions in it.
 
+A node is tagged as either functional or procedural. This is mostly to simplify architecture, and put the control to node designers.
+
 ### Node Content Types
 
 Node content types (or "type path") is a protocol and should satisfy the following purposes: (Notice that nodes are not always implemented as typical objects or functions, e.g. they can be specially handled by frontend/backend/engine)
@@ -357,7 +359,12 @@ Any functional frontend should NOT ONLY target node-graph drafting completeness 
 
 Unless explicitly running node by node or as interpretative mode, type check for all nodes should happen at compile time.
 
-## Parcel Native Style/Original Standard Libraries and Frameworks
+A backend can be either stated or not stated (as typical REST APIs). A WebSocket based backbend could potentially have states for each connection as a session - and should indeed utilize such capacity. In this case, all client (for any specific session) requests should be queued and reply messages should be handled in the order of original requests. This could greatly simplify both front-end and back end design, by avoiding concurrent node execution possibilities.
+
+## Parcel Native Style, Standard Libraries and Original Frameworks
+
+A node is parcel native if it's implemented as Parcel graph using nodes without external codes.  
+POF get things done at unprecedented high level intent and efficiency, with as few nodes as possible.
 
 It makes lots of assumptions that's how it takes minimal setup to get most complicated things done.
 It greatly streamlines getting common things done faster while providing room for customization.
@@ -391,6 +398,8 @@ This suite is collectively known as **Parcel.NExT**, including following notable
 * (Lightening Browser)
 * Frontend: Paper Space
 * Agent/Deskmate: Airi
+* Escort (Parcel, Parcel-cli): Standalone executioner and service runner, logger.
+* Tranquility (C#): WebSocket based stated full-feature C# backend.
 (Use Medalian and myth names)
 
 Additional frontends:
