@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="DependencySolver\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>
