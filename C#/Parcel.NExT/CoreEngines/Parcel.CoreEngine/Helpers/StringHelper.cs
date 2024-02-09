@@ -23,7 +23,7 @@ namespace Parcel.CoreEngine.Helpers
             }
         }
 
-        public static string[] SplitCommandLineArguments(this string inputString, char separator = ',', bool includeQuotesInString = false)
+        public static string[] SplitCommandLineArguments(this string inputString, char separator = ' ', bool includeQuotesInString = false)
         {
             List<string> parameters = [];
             StringBuilder current = new();
