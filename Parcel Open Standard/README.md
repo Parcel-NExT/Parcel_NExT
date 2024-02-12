@@ -309,6 +309,9 @@ Certain attribute names have special meanings:
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
+Attributes can have type hints as part of their names. This is mostly used by front-ends and backend/runtime depending on actual runtime may choose to ignore them. 
+All values or instances are either primitives or objects. And thsoe are the assumed basic types (names should reflect underlying implementation only): 1) Primitives: Number, String, Bool, 2) Objects: Object class is the base of all objects.
+
 All nodes will have some sort of `value`/`returnResult` attribute, which will map automatically to `payload:value` if not explicitly defined.
 
 Nodes boundaries are entirely string based! It is NOT possible (out of box) to pass objects directly through input/output/attribute connections! Everything must be referenced by primitive values or as strings (names). In the case of calling instance functions, assuming an attribute accessor contains a valid object, it will be passing the reference address of that object, then get dereferenced at the time of invocation.

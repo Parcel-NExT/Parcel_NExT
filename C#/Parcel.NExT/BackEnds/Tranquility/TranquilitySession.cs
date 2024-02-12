@@ -29,8 +29,16 @@ namespace Tranquility
                 case "GET":
                     switch (arguments[1])
                     {
-                        case "AvailableModules":
+                        case "AvailableModulesCount":
                             Send("12"); // Pesudo
+                            break;
+                        case "AvailableModules":
+                            Send("""
+                                System
+                                MathNet
+                                Roslyn
+                                PyTorch
+                                """); // Pesudo
                             break;
                         default:
                             Send("ERROR: Unknown endpoint.");
