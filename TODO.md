@@ -1,5 +1,7 @@
 # Parcel (General) Development Comprehensive TODO List
 
+<!-- Migrate this to ADO! -->
+
 This is the single-place reference for all TODO items for Parcel development.
 
 Also consult: 

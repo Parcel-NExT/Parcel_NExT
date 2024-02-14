@@ -305,7 +305,8 @@ Certain attribute names have special meanings:
 * `<Name`: Indicates an attribute should be exposed as input (in the front end).
 * `Name>`: Indicates an attribute should be exposed as output (in the front end).
 * `<Name>`: Indicates an attribute should be exposed as both input and output (in the front end).
-* `~Name`: Indicates a front-end only attribute (core engine will just ignore), useful for things like front-end native behaviors and styling attributes.
+* `%Name`: Indicates a front-end only attribute (core engine will just ignore), useful for things like front-end native behaviors and styling attributes.
+* `~`: Attribute level comments.
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
@@ -323,6 +324,8 @@ This section is the same as the Nodes section except they are older version of t
 Revisions are plain text copies of entire definition of nodes from an earlier revision. They are identified through node GUID.
 
 ### Payloads
+
+> Payloads are NOT merely cached results for display or optimization purpose - they can serve structural purposes!
 
 Payloads are execution results and may represent either arbitrary binary data or runtime cache and are stored in dedicated file sections. Payloads are NOT just for cache! PAYLOADS MAY BE USED TO STORE APPLICATION-CRITICAL DATA SO EVEN THOUGH IT'S NOT IN TEXT-BASED VERSION CONTROL (LIKE GIT AND PARCEL NATIVE REVISIONS SYSTEM), IT DOESN'T MEAN THEY ARE COMPLETELY UNNECESSARY. Notably, payloads will be used to store spreadsheet data and image data.
 They are "attachments" to node definitions. They can be either internal (in binary graph), or external binary file (in plain-text graph).
@@ -346,13 +349,21 @@ Payload data is either plain string or full binary data (we have to support bina
 
 ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 
-ALL PAYLOADS WILL HAVE A `value` section.
+ALL PAYLOADS WILL HAVE A `value` section (tentatively name those as: `result`, `preview`).
+
+Payloads serve critical functions like:
+
+* For front-end purpose: the `preview` section contains pointers for data for display purpose (could point to `value`)
+* For runtime purpose: the `value` section contains cached data for functional nodes for optimization purpose
+* For meta-programming purpose: the `instruct` section can contain instructs as post-processing behaviors for modifying graph specification
 
 ## Engine (Execution Behavior)
 
 In this section we document and specifies some expected engine behavior:
 
 * ALWAYS-EXECUTE (TAG) node in a graph are always executed before any other nodes in the order they are defined in the graph.
+
+(PENDING) During execution, a node can optionally have access to those global states besides the explicitly passed in values through their attributes: current graph/document reference handle, current graph/document variables. Those must be enabled with special toggles (tags), otherwise each node should generally have as isolated as possible runtime context. In general, nodes should not create any side effect except for the manipulating object instance itself represents.
 
 ## Parcel Front-Ends
 
@@ -363,6 +374,10 @@ Any functional frontend should NOT ONLY target node-graph drafting completeness 
 Unless explicitly running node by node or as interpretative mode, type check for all nodes should happen at compile time.
 
 A backend can be either stated or not stated (as typical REST APIs). A WebSocket based backbend could potentially have states for each connection as a session - and should indeed utilize such capacity. In this case, all client (for any specific session) requests should be queued and reply messages should be handled in the order of original requests. This could greatly simplify both front-end and back end design, by avoiding concurrent node execution possibilities.
+
+A naive implementation might treat all nodes as strongly typed objects, then runtime behavior of those nodes would simply be predefined methods on those objects, just like original Parcel prototype. For instance, all incoming node definitions will be serialized to proper runtime objects (parameters or attributes are just object properties), and execution of nodes cause results to be cached. Data are passed passed between objects as initialization parameters. This way there is no involvement of reflection or RTTI (runtime type information). However, this either requires explicitly hard code definition of each node type, which is not scalable nor extensible, or have some kind of runtime type generation or runtime object generation or runtime code execution mechanism, which essentially falls into the next implementation.
+
+A more advanced implementation is to generate codes for each node and execution of node graph is just execution of those generated codes. There are lots of ways to implement this scheme: we can generate object definitions for each node, or we can directly generate the final execution code for the entire graph without objectify each node.
 
 ## Parcel Native Style, Standard Libraries and Original Frameworks
 
@@ -531,6 +546,14 @@ The maintainence of current flow control state can be managed inside payload as 
 ### Parcel Native Instruction Set
 
 (See ADO Item)
+
+## FAQ
+
+### What is a node? Is node an object, a function, or a construct?
+
+> Everything is a node; Node is everything.
+
+A Parcel Node is just a specification; A front-end visual node can be either a primitive, a macro, a graph reference, a display feature, or a proper Parcel node. Broadly speaking, a node might also define a preset, define a type, or contain graph/document settings.
 
 ## References
 
