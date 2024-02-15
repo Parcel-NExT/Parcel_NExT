@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
     <ProjectReference Include="..\Parcel.NExT.Interpreter\Parcel.NExT.Interpreter.csproj" />
+    <ProjectReference Include="..\Parcel.NExT.Python\Parcel.NExT.Python.csproj" />
   </ItemGroup>
 
 </Project>

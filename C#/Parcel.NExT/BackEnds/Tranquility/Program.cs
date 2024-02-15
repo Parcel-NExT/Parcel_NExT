@@ -9,7 +9,7 @@ namespace Tranquility
         public string ServerAddress { get; set; }
     }
 
-    internal class Program
+    public static class Program
     {
         static void Main(string[] args)
         {
