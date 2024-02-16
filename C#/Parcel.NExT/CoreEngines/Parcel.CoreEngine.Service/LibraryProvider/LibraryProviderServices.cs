@@ -30,12 +30,21 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         /// <summary>
         /// Get all available public instance methods in this class that are meaningful for backend use.
         /// </summary>
-        /// <returns>Return excludes this method itself</returns>
+        /// <returns>Return excludes this method itself and some C# standard instance methods</returns>
         public Dictionary<string, MethodInfo> GetAvailableServices()
         {
-            return GetType()
+            var thisType = GetType();
+            return thisType
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                .Except([GetType().GetMethod(nameof(GetAvailableServices))])
+                .Except([
+                    // Exclude self
+                    thisType.GetMethod(nameof(GetAvailableServices)),
+                    // Exclude C# framework functions
+                    thisType.GetMethod(nameof(ToString)),
+                    thisType.GetMethod(nameof(GetType)),
+                    thisType.GetMethod(nameof(Equals)),
+                    thisType.GetMethod(nameof(GetHashCode)),
+                ])
                 .ToDictionary(m => m.Name, m => m);
         }
         #endregion
@@ -43,18 +52,23 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         #region General Queries
         public string[] GetAvailableModules()
         {
-            // TODO: This is just demo
             return [
+                // Loaded assemblies
+                .. LibraryServiceHelper.GetLoadedAssemblies().Select(a => a.FullName),
+                // TODO: This is just demo
                 "System",
                 "MathNet",
                 "Roslyn",
                 "PyTorch"
             ];
         }
-    public int GetAvailableModulesCount()
+        public int GetAvailableModulesCount()
         {
-            return 12; // TODO: This is just demo
+            return GetAvailableModules().Length;
         }
+        /// <summary>
+        /// Get all valid endpoints including types and (global/static) methods; Excluding type specific instance methods
+        /// </summary>
         /// <remarks>
         /// Potentially heavy
         /// </remarks>

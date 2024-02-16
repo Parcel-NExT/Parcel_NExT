@@ -307,7 +307,8 @@ Certain attribute names have special meanings:
 * `Name>`: Indicates an attribute should be exposed as output (in the front end).
 * `<Name>`: Indicates an attribute should be exposed as both input and output (in the front end).
 * `%Name`: Indicates a front-end only attribute (core engine will just ignore), useful for things like front-end native behaviors and styling attributes.
-* `~`: Attribute level comments.
+* `~`: Attribute level comments. All contents after this symbol is treated as comment.
+* `.` in attribute names denote nested attributes, e.g. attributes within a tab/subpanel.
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 

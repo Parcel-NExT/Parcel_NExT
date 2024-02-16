@@ -13,12 +13,18 @@ namespace Tranquility
         private LibraryProviderServices? _ServiceProvider;
         #endregion
 
+        #region Helpers
+        public string Identifier => $"Session {ID.Substring(0, 6)}";
+        public void LogInfo(string message)
+            => Logging.Info($"({Identifier}) {message}");
+        #endregion
+
         #region Framework Functions
         protected override void OnOpen()
         {
             base.OnOpen();
 
-            Logging.Info("New connection.");
+            LogInfo("New connection.");
 
             _ServiceProvider = new LibraryProviderServices();
             _AvailableEndPoints = _ServiceProvider.GetAvailableServices();
@@ -30,7 +36,7 @@ namespace Tranquility
         protected override void OnMessage(MessageEventArgs e)
         {
             string message = e.Data;
-            Logging.Info(message);
+            LogInfo(message);
             HandleMessage(message);
         }
         #endregion
@@ -39,14 +45,24 @@ namespace Tranquility
         private void HandleMessage(string message)
         {
             string[] arguments = message.SplitCommandLineArguments();
-            string method = arguments.First();
-            if (method == "Echo")
+            string methodName = arguments.First();
+            if (methodName == "Echo")
                 // Echo
                 Send(message);
-            else if (_AvailableEndPoints.ContainsKey(method))
+            else if (_AvailableEndPoints.ContainsKey(methodName))
             {
-                object? result = _AvailableEndPoints[method].Invoke(_ServiceProvider, new object[] { arguments.Skip(1).ToArray() });
-                Send(result.ToString());
+                var methodInfo = _AvailableEndPoints[methodName];
+                
+                object? result = null;
+                if (methodInfo.GetParameters().Length == 0)
+                    result = methodInfo.Invoke(_ServiceProvider, null);
+                else
+                    result = methodInfo.Invoke(_ServiceProvider, new object[] { arguments.Skip(1).ToArray() });
+
+                if (result != null)
+                    Send(result.ToString());
+                else
+                    Send(string.Empty);
             }
             else
                 Send("ERROR: Unknown endpoint.");
