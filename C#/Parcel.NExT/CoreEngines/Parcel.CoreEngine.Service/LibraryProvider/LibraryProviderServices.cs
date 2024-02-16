@@ -9,6 +9,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
     /// </summary>
     /// <remarks>
     /// Methods provides here are generally meaningful for direct backend use, i.e. the return types are typically well-defined serializable primitives, structures, etc.
+    /// Methods here do NOT need to return string-serialized values and can return any general type that's serializable (though in general should avoid complex types) - serialization is the responsibility of front-ends.
     /// </remarks>
     public class LibraryProviderServices
     {
