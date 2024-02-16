@@ -9,29 +9,29 @@ namespace Tranquility.UnitTests
         [Fact]
         public void BasicCommunicationTest()
         {
-            // TODO: Not working - messages are not exchanged
-            Assert.True(false);
-
-            var port = Program.FindNextFreeTcpPort();
-            var address = $"ws://localhost:{port}";
+            int port = Program.FindNextFreeTcpPort();
+            string address = $"ws://localhost:{port}";
+            string endpoint = "/Tranquility";
 
             WebSocketServer server = new(address);
-            server.AddWebSocketService<TranquilitySession>("/Tranquility");
+            server.AddWebSocketService<TranquilitySession>(endpoint);
             server.Start();
 
-            var client = new WebSocket(address);
+            int count = 0;
+            var client = new WebSocket($"{address}{endpoint}");
             client.OnMessage += (sender, e) =>
-                Assert.Equal(new LibraryProviderServices().GetAvailableRuntimes().Length, e.Data.Split('\n').Length);
+                count = e.Data.Split('\n').Length;
             var task = Task.Run(() =>
             {
                 client.Connect();
                 client.Send(nameof(LibraryProviderServices.GetAvailableRuntimes));
-            });
+            }).Wait(1000);
 
-            task.Wait(1000);
             Thread.Sleep(2000);
             client.Close();
             server.Stop();
+
+            Assert.Equal(new LibraryProviderServices().GetAvailableRuntimes().Length, count);
         }
     }
 }
