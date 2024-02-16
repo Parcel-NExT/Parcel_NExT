@@ -85,10 +85,7 @@ namespace Tranquility
                 if (arg.StartsWith("--"))
                     keyword = arg;
                 else if (keyword == null)
-                {
-                    Console.WriteLine($"Invalid argument format: {arg}");
-                    return null;
-                }
+                    throw new ArgumentException($"Invalid argument format: {arg}");
                 else
                 {
                     switch (keyword)

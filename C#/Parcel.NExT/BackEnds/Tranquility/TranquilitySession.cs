@@ -32,6 +32,7 @@ namespace Tranquility
         protected override void OnClose(CloseEventArgs e)
         {
             base.OnClose(e);
+            LogInfo("Session ended.");
         }
         protected override void OnMessage(MessageEventArgs e)
         {
@@ -72,7 +73,47 @@ namespace Tranquility
         #region Routines
         private string SerializeResult(object result)
         {
-            throw new NotImplementedException();
+            var primitiveTypes = new HashSet<Type>
+            {
+                typeof(bool),
+                typeof(byte),
+                typeof(sbyte),
+                typeof(char),
+                typeof(decimal),
+                typeof(double),
+                typeof(float),
+                typeof(int),
+                typeof(uint),
+                typeof(long),
+                typeof(ulong),
+                typeof(short),
+                typeof(ushort),
+                typeof(string)
+            };
+
+            // Explicitly handle and serialize everything in pre-defined format: this is the protocol/contract between Tranquility and clients that interface with it
+            var resultType = result.GetType();
+            // Simply serialize primitives
+            if (primitiveTypes.Contains(resultType))
+                return result.ToString()!;
+            // Serialize collections
+            else if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IEnumerable<>) 
+                && resultType.GetGenericArguments().Length == 1 && primitiveTypes.Contains(resultType.GetGenericArguments().Single()))
+            {
+                var elements = (IEnumerable<object>)result;
+                return string.Join("\n", elements.Select(r => r.ToString()));
+            }
+            else if (resultType.IsArray && primitiveTypes.Contains(resultType.GetElementType()!))
+            {
+                List<object> elements = [];
+                foreach (var e in (Array)result)
+                    elements.Add(e);
+
+                return string.Join("\n", elements.Select(r => r.ToString()));
+            }
+            // Serialize serializable Parcel-specific types
+            // TODO: Serialize Payload, and MetaInstructions
+            throw new NotImplementedException("Unrecognized object type.");
         }
         #endregion
     }
