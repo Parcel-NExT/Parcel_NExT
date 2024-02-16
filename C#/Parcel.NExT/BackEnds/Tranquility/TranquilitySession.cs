@@ -60,12 +60,19 @@ namespace Tranquility
                     result = methodInfo.Invoke(_ServiceProvider, new object[] { arguments.Skip(1).ToArray() });
 
                 if (result != null)
-                    Send(result.ToString());
+                    Send(SerializeResult(result));
                 else
                     Send(string.Empty);
             }
             else
                 Send("ERROR: Unknown endpoint.");
+        }
+        #endregion
+
+        #region Routines
+        private string SerializeResult(object result)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

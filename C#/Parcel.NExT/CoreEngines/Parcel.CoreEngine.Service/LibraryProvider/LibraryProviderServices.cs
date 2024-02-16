@@ -54,7 +54,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         {
             return [
                 // Loaded assemblies
-                .. LibraryServiceHelper.GetLoadedAssemblies().Select(a => a.FullName),
+                .. LibraryServiceHelper.GetLoadedUserFacingAssemblies().Select(a => a.FullName),
                 // TODO: This is just demo
                 "System",
                 "MathNet",
@@ -67,14 +67,26 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
             return GetAvailableModules().Length;
         }
         /// <summary>
-        /// Get all valid endpoints including types and (global/static) methods; Excluding type specific instance methods
+        /// Get all valid endpoints including types and (global/static) methods; Excluding type specific instance methods.
         /// </summary>
         /// <remarks>
         /// Potentially heavy
         /// </remarks>
         public string[] GetAllTargetPaths()
         {
-            throw new NotImplementedException();
+            // TODO: At the moment we are excluding system to avoid overhead, in the future we definitely want to expose all native runtime targets as well
+            // TODO: We also need to make sure behaviors of this function is consistent with many other module related queries above
+            // TODO: Might also want to expose public properties and members
+            Type[] exportedTypes = LibraryServiceHelper.GetLoadedUserFacingAssemblies()
+                .SelectMany(m => m.GetExportedTypes())
+                .ToArray();
+            MethodInfo[] exportedStaticMethods = exportedTypes
+                .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy))
+                .ToArray();
+            return [
+                .. exportedTypes.Select(t => t.FullName), 
+                .. exportedStaticMethods.Select(m => m.Name) // TODO: Remark: Notice we are exporting just the names of methods because we consider them "top-level"
+            ];
         }
         #endregion
     }
