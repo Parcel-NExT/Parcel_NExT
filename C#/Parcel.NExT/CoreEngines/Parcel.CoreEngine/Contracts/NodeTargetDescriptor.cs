@@ -59,6 +59,11 @@
         /// </summary>
         public string Module;
         /// <summary>
+        /// For types and C# functions, they all have an encapsulating class container;
+        /// For Python, methods can reside in files at global/module scope, so this would be null.
+        /// </summary>
+        public string? DeclaringType;
+        /// <summary>
         /// Type, method, property
         /// </summary>
         public string TargetName;

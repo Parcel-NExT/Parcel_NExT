@@ -1,5 +1,6 @@
 ﻿using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.LibraryProvider;
+using System.Collections;
 using System.Reflection;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -97,8 +98,8 @@ namespace Tranquility
             if (primitiveTypes.Contains(resultType))
                 return result.ToString()!;
             // Serialize collections
-            else if (resultType.IsGenericType && resultType.GetGenericTypeDefinition() == typeof(IEnumerable<>) 
-                && resultType.GetGenericArguments().Length == 1 && primitiveTypes.Contains(resultType.GetGenericArguments().Single()))
+            else if (resultType.IsGenericType && resultType.IsAssignableTo(typeof(IEnumerable))
+                && resultType.GetGenericArguments().Length == 1 && primitiveTypes.Contains(resultType.GenericTypeArguments.First()))
             {
                 var elements = (IEnumerable<object>)result;
                 return string.Join("\n", elements.Select(r => r.ToString()));
