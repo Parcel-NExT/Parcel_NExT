@@ -32,7 +32,18 @@ A proper parcel program is thus just the description in the form of this node gr
 
 A typical parcel implementation includes an editor, an execution engine, and a graph description.
 
-```mermaid (mindgraph?)
+```mermaid
+mindmap
+  root((Parcel Impl.))
+    Graph Editor
+        Frontend
+        Backend
+    Execution Engine
+        Runtimes
+    Graph Document
+        Binary
+        Text
+        MiniParcel
 ```
 
 Execution of the graph may be interpreted, or compiled, or sent to backend service for execution.  
@@ -467,25 +478,83 @@ Only specific subset of runtime and derived functionalities will be exposed thro
 
 This section documents a reference implementation, known as Parcel NExT, based on **latest version of .Net** (at the moment it's .Net 8). It includes complete suite of core engine, back end, front end, and domain specific libraries.
 
+1. Ama: C# first multi-runtime hybrid execution mode runtime and execution engine.
+2. Tranquility: WebSocket service provider.
+3. Gospel: Godot graph editor.
+
+```mermaid
+---
+title: The Parcel Platform Overview
+---
+flowchart TD
+    id0[The Parcel Platform]
+
+    id1[Parcel Open Standards]
+    id10[Reference Implementation]
+    id3[Other Potential Parcel Implementations]
+
+    id4[Main Specification]
+    id5[PVM]
+    id6[PIS]
+
+    id11[Parcel.V1]
+
+    id2[Parcel NExT Ecosystem]
+    id12[Core Components]
+    id13[Standalone Tools]
+    id14[Community Services]
+
+    id7[Ama]
+    id8[Tranquility]
+    id9[Gospel]
+
+    id15[Escort]
+
+    id16[Arcadia]
+
+    id0 --> id1
+    id0 --> id10
+    id0 --> id3
+
+    id1 --> id4
+    id1 --> id5
+    id1 --> id6
+
+    id10 --> id2
+    id3 --> id11
+    
+    id2 --> id12
+    id2 --> id13
+    id2 --> id14
+
+    id12 --> id7
+    id12 --> id8
+    id12 --> id9
+
+    id13 --> id15
+```
+
 ### Parcel.NExT
 
 <!-- Naming -->
 
 This suite is collectively known as **Parcel.NExT**, including following notable components:
-* Core Engine - xxx Engine (Pheonix) <!--Exparcelo (from Expresso and Parcel)-->
-* Backend: Merlin
-* xxx Editor (Fox)
+
+* Ama: Core Engine
+* Merlin: REST API Backend
+* Gospel: Desktop-first cross-platform graph editor
 * (Lightening Browser)
-* Frontend: Paper Space
-* Agent/Deskmate: Airi
+* Paper Space: Web-first Frontend (NodeJS)
+* Airi: Arcadia Agent/General front-end deskmate
 * Escort (Parcel, Parcel-cli): Standalone executioner and service runner, logger.
 * Tranquility (C#): WebSocket based stated full-feature C# backend.
-(Use Medalian and myth names)
+* Flux: Standalone package manager program. (Might also provide Forge: standalone packager or uploader to Arcanum)
+* Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
+<!-- Use Medalian and myth names -->
 
-Additional frontends:
+Additional (experimental) Front-ends:
 
 * Relic
-* Gospel
 
 Experimental services:
 
