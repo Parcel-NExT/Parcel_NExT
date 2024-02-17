@@ -1,4 +1,5 @@
-﻿using Parcel.NExT.Python;
+﻿using Parcel.CoreEngine.Contracts;
+using Parcel.NExT.Python;
 using System.Reflection;
 
 namespace Parcel.CoreEngine.Service.LibraryProvider
@@ -55,7 +56,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         {
             return [
                 // Loaded assemblies
-                .. LibraryServiceHelper.GetLoadedUserFacingAssemblies().Select(a => a.FullName),
+                .. LibraryServiceHelper.GetLoadedUserFacingAssemblies().Select(a => a.GetName().Name),
                 // TODO: This is just demo
                 "System",
                 "MathNet",
@@ -69,6 +70,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         }
         /// <summary>
         /// Get all valid endpoints including types and (global/static) methods; Excluding type specific instance methods.
+        /// TODO: Provide a method to get full NodeTargetDescriptors instead of just names
         /// </summary>
         /// <remarks>
         /// Potentially heavy
@@ -85,8 +87,10 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                 .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy))
                 .ToArray();
             return [
-                .. exportedTypes.Select(t => t.FullName), 
-                .. exportedStaticMethods.Select(m => m.Name) // TODO: Remark: Notice we are exporting just the names of methods because we consider them "top-level"
+                // TODO: Standardize path name and make sure identifiable
+                .. exportedTypes.Select(t => t.Name), 
+                .. exportedStaticMethods.Select(m => m.Name), // TODO: Remark: Notice we are exporting just the names of methods because we consider them "top-level"
+                .. SystemNodes.ReservedNodeTargetNames
             ];
         }
         #endregion

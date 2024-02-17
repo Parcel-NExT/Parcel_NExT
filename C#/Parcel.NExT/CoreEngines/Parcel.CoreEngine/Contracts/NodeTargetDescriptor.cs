@@ -93,5 +93,15 @@
         public bool IsNodeTypeDefinition;
         #endregion
 
+        #region Addressing
+        /// <summary>
+        /// Globally unique single-string identifier for the target; A combination (the "Protocol") of values above.
+        /// </summary>
+        public string FullTargetPath;
+        /// <summary>
+        /// Globally unique shortest single-string identifier for the target.
+        /// </summary>
+        public string ShortestTargetPath => UniqueParcelName ?? FullTargetPath;
+        #endregion
     }
 }
