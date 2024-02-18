@@ -1,4 +1,5 @@
 ﻿using Parcel.CoreEngine.Contracts;
+using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.CoreEngine.Service.Types;
 using Parcel.NExT.Python;
 using System.Reflection;
@@ -80,6 +81,35 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         #endregion
 
         #region General Queries
+        /// <summary>
+        /// Get plain list of names of attributes available on a target
+        /// </summary>
+        public string[]? GetTargetAttributes(string targetPath)
+        {
+            // TODO: Consult and merge implementation of GraphRuntime.ExecuteNode
+            GraphRuntime.NodeTargetPathProtocolStructure target = GraphRuntime.ParseNodeTargets(targetPath);
+            TargetEndPoint? endpoint = ResolveTarget(target);
+            if (endpoint == null)
+                return null;
+            switch (endpoint.Nature)
+            {
+                case EndPointNature.Type:
+                    IEnumerable<string> members = endpoint.Type!.GetFields(BindingFlags.Public | BindingFlags.Instance).Select(f => $"{f.Name}:{f.FieldType.Name}");
+                    IEnumerable<string> properties = endpoint.Type!.GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(p => $"{p.Name}.{p.PropertyType.Name}");
+                    return [.. members, .. properties];
+                case EndPointNature.StaticMethod:
+                    IEnumerable<string> arguments = endpoint.Method!.GetParameters().Select(p => $"{p.Name}:{p.ParameterType.Name}");
+                    string returnAttribute = $"result:{endpoint.Method!.ReturnType.Name}";
+                    return [.. arguments, returnAttribute];
+                    break;
+                case EndPointNature.InstanceMethod:
+                    throw new NotImplementedException();
+                case EndPointNature.System:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentException();
+            }
+        }
         public string[] GetAvailableModules()
         {
             return [
@@ -142,14 +172,29 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
             Dictionary<string, TargetEndPoint> endpoints = [];
             // TODO: Standardize path name and make sure identifiable
             foreach (Type type in exportedTypes)
-                endpoints.Add(type.Name, new TargetEndPoint(EndPointNature.Type, type.Name, type, null));
+                // TODO: Remark-cz: This is temporary indexing - due to various reasons there are types with same names and this will not work perfectly; We need better identification methods
+                if (!endpoints.ContainsKey(type.Name))
+                    endpoints.Add(type.Name, new TargetEndPoint(EndPointNature.Type, type.Name, type, null));
             foreach (MethodInfo method in exportedStaticMethods)
-                // TODO: Remark: Notice we are exporting just the names of methods because we consider them "top-level"
-                endpoints.Add(method.Name, new TargetEndPoint(EndPointNature.StaticMethod, method.Name, method.DeclaringType, method));
+            {
+                string identifier = $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.Name))})";
+                // TODO: Similar to above, we need better identification names
+                if (!endpoints.ContainsKey(identifier))
+                    // TODO: Remark: Notice we are exporting just the names of methods because we consider them "top-level"
+                    endpoints.Add(identifier, new TargetEndPoint(EndPointNature.StaticMethod, method.Name, method.DeclaringType, method));
+            }
             foreach (var name in SystemNodes.ReservedNodeTargetNames)
                 endpoints.Add(name, new TargetEndPoint(EndPointNature.System, name, null, null));
 
             return endpoints;
+        }
+        /// <summary>
+        /// Given a target protocol, find the matching endpoint to use.
+        /// </summary>
+        private TargetEndPoint? ResolveTarget(GraphRuntime.NodeTargetPathProtocolStructure target)
+        {
+            // TODO: Remark-cz: At the moment we are using simple names as match, more robust ways of doing this might be desirable
+            return TargetEndPoints.TryGetValue(target.TargetPath, out TargetEndPoint? value) ? value : null;
         }
         #endregion
     }

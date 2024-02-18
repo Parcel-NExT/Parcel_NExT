@@ -308,7 +308,7 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
 }
 ```
 
-Node attribute names are camelCased! (Because that matches more directly to JSON representation, C# function parameter name, and feels more scripting like)
+Node attribute names are camelCased! (Because that matches more directly to JSON representation, C# function parameter name, and feels more scripting like) Notice all attribute values are strictly strings! This applies even if the attributes are serialized as JSON.
 
 Certain attribute names have special meanings:
 

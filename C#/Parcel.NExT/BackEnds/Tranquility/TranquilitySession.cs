@@ -78,6 +78,9 @@ namespace Tranquility
         #region Routines
         private string SerializeResult(object result)
         {
+            if (result == null)
+                return "ERROR: Result is null.";
+
             var primitiveTypes = new HashSet<Type>
             {
                 typeof(bool),
