@@ -1,7 +1,11 @@
-﻿using Parcel.CoreEngine.Helpers;
+﻿using Humanizer;
+using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.LibraryProvider;
+using Parcel.CoreEngine.Service.Types;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -112,9 +116,59 @@ namespace Tranquility
 
                 return string.Join("\n", elements.Select(r => r.ToString()));
             }
+            // Serialize plain string dictionaries
+            else if (resultType == typeof(Dictionary<string, string[]>))
+                return SerializeFlatStringArrayDictionaryStructure((Dictionary<string, string[]>)result);
+            else if (resultType == typeof(Dictionary<string, string>))
+                return SerializeFlatStringDictionaryStructure((Dictionary<string, string>)result);
+            else if (resultType == typeof(Dictionary<string, SimplexString>))
+                return SerializeFlatSimplexStringDictionaryStructure((Dictionary<string, SimplexString>)result);
+
             // Serialize serializable Parcel-specific types
             // TODO: Serialize Payload, and MetaInstructions
             throw new NotImplementedException("Unrecognized object type.");
+        }
+        private static string SerializeFlatStringArrayDictionaryStructure(Dictionary<string, string[]> dictionary)
+        {
+            // Remark: We intentionally don't use JSON libraries for such simple structure to guarantee predictable behaviors, keep code clean and dependancy free
+            // Remark: Notice proper JSON convention uses camelCase for keys
+            StringBuilder jsonBuilder = new();
+            jsonBuilder.Append("{");
+            foreach ((string Key, string[] Values) in dictionary)
+            {
+                jsonBuilder.Append($"\n  \"{Key.Camelize()}\": [");
+                foreach (var value in Values)
+                    jsonBuilder.Append($"   \"{value}\",");
+                jsonBuilder.Length--; // Remove trailing comma
+                jsonBuilder.Append($"],");
+            }
+            jsonBuilder.Length--; // Remove trailing comma
+            jsonBuilder.Append("\n}\n");
+            return jsonBuilder.ToString().TrimEnd();
+        }
+        private static string SerializeFlatStringDictionaryStructure(Dictionary<string, string> dictionary)
+        {
+            // Remark: We intentionally don't use JSON libraries for such simple structure to guarantee predictable behaviors, keep code clean and dependancy free
+            // Remark: Notice proper JSON convention uses camelCase for keys
+            StringBuilder jsonBuilder = new();
+            jsonBuilder.Append("{");
+            foreach ((string Key, string Value) in dictionary)
+                jsonBuilder.Append($"\n  \"{Key.Camelize()}\": \"{Value}\",");
+            jsonBuilder.Length--; // Remove trailing comma
+            jsonBuilder.Append("\n}\n");
+            return jsonBuilder.ToString().TrimEnd();
+        }
+        private static string SerializeFlatSimplexStringDictionaryStructure(Dictionary<string, SimplexString> dictionary)
+        {
+            // Remark: We intentionally don't use JSON libraries for such simple structure to guarantee predictable behaviors, keep code clean and dependancy free
+            // Remark: Notice proper JSON convention uses camelCase for keys
+            StringBuilder jsonBuilder = new();
+            jsonBuilder.Append("{");
+            foreach ((string Key, SimplexString Value) in dictionary)
+                jsonBuilder.Append($"\n  \"{Key.Camelize()}\": {Value.ToJSONString()},");
+            jsonBuilder.Length--; // Remove trailing comma
+            jsonBuilder.Append("\n}\n");
+            return jsonBuilder.ToString().TrimEnd();
         }
         #endregion
     }

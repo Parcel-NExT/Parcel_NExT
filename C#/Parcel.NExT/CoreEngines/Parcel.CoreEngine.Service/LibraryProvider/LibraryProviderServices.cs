@@ -1,4 +1,5 @@
 ﻿using Parcel.CoreEngine.Contracts;
+using Parcel.CoreEngine.Service.Types;
 using Parcel.NExT.Python;
 using System.Reflection;
 
@@ -24,7 +25,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
     /// </summary>
     /// <remarks>
     /// Methods provides here are generally meaningful for direct backend use, i.e. the return types are typically well-defined serializable primitives, structures, etc.
-    /// Methods here do NOT need to return string-serialized values and can return any general type that's serializable (though in general should avoid complex types) - serialization is the responsibility of front-ends.
+    /// Methods here do NOT need to return string-serialized values and can return any general type that's serializable (though in general should avoid complex types) - serialization is the responsibility of back-ends.
     /// </remarks>
     public class LibraryProviderServices
     {
@@ -106,12 +107,21 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         {
             return [.. TargetEndPoints.Keys];
         }
-        public string[] GetModuleMembers(string moduleName)
+        public Dictionary<string, SimplexString> GetModuleMembers(string moduleName)
         {
             Assembly assembly = Assembly.LoadFrom(moduleName);
-            Type[] types = assembly.GetExportedTypes();
-            MethodInfo[] methods = types.SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)).ToArray();
-            return [.. types.Select(t => t.Name)];
+            Type[] types = assembly.GetExportedTypes()
+                .Where(t => t.Name != "Object").ToArray();
+            MethodInfo[] methods = types.SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy))
+                // Every static class seems to export the methods exposed by System.Object, i.e. Object.Equal, Object.ReferenceEquals, etc. and we don't want that.
+                .Where(m => m.DeclaringType != typeof(object))
+                .ToArray();
+
+            Dictionary<string, SimplexString> members = [];
+            members.Add("Methods", new(methods.Select(m => $"{m.DeclaringType!.Name}.{m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.Name))})").OrderBy(n => n).ToArray()));
+            members.Add("Types", new(types.Select(t => t.Name).OrderBy(n => n).ToArray()));
+            members.Add("Module", new(moduleName));
+            return members;
         }
         #endregion
 
