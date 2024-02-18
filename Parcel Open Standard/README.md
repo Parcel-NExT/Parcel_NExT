@@ -114,7 +114,7 @@ Attribute values are string representations ALWAYS and should follow the followi
 
 Attribute accessor is a descriptor that can reference either (in terms of underlying construct) parameters or return values, or (in terms of PVM) node attributes or payloads. It's entirely string based. If an accessor contains an object (rather than string-serialized primitive), it will be passing the reference address of that object, then get dereferenced at the time of invocation.
 
-## File Structure
+## File Structure -> Parcel Document Specification (PDS)
 
 Parcel features a maintenance-free file format: (Note that nodes must be serialized BEFORE graphs section)
 
@@ -320,11 +320,24 @@ Certain attribute names have special meanings:
 * `%Name`: Indicates a front-end only attribute (core engine will just ignore), useful for things like front-end native behaviors and styling attributes.
 * `~`: Attribute level comments. All contents after this symbol is treated as comment.
 * `.` in attribute names denote nested attributes, e.g. attributes within a tab/subpanel.
+* `:`: Optional restriction on attribute type
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
 Attributes can have type hints as part of their names. This is mostly used by front-ends and backend/runtime depending on actual runtime may choose to ignore them. 
-All values or instances are either primitives or objects. And thsoe are the assumed basic types (names should reflect underlying implementation only): 1) Primitives: Number, String, Bool, 2) Objects: Object class is the base of all objects.
+All values or instances are either primitives or objects. And those are the assumed basic types (names should reflect underlying implementation only): 1) Primitives: Number, String, Bool, 2) Objects: Object class is the base of all objects.
+
+Attribute behaviors:
+
+|Format|Function|Runtime Behavior|
+|-|-|-|
+|`Attribute:Type Hint`|Provide type hint on attribute.|Runtime should completely ignore type hint and treat attribute name as key cue.|
+|`Attribute ~Comments`|Provide comments on attribute.|Runtime should strip the comments.|
+|`Section.Attribute`|Provide sectioning of attributes.|Runtime should ignore the sections and treat attribute name as key cue - except if the target node expects an `<MethodName>Options` struct, in which case such notation means addressing inside the structure (in a hierarchical fashion).|
+|`%`|Front-end attribute|Runtime should ignore such attributes.|
+|`$1, $2, $3...`|Positional attributes|Runtime pass those attributes directly in the order to target node.|
+|`#`||PENDING|
+|`<AttributeName>`|Front-end denoted input/output pins.|Runtime should strip the `<>` symbol and treat attribute name as key cue.|
 
 All nodes will have some sort of `value`/`returnResult` attribute, which will map automatically to `payload:value` if not explicitly defined.
 
