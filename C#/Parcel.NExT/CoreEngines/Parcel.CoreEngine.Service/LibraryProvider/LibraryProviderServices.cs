@@ -106,6 +106,13 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         {
             return [.. TargetEndPoints.Keys];
         }
+        public string[] GetModuleMembers(string moduleName)
+        {
+            Assembly assembly = Assembly.LoadFrom(moduleName);
+            Type[] types = assembly.GetExportedTypes();
+            MethodInfo[] methods = types.SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)).ToArray();
+            return [.. types.Select(t => t.Name)];
+        }
         #endregion
 
         #region Routines

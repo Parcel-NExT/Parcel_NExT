@@ -59,7 +59,7 @@ namespace Tranquility
                 if (methodInfo.GetParameters().Length == 0)
                     result = methodInfo.Invoke(_ServiceProvider, null);
                 else
-                    result = methodInfo.Invoke(_ServiceProvider, new object[] { arguments.Skip(1).ToArray() });
+                    result = methodInfo.Invoke(_ServiceProvider, arguments.Skip(1).ToArray());
 
                 if (result != null)
                     Send(SerializeResult(result));

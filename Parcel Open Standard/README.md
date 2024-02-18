@@ -550,6 +550,7 @@ This suite is collectively known as **Parcel.NExT**, including following notable
 * Tranquility (C#): WebSocket based stated full-feature C# backend.
 * Flux: Standalone package manager program. (Might also provide Forge: standalone packager or uploader to Arcanum)
 * Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
+* Catalyst: Gospel based cloud processing platform.
 <!-- Use Medalian and myth names -->
 
 Additional (experimental) Front-ends:
