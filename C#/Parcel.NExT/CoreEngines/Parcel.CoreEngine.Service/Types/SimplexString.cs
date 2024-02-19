@@ -7,25 +7,23 @@ namespace Parcel.CoreEngine.Service.Types
     public sealed class SimplexString
     {
         #region Construction
-        public SimplexString(params string[] initialization)
+        public SimplexString(bool forceArray, params string[] initialization)
         {
-            ItemCount = initialization.Length;
-            if (ItemCount == 1)
+            if (initialization.Length == 1 && !forceArray)
                 SingleValue = initialization.Single();
             else ArrayValues = initialization;
         }
         #endregion
 
         #region Properties
-        public int ItemCount { get; }
         public string[]? ArrayValues { get; }
         public string? SingleValue { get; }
         #endregion
 
         #region String Conversion
-        public string ToJSONString() => ItemCount == 1
-            ? $"{Escape(SingleValue!)}"
-            : $"[{string.Join(", ", ArrayValues!.Select(Escape))}]";
+        public string ToJSONString() => ArrayValues != null
+            ? $"[{string.Join(", ", ArrayValues!.Select(Escape))}]"
+            : $"{Escape(SingleValue!)}";
         public override string ToString() => ToJSONString();
         #endregion
 

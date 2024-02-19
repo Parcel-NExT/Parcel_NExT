@@ -154,9 +154,9 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                 .ToArray();
 
             Dictionary<string, SimplexString> members = [];
-            members.Add("Methods", new(methods.Select(m => $"{m.DeclaringType!.Name}.{m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.Name))})").OrderBy(n => n).ToArray()));
-            members.Add("Types", new(parcelExportTypes.Select(t => t.Name).OrderBy(n => n).ToArray()));
-            members.Add("Module", new(moduleName));
+            members.Add("Methods", new(false, methods.Select(m => $"{m.DeclaringType!.Name}.{m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.Name))})").OrderBy(n => n).ToArray()));
+            members.Add("Types", new(true, parcelExportTypes.Select(t => t.Name).OrderBy(n => n).ToArray()));
+            members.Add("Module", new(false, moduleName));
             return members;
         }
         #endregion
