@@ -184,7 +184,6 @@ namespace Parcel.NExT.Interpreter.Scripting
             // Fetch all allowed system types
             Assembly[] allDefaultAssemblies = AppDomain.CurrentDomain.GetAssemblies();
             IEnumerable<IGrouping<string, Type>> exportedTypes = allDefaultAssemblies.SelectMany(a => a.ExportedTypes)
-                .Where(t => !t.IsGenericType || t.Name.Contains('`')) // Throw away non-standard naming generic types like Enumerator because it causes problems - there are too many of them and their format is weird!
                 .GroupBy(t => t.GetFormattedName()); // Surprisingly, there are lots of types with the same name
             Dictionary<string, Type[]> allDefaultTypes = exportedTypes
                 .ToDictionary(g => g.Key, g => g.ToArray()); // Remark-cz: Notice we can only handle "formatted" names
