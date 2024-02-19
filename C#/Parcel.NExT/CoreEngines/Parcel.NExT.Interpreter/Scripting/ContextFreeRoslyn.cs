@@ -85,7 +85,7 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// Expects a return of target type from code snippet.
         /// </summary>
         /// <remarks>
-        /// This function is similar to <seealso cref="EvaluateLocalLogic(Dictionary{string, object}, string)"/> but serves different purpose.
+        /// This function is similar to <seealso cref="EvaluateLocalSnippet(Dictionary{string, object}, string)"/> but serves different purpose.
         /// </remarks>
         public static TType EvaluateLocalReturn<TType>(string codeFragment, Dictionary<string, object>? globalVariables = null)
         {
@@ -121,7 +121,7 @@ namespace Parcel.NExT.Interpreter.Scripting
                 return (TType)state.GetVariable(resultVariableName).Value;
             }
         }
-        public static void EvaluateLocalLogic<TType>(TType hostObject, string codeFragment)
+        public static void EvaluateLocalSnippet<TType>(TType hostObject, string codeFragment)
         {
             string functionInstanceName = GetDistinctFunctionInstanceName();
             string code = $$"""
@@ -144,7 +144,7 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// <remarks>
         /// Automatically exposes namespace of referenced objects from initial values.
         /// </remarks>
-        public static Dictionary<string, object> EvaluateLocalLogic(Dictionary<string, object> initial, string codeFragment)
+        public static Dictionary<string, object> EvaluateLocalSnippet(Dictionary<string, object> initial, string codeFragment)
         {
             ScriptOptions options = ScriptOptions.Default;
 

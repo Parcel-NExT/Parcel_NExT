@@ -43,7 +43,7 @@ namespace Parcel.NExT.Interpreter.UnitTests
                 { "Compound", new Vector3(1, 2, 3) },
                 { "Instance", new string[]{ "Hello", "World" } }
             };
-            Dictionary<string, object> result = ContextFreeRoslyn.EvaluateLocalLogic(initials, """
+            Dictionary<string, object> result = ContextFreeRoslyn.EvaluateLocalSnippet(initials, """
             Scalar = 7;
             Compound = new Vector3(2, 4, 5);
             Instance[0] = "Hola";
