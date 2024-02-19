@@ -143,17 +143,19 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
             Assembly assembly = Assembly.LoadFrom(moduleName);
             // TODO: Might want to remove types that are *Options aka. define function options (maybe they can inherit from specific class? Or we just use naming convention as filter: <MethodName>Options struct).
             Type[] types = assembly.GetExportedTypes()
-                .Where(t => t.IsAbstract) // Don't want abstract types (including interfaces)
-                .Where(t => t.IsAbstract && t.IsSealed) // Don't want static types
                 .Where(t => t.Name != "Object").ToArray();
             MethodInfo[] methods = types.SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy))
                 // Every static class seems to export the methods exposed by System.Object, i.e. Object.Equal, Object.ReferenceEquals, etc. and we don't want that.
                 .Where(m => m.DeclaringType != typeof(object))
                 .ToArray();
+            Type[] parcelExportTypes = types
+                .Where(t => !t.IsAbstract) // Don't want abstract types (including interfaces)
+                .Where(t => !(t.IsAbstract && t.IsSealed)) // Don't want static types
+                .ToArray();
 
             Dictionary<string, SimplexString> members = [];
             members.Add("Methods", new(methods.Select(m => $"{m.DeclaringType!.Name}.{m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.Name))})").OrderBy(n => n).ToArray()));
-            members.Add("Types", new(types.Select(t => t.Name).OrderBy(n => n).ToArray()));
+            members.Add("Types", new(parcelExportTypes.Select(t => t.Name).OrderBy(n => n).ToArray()));
             members.Add("Module", new(moduleName));
             return members;
         }
