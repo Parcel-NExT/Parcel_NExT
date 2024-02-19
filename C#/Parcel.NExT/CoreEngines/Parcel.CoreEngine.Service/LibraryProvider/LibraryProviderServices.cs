@@ -28,7 +28,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
     /// Methods provides here are generally meaningful for direct backend use, i.e. the return types are typically well-defined serializable primitives, structures, etc.
     /// Methods here do NOT need to return string-serialized values and can return any general type that's serializable (though in general should avoid complex types) - serialization is the responsibility of back-ends.
     /// </remarks>
-    public class LibraryProviderServices
+    public class LibraryProviderServices: ServiceProvider
     {
         #region Properties
         private Dictionary<string, TargetEndPoint>? _targetEndPoints;
@@ -62,7 +62,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         /// Get all available public instance methods in this class that are meaningful for backend use.
         /// </summary>
         /// <returns>Return excludes this method itself and some C# standard instance methods</returns>
-        public Dictionary<string, MethodInfo> GetAvailableServices()
+        public override Dictionary<string, MethodInfo> GetAvailableServices()
         {
             var thisType = GetType();
             return thisType
