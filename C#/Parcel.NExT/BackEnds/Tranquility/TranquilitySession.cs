@@ -59,6 +59,23 @@ namespace Tranquility
         #region Message Handling
         private void HandleMessage(string message)
         {
+            const string jsonToken = "JSON\n";
+
+            // Tranquility handles to kinds of messages: single-line CLI style, and multi-line JSON style
+            if (message.StartsWith(jsonToken))
+                HandleMessageJSONStyle(message.Substring(jsonToken.Length));
+            else
+                HandleMessageCLIStyle(message);
+        }
+        #endregion
+
+        #region Routines
+        private void HandleMessageJSONStyle(string jsonMessage)
+        {
+            throw new NotImplementedException();
+        }
+        private void HandleMessageCLIStyle(string message)
+        {
             string[] arguments = message.SplitCommandLineArguments();
             string methodName = arguments.First();
             if (methodName == "Echo")
@@ -83,9 +100,6 @@ namespace Tranquility
             else
                 Send("ERROR: Unknown endpoint.");
         }
-        #endregion
-
-        #region Routines
         private string SerializeResult(object result)
         {
             if (result == null)
