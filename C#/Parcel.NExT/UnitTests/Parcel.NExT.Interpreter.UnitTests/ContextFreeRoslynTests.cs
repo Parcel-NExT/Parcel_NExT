@@ -75,5 +75,19 @@ namespace Parcel.NExT.Interpreter.UnitTests
                 Assert.Equal(5, result);
             }
         }
+        [Fact]
+        public void CodeGenShouldBeAbleToHandleAutomaticImportingWellKnownSystemTypes()
+        {
+            try
+            {
+                ContextFreeRoslyn.LowLevelRunLocalNoReturn("""
+                    Vector3 myVector = new Vector3(1, 2, 3);
+                    """, autoImport: true);
+            }
+            catch (Exception e)
+            {
+                Assert.Fail("Expected no exception, but got: " + e.Message);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Parcel.NExT.Interpreter.Helpers;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -25,11 +26,17 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// <remarks>
         /// Do not use this if you do you need ScriptState; Use higher level functions instead.
         /// </remarks>
-        public static ScriptState<object> LowLevelRunLocalNoReturn(string codeFragment, ScriptOptions? options = null, object? contextObject = null)
+        public static ScriptState<object> LowLevelRunLocalNoReturn(string codeFragment, ScriptOptions? options = null, object? contextObject = null, bool autoImport = false)
         {
             options ??= ScriptOptions.Default;
+
+            string namespaceImports = string.Empty;
+            if (autoImport)
+                namespaceImports = TryFindAutomaticImports(codeFragment, null, out _);
+
             string functionInstanceName = GetDistinctFunctionInstanceName();
             return CSharpScript.RunAsync($$"""
+                {{namespaceImports}}
                 // Define a local function
                 public static void {{functionInstanceName}}()
                 {
@@ -37,7 +44,7 @@ namespace Parcel.NExT.Interpreter.Scripting
                 }
                 // Call the function
                 {{functionInstanceName}}();
-                """, options, contextObject).Result;
+                """.Trim(), options, contextObject).Result;
         }
         /// <summary>
         /// Runs code in a local function so user code cannot import namespaces or define custom types etc.;
@@ -162,6 +169,50 @@ namespace Parcel.NExT.Interpreter.Scripting
         public static void Map<TType>(IEnumerable<TType> enumeration, string codeFragment)
         {
 
+        }
+        #endregion
+
+        #region Code Analysis
+        /// <summary>
+        /// Figure out all the types used in the code and try to generate automatic import statements for them.
+        /// </summary>
+        /// <remarks>
+        /// Current implementation of this is slow, so we should use it with care.
+        /// </remarks>
+        public static string TryFindAutomaticImports(string codeFragment, IEnumerable<Type>? knownTypes, out Type[] importTypes)
+        {
+            // Fetch all allowed system types
+            Assembly[] allDefaultAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            IEnumerable<IGrouping<string, Type>> exportedTypes = allDefaultAssemblies.SelectMany(a => a.ExportedTypes)
+                .Where(t => !t.IsGenericType || t.Name.Contains('`')) // Throw away non-standard naming generic types like Enumerator because it causes problems - there are too many of them and their format is weird!
+                .GroupBy(t => t.GetFormattedName()); // Surprisingly, there are lots of types with the same name
+            Dictionary<string, Type[]> allDefaultTypes = exportedTypes
+                .ToDictionary(g => g.Key, g => g.ToArray()); // Remark-cz: Notice we can only handle "formatted" names
+
+            // Let it compile and see what types we need to deal with
+            string importStatement = knownTypes != null ? GetTypesNamespaceImportStatements(knownTypes) : string.Empty;
+            List<Type> neededTypes = new();
+            while (true) // Remark-cz: This might loop inefficient - although pragmatically speaking, this is what's going to happen if a human were to deal with such situation himself; So even though this is not optimal, this is at least sufficiently automated.
+            {
+                try
+                {
+                    CSharpScript.RunAsync(importStatement + Environment.NewLine + codeFragment);
+                }
+                catch (CompilationErrorException e)
+                {
+                    Match match = Regex.Match(e.Message, "The type or namespace name '(.*?)' could not be found");
+                    string name = match.Groups[1].Value;
+                    if (e.Message.Contains("CS0246") && match.Success && allDefaultTypes.ContainsKey(name))
+                    {
+                        neededTypes.Add(allDefaultTypes[name].First() /*Just pick the first we can find*/);
+                        importStatement = GetTypesNamespaceImportStatements(neededTypes);
+                    }
+                }
+                break;
+            }
+
+            importTypes = neededTypes.ToArray();
+            return importStatement;
         }
         #endregion
 
