@@ -82,7 +82,9 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
 
         #region General Queries
         /// <summary>
-        /// Get plain list of names of attributes available on a target
+        /// Get plain list of names of attributes available on a target;
+        /// This will try its best to conform to POS and contextualize attributes using attribute name syntax, e.g. `<` for input and `>` for outputs;
+        /// Notice per convention, node attributes follow camelCase - but this will be implemented on the backend, not core service here.
         /// </summary>
         public string[]? GetTargetAttributes(string targetPath)
         {
@@ -98,10 +100,9 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                     IEnumerable<string> properties = endpoint.Type!.GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(p => $"{p.Name}.{p.PropertyType.Name}");
                     return [.. members, .. properties];
                 case EndPointNature.StaticMethod:
-                    IEnumerable<string> arguments = endpoint.Method!.GetParameters().Select(p => $"{p.Name}:{p.ParameterType.Name}");
-                    string returnAttribute = $"result:{endpoint.Method!.ReturnType.Name}";
+                    IEnumerable<string> arguments = endpoint.Method!.GetParameters().Select(p => $"<{p.Name}:{p.ParameterType.Name}");
+                    string returnAttribute = $"result>:{endpoint.Method!.ReturnType.Name}";
                     return [.. arguments, returnAttribute];
-                    break;
                 case EndPointNature.InstanceMethod:
                     throw new NotImplementedException();
                 case EndPointNature.System:

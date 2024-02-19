@@ -324,7 +324,7 @@ Certain attribute names have special meanings:
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
-Attributes can have type hints as part of their names. This is mostly used by front-ends and backend/runtime depending on actual runtime may choose to ignore them. 
+Attributes can have type hints as part of their names. This is mostly used by front-ends and backend/runtime depending on actual runtime may choose to ignore them. Attribute name MUST be unique irrelevant whether they are used as inputs or outputs (this should be obvious since input/output is indicated through name syntax, not as separate new attributes).
 All values or instances are either primitives or objects. And those are the assumed basic types (names should reflect underlying implementation only): 1) Primitives: Number, String, Bool, 2) Objects: Object class is the base of all objects.
 
 Attribute behaviors:
