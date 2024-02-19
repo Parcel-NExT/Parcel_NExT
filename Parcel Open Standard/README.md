@@ -287,7 +287,7 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
         "style": "",
         "class": "",
     },
-    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations), lazy (caches are preview only and won't save to document payload), deligent (caches are always saved to document payload)
+    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations), lazy (caches are preview only and won't save to document payload), deligent (caches are always saved to document payload), non-executable (data-only as attributes)
 
     // [Deprecating] Deprecate Input/Output, use "<Input/Output>" syntax for attributes.
     "inputs": { // User authored input definitions and connections

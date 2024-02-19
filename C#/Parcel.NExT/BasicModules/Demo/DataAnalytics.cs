@@ -2,28 +2,31 @@
 
 namespace Demo
 {
-    public struct ReadCSVOptions
-    {
-        #region Inputs
-        public string Path;
-        public bool ContainsHeader;
-        public string[] ExpectedColumnTypes;
-        public string[] ColumnFiltering;
-        public int TakeNRows;
-        public char Delimiter;
-        #endregion
-
-        #region Outputs
-        public bool GeneratesStats;
-        public bool GeneratePlainCSVString;
-        #endregion
-    }
-
     /// <summary>
     /// A very basic module that exports some very basic operations
     /// </summary>
-    public static class PrettyBasic
+    public static class DataAnalytics
     {
+        #region Method Options
+        public struct ReadCSVOptions
+        {
+            #region Inputs
+            public string Path;
+            public bool ContainsHeader;
+            public string[] ExpectedColumnTypes;
+            public string[] ColumnFiltering;
+            public int TakeNRows;
+            public char Delimiter;
+            #endregion
+
+            #region Outputs
+            public bool GeneratesStats;
+            public bool GeneratePlainCSVString;
+            #endregion
+        }
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Reads a CSV and returns content as CSV string
         /// </summary>
@@ -47,5 +50,6 @@ namespace Demo
         {
             throw new NotImplementedException();
         }
+        #endregion
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Parcel.CoreEngine.Contracts;
-using Parcel.NExT.Interpreter;
+using Parcel.NExT.Interpreter.Scripting;
 using Parcel.NExT.Python;
 using System.Reflection;
 
@@ -20,7 +20,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                     // Exclude Parcel.CoreEngine.Services
                     typeof(LibraryServiceHelper).Assembly,
                     // Exclude Parcel.NExT.Interpreter
-                    typeof(Class1).Assembly,
+                    typeof(RoslynContext).Assembly,
                     // Exclude Parcel.NExT.Python
                     typeof(PythonRuntimeHelper).Assembly,
                 ])
