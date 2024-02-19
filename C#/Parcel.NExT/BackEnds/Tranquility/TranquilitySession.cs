@@ -1,9 +1,10 @@
 ﻿using Humanizer;
 using Parcel.CoreEngine.Helpers;
+using Parcel.CoreEngine.Service;
+using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.CoreEngine.Service.LibraryProvider;
 using Parcel.CoreEngine.Service.Types;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using WebSocketSharp;
@@ -11,15 +12,16 @@ using WebSocketSharp.Server;
 
 namespace Tranquility
 {
+    public record ServiceEndpoint(ServiceProvider Provider, MethodInfo Method);
     public class TranquilitySession : WebSocketBehavior
     {
         #region States
-        private Dictionary<string, MethodInfo>? _AvailableEndPoints; // TODO: This could be static and global
-        private LibraryProviderServices? _ServiceProvider;
+        private Dictionary<string, ServiceEndpoint>? _AvailableEndPoints; // TODO: This could be static and global
+        private List<ServiceProvider>? _ServiceProviders;
         #endregion
 
         #region Helpers
-        public string Identifier => $"Session {ID.Substring(0, 6)}";
+        public string Identifier => $"Session {ID[..6]}";
         public void LogInfo(string message)
             => Logging.Info($"({Identifier}) {message}");
         #endregion
@@ -31,8 +33,15 @@ namespace Tranquility
 
             LogInfo("New connection.");
 
-            _ServiceProvider = new LibraryProviderServices();
-            _AvailableEndPoints = _ServiceProvider.GetAvailableServices();
+            _ServiceProviders = [new LibraryProviderServices(), new InterpolationServiceProvider()];
+            _AvailableEndPoints = [];
+            foreach (var provider in _ServiceProviders)
+            {
+                string providerName = provider.GetType().Name;
+                Dictionary<string, MethodInfo> availableServices = provider.GetAvailableServices();
+                foreach (KeyValuePair<string, MethodInfo> service in availableServices)
+                    _AvailableEndPoints.TryAdd($"{providerName}.{service.Key}", new(provider, service.Value));
+            }
         }
         protected override void OnClose(CloseEventArgs e)
         {
@@ -55,15 +64,16 @@ namespace Tranquility
             if (methodName == "Echo")
                 // Echo
                 Send(message);
-            else if (_AvailableEndPoints.ContainsKey(methodName))
+            else if (_AvailableEndPoints!.TryGetValue(methodName, out ServiceEndpoint? endPoint))
             {
-                var methodInfo = _AvailableEndPoints[methodName];
-                
-                object? result = null;
+                var provider = endPoint.Provider;
+                var methodInfo = endPoint.Method;
+
+                object? result;
                 if (methodInfo.GetParameters().Length == 0)
-                    result = methodInfo.Invoke(_ServiceProvider, null);
+                    result = methodInfo.Invoke(provider, null);
                 else
-                    result = methodInfo.Invoke(_ServiceProvider, arguments.Skip(1).ToArray());
+                    result = methodInfo.Invoke(provider, arguments.Skip(1).ToArray());
 
                 if (result != null)
                     Send(SerializeResult(result));
