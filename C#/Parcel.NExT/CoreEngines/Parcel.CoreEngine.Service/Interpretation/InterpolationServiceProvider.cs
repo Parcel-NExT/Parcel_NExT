@@ -31,7 +31,13 @@ namespace Parcel.CoreEngine.Service.Interpretation
         #endregion
 
         #region General Services
-
+        /// <remarks>
+        /// The attributes will be a Dictionary<string, string> - because of the way upstream handles it, we are accepting IDictionary<string, object> here
+        /// </remarks>
+        public void EvaluateSingleNode(string graph, string target, string tags, IDictionary<string, object> attributes)
+        {
+            Console.WriteLine("Hello World!");
+        }
         #endregion
     }
 }

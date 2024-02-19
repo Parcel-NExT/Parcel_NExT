@@ -72,7 +72,26 @@ namespace Tranquility
         #region Routines
         private void HandleMessageJSONStyle(string jsonMessage)
         {
-            throw new NotImplementedException();
+            IDictionary<string, object>? json = (IDictionary<string, object>)SimpleJson.SimpleJson.DeserializeObject(jsonMessage);
+            string methodName = (string)json["endPoint"];
+            if (_AvailableEndPoints!.TryGetValue(methodName, out ServiceEndpoint? endPoint))
+            {
+                var provider = endPoint.Provider;
+                var methodInfo = endPoint.Method;
+
+                object? result;
+                if (methodInfo.GetParameters().Length == 0)
+                    result = methodInfo.Invoke(provider, null);
+                else
+                    result = methodInfo.Invoke(provider, methodInfo.GetParameters().Select(p => p.Name).Select(k => json[k]).ToArray());
+
+                if (result != null)
+                    Send(SerializeResult(result));
+                else
+                    Send(string.Empty);
+            }
+            else
+                Send("ERROR: Unknown endpoint.");
         }
         private void HandleMessageCLIStyle(string message)
         {
