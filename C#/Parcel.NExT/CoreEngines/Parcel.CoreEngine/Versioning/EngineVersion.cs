@@ -1,19 +1,20 @@
 ﻿namespace Parcel.CoreEngine.Versioning
 {
     /// <summary>
-    /// This is the only version across the entire Parcel.NExT implementation and considers changes to all components including (canonical) front-end and back-end; (This version number may exclude certain front-ends)
+    /// This is the only version across the entire Parcel.NExT implementations and considers changes to all components including (canonical) front-end and back-end; (This version number may exclude certain front-ends)
     /// The version number should match release number on Github, and match the csproj build version
     /// </summary>
     public static class EngineVersion
     {
-        public static readonly string Version = "Parcel.NExT v0.0.1 (Build: 2024.01)";
+        public static readonly string Version = "Parcel.NExT v0.0.2 (Build: 2024.02)";
 
         /// <summary>
         /// Format: version, key summary, component highlights, timeline.
         /// </summary>
         public static readonly string Changelog = """
             Parcel.NExT
-            v 0.0.1: Initialization. 2024.01 - Now.
+            v 0.0.1: Initialization. 2024.01 - 2024.02.
+            v 0.0.2: Service class implementation; Tranquility. 2024.02 - Now.
             """;
     }
 }
