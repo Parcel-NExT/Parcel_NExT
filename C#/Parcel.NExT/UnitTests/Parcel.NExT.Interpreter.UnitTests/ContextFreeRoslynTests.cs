@@ -12,7 +12,7 @@ namespace Parcel.NExT.Interpreter.UnitTests
             {
                 Assert.Throws<CompilationErrorException>(() =>
                 {
-                    ContextFreeRoslyn.RunLocalNoReturn("""
+                    ContextFreeRoslyn.LowLevelRunLocalNoReturn("""
                     using System.Linq;
                     """);
                 });
@@ -21,14 +21,14 @@ namespace Parcel.NExT.Interpreter.UnitTests
             {
                 Assert.Throws<CompilationErrorException>(() =>
                 {
-                    ContextFreeRoslyn.RunLocalNoReturn("""
+                    ContextFreeRoslyn.LowLevelRunLocalNoReturn("""
                     public record MyRecord(string Name, double Value);
                     """);
                 });
             }
 
             {
-                ScriptState<object> result = ContextFreeRoslyn.RunLocalNoReturn("""
+                ScriptState<object> result = ContextFreeRoslyn.LowLevelRunLocalNoReturn("""
                     var myLocalVariable = 15;
                     """);
                 Assert.Null(result.GetVariable("myLocalVariable"));
@@ -43,7 +43,7 @@ namespace Parcel.NExT.Interpreter.UnitTests
                 { "Compound", new Vector3(1, 2, 3) },
                 { "Instance", new string[]{ "Hello", "World" } }
             };
-            Dictionary<string, object> result = ContextFreeRoslyn.LogicLocal(initials, """
+            Dictionary<string, object> result = ContextFreeRoslyn.EvaluateLocalLogic(initials, """
             Scalar = 7;
             Compound = new Vector3(2, 4, 5);
             Instance[0] = "Hola";
@@ -51,6 +51,29 @@ namespace Parcel.NExT.Interpreter.UnitTests
             Assert.Equal(7, result["Scalar"]);
             Assert.Equal(4, ((Vector3)result["Compound"]).Y);
             Assert.Equal("Hola", ((string[])result["Instance"])[0]);
+        }
+        [Fact]
+        public void LocalReturnFunctionsShouldReturnWhateverTypeRequired()
+        {
+            // Without global state
+            {
+                Dictionary<string, object> globals = new()
+                {
+                    { "InitialValue", "Hello World!" }
+                };
+                string result = ContextFreeRoslyn.EvaluateLocalReturn<string>("""
+                    return InitialValue;
+                    """, globals);
+                Assert.Equal(globals["InitialValue"], result);
+            }
+
+            // With global state
+            {
+                int result = ContextFreeRoslyn.EvaluateLocalReturn<int>("""
+                    return 5;
+                    """);
+                Assert.Equal(5, result);
+            }
         }
     }
 }

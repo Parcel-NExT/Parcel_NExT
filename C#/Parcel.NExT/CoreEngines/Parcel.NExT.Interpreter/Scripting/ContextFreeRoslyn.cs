@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Scripting;
 using Parcel.NExT.Interpreter.Helpers;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Parcel.NExT.Interpreter.Scripting
 {
@@ -21,7 +22,10 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// <summary>
         /// Runs code in a local function so user code cannot import namespaces or define custom types etc.
         /// </summary>
-        public static ScriptState<object> RunLocalNoReturn(string codeFragment, ScriptOptions? options = null, object? contextObject = null)
+        /// <remarks>
+        /// Do not use this if you do you need ScriptState; Use higher level functions instead.
+        /// </remarks>
+        public static ScriptState<object> LowLevelRunLocalNoReturn(string codeFragment, ScriptOptions? options = null, object? contextObject = null)
         {
             options ??= ScriptOptions.Default;
             string functionInstanceName = GetDistinctFunctionInstanceName();
@@ -39,7 +43,10 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// Runs code in a local function so user code cannot import namespaces or define custom types etc.;
         /// Return value is provided inside a "result" variable.
         /// </summary>
-        public static ScriptState<object> RunLocalWithReturn(string codeFragment, ScriptOptions? options = null, object? contextObject = null)
+        /// <remarks>
+        /// Do not use this if you do you need ScriptState; Use higher level functions instead.
+        /// </remarks>
+        public static ScriptState<object> LowLeveRunLocalWithReturn(string codeFragment, ScriptOptions? options = null, object? contextObject = null)
         {
             options ??= ScriptOptions.Default;
             string functionInstanceName = GetDistinctFunctionInstanceName();
@@ -56,14 +63,58 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// <summary>
         /// Runs code at Roslyn top-level
         /// </summary>
-        public static ScriptState<object> RunGlobal(string codeFragment, ScriptOptions options, object contextObject)
+        /// <remarks>
+        /// Do not use this if you do you need ScriptState; Use higher level functions instead.
+        /// </remarks>
+        public static ScriptState<object> LowLeveRunGlobal(string codeFragment, ScriptOptions options, object contextObject)
         {
             return CSharpScript.RunAsync(codeFragment, options, contextObject).Result;
         }
         #endregion
 
         #region Common Scenarios
-        public static void LogicLocal<TType>(TType hostObject, string codeFragment)
+        /// <summary>
+        /// Runs a code fragment as a local function with optionally provided global variables.
+        /// Expects a return of target type from code snippet.
+        /// </summary>
+        /// <remarks>
+        /// This function is similar to <seealso cref="EvaluateLocalLogic(Dictionary{string, object}, string)"/> but serves different purpose.
+        /// </remarks>
+        public static TType EvaluateLocalReturn<TType>(string codeFragment, Dictionary<string, object>? globalVariables = null)
+        {
+            ScriptOptions options = ScriptOptions.Default;
+
+            Type returnType = typeof(TType);
+            if (globalVariables == null)
+            {
+                string namespaceImportStatements = GetTypesNamespaceImportStatements([returnType]);
+                ScriptState<object> state = InitializeStateWithGlobalContexts(options, null, namespaceImportStatements, null);
+
+                CodeGenWrapAndCallLocalFunctionWithSingleReturn(codeFragment, returnType, out string resultVariableName, out string code);
+                state = state.ContinueWithAsync(code).Result;
+                return (TType)state.GetVariable(resultVariableName).Value;
+            }
+            else
+            {
+                // Initialize state
+                ParcelNExTInternalContextSwitchPayload hostObject = new()
+                {
+                    ParcelNExTInterpreterInternalPayload = globalVariables
+                };
+                string namespaceImportStatements = GetTypesNamespaceImportStatements(globalVariables.Values
+                    .Select(v => v.GetType())
+                    .Concat([returnType]));
+                string globalVariableDeclarationStatements = GetTypedDeclarationsForScriptGlobalVariables(globalVariables!);
+                ScriptState<object> state = InitializeStateWithGlobalContexts(options, hostObject, namespaceImportStatements, globalVariableDeclarationStatements);
+
+                // Run custom code
+                CodeGenWrapAndCallLocalFunctionWithSingleReturn(codeFragment, returnType, out string resultVariableName, out string code);
+
+                state = state.ContinueWithAsync(code).Result;
+                return (TType)state.GetVariable(resultVariableName).Value;
+            }
+        }
+        public static void EvaluateLocalLogic<TType>(TType hostObject, string codeFragment)
         {
             string functionInstanceName = GetDistinctFunctionInstanceName();
             string code = $$"""
@@ -86,60 +137,25 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// <remarks>
         /// Automatically exposes namespace of referenced objects from initial values.
         /// </remarks>
-        public static Dictionary<string, object> LogicLocal(Dictionary<string, object> initial, string codeFragment)
+        public static Dictionary<string, object> EvaluateLocalLogic(Dictionary<string, object> initial, string codeFragment)
         {
             ScriptOptions options = ScriptOptions.Default;
-
-            // Remark-cz: We have to do some manual setup because of a limit at the moment: https://github.com/dotnet/roslyn/issues/3194
-            // Also see: https://github.com/Charles-Zhang-Parcel/Prototypes/blob/bdb60100bf71fe76f1aabe0783c4a5e337aef2b9/CoreEngine/MultiInterpolation/Program.cs#L87
 
             // Initialize state
             ParcelNExTInternalContextSwitchPayload hostObject = new()
             {
                 ParcelNExTInterpreterInternalPayload = initial
             };
-            StringBuilder exposePayloadToGlobal = new();
-            foreach ((string Key, object Value) in initial)
-            {
-                string typeName = Value.GetType().GetFormattedName();
-                exposePayloadToGlobal.AppendLine($"{typeName} {Key} = ({typeName})((Dictionary<string, object>){nameof(ParcelNExTInternalContextSwitchPayload.ParcelNExTInterpreterInternalPayload)})[\"{Key}\"];");
-            }
-            StringBuilder importNamespaces = new();
-            foreach (var value in initial.Values)
-            {
-                string? ns = value.GetType().Namespace;
-                if (ns != null)
-                    importNamespaces.AppendLine($"using {ns}; // Exposes {value.GetType().Name}");
-            }
-
-            string namespaceImportStatements = importNamespaces.ToString().TrimEnd();
-            string payloadVariableDeclarationStatements = exposePayloadToGlobal.ToString().TrimEnd();
-            ScriptState<object> state = CSharpScript.RunAsync($"""
-                // Import namespaces
-                using System.Collections.Generic; // Exposes Dictionary
-                {namespaceImportStatements}
-
-                // Expose the payload objects to global
-                {payloadVariableDeclarationStatements}
-                """, options, hostObject).Result;
+            string namespaceImportStatements = GetTypesNamespaceImportStatements(initial.Values.Select(v => v.GetType()));
+            string payloadVariableDeclarationStatements = GetTypedDeclarationsForScriptGlobalVariables(initial);
+            ScriptState<object> state = InitializeStateWithGlobalContexts(options, hostObject, namespaceImportStatements, payloadVariableDeclarationStatements);
 
             // Run custom code
-            string functionInstanceName = GetDistinctFunctionInstanceName();
-            string code = $$"""
-                // Define a local function
-                public void {{functionInstanceName}}()
-                {
-                    // The input dictionary values are accessible as global variables
-                    {{codeFragment}}
-                }
-                // Call the function
-                {{functionInstanceName}}();
-                """;
+            string code = CodeGenWrapAndCallLocalFunctionWithoutReturn(codeFragment);
 
             state = state.ContinueWithAsync(code).Result;
             return initial.ToDictionary(i => i.Key, i => state.GetVariable(i.Key).Value);
         }
-
         /// <summary>
         /// Enumerate code fragment on collection
         /// </summary>
@@ -161,8 +177,85 @@ namespace Parcel.NExT.Interpreter.Scripting
         #endregion
 
         #region Helpers
+        private static string Indent(string codeFragment, int level = 1)
+        {
+            return Regex.Replace(codeFragment, "^", new string('\t', level), RegexOptions.Multiline);
+        }
         private static string GetDistinctFunctionInstanceName() 
             => $"LocalFunction_{DateTime.Now:yyyyMMddhhmmss}";
+        private static string GetTypedDeclarationsForScriptGlobalVariables(Dictionary<string, object> globalVariables)
+        {
+            // Remark-cz: We have to do some manual setup because of a limit at the moment: https://github.com/dotnet/roslyn/issues/3194
+            // Also see: https://github.com/Charles-Zhang-Parcel/Prototypes/blob/bdb60100bf71fe76f1aabe0783c4a5e337aef2b9/CoreEngine/MultiInterpolation/Program.cs#L87
+
+            StringBuilder contextSwitchPayloadToExplictGlobalDictionaryDeclarations = new();
+            foreach ((string Key, object Value) in globalVariables)
+            {
+                string typeName = Value.GetType().GetFormattedName();
+                contextSwitchPayloadToExplictGlobalDictionaryDeclarations.AppendLine($"{typeName} {Key} = ({typeName})((Dictionary<string, object>){nameof(ParcelNExTInternalContextSwitchPayload.ParcelNExTInterpreterInternalPayload)})[\"{Key}\"];");
+            }
+            return contextSwitchPayloadToExplictGlobalDictionaryDeclarations.ToString().TrimEnd();
+        }
+        private static string CodeGenWrapAndCallLocalFunctionWithoutReturn(string codeFragment)
+        {
+            string functionInstanceName = GetDistinctFunctionInstanceName();
+            string code = $$"""
+                // Define a local function
+                public void {{functionInstanceName}}()
+                {
+                    // The input dictionary values are accessible as global variables
+                    {{Indent(codeFragment, 1)}}
+                }
+                // Call the function
+                {{functionInstanceName}}();
+                """;
+            return code;
+        }
+        private static void CodeGenWrapAndCallLocalFunctionWithSingleReturn(string codeFragment, Type returnType, out string resultVariableName, out string code)
+        {
+            string functionInstanceName = GetDistinctFunctionInstanceName();
+            resultVariableName = $"result_{functionInstanceName}";
+            code = $$"""
+                // Define a local function
+                public {{returnType.GetFormattedName()}} {{functionInstanceName}}()
+                {
+                    // The input dictionary values are accessible as global variables
+                    {{Indent(codeFragment, 1)}}
+                }
+                // Call the function
+                {{returnType.GetFormattedName()}} {{resultVariableName}} = {{functionInstanceName}}();
+                """;
+        }
+        private static string GetTypesNamespaceImportStatements(IEnumerable<Type> types)
+        {
+            StringBuilder importNamespaces = new();
+            foreach (var typeGroup in types
+                .Where(v => v.Namespace != null)
+                .GroupBy(t => t.Namespace))
+            {
+                string ns = typeGroup.Key!;
+                importNamespaces.AppendLine($"using {ns}; // Exposes {string.Join(", ", typeGroup.Select(t => t.Name).Distinct())}");
+            }
+            return importNamespaces.ToString().TrimEnd();
+        }
+        private static ScriptState<object> InitializeStateWithGlobalContexts(ScriptOptions options, ParcelNExTInternalContextSwitchPayload? hostObject, string? namespaceImportStatements, string? globalVariableDeclarationStatements)
+        {
+            StringBuilder builder = new();
+            if (!string.IsNullOrEmpty(namespaceImportStatements))
+                builder.AppendLine($"""
+                    // Import namespaces
+                    using System.Collections.Generic; // Exposes Dictionary
+                    {namespaceImportStatements}
+                    """);
+            builder.AppendLine();
+            if (!string.IsNullOrEmpty(globalVariableDeclarationStatements))
+                builder.AppendLine($"""
+                    // Expose the payload objects to global
+                    {globalVariableDeclarationStatements}
+                    """);
+            string initializationCode = builder.ToString().Trim();
+            return CSharpScript.RunAsync(initializationCode, options, hostObject).Result;
+        }
         #endregion
     }
 }

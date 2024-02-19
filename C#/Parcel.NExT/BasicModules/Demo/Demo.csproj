@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\..\CoreEngines\Parcel.NExT.Interpreter\Parcel.NExT.Interpreter.csproj" />
   </ItemGroup>
 
 </Project>
