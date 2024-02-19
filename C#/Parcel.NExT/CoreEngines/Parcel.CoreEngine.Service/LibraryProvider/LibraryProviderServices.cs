@@ -1,6 +1,7 @@
 ﻿using Parcel.CoreEngine.Contracts;
 using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.CoreEngine.Service.Types;
+using Parcel.NExT.Interpreter.Helpers;
 using Parcel.NExT.Python;
 using System.Reflection;
 
@@ -100,7 +101,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                     IEnumerable<string> properties = endpoint.Type!.GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(p => $"{p.Name}.{p.PropertyType.Name}");
                     return [.. members, .. properties];
                 case EndPointNature.StaticMethod:
-                    IEnumerable<string> arguments = endpoint.Method!.GetParameters().Select(p => $"<{p.Name}:{p.ParameterType.Name}");
+                    IEnumerable<string> arguments = endpoint.Method!.GetParameters().Select(p => $"<{p.Name}:{p.ParameterType.GetFormattedName()}");
                     string returnAttribute = $"result>:{endpoint.Method!.ReturnType.Name}";
                     return [.. arguments, returnAttribute];
                 case EndPointNature.InstanceMethod:
@@ -154,7 +155,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                 .ToArray();
 
             Dictionary<string, SimplexString> members = [];
-            members.Add("Methods", new(false, methods.Select(m => $"{m.DeclaringType!.Name}.{m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.Name))})").OrderBy(n => n).ToArray()));
+            members.Add("Methods", new(false, methods.Select(m => $"{m.DeclaringType!.Name}.{m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})").OrderBy(n => n).ToArray()));
             members.Add("Types", new(true, parcelExportTypes.Select(t => t.Name).OrderBy(n => n).ToArray()));
             members.Add("Module", new(false, moduleName));
             return members;
@@ -182,7 +183,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                     endpoints.Add(type.Name, new TargetEndPoint(EndPointNature.Type, type.Name, type, null));
             foreach (MethodInfo method in exportedStaticMethods)
             {
-                string identifier = $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.Name))})";
+                string identifier = $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})";
                 // TODO: Similar to above, we need better identification names
                 if (!endpoints.ContainsKey(identifier))
                     // TODO: Remark: Notice we are exporting just the names of methods because we consider them "top-level"
