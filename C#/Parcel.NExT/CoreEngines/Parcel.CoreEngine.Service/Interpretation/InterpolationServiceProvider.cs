@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿using Parcel.CoreEngine.Contracts;
+using Parcel.CoreEngine.Conversion;
+using Parcel.CoreEngine.Service.LibraryProvider;
+using Parcel.NExT.Interpreter.Helpers;
+using System.Reflection;
 
 namespace Parcel.CoreEngine.Service.Interpretation
 {
@@ -7,6 +11,19 @@ namespace Parcel.CoreEngine.Service.Interpretation
     /// </summary>
     public sealed class InterpolationServiceProvider: ServiceProvider
     {
+        #region Properties
+        private Dictionary<string, TargetEndPoint>? _targetEndPoints;
+        private Dictionary<string, TargetEndPoint> TargetEndPoints
+        {
+            get
+            {
+                if (_targetEndPoints == null)
+                    _targetEndPoints = IndexTargetEndPoints();
+                return _targetEndPoints;
+            }
+        }
+        #endregion
+
         #region Reflection Services
         /// <summary>
         /// Get all available public instance methods in this class that are meaningful for backend use.
@@ -34,9 +51,79 @@ namespace Parcel.CoreEngine.Service.Interpretation
         /// <remarks>
         /// The attributes will be a Dictionary<string, string> - because of the way upstream handles it, we are accepting IDictionary<string, object> here
         /// </remarks>
-        public void EvaluateSingleNode(string graph, string target, string tags, IDictionary<string, object> attributes)
+        public object? EvaluateSingleNode(string graph, string target, string tags, IDictionary<string, object> attributes)
         {
-            Console.WriteLine("Hello World!");
+            Dictionary<string, string> formattedAttributes = attributes
+                .ToDictionary(a => FormatAttribute(a.Key), a => (string)a.Value);
+
+            // TODO: At the moment we are not making using `graph` and `tags` arugment
+            // TODO: Consult and merge implementation of GraphRuntime.ExecuteNode
+            GraphRuntime.NodeTargetPathProtocolStructure targetDef = GraphRuntime.ParseNodeTargets(target);
+            TargetEndPoint? endpoint = ResolveTarget(targetDef);
+            if (endpoint == null)
+                return null;
+            switch (endpoint.Nature)
+            {
+                case EndPointNature.Type:
+                    throw new NotImplementedException();
+                case EndPointNature.StaticMethod:
+                    MethodInfo methodInfo = endpoint.Method!;
+                    return methodInfo.Invoke(null, methodInfo.GetParameters().Select(p => StringTypeConverter.ConvertType(p.ParameterType, formattedAttributes[p.Name!])).ToArray());
+                case EndPointNature.InstanceMethod:
+                    throw new NotImplementedException();
+                case EndPointNature.System:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentException();
+            }
+
+            static string FormatAttribute(string annotatedAttribute)
+            {
+                // Extract attribute name from annotated syntax
+                return annotatedAttribute.Split(':').First().TrimStart('<').TrimEnd('>');
+            }
+        }
+        #endregion
+
+        #region Routines
+        private static Dictionary<string, TargetEndPoint> IndexTargetEndPoints()
+        {
+            // TODO: At the moment we are excluding system to avoid overhead, in the future we definitely want to expose all native runtime targets as well
+            // TODO: We also need to make sure behaviors of this function is consistent with many other module related queries above
+            // TODO: Might also want to expose public properties and members
+            Type[] exportedTypes = LibraryServiceHelper.GetLoadedUserFacingAssemblies()
+                .SelectMany(m => m.GetExportedTypes())
+                .ToArray();
+            MethodInfo[] exportedStaticMethods = exportedTypes
+                .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy))
+                .ToArray();
+
+            Dictionary<string, TargetEndPoint> endpoints = [];
+            // TODO: Standardize path name and make sure identifiable
+            foreach (Type type in exportedTypes)
+                // TODO: Remark-cz: This is temporary indexing - due to various reasons there are types with same names and this will not work perfectly; We need better identification methods
+                if (!endpoints.ContainsKey(type.Name))
+                    endpoints.Add(type.Name, new TargetEndPoint(EndPointNature.Type, type.Name, type, null));
+            foreach (MethodInfo method in exportedStaticMethods)
+            {
+                string identifier = $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})";
+                // TODO: Similar to above, we need better identification names
+                if (!endpoints.ContainsKey(identifier))
+                    // TODO: Remark: Notice we are exporting just the names of methods because we consider them "top-level"
+                    endpoints.Add(identifier, new TargetEndPoint(EndPointNature.StaticMethod, method.Name, method.DeclaringType, method));
+            }
+            foreach (var name in SystemNodes.ReservedNodeTargetNames)
+                endpoints.Add(name, new TargetEndPoint(EndPointNature.System, name, null, null));
+
+            return endpoints;
+        }
+        /// <summary>
+        /// Given a target protocol, find the matching endpoint to use.
+        /// </summary>
+        private TargetEndPoint? ResolveTarget(GraphRuntime.NodeTargetPathProtocolStructure target)
+        {
+            // TODO: Remark-cz: At the moment we are using simple names as match, more robust ways of doing this might be desirable
+            return TargetEndPoints.TryGetValue(target.TargetPath, out TargetEndPoint? value) ? value : null;
         }
         #endregion
     }
