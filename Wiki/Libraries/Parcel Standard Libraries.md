@@ -71,3 +71,11 @@ Nodes:
 |Stats||Mega-node for computing stats of interest across common dimensions for entire data table. Preferable for quick analysis.||||True|Very efficient, only executes output paths when used.|
 
 ## Parcel Original Frameworks
+
+> Start with really simple things.
+
+Paecel is generally purpose of course - but that's just the versatility; In terms of utility, it's an interface to one-shot graphs. <!--(Idea from) It's just a better version of Excel, sits between Excel and Matlab, for data analytics - think in terms of a hypothetical Data Service library, where each node is a named entity we want to play with; Think of drag-n-drop RegexRename. -->
+
+* Make simple things trivial
+* Make straightforward sense
+* Smart contextual behaviour
