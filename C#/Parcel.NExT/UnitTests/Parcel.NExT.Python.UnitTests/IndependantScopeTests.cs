@@ -8,7 +8,7 @@ namespace Parcel.NExT.Python.UnitTests
             var result = PythonRuntimeHelper.RunScopedSnippetAsFunctionBody("""
                 return 15
                 """);
-            Assert.Equal(15, (int)result.AsManagedObject());
+            Assert.Equal(15, (int)result.AsManagedObject(typeof(int))!);
         }
     }
 }
