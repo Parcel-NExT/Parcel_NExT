@@ -13,9 +13,15 @@
             string[] available = PythonReflection.GetAllAvailableModules();
             string[] standard = ["pipes", "os", "venv"];
             foreach (var item in available)
-            {
                 Assert.Contains(item, available);
-            }
+        }
+        [Fact]
+        public void GetPyPiModulesShouldContainFamousModules()
+        {
+            string[] modules = PythonReflection.GetPyPiModules().Select(m => m.Name).ToArray();
+            string[] famouseModules = ["numpy"];
+            foreach (var item in famouseModules)
+                Assert.Contains(item, modules);
         }
     }
 }

@@ -3,6 +3,7 @@ using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.CoreEngine.Service.Types;
 using Parcel.NExT.Interpreter.Helpers;
 using Parcel.NExT.Python;
+using Parcel.NExT.Python.Helpers;
 using System.Reflection;
 
 namespace Parcel.CoreEngine.Service.LibraryProvider
