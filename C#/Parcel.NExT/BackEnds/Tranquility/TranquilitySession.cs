@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using Parcel.CoreEngine.Helpers;
+using Parcel.CoreEngine.SemanticTypes;
 using Parcel.CoreEngine.Service;
 using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.CoreEngine.Service.LibraryProvider;
@@ -79,10 +80,10 @@ namespace Tranquility
                 int segments = (int)Math.Ceiling(message.Length / (double)sizeLimit);
                 for (int i = 0; i < segments; i++)
                 {
-                    string fragmentHeader = $"MULTIPART: {i+1}/{segments}";
+                    string fragmentHeader = $"MULTIPART: {i+1}/{segments} ({message.Length})";
                     string fragment = message.Substring(i * sizeLimit, Math.Min(message.Length - i * sizeLimit, sizeLimit));
                     Send($"{fragmentHeader}\n{fragment}");
-                    Thread.Sleep(1); // Remark-cz: (Hack) Give front-end some processing time before buffer fills up. We have tested that on localhost, both 100ms, 10ms, 5ms and 1ms seems to work - though it largely depends on how fast frontend (Gospel) can digest it.
+                    Thread.Sleep(5); // Remark-cz: (Hack) Give front-end some processing time before buffer fills up. We have tested that on localhost, both 100ms, 10ms, 5ms and 1ms seems to work - though it largely depends on how fast frontend (Gospel) can digest it. If this time is to short, Godot might either simply run out of buffer memory and output error, or just drop packets silently.
                 }
             }
         }
