@@ -70,6 +70,22 @@ namespace Tranquility
         #endregion
 
         #region Routines
+        private void SendMultiPartReply(string message, int sizeLimit = short.MaxValue / 2)
+        {
+            if (message.Length < sizeLimit)
+                Send(message);
+            else
+            {
+                int segments = (int)Math.Ceiling(message.Length / (double)sizeLimit);
+                for (int i = 0; i < segments; i++)
+                {
+                    string fragmentHeader = $"MULTIPART: {i+1}/{segments}";
+                    string fragment = message.Substring(i * sizeLimit, Math.Min(message.Length - i * sizeLimit, sizeLimit));
+                    Send($"{fragmentHeader}\n{fragment}");
+                    Thread.Sleep(1); // Remark-cz: (Hack) Give front-end some processing time before buffer fills up. We have tested that on localhost, both 100ms, 10ms, 5ms and 1ms seems to work - though it largely depends on how fast frontend (Gospel) can digest it.
+                }
+            }
+        }
         private void HandleMessageJSONStyle(string jsonMessage)
         {
             IDictionary<string, object>? json = (IDictionary<string, object>)SimpleJson.SimpleJson.DeserializeObject(jsonMessage);
@@ -86,12 +102,12 @@ namespace Tranquility
                     result = methodInfo.Invoke(provider, methodInfo.GetParameters().Select(p => p.Name).Select(k => json[k]).ToArray());
 
                 if (result != null)
-                    Send(SerializeResult(result));
+                    SendMultiPartReply(SerializeResult(result));
                 else
-                    Send(string.Empty);
+                    SendMultiPartReply(string.Empty);
             }
             else
-                Send("ERROR: Unknown endpoint.");
+                SendMultiPartReply("ERROR: Unknown endpoint.");
         }
         private void HandleMessageCLIStyle(string message)
         {
@@ -99,7 +115,7 @@ namespace Tranquility
             string methodName = arguments.First();
             if (methodName == "Echo")
                 // Echo
-                Send(message);
+                SendMultiPartReply(message);
             else if (_AvailableEndPoints!.TryGetValue(methodName, out ServiceEndpoint? endPoint))
             {
                 var provider = endPoint.Provider;
@@ -112,13 +128,16 @@ namespace Tranquility
                     result = methodInfo.Invoke(provider, arguments.Skip(1).ToArray());
 
                 if (result != null)
-                    Send(SerializeResult(result));
+                    SendMultiPartReply(SerializeResult(result));
                 else
-                    Send(string.Empty);
+                    SendMultiPartReply(string.Empty);
             }
             else
-                Send("ERROR: Unknown endpoint.");
+                SendMultiPartReply("ERROR: Unknown endpoint.");
         }
+        #endregion
+
+        #region Serialization Helper
         private string SerializeResult(object result)
         {
             if (result == null)
