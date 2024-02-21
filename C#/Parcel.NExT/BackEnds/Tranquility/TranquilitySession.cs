@@ -191,6 +191,8 @@ namespace Tranquility
                 return SerializeFlatSimplexStringDictionaryStructure((Dictionary<string, SimplexString>)result);
 
             // Serialize serializable Parcel-specific types
+            else if (resultType == typeof(DataGrid))
+                return SerializaDataGrid((DataGrid)result);
             // TODO: Serialize Payload, and MetaInstructions
             throw new NotImplementedException("Unrecognized object type.");
         }
@@ -235,6 +237,13 @@ namespace Tranquility
             jsonBuilder.Length--; // Remove trailing comma
             jsonBuilder.Append("\n}\n");
             return jsonBuilder.ToString().TrimEnd();
+        }
+        private string SerializaDataGrid(DataGrid result)
+        {
+            if (result.Raw != null)
+                return result.Raw;
+            else
+                throw new NotImplementedException();
         }
         #endregion
     }
