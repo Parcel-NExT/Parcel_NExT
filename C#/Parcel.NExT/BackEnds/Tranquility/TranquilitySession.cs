@@ -56,11 +56,9 @@ namespace Tranquility
         #region Message Handling
         private void HandleMessage(string message)
         {
-            const string jsonToken = "JSON\n";
-
             // Tranquility handles to kinds of messages: single-line CLI style, and multi-line JSON style
-            if (message.StartsWith(jsonToken))
-                HandleMessageJSONStyle(message.Substring(jsonToken.Length));
+            if (message.StartsWith('{'))
+                HandleMessageJSONStyle(message);
             else
                 HandleMessageCLIStyle(message);
         }
@@ -86,17 +84,31 @@ namespace Tranquility
         private void HandleMessageJSONStyle(string jsonMessage)
         {
             IDictionary<string, object>? json = (IDictionary<string, object>)SimpleJson.SimpleJson.DeserializeObject(jsonMessage);
-            string methodName = (string)json["endPoint"];
-            if (_AvailableEndPoints!.TryGetValue(methodName, out ServiceEndpoint? endPoint))
+
+            const string endPointToken = "endPoint";
+            if (!json.TryGetValue(endPointToken, out object? value))
+                throw new ArgumentException($"Missing critical token: {endPointToken}");
+
+            string methodName = (string)value;
+            if (methodName == "Echo")
+                // Echo
+                SendMultiPartReply(jsonMessage);
+            else if (_AvailableEndPoints!.TryGetValue(methodName, out ServiceEndpoint? endPoint))
             {
-                var provider = endPoint.Provider;
-                var methodInfo = endPoint.Method;
+                ServiceProvider provider = endPoint.Provider;
+                MethodInfo methodInfo = endPoint.Method;
+                ParameterInfo[] methodParameters = methodInfo.GetParameters();
 
                 object? result;
-                if (methodInfo.GetParameters().Length == 0)
+                if (methodParameters.Length == 0)
                     result = methodInfo.Invoke(provider, null);
                 else
-                    result = methodInfo.Invoke(provider, methodInfo.GetParameters().Select(p => p.Name).Select(k => json[k]).ToArray());
+                {
+                    IEnumerable<object> availableValues = methodParameters.Select(p => p.Name!)
+                        .Where(json.ContainsKey)
+                        .Select(k => json[k]);
+                    result = methodInfo.Invoke(provider, availableValues.ToArray());
+                }
 
                 if (result != null)
                     SendMultiPartReply(StringTypeConverter.SerializeResult(result));
@@ -122,7 +134,10 @@ namespace Tranquility
                 if (methodInfo.GetParameters().Length == 0)
                     result = methodInfo.Invoke(provider, null);
                 else
-                    result = methodInfo.Invoke(provider, arguments.Skip(1).ToArray());
+                {
+                    var functionInputs = MarshalStringArgumentsToMethodInputs(methodInfo.GetParameters(), arguments.Skip(1).ToArray());
+                    result = methodInfo.Invoke(provider, functionInputs); // TODO: Potentially need type conversion to deal with non-string arguments
+                }
 
                 if (result != null)
                     SendMultiPartReply(StringTypeConverter.SerializeResult(result));
@@ -131,6 +146,13 @@ namespace Tranquility
             }
             else
                 SendMultiPartReply("ERROR: Unknown endpoint.");
+        }
+        #endregion
+
+        #region Helpers
+        private object[]? MarshalStringArgumentsToMethodInputs(ParameterInfo[] parameterInfos, string[] stringValues)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
