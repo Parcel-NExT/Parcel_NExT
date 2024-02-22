@@ -7,7 +7,9 @@ namespace Tranquility
 {
     public class TranquilityOptions
     {
-        public string ServerAddress { get; set; }
+        #region Basic Settings
+        public string? ServerAddress { get; set; }
+        #endregion
 
         #region Default Runtime Context
         /// <summary>

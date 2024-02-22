@@ -1,5 +1,4 @@
-﻿
-namespace Parcel.CoreEngine.Service.Types
+﻿namespace Parcel.CoreEngine.Primitives
 {
     /// <summary>
     /// A string structure that can either represent a single scalar string or an array of strings

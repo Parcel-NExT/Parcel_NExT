@@ -6,7 +6,7 @@ namespace Tranquility.UnitTests
     internal static class TranquilityUnitTestHelper
     {
         #region Requests
-        public static string? RunSingleRequest(string message)
+        public static string RunSingleRequest(string message)
         {
             int port = Program.FindNextFreeTcpPort();
             string address = $"ws://localhost:{port}";
@@ -30,7 +30,10 @@ namespace Tranquility.UnitTests
             client.Close();
             server.Stop();
 
-            return replyMessage;
+            if (replyMessage == null)
+                throw new ApplicationException("No reply message received.");
+
+            return replyMessage!;
         }
         #endregion
 
