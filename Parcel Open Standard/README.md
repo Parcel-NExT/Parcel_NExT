@@ -574,6 +574,17 @@ Experimental services:
 
 * Arcadia (Parcel Hive/Sanctuary): Simple universal websocket text-chat server with multiple channels providing live-online community support.
 
+Other names:
+
+* (POF) Destiny: Desktop automation.
+* (POF) Avalanche: Parcel Distribution Service
+* Hermit: ????
+* (POF) Messiah: JavaScript-native frontend runtime web-building framework that utilizes backend through websockets
+* Kalos: Node-native file browser and media viewer <!--From kaleidoscope-->
+* Lightening: Node-native interface to Lightening browswer
+* Phanto: Time-domain simulation
+* Polyglot: CodeGen
+
 ### Core Engine
 
 The core engine will be an interpretative engine with support for (final) code generation. This is chosen so debugging is possible and easier - if we were to actually compile the code, then it's harder to set breakpoints and have meaningful intermediate REPL-like prompts. The interpretation engine is based on Roslyn and implementation is similar to Pure.
