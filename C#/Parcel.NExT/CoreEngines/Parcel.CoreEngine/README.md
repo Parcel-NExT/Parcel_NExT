@@ -1,5 +1,7 @@
 # Parcel.CoreEngine
 
+CoreEngine provides basic types and protocol implementations conforming to POS and PDS, and provides graph resolving algorithms. It does not involve any runtime specific code.
+
 We try our best to eliminate external dependencies when we can!
 
 There are a few dependencies that make this module runtime dependant/platform dependant, or cannot be compiled as a single executable or AOT:

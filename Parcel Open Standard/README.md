@@ -32,7 +32,18 @@ A proper parcel program is thus just the description in the form of this node gr
 
 A typical parcel implementation includes an editor, an execution engine, and a graph description.
 
-```mermaid (mindgraph?)
+```mermaid
+mindmap
+  root((Parcel Impl.))
+    Graph Editor
+        Frontend
+        Backend
+    Execution Engine
+        Runtimes
+    Graph Document
+        Binary
+        Text
+        MiniParcel
 ```
 
 Execution of the graph may be interpreted, or compiled, or sent to backend service for execution.  
@@ -103,7 +114,7 @@ Attribute values are string representations ALWAYS and should follow the followi
 
 Attribute accessor is a descriptor that can reference either (in terms of underlying construct) parameters or return values, or (in terms of PVM) node attributes or payloads. It's entirely string based. If an accessor contains an object (rather than string-serialized primitive), it will be passing the reference address of that object, then get dereferenced at the time of invocation.
 
-## File Structure
+## File Structure -> Parcel Document Specification (PDS)
 
 Parcel features a maintenance-free file format: (Note that nodes must be serialized BEFORE graphs section)
 
@@ -276,7 +287,7 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
         "style": "",
         "class": "",
     },
-    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations), lazy (caches are preview only and won't save to document payload), deligent (caches are always saved to document payload)
+    "tags": "", // Provides symbols and affects additional GUI behaviors (as binary toggles); Derived from function/class attributes or from presets or from user specification; Symbol set: pure, procedural, blocking, server, plotting, locked, log, document, content-only (no inputs and output pins are allowed, useful for annotations), lazy (caches are preview only and won't save to document payload), deligent (caches are always saved to document payload), non-executable (data-only as attributes)
 
     // [Deprecating] Deprecate Input/Output, use "<Input/Output>" syntax for attributes.
     "inputs": { // User authored input definitions and connections
@@ -297,7 +308,7 @@ Referencing/invoking a subgraph is just like calling a function, and the referee
 }
 ```
 
-Node attribute names are camelCased! (Because that matches more directly to JSON representation, C# function parameter name, and feels more scripting like)
+Node attribute names are camelCased! (Because that matches more directly to JSON representation, C# function parameter name, and feels more scripting like) Notice all attribute values are strictly strings! This applies even if the attributes are serialized as JSON.
 
 Certain attribute names have special meanings:
 
@@ -307,12 +318,26 @@ Certain attribute names have special meanings:
 * `Name>`: Indicates an attribute should be exposed as output (in the front end).
 * `<Name>`: Indicates an attribute should be exposed as both input and output (in the front end).
 * `%Name`: Indicates a front-end only attribute (core engine will just ignore), useful for things like front-end native behaviors and styling attributes.
-* `~`: Attribute level comments.
+* `~`: Attribute level comments. All contents after this symbol is treated as comment.
+* `.` in attribute names denote nested attributes, e.g. attributes within a tab/subpanel.
+* `:`: Optional restriction on attribute type
 
 NODE ATTRIBUTES HAS NO CONCEPT OF TYPE AND VALUES ARE REPRESENTED EXPLICITLY AS STRINGS! This sacrifices a bit storage efficiency but greatly simplifies serialization and parsing. They may have "types" but it's for annotation purpose only - real types are only evaluated during execution/interpretation/compilation time! The string-based nature is expected and reasonable for anything that's user-authored. For larger contents, we can consider using payloads for that purpose. Nodes do not need to explicitly be aware of their payloads/caches - those are stored in a separate section.
 
-Attributes can have type hints as part of their names. This is mostly used by front-ends and backend/runtime depending on actual runtime may choose to ignore them. 
-All values or instances are either primitives or objects. And thsoe are the assumed basic types (names should reflect underlying implementation only): 1) Primitives: Number, String, Bool, 2) Objects: Object class is the base of all objects.
+Attributes can have type hints as part of their names. This is mostly used by front-ends and backend/runtime depending on actual runtime may choose to ignore them. Attribute name MUST be unique irrelevant whether they are used as inputs or outputs (this should be obvious since input/output is indicated through name syntax, not as separate new attributes).
+All values or instances are either primitives or objects. And those are the assumed basic types (names should reflect underlying implementation only): 1) Primitives: Number, String, Bool, 2) Objects: Object class is the base of all objects.
+
+Attribute behaviors:
+
+|Format|Function|Runtime Behavior|
+|-|-|-|
+|`Attribute:Type Hint`|Provide type hint on attribute.|Runtime should completely ignore type hint and treat attribute name as key cue.|
+|`Attribute ~Comments`|Provide comments on attribute.|Runtime should strip the comments.|
+|`Section.Attribute`|Provide sectioning of attributes.|Runtime should ignore the sections and treat attribute name as key cue - except if the target node expects an `<MethodName>Options` struct, in which case such notation means addressing inside the structure (in a hierarchical fashion).|
+|`%`|Front-end attribute|Runtime should ignore such attributes.|
+|`$1, $2, $3...`|Positional attributes|Runtime pass those attributes directly in the order to target node.|
+|`#`||PENDING|
+|`<AttributeName>`|Front-end denoted input/output pins.|Runtime should strip the `<>` symbol and treat attribute name as key cue.|
 
 All nodes will have some sort of `value`/`returnResult` attribute, which will map automatically to `payload:value` if not explicitly defined.
 
@@ -357,6 +382,12 @@ Payloads serve critical functions like:
 * For front-end purpose: the `preview` section contains pointers for data for display purpose (could point to `value`)
 * For runtime purpose: the `value` section contains cached data for functional nodes for optimization purpose
 * For meta-programming purpose: the `instruct` section can contain instructs as post-processing behaviors for modifying graph specification
+
+Like attributes, payload names are repurposed for specialized usages, and corresponding handlers can just ignore if do not recognize:
+
+* `!instruct`: This section contains instruction to frontends for graph-level meta-programming purpose; A semi-standard format will be provided.
+* `%message`: This provides a front-end use-only (distinct from console prints) messages on the display medium. Use `%error` for errors (e.g. exceptions.)
+* `%error`
 
 ### Instructions
 
@@ -466,29 +497,99 @@ Only specific subset of runtime and derived functionalities will be exposed thro
 
 This section documents a reference implementation, known as Parcel NExT, based on **latest version of .Net** (at the moment it's .Net 8). It includes complete suite of core engine, back end, front end, and domain specific libraries.
 
+1. Ama: C# first multi-runtime hybrid execution mode runtime and execution engine.
+2. Tranquility: WebSocket service provider.
+3. Gospel: Godot graph editor.
+
+```mermaid
+---
+title: The Parcel Platform Overview (Parcel.NExT Reference Implementation)
+---
+flowchart TD
+    id0[The Parcel Platform]
+
+    id1[Parcel Open Standards]
+    id10[Reference Implementation]
+    id3[Other Potential Parcel Implementations]
+
+    id4[Main Specification]
+    id5[PVM]
+    id6[PIS]
+
+    id11[Parcel.V1]
+
+    id2[Parcel NExT Ecosystem]
+    id12[Core Components]
+    id13[Standalone Tools]
+    id14[Community Services]
+
+    id7[Ama]
+    id8[Tranquility]
+    id9[Gospel]
+
+    id15[Escort]
+
+    id16[Arcadia]
+
+    id0 --> id1
+    id0 --> id10
+    id0 --> id3
+
+    id1 --> id4
+    id1 --> id5
+    id1 --> id6
+
+    id10 --> id2
+    id3 --> id11
+    
+    id2 --> id12
+    id2 --> id13
+    id2 --> id14
+
+    id12 --> id7
+    id12 --> id8
+    id12 --> id9
+
+    id13 --> id15
+```
+
 ### Parcel.NExT
 
 <!-- Naming -->
 
 This suite is collectively known as **Parcel.NExT**, including following notable components:
-* Core Engine - xxx Engine (Pheonix) <!--Exparcelo (from Expresso and Parcel)-->
-* Backend: Merlin
-* xxx Editor (Fox)
+
+* Ama: Core Engine
+* Merlin: REST API Backend
+* Gospel: Desktop-first cross-platform graph editor
 * (Lightening Browser)
-* Frontend: Paper Space
-* Agent/Deskmate: Airi
+* Paper Space: Web-first Frontend (NodeJS)
+* Airi: Arcadia Agent/General front-end deskmate
 * Escort (Parcel, Parcel-cli): Standalone executioner and service runner, logger.
 * Tranquility (C#): WebSocket based stated full-feature C# backend.
-(Use Medalian and myth names)
+* Flux: Standalone package manager program. (Might also provide Forge: standalone packager or uploader to Arcanum)
+* Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
+* Catalyst: Gospel based cloud processing platform.
+<!-- Use Medalian and myth names -->
 
-Additional frontends:
+Additional (experimental) Front-ends:
 
 * Relic
-* Gospel
 
 Experimental services:
 
 * Arcadia (Parcel Hive/Sanctuary): Simple universal websocket text-chat server with multiple channels providing live-online community support.
+
+Other names:
+
+* (POF) Destiny: Desktop automation.
+* (POF) Avalanche: Parcel Distribution Service
+* Hermit: ????
+* (POF) Messiah: JavaScript-native frontend runtime web-building framework that utilizes backend through websockets
+* Kalos: Node-native file browser and media viewer <!--From kaleidoscope-->
+* Lightening: Node-native interface to Lightening browswer
+* Phanto: Time-domain simulation
+* Polyglot: CodeGen
 
 ### Core Engine
 

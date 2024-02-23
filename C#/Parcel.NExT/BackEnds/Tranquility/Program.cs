@@ -1,12 +1,26 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using WebSocketSharp.Server;
+using System.Reflection;
 
 namespace Tranquility
 {
     public class TranquilityOptions
     {
-        public string ServerAddress { get; set; }
+        #region Basic Settings
+        public string? ServerAddress { get; set; }
+        #endregion
+
+        #region Default Runtime Context
+        /// <summary>
+        /// Whether backend should load demo assemblies during initialization; Those assemblies can serve as the default "standard" libraries available
+        /// </summary>
+        public bool LoadDemoAssemblis { get; set; } = true;
+        /// <summary>
+        /// Backend specific runtime initialization behavior
+        /// </summary>
+        public string[] DemoAssemblies { get; set; } = [nameof(Demo)];
+        #endregion
     }
 
     public static class Program
@@ -26,6 +40,10 @@ namespace Tranquility
             }
 
             TranquilityOptions options = ParseOptions(args);
+
+            if (options.LoadDemoAssemblis)
+                foreach (var name in options.DemoAssemblies)
+                    Assembly.LoadFrom(name);
 
             Logging.Info($"Start {nameof(Tranquility)} at {options.ServerAddress}...");
             WebSocketServer wssv = new(options.ServerAddress);
@@ -52,7 +70,7 @@ namespace Tranquility
                 """);
         }
 
-        private static TranquilityOptions? ParseOptions(string[] args)
+        private static TranquilityOptions ParseOptions(string[] args)
         {
             const string envVar = "PARCEL_TRANQUILITY_SERVER_ADDRESS";
 
@@ -68,10 +86,7 @@ namespace Tranquility
                 if (arg.StartsWith("--"))
                     keyword = arg;
                 else if (keyword == null)
-                {
-                    Console.WriteLine($"Invalid argument format: {arg}");
-                    return null;
-                }
+                    throw new ArgumentException($"Invalid argument format: {arg}");
                 else
                 {
                     switch (keyword)

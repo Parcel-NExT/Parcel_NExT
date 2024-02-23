@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.NExT.Interpreter\Parcel.NExT.Interpreter.csproj" />
+  </ItemGroup>
+
 </Project>

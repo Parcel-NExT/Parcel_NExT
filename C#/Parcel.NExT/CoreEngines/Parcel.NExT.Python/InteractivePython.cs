@@ -1,6 +1,5 @@
-﻿using Python.Runtime;
-using System.Text.RegularExpressions;
-using System.Text;
+﻿using Parcel.NExT.Python.Helpers;
+using Python.Runtime;
 
 namespace PythonNetPrintImplementation
 {
@@ -17,75 +16,6 @@ namespace PythonNetPrintImplementation
 
 namespace Parcel.NExT.Python
 {
-    public static class StringHelper
-    {
-        public static string[] SplitCommandLineArguments(this string inputString, char separator = ',', bool includeQuotesInString = false)
-        {
-            List<string> parameters = [];
-            StringBuilder current = new();
-
-            bool inQuotes = false;
-            foreach (var c in inputString)
-            {
-                if (c == '"')
-                {
-                    inQuotes = !inQuotes;
-                    if (includeQuotesInString)
-                        current.Append(c);
-                }
-                else if (c == separator)
-                {
-                    if (!inQuotes)
-                    {
-                        parameters.Add(current.ToString());
-                        current.Clear();
-                    }
-                    else
-                        current.Append(c);
-                }
-                else
-                {
-                    current.Append(c);
-                }
-            }
-            if (current.Length != 0)
-                parameters.Add(current.ToString());
-            return parameters.ToArray();
-        }
-    }
-
-    public static class RuntimeHelper
-    {
-        public static string? FindPythonDLL()
-        {
-            foreach (string path in SplitArgumentsLikeCsv(Environment.GetEnvironmentVariable("PATH")!, ';', true))
-            {
-                try
-                {
-                    foreach (var file in Directory.EnumerateFiles(path))
-                    {
-                        string filename = Path.GetFileName(file);
-                        if (Regex.IsMatch(filename, @"python\d{2,3}\.dll"))
-                            return file;
-                    }
-                }
-                // Remark-cz: Certain paths might NOT be enumerable due to access issues
-                catch (Exception) { continue; }
-            }
-            return null;
-
-            static string[] SplitArgumentsLikeCsv(string line, char separator = ',', bool ignoreEmptyEntries = false)
-            {
-                string[] arguments = line.SplitCommandLineArguments(separator);
-
-                if (ignoreEmptyEntries)
-                    return arguments.Where(a => !string.IsNullOrWhiteSpace(a)).ToArray();
-                else
-                    return arguments;
-            }
-        }
-    }
-
     public sealed class InteractivePython
     {
         #region Construction
