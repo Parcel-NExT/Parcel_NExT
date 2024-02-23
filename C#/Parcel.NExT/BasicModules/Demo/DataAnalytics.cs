@@ -1,4 +1,5 @@
 ﻿using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.SemanticTypes;
 
 namespace Demo
 {
@@ -47,6 +48,19 @@ namespace Demo
         /// A mega node that reads CSV and performs advanced post-processing and generates a bunch of optional outputs
         /// </summary>
         public static ParcelPayload ReadCSV(ReadCSVOptions options)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Queries datagrid using SQL.
+        /// </summary>
+        /// <remarks>
+        /// Internally uses SQLite; Provides oneshot query only.
+        /// </remarks>
+        /// <returns>
+        /// Returns a new DataGrid.
+        /// </returns>
+        public static ParcelPayload Query(DataGrid data, string sql)
         {
             throw new NotImplementedException();
         }

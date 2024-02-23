@@ -156,7 +156,10 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                 .ToArray();
 
             Dictionary<string, SimplexString> members = [];
-            members.Add("Methods", new(false, methods.Select(m => $"{m.DeclaringType!.Name}.{m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})").OrderBy(n => n).ToArray()));
+            members.Add("Methods", new(false, methods
+                .Select(GetMethodFullSignature)
+                .OrderBy(n => n)
+                .ToArray()));
             members.Add("Types", new(true, parcelExportTypes.Select(t => t.Name).OrderBy(n => n).ToArray()));
             members.Add("Module", new(false, moduleName));
             return members;
@@ -202,6 +205,17 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         {
             // TODO: Remark-cz: At the moment we are using simple names as match, more robust ways of doing this might be desirable
             return TargetEndPoints.TryGetValue(target.TargetPath, out TargetEndPoint? value) ? value : null;
+        }
+        #endregion
+
+        #region Helpers
+        private string GetMethodSignature(MethodInfo method)
+        {
+            return $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})";
+        }
+        private string GetMethodFullSignature(MethodInfo method)
+        {
+            return $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})->{method.ReturnType.GetFormattedName()}";
         }
         #endregion
     }

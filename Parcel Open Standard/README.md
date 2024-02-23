@@ -383,6 +383,12 @@ Payloads serve critical functions like:
 * For runtime purpose: the `value` section contains cached data for functional nodes for optimization purpose
 * For meta-programming purpose: the `instruct` section can contain instructs as post-processing behaviors for modifying graph specification
 
+Like attributes, payload names are repurposed for specialized usages, and corresponding handlers can just ignore if do not recognize:
+
+* `!instruct`: This section contains instruction to frontends for graph-level meta-programming purpose; A semi-standard format will be provided.
+* `%message`: This provides a front-end use-only (distinct from console prints) messages on the display medium. Use `%error` for errors (e.g. exceptions.)
+* `%error`
+
 ### Instructions
 
 A plain text based stated sequential sequence of instructions that implements the same functions/execution model as the graphs. This is for runtime implementations that do not handle graphs as defined in earlier sections. On the other hand, all runtimes/backend engines should implement this section to ensure proper understanding of the execution logic and as a fallback way of executing the graph. The text instructions each occupy a single line and thus have line significance, should always end a line with `\n` and line order is VERY important. The instructions are written in Parcel Instruction Set (PIS) - see Parcel Virtual Machine (PVM) documentation for more details. The instructions second should NOT have trailing empty lines.
@@ -497,7 +503,7 @@ This section documents a reference implementation, known as Parcel NExT, based o
 
 ```mermaid
 ---
-title: The Parcel Platform Overview
+title: The Parcel Platform Overview (Parcel.NExT Reference Implementation)
 ---
 flowchart TD
     id0[The Parcel Platform]

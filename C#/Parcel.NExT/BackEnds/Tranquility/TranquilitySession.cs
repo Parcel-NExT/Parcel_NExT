@@ -77,7 +77,7 @@ namespace Tranquility
                     string fragmentHeader = $"MULTIPART:{i+1} {segments} {message.Length}"; // We make this format simple so for Gospel it's less parsing.
                     string fragment = message.Substring(i * sizeLimit, Math.Min(message.Length - i * sizeLimit, sizeLimit));
                     Send($"{fragmentHeader}\n{fragment}");
-                    Thread.Sleep(5); // Remark-cz: (Hack) Give front-end some processing time before buffer fills up. We have tested that on localhost, both 100ms, 10ms, 5ms and 1ms seems to work - though it largely depends on how fast frontend (Gospel) can digest it. If this time is to short, Godot might either simply run out of buffer memory and output error, or just drop packets silently. 1ms works on a fast PC, while 5ms is minimal requirement for a slow laptop.
+                    Thread.Sleep(5); // Remark-cz: (Hack) Give front-end some processing time before buffer fills up. We have tested that on localhost, both 100ms, 10ms, 5ms and 1ms seems to work - though it largely depends on how fast frontend (Gospel) can digest it. If this time is to short, Godot might either simply run out of buffer memory and output error, or just drop packets silently. 1ms works on a fast PC, while 5ms is minimal requirement for a slow laptop. Theoratically speaking, in terms of Godot, it depends on FPS - because process() is called per frame.
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace Tranquility
         #region Helpers
         private object[]? MarshalStringArgumentsToMethodInputs(ParameterInfo[] parameterInfos, string[] stringValues)
         {
-            throw new NotImplementedException();
+            return stringValues; // TODO: Implement actual logic
         }
         #endregion
     }
