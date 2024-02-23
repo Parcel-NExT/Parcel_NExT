@@ -1,6 +1,9 @@
 ﻿using Parcel.CoreEngine.Contracts;
 using Parcel.CoreEngine.Conversion;
+using Parcel.CoreEngine.DependencySolver;
+using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.Service.LibraryProvider;
+using Parcel.CoreEngine.Standardization;
 using Parcel.NExT.Interpreter.Helpers;
 using System.Reflection;
 
@@ -82,6 +85,21 @@ namespace Parcel.CoreEngine.Service.Interpretation
                 // Extract attribute name from annotated syntax
                 return annotatedAttribute.Split(':').First().TrimStart('<').TrimEnd('>');
             }
+        }
+        /// <summary>
+        /// Given a self-contained set of Parcel Nodes, evaluate them all and return results for each node.
+        /// This function assumes a graph-free loose set of nodes witht interdependancies specified using standard attribute syntax.
+        /// The return payload will be in the order of input nodes and have one payload for each node.
+        /// </summary>
+        public ParcelPayload[] EvaluateSubGraph(ParcelNode[] nodes)
+        {
+            Dictionary<ParcelNode, ParcelPayload> payloads = [];
+
+            // Solve nodes
+            Dictionary<string, ParcelNode> indexedNodes = UniquelyIdentifiableNaming.TagUniqueNamesInSelfContainedNodes(nodes);
+            IEnumerable<ParcelNode> sortedNodes = FunctionalDependencySolver.ResolveNodesOrder(nodes, indexedNodes);
+
+            return nodes.Select(n => payloads[n]).ToArray();
         }
         #endregion
 

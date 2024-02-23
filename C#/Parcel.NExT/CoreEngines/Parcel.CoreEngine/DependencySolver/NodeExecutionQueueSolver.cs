@@ -1,4 +1,6 @@
-﻿using Parcel.CoreEngine.Document;
+﻿using Parcel.CoreEngine.Contracts;
+using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.Standardization;
 
 namespace Parcel.CoreEngine.DependencySolver
 {
@@ -24,68 +26,61 @@ namespace Parcel.CoreEngine.DependencySolver
         #endregion
     }
 
+    /// <summary>
+    /// The execution queue is for solving dependancy for functional nodes
+    /// </summary>
     public class ExecutionQueue
     {
         #region Internal State
-        private List<ProcessorNode> Queue { get; set; } = new List<ProcessorNode>();
+        private List<ParcelNode> _Queue = [];
+        #endregion
+
+        #region Constructor
+        public Dictionary<string, ParcelNode> NameLookUp { get; }
+        public ExecutionQueue(Dictionary<string, ParcelNode> lookup)
+        {
+            NameLookUp = lookup;
+        }
         #endregion
 
         #region Interface
-        public void InitializeGraph(IEnumerable<ProcessorNode> targetNodes)
+        public void InitializeGraph(IEnumerable<ParcelNode> targetNodes)
         {
-            foreach (ProcessorNode processorNode in targetNodes)
+            foreach (ParcelNode processorNode in targetNodes)
                 UpdateNodePosition(null, processorNode);
-        }
-
-        public void ExecuteGraph()
-        {
-            foreach (ProcessorNode node in Queue)
-            {
-                try
-                {
-                    node.Evaluate();
-                }
-                catch (Exception e)
-                {
-                    node.Message.Content = e.Message;
-                    node.Message.Type = NodeMessageType.Error;
-                    break;
-                }
-            }
         }
         #endregion
 
         #region Routines
-        private void UpdateNodePosition(ProcessorNode last, ProcessorNode node)
+        private void UpdateNodePosition(ParcelNode? last, ParcelNode node)
         {
-            if (!node.Input.Any(i => i.IsConnected))
-                Queue.Insert(0, node);
+            if (!node.HasInputs())
+                _Queue.Insert(0, node);
             else
             {
-                if (!Queue.Contains(node))
+                if (!_Queue.Contains(node))
                 {
                     if (last == null)
-                        Queue.Add(node);
+                        _Queue.Add(node);
                     else
-                        Queue.Insert(Queue.IndexOf(last), node);
+                        _Queue.Insert(_Queue.IndexOf(last), node);
                 }
                 else if (last != null)
                 {
-                    Queue.Remove(node);
-                    Queue.Insert(Queue.IndexOf(last), node);
+                    _Queue.Remove(node);
+                    _Queue.Insert(_Queue.IndexOf(last), node);
                 }
 
-                foreach (BaseNode iter in node.Input.Where(i => i.IsConnected)
-                    .Select(i => i.Connections.Single())
-                    .Select(c => c.Input.Node))
+                foreach (ParcelNode iter in node.GetInputnames()
+                    .Select(n => NameLookUp[n]))
                 {
-                    BaseNode input = iter;
+                    ParcelNode input = iter;
 
-                    while (input is KnotNode knot)
-                        input = knot.Previous;
+                    while (input.Target == SystemNodes.KnotNodeTarget)
+                        input = NameLookUp[input.Attributes.Single().Value.TrimStart('@')];
 
-                    if (input is ProcessorNode processor)
-                        UpdateNodePosition(node, processor);
+                    if (input.IsProcessorNode())
+                        UpdateNodePosition(node, input);
                 }
             }
         }

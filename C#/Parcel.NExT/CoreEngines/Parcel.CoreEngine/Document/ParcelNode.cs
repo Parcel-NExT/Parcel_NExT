@@ -1,5 +1,6 @@
 ﻿namespace Parcel.CoreEngine.Document
 {
+    [Obsolete("We should use attribute syntax instead.")]
     public sealed class ParcelNodeInputDefinition
     {
         public ParcelNodeInputDefinition(string name, string source)
@@ -33,7 +34,11 @@
         public string Name { get; set; }
         public string Target { get; set; }
         public Dictionary<string, string> Attributes { get; set; }
+        public List<string> Tags { get; set; }
+
+        [Obsolete("We should use attribute syntax instead.")]
         public List<ParcelNodeInputDefinition> Inputs { get; set; } = [];
+        [Obsolete("We should use attribute syntax instead.")]
         public List<string> Outputs { get; set; } = [];
         #endregion
     }
