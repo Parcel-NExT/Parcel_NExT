@@ -17,3 +17,9 @@ title Parcel.NExT Development Timeline
     2024.01 Week 5
         : Gospel
 ```
+
+```mermaid
+timeline
+title Events
+    2024.02.25 First Parcel DevDay
+```

@@ -40,6 +40,7 @@ mindmap
         Backend
     Execution Engine
         Runtimes
+        CLI Runner
     Graph Document
         Binary
         Text
@@ -153,11 +154,11 @@ We use those somewhat confusing extensions for official parcel file format:
 
 ### Text-Based Command-Line Format (MiniParcel)
 
-(Pending consolidating with Mini Parcel)
-
-MiniParcel is not suited for full serialization notably because: 1) It's instruction only and intended to be simply and high level, 2) It doesn't not name specific end targets, 3) It doesn't have concept of binary payload, 4) It's node invocation is positional based and not Parcel document graph-based and key:value attribute based.
+MiniParcel can be used for data transfer of sub node networks, see sections on MiniParcel. MiniParcel is not suited for full serialization notably because: 1) It has instruction only and is intended to be simple and high level, 2) It doesn't not name specific end targets (???), 3) It doesn't have concept of binary payload, 4) It's node invocation is positionally based and not Parcel document graph-based or key:value attribute based.
 
 ### General Serialization Formats
+
+(PENDING FULL DOC WHEN IMPLEMENTATION IS COMPLETE)
 
 * Header takes two lines
 * May contain (file-format-level) comments: just ignore when parsing
@@ -449,6 +450,31 @@ This example illustrates calculating `sin(PI)` and print in formatted string:
 
 A C++ implementation of a PVM will be provided for reference purpose that can understand all functions that are defined in Parcel Standard Libraries (PSL).
 
+## Core Standards
+
+The Core Standards consist of a few most important specifications pertaining to Parcel implementations.
+
+```mermaid
+---
+title: Parcel Core Standards
+---
+flowchart TD
+    id1["Parcel Open Standards (POS)"]
+    id2["Parcel Virtual Machine (PVM)"]
+    id3["Parcel Instruction Sets (PIS)"]
+    id4["Parcel Standard Libraries (PSL)"]
+    id5["MiniParcel"]
+    id6["Parcel Document Specification (PDS)"]
+
+    id1 --> Behaviors
+    id1 --> Syntax
+    Behaviors --> id2
+    Syntax --> id3
+    Behaviors --> id4
+    Syntax --> id5
+    Syntax --> id6
+```
+
 ## Engine (Execution Behavior)
 
 In this section we document and specifies some expected engine behavior:
@@ -665,11 +691,17 @@ When promoting user to select node, Parcel.NExT presents the nodes through three
 
 ### MiniParcel
 
-Either the text format proper, or a REPL DSL frontend.
+MiniParcel is part of Core Engine, provided as a module for other services to consume. It is both a DSL language, a potent text-based serialization format (mostly for compact sub node network transfer purpose, provide a subset of full PDS capabilities), and the name refers to a standalone REPL frontend parser (C# based). MiniParcel is a procedural language and provides core syntax elements for attribute connections for PVM.
 
-MiniParcel is human-oriented declarative scripting language that provides a quick interface into graph authorization. It is less verbose to proper text-based format.
+MiniParcel is human-oriented declarative scripting language that provides a quick interface into graph authorization. It is less verbose to fully-featured Parcel text serialization format. MiniParcel makes assumptions about target names and function calling signatures and greatly simplifies syntax. It's designed to be both versatile enough for quick scripting purpose, and robust enough to express complete sub node networks for specification and interoperation purpose.
 
-MiniParcel makes assumptions about target names and function calling signatures and greatly simplifes syntax.
+### Core Syntax
+
+PENDING.
+
+### Attribute connections
+
+* Per PVM and PDS, Parcel documents do not contain edges or explicit definition of connections. MiniParcel DSL provides syntax for node addressing and attribute connections.
 
 ## Key Design Decisions
 
