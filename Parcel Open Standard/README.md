@@ -156,6 +156,8 @@ We use those somewhat confusing extensions for official parcel file format:
 
 MiniParcel can be used for data transfer of sub node networks, see sections on MiniParcel. MiniParcel is not suited for full serialization notably because: 1) It has instruction only and is intended to be simple and high level, 2) It doesn't not name specific end targets (???), 3) It doesn't have concept of binary payload, 4) It's node invocation is positionally based and not Parcel document graph-based or key:value attribute based.
 
+<!-- (Comment) Because Payloads are in principle ABSENT by default, but all nodes have practical needs for "outputs". In this case, the only way to supply it on the node specification level is to utilize attributes, as originally proposed. However, the actual value is NOT stored on attribute themselves at all: in this case it's essential for attribute (values) to have an addressing syntax to refer to payloads. -->
+
 ### General Serialization Formats
 
 (PENDING FULL DOC WHEN IMPLEMENTATION IS COMPLETE)

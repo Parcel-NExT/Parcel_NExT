@@ -2,6 +2,8 @@
 using System.Net;
 using WebSocketSharp.Server;
 using System.Reflection;
+using Tranquility.Sessions;
+using Tranquility.Services;
 
 namespace Tranquility
 {
@@ -25,6 +27,7 @@ namespace Tranquility
 
     public static class Program
     {
+        #region Main
         static void Main(string[] args)
         {
             if (args.Length == 0 || args.First() == "--help")
@@ -40,7 +43,20 @@ namespace Tranquility
             }
 
             TranquilityOptions options = ParseOptions(args);
+            RedirectStandardOutput();
+            StartService(options);
+        }
+        #endregion
 
+        #region Routines
+        private static void RedirectStandardOutput()
+        {
+            ConsoleSessionRedirectedTextWriter outputWriter = new();
+            Logging.StandardOutput = Console.Out;
+            Console.SetOut(outputWriter);
+        }
+        private static void StartService(TranquilityOptions options)
+        {
             if (options.LoadDemoAssemblis)
                 foreach (var name in options.DemoAssemblies)
                     Assembly.LoadFrom(name);
@@ -49,14 +65,16 @@ namespace Tranquility
             WebSocketServer wssv = new(options.ServerAddress);
 
             wssv.AddWebSocketService<TranquilitySession>("/Tranquility");
+            wssv.AddWebSocketService<ConsoleSession>("/Console");
             wssv.Start();
 
-            Console.WriteLine("Tranquility is started. Press any key to quit.");
+            Logging.PrintToStandardOutput("Tranquility is started. Press any key to quit.");
             Console.ReadKey(true);
             wssv.Stop();
         }
+        #endregion
 
-        #region Routines
+        #region Subroutines
         private static void PrintHelp()
         {
             Console.WriteLine("""
@@ -69,7 +87,6 @@ namespace Tranquility
                     --get_port: Print a free port number and exit.
                 """);
         }
-
         private static TranquilityOptions ParseOptions(string[] args)
         {
             const string envVar = "PARCEL_TRANQUILITY_SERVER_ADDRESS";
