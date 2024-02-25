@@ -1,4 +1,6 @@
 ﻿
+using Tranquility.Services;
+
 namespace Tranquility
 {
     public static class Logging
@@ -30,10 +32,13 @@ namespace Tranquility
         #region Helpers
         public static void PrintToStandardOutput(string outputLine)
         {
-            var currentWriter = Console.Out;
-            Console.SetOut(StandardOutput);
-            Console.WriteLine(outputLine);
-            Console.SetOut(currentWriter);
+            lock (ConsoleSessionRedirectedTextWriter.ConsoleStateChangeLock)
+            {
+                var currentWriter = Console.Out;
+                Console.SetOut(StandardOutput);
+                Console.WriteLine(outputLine);
+                Console.SetOut(currentWriter);
+            }
         }
         #endregion
     }

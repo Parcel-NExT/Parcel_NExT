@@ -43,6 +43,12 @@ namespace Demo.Standard
         #endregion
     }
 
+    public static class SystemFunctions
+    {
+        public static void PrintLine(string message)
+            => Console.WriteLine(message); // TODO: How do we implement this with the front-end? A possible approach is to utilize seperate front-end service.
+    }
+
     /// <summary>
     /// Functional operators on basic types;
     /// In general, front-ends and back-ends should provide more direct in-place and native evaluations for optimization purpose instead of relying on such functional operators

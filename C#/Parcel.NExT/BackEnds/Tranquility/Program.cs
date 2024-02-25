@@ -51,9 +51,12 @@ namespace Tranquility
         #region Routines
         private static void RedirectStandardOutput()
         {
-            ConsoleSessionRedirectedTextWriter outputWriter = new();
-            Logging.StandardOutput = Console.Out;
-            Console.SetOut(outputWriter);
+            lock (ConsoleSessionRedirectedTextWriter.ConsoleStateChangeLock)
+            {
+                ConsoleSessionRedirectedTextWriter outputWriter = new();
+                Logging.StandardOutput = Console.Out;
+                Console.SetOut(outputWriter);
+            }
         }
         private static void StartService(TranquilityOptions options)
         {

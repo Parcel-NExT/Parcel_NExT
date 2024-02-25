@@ -6,7 +6,23 @@ namespace Tranquility.Services
 {
     internal class ConsoleSessionRedirectedTextWriter : TextWriter
     {
+        #region Threadlock
+        /// <summary>
+        /// All routines that touches Console.SetOut() should lock on this
+        /// </summary>
+        /// <remarks>
+        /// We added this to avoid the situation when both the main session and console session are quickly exchanging messages
+        /// </remarks>
+        public static object ConsoleStateChangeLock = new();
+        #endregion
+
+        #region Overrides
         public override Encoding Encoding => Encoding.UTF8;
+        public override string NewLine => "\n";
+        #endregion
+
+        #region Print Redirections
+
         public override void Write(bool value)
         {
             ConsoleSession.BroadcastMessages(value.ToString());
@@ -163,5 +179,6 @@ namespace Tranquility.Services
         {
             ConsoleSession.BroadcastMessages(value.ToString() + Environment.NewLine);
         }
+        #endregion
     }
 }

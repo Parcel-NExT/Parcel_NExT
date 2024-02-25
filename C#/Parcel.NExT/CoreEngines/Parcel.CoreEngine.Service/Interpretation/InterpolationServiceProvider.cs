@@ -51,6 +51,9 @@ namespace Parcel.CoreEngine.Service.Interpretation
         #endregion
 
         #region General Services
+        /// <returns>
+        /// This function may return null, and backends are responsible for handling it well with suitable protocol with front-ends
+        /// </returns>
         /// <remarks>
         /// The attributes will be a Dictionary<string, string> - because of the way upstream handles it, we are accepting IDictionary<string, object> here
         /// </remarks>
