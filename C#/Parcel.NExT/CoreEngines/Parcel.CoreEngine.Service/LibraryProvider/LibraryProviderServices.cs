@@ -2,7 +2,6 @@
 using Parcel.CoreEngine.Primitives;
 using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.NExT.Interpreter.Helpers;
-using Parcel.NExT.Python;
 using Parcel.NExT.Python.Helpers;
 using System.Reflection;
 
@@ -103,8 +102,13 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
                     return [.. members, .. properties];
                 case EndPointNature.StaticMethod:
                     IEnumerable<string> arguments = endpoint.Method!.GetParameters().Select(p => $"<{p.Name}:{p.ParameterType.GetFormattedName()}");
-                    string returnAttribute = $"result>:{endpoint.Method!.ReturnType.Name}";
-                    return [.. arguments, returnAttribute];
+                    if (endpoint.Method!.ReturnType == typeof(void))
+                        return [.. arguments];
+                    else
+                    {
+                        string returnAttribute = $"result>:{endpoint.Method!.ReturnType.Name}";
+                        return [.. arguments, returnAttribute];
+                    }
                 case EndPointNature.InstanceMethod:
                     throw new NotImplementedException();
                 case EndPointNature.System:
