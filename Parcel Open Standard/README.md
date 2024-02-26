@@ -489,6 +489,8 @@ In this section we document and specifies some expected engine behavior:
 
 Any functional frontend should NOT ONLY target node-graph drafting completeness but take the efficiency of such construction - both in terms of keyboard shortcuts, non-mouse usage, and version control capabilities - to the highest standard. Houdini is a decent but not good enough example, Unreal Engine Blueprint is an exceptionally bad despite pretty looking example.
 
+A proper graph editor front-end must support displaying node attributes in potential grouped/tabbed manner, and suppprt adding/removing attributes. Attributes may also be multi-dimensional vector/array or grid format and a native per-primitive (typed) editor control is preferred over pop-ups and text-based entries. As a reference, Consult Houdini Fluid Source node.
+
 ## Parcel Back-Ends
 
 Unless explicitly running node by node or as interpretative mode, type check for all nodes should happen at compile time.
@@ -597,7 +599,7 @@ This suite is collectively known as **Parcel.NExT**, including following notable
 * Tranquility (C#): WebSocket based stated full-feature C# backend.
 * Flux: Standalone package manager program. (Might also provide Forge: standalone packager or uploader to Arcanum)
 * Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
-* Catalyst: Gospel based cloud processing platform.
+* Catalyst: Gospel based cloud processing platform. Repository sharing platform, plain text only + dlls. Icon: Open box, Pandora style, stars.
 <!-- Use Medalian and myth names -->
 
 Additional (experimental) Front-ends:

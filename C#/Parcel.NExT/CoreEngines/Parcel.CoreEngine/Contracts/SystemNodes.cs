@@ -13,6 +13,8 @@
         public const string FunctionDefinitionReturnNodeTarget = "Parcel.FunctionReturn:Construct";
         public const string StandardPrintNodeTarget = "Parcel.Print:Core";
         public const string FrontEndUsePreviewNodeTarget = "Parcel.Preview:Frontend";
+        public const string PrimitiveNumberNodeTarget = "Parcel.Number:Primitive";
+        public const string PrimitiveStringNodeTarget = "Parcel.String:Primitive";
         #endregion
 
         /// <summary>
@@ -35,6 +37,9 @@
             StandardPrintNodeTarget,  // Print messages to standard output/console (affects both backend and front-end)
 
             FrontEndUsePreviewNodeTarget, // Denotes a preview node
+
+            PrimitiveNumberNodeTarget,
+            PrimitiveStringNodeTarget
         ];
     }
 }

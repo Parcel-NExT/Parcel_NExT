@@ -29,7 +29,7 @@ namespace Tranquility.Sessions
 
             LogInfo("New connection.");
 
-            _ServiceProviders = [new LibraryProviderServices(), new InterpolationServiceProvider()];
+            _ServiceProviders = [new LibraryProviderServices(), new InterpolationServiceProvider(), new AmaServiceProvider()];
             _AvailableEndPoints = [];
             foreach (var provider in _ServiceProviders)
             {
