@@ -8,7 +8,8 @@ using System.Reflection;
 namespace Parcel.CoreEngine.Service.Interpretation
 {
     /// <summary>
-    /// A context-safe interpolation serfice provider
+    /// A context-safe interpolation serfice provider; 
+    /// The services provided here are stateless, use Ama Service Provider for stated services.
     /// </summary>
     public sealed class InterpolationServiceProvider : ServiceProvider
     {
@@ -19,7 +20,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
         /// <remarks>
         /// The attributes will be a Dictionary<string, string> - because of the way upstream handles it, we are accepting IDictionary<string, object> here
         /// </remarks>
-        public object? EvaluateSingleNode(string graph, string target, string tags, IDictionary<string, object> attributes)
+        public object? EvaluateSingleNode(string target, IDictionary<string, object> attributes)
         {
             Dictionary<string, string> formattedAttributes = attributes
                 .ToDictionary(a => FormatAttribute(a.Key), a => (string)a.Value);
