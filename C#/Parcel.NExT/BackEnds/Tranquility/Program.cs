@@ -69,6 +69,7 @@ namespace Tranquility
 
             wssv.AddWebSocketService<TranquilitySession>("/Tranquility");
             wssv.AddWebSocketService<ConsoleSession>("/Console");
+            wssv.AddWebSocketService<StatedSession>("/Stated");
             wssv.Start();
 
             Logging.PrintToStandardOutput("Tranquility is started. Press any key to quit.");
