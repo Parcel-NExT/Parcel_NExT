@@ -28,6 +28,67 @@ The Parcel virtual machine (PVM) defines an intermediate layer between higher le
 
 A proper parcel program is thus just the description in the form of this node graph - called "Parcel Node Graph (PNG)", and nothing more, and nothing less. The material behavior of such a parcel program when executed by an execution engine depends on implementation. This specifically specifies how any particular implementation should interpret the contents of a parcel program.
 
+### Parcel Instruction Sets (PIS)
+
+A plain text based stated sequential sequence of instructions that implements the same functions/execution model as the graphs. This is for runtime implementations that do not handle graphs as defined in earlier sections. On the other hand, all runtimes/backend engines should implement this section to ensure proper understanding of the execution logic and as a fallback way of executing the graph. The text instructions each occupy a single line and thus have line significance, should always end a line with `\n` and line order is VERY important. The instructions are written in Parcel Instruction Set (PIS) - see Parcel Virtual Machine (PVM) documentation for more details. The instructions second should NOT have trailing empty lines.
+
+Below defines all instructions: <!--Consider moving this section to PVM, or just talk about PVM in this document instead of as a dedicated document-->
+
+|Instruction|Name|Meaning|
+|-|-|-|
+|` `|Empty line|Should ignore; Do not count to line number.|
+|`#`|Comment line|Parser should ignore; Do not count to line number.|
+|`.<Section Name>`|Section|Defines a code section, can be used for function definitions etc. Non-essential: if an implementation handles this, then it should allow `CALL` to provide section name as the first parameter; Otherwise an implementation can just ignore this. Do not count to line number.|
+|`PRELOAD <Package Name>`|Preload|(Use multiple PRELOAD commands to) Defines all dependant modules for the purpose of ease of implementation. All functions must be fully simple addressed without runtime information and understand single addressing space. Function names should start with module name.|
+|`SET <Variable Name> <Variable Value>`|Set variable|Sets a named variable; Different implementations shall provide different number of variables and different available variable names, but those four variables must be provided (the `$` prefix has no significance): `$1`, `$2`, `$3`, `$4`. The `<Variable Value>` is plain text value that may represent either string or number.|
+|`COPY <Source Variable> <Target Variable>`|Copy variable|Copies value from source variable to target variable.|
+|`CALL <Function Name> [<Function Parameters>...]`|Call function|Calls a function, optionally with a sequence of arguments - the argument values MUST be provided in variables, thus the parameters are all variable names.|
+|`JUMP <Line Number>`|Jump|Jump next execution to specified line number (inclusive).|
+|`BRANCH <Variable> <Line Number 1> <Line Number 2>`|Branch|Point IP to Line number 1 if variable is true, otherwise point IP to line number 2.|
+|`LINE <Line Value>`|Line|Denotes a single value|
+|`TEXT <Variable Name> <Line Range>`|Set text|Assigns multi-line text to variables; Since each instruction is a single line thus variable values in instructions do not have capacity to contain new line, the TEXT command is provided to assign multi-line values to a variable. Line range has the format like this: 15-75; It can also be a single line: 15.|
+
+There is no ABI (application binary interface) since it's text-based, and there is no primitive operators like `ADD` or `SUB` because those must be implemented as functions. When passing variables to functions, the address are always passed - depending on implementation and the functions, such addresses might immediately be interpreted as values, or used as is (i.e. inside functions, they can modify variable values).
+Besides above, there is a special `@` symbol that can be used to denote valid program lines and is optional. On the other hand, all parameters are space delimited and spaces can be escaped using `"` quotes. That it's, it's just like plain CLI arguments.
+
+Those are ALL the PIS instructions! As you can see, two notably features of PIS are:
+
+1. It's text-based.
+2. Its variables can hold arbitrary things.
+3. The instruction set itself provides no way to represent binary values in text format - however variables can hold binary variables per runtime implementation. Parcel Standard Libraries will define functions that provides conversion of plain-text to binary.
+4. PIS on its own DO NOT define functional programs - all such functionalities require functions, which are provided by the runtime.
+
+All implementations must provide those variable names (the `$` has no significance):
+
+|Variable|Name|Purpose|Size|
+|-|-|-|-|
+|`$i`|Instruction Pointer|The next execution line. Notice with `SET` and `COPY` one can assign to this variable directly.|8 bytes|
+|`$1`|Variable 1|Holds variable.|Varying size.|
+|`$2`|Variable 2|Holds variable.|Varying size.|
+|`$3`|Variable 3|Holds variable.|Varying size.|
+|`$4`|Variable 4|Holds variable.|Varying size.|
+|`$r`|Function Result|Holds result of last function call.|Varying size.|
+
+To illustrate the point, here is a basic "Hello World!" example written in PIS:
+
+```PIS
+# Call print
+SET $1 "Hello World"
+CALL Print $1
+```
+
+This example illustrates calculating `sin(PI)` and print in formatted string:
+
+```PIS
+# Do calculation
+@1 SET $1 3.1415926
+@2 SET $2 "Calculation result: %i"
+@3 CALL Sin $1
+@4 CALL Print $2 $r
+```
+
+A C++ implementation of a PVM will be provided for reference purpose that can understand all functions that are defined in Parcel Standard Libraries (PSL).
+
 ## Parcel Solution Architecture
 
 A typical parcel implementation includes an editor, an execution engine, and a graph description.
@@ -145,6 +206,18 @@ We use those somewhat confusing extensions for official parcel file format:
 * ~~`.parcel`~~ `.psf` for generic file extension (either ~~`.document`~~ `.psft` or ~~`.graph`~~ `.psfb`)
 * ~~`.document`~~ `.psft` for text-based storage
 * ~~`.graph`~~ `.psfb` for binary files storage
+
+### Document
+
+### Graphs
+
+All documents must always have a "Default" graph - though the naming can be something else. By default, it's named as `Default`.
+
+Anonymous graphs are also graphs. But they take a special naming convention: Use symbol `@` as prefix for anonymous graphs.
+
+### Nodes
+
+### Payloads
 
 ### Parcel File Format Storage Requirements Specification
 
@@ -394,63 +467,9 @@ Like attributes, payload names are repurposed for specialized usages, and corres
 
 ### Instructions
 
-A plain text based stated sequential sequence of instructions that implements the same functions/execution model as the graphs. This is for runtime implementations that do not handle graphs as defined in earlier sections. On the other hand, all runtimes/backend engines should implement this section to ensure proper understanding of the execution logic and as a fallback way of executing the graph. The text instructions each occupy a single line and thus have line significance, should always end a line with `\n` and line order is VERY important. The instructions are written in Parcel Instruction Set (PIS) - see Parcel Virtual Machine (PVM) documentation for more details. The instructions second should NOT have trailing empty lines.
+Instructions are used for meta-programming.
 
-Below defines all instructions: <!--Consider moving this section to PVM, or just talk about PVM in this document instead of as a dedicated document-->
-
-|Instruction|Name|Meaning|
-|-|-|-|
-|` `|Empty line|Should ignore; Do not count to line number.|
-|`#`|Comment line|Parser should ignore; Do not count to line number.|
-|`.<Section Name>`|Section|Defines a code section, can be used for function definitions etc. Non-essential: if an implementation handles this, then it should allow `CALL` to provide section name as the first parameter; Otherwise an implementation can just ignore this. Do not count to line number.|
-|`SET <Variable Name> <Variable Value>`|Set variable|Sets a named variable; Different implementations shall provide different number of variables and different available variable names, but those four variables must be provided (the `$` prefix has no significance): `$1`, `$2`, `$3`, `$4`. The `<Variable Value>` is plain text value that may represent either string or number.|
-|`COPY <Source Variable> <Target Variable>`|Copy variable|Copies value from source variable to target variable.|
-|`CALL <Function Name> [<Function Parameters>...]`|Call function|Calls a function, optionally with a sequence of arguments - the argument values MUST be provided in variables, thus the parameters are all variable names.|
-|`JUMP <Line Number>`|Jump|Jump next execution to specified line number (inclusive).|
-|`BRANCH <Variable> <Line Number 1> <Line Number 2>`|Branch|Point IP to Line number 1 if variable is true, otherwise point IP to line number 2.|
-|`LINE <Line Value>`|Line|Denotes a single value|
-|`TEXT <Variable Name> <Line Range>`|Set text|Assigns multi-line text to variables; Since each instruction is a single line thus variable values in instructions do not have capacity to contain new line, the TEXT command is provided to assign multi-line values to a variable. Line range has the format like this: 15-75; It can also be a single line: 15.|
-
-There is no ABI (application binary interface) since it's text-based, and there is no primitive operators like `ADD` or `SUB` because those must be implemented as functions. When passing variables to functions, the address are always passed - depending on implementation and the functions, such addresses might immediately be interpreted as values, or used as is (i.e. inside functions, they can modify variable values).
-Besides above, there is a special `@` symbol that can be used to denote valid program lines and is optional. On the other hand, all parameters are space delimited and spaces can be escaped using `"` quotes. That it's, it's just like plain CLI arguments.
-
-Those are ALL the PIS instructions! As you can see, two notably features of PIS are:
-
-1. It's text-based.
-2. Its variables can hold arbitrary things.
-3. The instruction set itself provides no way to represent binary values in text format - however variables can hold binary variables per runtime implementation. Parcel Standard Libraries will define functions that provides conversion of plain-text to binary.
-4. PIS on its own DO NOT define functional programs - all such functionalities require functions, which are provided by the runtime.
-
-All implementations must provide those variable names (the `$` has no significance):
-
-|Variable|Name|Purpose|Size|
-|-|-|-|-|
-|`$i`|Instruction Pointer|The next execution line. Notice with `SET` and `COPY` one can assign to this variable directly.|8 bytes|
-|`$1`|Variable 1|Holds variable.|Varying size.|
-|`$2`|Variable 2|Holds variable.|Varying size.|
-|`$3`|Variable 3|Holds variable.|Varying size.|
-|`$4`|Variable 4|Holds variable.|Varying size.|
-|`$r`|Function Result|Holds result of last function call.|Varying size.|
-
-To illustrate the point, here is a basic "Hello World!" example written in PIS:
-
-```PIS
-# Call print
-SET $1 "Hello World"
-CALL Print $1
-```
-
-This example illustrates calculating `sin(PI)` and print in formatted string:
-
-```PIS
-# Do calculation
-@1 SET $1 3.1415926
-@2 SET $2 "Calculation result: %i"
-@3 CALL Sin $1
-@4 CALL Print $2 $r
-```
-
-A C++ implementation of a PVM will be provided for reference purpose that can understand all functions that are defined in Parcel Standard Libraries (PSL).
+PENDING.
 
 ## Core Standards
 
@@ -689,7 +708,7 @@ A typical usage scenario goes like this:
 3. User optionally imports existing user libraries from discovery paths, or drag in directly (will reference as relative path by default)
 4. User keeps adding nodes and complete the graph functionalities.
 
-Annoymous/In-line graphs are supported to keep lambda-like references simple and clean.
+Anonymous/In-line graphs are supported to keep lambda-like references simple and clean.
 
 When promoting user to select node, Parcel.NExT presents the nodes through three different dimensions: by application domain, by (operating) object types, and by high-level libraries/categories. One can also search for nodes by name and tags, have favorites, and have history sorted by most frequent use, and show nodes already used in current document.
 
