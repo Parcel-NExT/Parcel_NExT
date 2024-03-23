@@ -33,12 +33,14 @@ namespace Parcel.CoreEngine.Service.Interpretation
         #endregion
 
         #region Basic Single-Node Evaluation
-        public long CreateNode(string targetPath)
+        /// <summary>
+        /// Ask server to replicate a node. The client will be responsible for feeding all definition information about the node - this is essential especially for front-end only nodes, which the server should just store without questioning what's it used for.
+        /// </summary>
+        public long CreateNode(string target, string graph, string tags, IDictionary<string, object> attributes)
         {
-            // TODO: Get node default attributes; (Notice ALL front-end nodes/elements will be created this way, even though we may not recognize/handle all of them)
-            Dictionary<string, string> attributes = [];
+            // TODO: Make use of `graph` and `tags`
             // Add node to document
-            return ParcelDocument.AddNode(ParcelDocument.MainGraph, new ParcelNode(targetPath, attributes), new System.Numerics.Vector2());
+            return ParcelDocument.AddNode(ParcelDocument.MainGraph, new ParcelNode(target, attributes.ToDictionary(v => v.Key, v => v.Value.ToString()!)), new System.Numerics.Vector2());
         }
         public object? EvaluateNode(int nodeID)
         {
