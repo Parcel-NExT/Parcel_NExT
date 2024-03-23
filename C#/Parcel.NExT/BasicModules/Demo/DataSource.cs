@@ -1,7 +1,23 @@
-﻿namespace Demo
+﻿using Parcel.CoreEngine.SemanticTypes;
+
+namespace Demo
 {
     public static class DataSource
     {
+        public static DataGrid? CSV(Uri path)
+        {
+            if (path == null)
+                return null;
+
+            if (path.HostNameType == UriHostNameType.Basic) // TODO: I expect for local files the protocol starts like this: `file://` (to be verified)
+            {
+                // TODO: Implement DataGrid handling and proper data check
+                string csv = File.ReadAllText(path.AbsolutePath);
+                return new DataGrid(csv);
+            }
+            else
+                throw new NotImplementedException();
+        }
         /// <summary>
         /// Fetch from ODBC
         /// </summary>

@@ -31,9 +31,11 @@ namespace Demo
         /// <summary>
         /// Reads a CSV and returns content as CSV string
         /// </summary>
-        public static string ReadCSV(string path)
+        public static string? ReadCSV(string path)
         {
-            return File.ReadAllText(path);
+            if (File.Exists(path))
+                return File.ReadAllText(path);
+            return null;
         }
         /// <summary>
         /// Reads a csv string and computes all known stats on computable columns;

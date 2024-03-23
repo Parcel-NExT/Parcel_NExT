@@ -47,6 +47,7 @@ namespace Tranquility.Sessions
         #region Routines
         private void HandleMessage(string message)
         {
+            // TODO: Handle ParcelNodeRuntimeException
             string[] arguments = message.SplitCommandLineArguments();
             string methodName = arguments.First();
             if (_AvailableEndPoints!.TryGetValue(methodName, out ServiceEndpoint? endPoint))

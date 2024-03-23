@@ -64,7 +64,7 @@ namespace Parcel.CoreEngine.Conversion
             // Serialize serializable Parcel-specific types
             else if (resultType == typeof(DataGrid))
                 return SerializaDataGrid((DataGrid)result);
-            // TODO: Serialize Payload, and MetaInstructions
+            // TODO: Serialize Payload, including MetaInstructions
             throw new NotImplementedException("Unrecognized object type.");
         }
         public static object? ConvertType(Type parameterType, string value)

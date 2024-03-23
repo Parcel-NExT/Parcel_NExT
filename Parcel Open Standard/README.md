@@ -451,7 +451,7 @@ Payload data is either plain string or full binary data (we have to support bina
 
 ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 
-ALL PAYLOADS WILL HAVE A `value` section (tentatively name those as: `result`, `preview`).
+ALL PAYLOADS WILL HAVE A `value` section (tentatively name those as: `result`, `preview`, `content`).
 
 Payloads serve critical functions like:
 
@@ -464,10 +464,12 @@ Like attributes, payload names are repurposed for specialized usages, and corres
 * `!instruct`: This section contains instruction to frontends for graph-level meta-programming purpose; A semi-standard format will be provided.
 * `%message`: This provides a front-end use-only (distinct from console prints) messages on the display medium. Use `%error` for errors (e.g. exceptions.)
 * `%error`
+* `%preview`: Consider it like C# `ToString()`, it's for display purpose. Especially useful in real-time displays.
+* `data/value/content`: Main data of paylod.
 
 ### Instructions
 
-Instructions are used for meta-programming.
+Instructions are used for meta-programming. There are a few semantic fields of Payloads that should be utilized for primary general purpose backend-frontend communication.
 
 PENDING.
 

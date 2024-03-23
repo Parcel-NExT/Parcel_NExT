@@ -1,4 +1,5 @@
-﻿using Parcel.CoreEngine.Conversion;
+﻿using Parcel.CoreEngine.Contracts;
+using Parcel.CoreEngine.Conversion;
 using Parcel.CoreEngine.DependencySolver;
 using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.Service.LibraryProvider;
@@ -21,6 +22,39 @@ namespace Parcel.CoreEngine.Service.Interpretation
         /// The attributes will be a Dictionary<string, string> - because of the way upstream handles it, we are accepting IDictionary<string, object> here
         /// </remarks>
         public object? EvaluateSingleNode(string target, IDictionary<string, object> attributes)
+        {
+            try
+            {
+                return EvaluateSingleNodeImplementation(target, attributes);
+            }
+            catch (ArgumentException e)
+            {
+                throw new ParcelNodeArgumentException(e.Message);
+            }
+            catch (Exception e)
+            {
+                throw new ParcelNodeExecutionException(e.Message);
+            }
+        }
+        /// <summary>
+        /// Given a self-contained set of Parcel Nodes, evaluate them all and return results for each node.
+        /// This function assumes a graph-free loose set of nodes witht interdependancies specified using standard attribute syntax.
+        /// The return payload will be in the order of input nodes and have one payload for each node.
+        /// </summary>
+        public ParcelPayload[] EvaluateSubGraph(ParcelNode[] nodes)
+        {
+            Dictionary<ParcelNode, ParcelPayload> payloads = [];
+
+            // Solve nodes
+            Dictionary<string, ParcelNode> indexedNodes = UniquelyIdentifiableNaming.TagUniqueNamesInSelfContainedNodes(nodes);
+            IEnumerable<ParcelNode> sortedNodes = FunctionalDependencySolver.ResolveNodesOrder(nodes, indexedNodes);
+
+            return nodes.Select(n => payloads[n]).ToArray();
+        }
+        #endregion
+
+        #region Routines
+        private object? EvaluateSingleNodeImplementation(string target, IDictionary<string, object> attributes)
         {
             Dictionary<string, string> formattedAttributes = attributes
                 .ToDictionary(a => FormatAttribute(a.Key), a => (string)a.Value);
@@ -51,21 +85,6 @@ namespace Parcel.CoreEngine.Service.Interpretation
                 // Extract attribute name from annotated syntax
                 return annotatedAttribute.Split(':').First().TrimStart('<').TrimEnd('>');
             }
-        }
-        /// <summary>
-        /// Given a self-contained set of Parcel Nodes, evaluate them all and return results for each node.
-        /// This function assumes a graph-free loose set of nodes witht interdependancies specified using standard attribute syntax.
-        /// The return payload will be in the order of input nodes and have one payload for each node.
-        /// </summary>
-        public ParcelPayload[] EvaluateSubGraph(ParcelNode[] nodes)
-        {
-            Dictionary<ParcelNode, ParcelPayload> payloads = [];
-
-            // Solve nodes
-            Dictionary<string, ParcelNode> indexedNodes = UniquelyIdentifiableNaming.TagUniqueNamesInSelfContainedNodes(nodes);
-            IEnumerable<ParcelNode> sortedNodes = FunctionalDependencySolver.ResolveNodesOrder(nodes, indexedNodes);
-
-            return nodes.Select(n => payloads[n]).ToArray();
         }
         #endregion
     }

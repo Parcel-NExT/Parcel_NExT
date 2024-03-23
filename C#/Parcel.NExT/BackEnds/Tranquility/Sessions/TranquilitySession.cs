@@ -59,6 +59,7 @@ namespace Tranquility.Sessions
         #region Routines
         private void HandleMessageJSONStyle(string jsonMessage)
         {
+            // TODO: Handle ParcelNodeRuntimeException
             IDictionary<string, object>? json = (IDictionary<string, object>)SimpleJson.SimpleJson.DeserializeObject(jsonMessage);
 
             const string endPointToken = "endPoint";
@@ -96,6 +97,7 @@ namespace Tranquility.Sessions
         }
         private void HandleMessageCLIStyle(string message)
         {
+            // TODO: Handle ParcelNodeRuntimeException
             string[] arguments = message.SplitCommandLineArguments();
             string methodName = arguments.First();
             if (methodName == "Echo")
