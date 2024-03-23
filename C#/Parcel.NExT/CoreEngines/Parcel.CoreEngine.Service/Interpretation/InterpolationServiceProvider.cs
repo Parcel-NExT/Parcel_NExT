@@ -2,6 +2,7 @@
 using Parcel.CoreEngine.Conversion;
 using Parcel.CoreEngine.DependencySolver;
 using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.LibraryProvider;
 using Parcel.CoreEngine.Standardization;
 using System.Reflection;
@@ -82,8 +83,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
 
             static string FormatAttribute(string annotatedAttribute)
             {
-                // Extract attribute name from annotated syntax
-                return annotatedAttribute.Split(':').First().TrimStart('<').TrimEnd('>');
+                return NodeAttributeNameHelper.GetNameOnly(annotatedAttribute);
             }
         }
         #endregion

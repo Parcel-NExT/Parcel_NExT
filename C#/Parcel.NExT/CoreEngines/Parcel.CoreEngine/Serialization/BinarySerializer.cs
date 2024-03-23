@@ -1,5 +1,6 @@
 ﻿using K4os.Compression.LZ4.Streams;
 using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Layouts;
 using Parcel.CoreEngine.Versioning;
 using System.Numerics;
@@ -37,12 +38,15 @@ namespace Parcel.CoreEngine.Serialization
             writer.Write(TextSerializer.ChatGPTPoem);
 
             // Document Meta-Data
-            // ...
+            writer.Write(document.DocumentGUIDCounter);
 
             // Nodes
             writer.Write(document.Nodes.Count);
             foreach (ParcelNode node in document.Nodes)
+            {
+                writer.Write(document.NodeGUIDs.Forward[node]);
                 WriteNode(writer, node);
+            }
 
             // Graphs
             writer.Write(document.Graphs.Count);
@@ -96,13 +100,19 @@ namespace Parcel.CoreEngine.Serialization
             string poem = reader.ReadString();
 
             // Document Meta-Data
-            // ...
+            long guidCounter = reader.ReadInt64();
 
             // Nodes
+            TwoWayDictionary<ParcelNode, long> nodeGUIDs = [];
             int nodesCount = reader.ReadInt32();
             List<ParcelNode> nodes = new();
             for (int i = 0; i < nodesCount; i++)
-                nodes.Add(ReadNode(reader));
+            {
+                long guid = reader.ReadInt64();
+                ParcelNode node = ReadNode(reader);
+                nodes.Add(node);
+                nodeGUIDs.Add(node, guid);
+            }
 
             // Graphs
             int graphsCount = reader.ReadInt32();
@@ -122,6 +132,8 @@ namespace Parcel.CoreEngine.Serialization
                 MainGraph = graphs.Single(g => g.Name == mainGraphName),
                 Graphs = graphs,
                 Nodes = nodes,
+                DocumentGUIDCounter = guidCounter,
+                NodeGUIDs = nodeGUIDs
             };
 
             static ParcelNode ReadNode(BinaryReader reader)

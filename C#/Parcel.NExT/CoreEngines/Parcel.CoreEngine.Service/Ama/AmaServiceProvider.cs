@@ -1,5 +1,7 @@
 ﻿using Parcel.CoreEngine.Contracts;
 using Parcel.CoreEngine.Conversion;
+using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.LibraryProvider;
 using System.Reflection;
 
@@ -7,42 +9,70 @@ namespace Parcel.CoreEngine.Service.Interpretation
 {
     /// <summary>
     /// A context-safe interpolation stated service provider;
+    /// It provides "step-wise" construction of the entire document.
     /// </summary>
     public sealed class AmaServiceProvider: ServiceProvider
     {
+        #region Constructor
+        public AmaServiceProvider() 
+        {
+            _parcelDocument = new();
+        }
+        #endregion
+
         #region States
-        
+        private ParcelDocument _parcelDocument;
+        ParcelDocument ParcelDocument { 
+            get
+            {
+                if (_parcelDocument == null) 
+                    _parcelDocument = new ParcelDocument();
+                return _parcelDocument;
+            }
+        }
         #endregion
 
         #region Basic Single-Node Evaluation
-        public int CreateNode()
+        public long CreateNode(string targetPath)
         {
-
+            // TODO: Get node default attributes; (Notice ALL front-end nodes/elements will be created this way, even though we may not recognize/handle all of them)
+            Dictionary<string, string> attributes = [];
+            // Add node to document
+            return ParcelDocument.AddNode(ParcelDocument.MainGraph, new ParcelNode(targetPath, attributes), new System.Numerics.Vector2());
         }
         public object? EvaluateNode(int nodeID)
         {
+            if (!_parcelDocument.NodeGUIDs.Reverse.Contains(nodeID))
+                throw new ArgumentException($"Invalid nodeID: {nodeID}. This indicates a application-level implementation error. Check states and makes sure front-end and in-sync with backend.");
+
+            ParcelNode node = _parcelDocument.NodeGUIDs.Reverse[nodeID];
             try
             {
-                return EvaluateSingleNodeImplementation(nodeID);
+                return EvaluateNodeImplementation(node);
             }
             catch (ArgumentException e)
             {
                 // TODO: Return a payload containing error
+                return PayloadConstructionHelper.ConstructError(node, new ParcelNodeArgumentException(e.Message));
             }
             catch (Exception e)
             {
                 // TODO: Return a payload containing error
+                return PayloadConstructionHelper.ConstructError(node, new ParcelNodeExecutionException(e.Message));
             }
         }
         #endregion
 
         #region Routines
-        private object? EvaluateNodeImplementation(int nodeID)
+        private object? EvaluateNodeImplementation(ParcelNode node)
         {
-            string target, IDictionary< string, object> attributes;
+            // TODO: Change this. Make use of existing node payloads and states instead of valuating from scratch.
+
+            string target = node.Target;
+            Dictionary<string, string> attributes = node.Attributes;
 
             Dictionary<string, string> formattedAttributes = attributes
-                .ToDictionary(a => FormatAttribute(a.Key), a => (string)a.Value);
+                .ToDictionary(a => FormatAttribute(a.Key), a => a.Value);
 
             // TODO: At the moment we are not making using `graph` and `tags` arugment
             // TODO: Consult and merge implementation of GraphRuntime.ExecuteNode
@@ -67,8 +97,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
 
             static string FormatAttribute(string annotatedAttribute)
             {
-                // Extract attribute name from annotated syntax
-                return annotatedAttribute.Split(':').First().TrimStart('<').TrimEnd('>');
+                return NodeAttributeNameHelper.GetNameOnly(annotatedAttribute);
             }
         }
         #endregion

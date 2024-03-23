@@ -1,4 +1,5 @@
 ﻿using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Layouts;
 using System.Numerics;
 
@@ -7,13 +8,13 @@ namespace Parcel.CoreEngine
     public sealed class ParcelDocument: ParcelDocumentBase
     {
         #region Management Properties
-        public Dictionary<ParcelNode, ParcelPayload> NodePayloadLookUps { get; set; } = new();
-        public Dictionary<ParcelNode, ParcelGraph> NodeGraph { get; set; } = new();
-        public Dictionary<ParcelGraph, ParcelGraphRuntime> GraphRuntimeLookUps { get; set; } = new();
+        public Dictionary<ParcelNode, ParcelPayload> NodePayloadLookUps { get; } = [];
+        public Dictionary<ParcelNode, ParcelGraph> NodeGraph { get; } = [];
+        public Dictionary<ParcelGraph, ParcelGraphRuntime> GraphRuntimeLookUps { get; } = [];
         #endregion
 
         #region Construction API
-        public void AddNode(ParcelGraph graph, ParcelNode node, Vector2 position)
+        public long AddNode(ParcelGraph graph, ParcelNode node, Vector2 position)
         {
             // Add to layout
             graph.MainLayout.Placements.Add(new CanvasElement(node)
@@ -25,7 +26,12 @@ namespace Parcel.CoreEngine
             Nodes.Add(node);
 
             // Add to runtime bookkeeeping
+            long nodeID = DocumentGUIDCounter;
+            DocumentGUIDCounter++;
             NodeGraph.Add(node, graph);
+            NodeGUIDs.Add(node, nodeID);
+
+            return nodeID;
         }
         #endregion
     }
@@ -37,6 +43,11 @@ namespace Parcel.CoreEngine
             MainGraph = new("Default");
             Graphs.Add(MainGraph);
         }
+        #endregion
+
+        #region Document-Wise Properties
+        public long DocumentGUIDCounter { get; set; } = 0;
+        public TwoWayDictionary<ParcelNode, long> NodeGUIDs { get; set; } = [];
         #endregion
 
         #region Meta-Data

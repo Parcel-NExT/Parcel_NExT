@@ -53,7 +53,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
                 // TODO: Might isolate those into core library?
                 Assembly? core = Assembly.GetAssembly(typeof(Primitives.Number));
                 Type? type = core.GetType(fullTargetPath);
-                string[] arguments = NodeDefinitionHelper.SimpleExtractParameters(node);
+                string[] arguments = [.. node.Attributes.Values];
                 arguments = DereferenceParameters(arguments);
                 if (type != null)
                 {
@@ -148,7 +148,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
                 case "Preview":
                     Payloads[node] = new ParcelPayload(node, new Dictionary<string, object>()
                     {
-                        { "value",  DereferenceParameters(NodeDefinitionHelper.SimpleExtractParameters(node)).Single()}
+                        { "value",  DereferenceParameters([.. node.Attributes.Values]).Single()}
                     });
                     break;
                 default:
