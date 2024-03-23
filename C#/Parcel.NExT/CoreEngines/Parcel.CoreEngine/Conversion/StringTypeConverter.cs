@@ -104,6 +104,9 @@ namespace Parcel.CoreEngine.Conversion
             // Handle arrays
             else if (value.Contains('\n'))
                 return ConvertValue(parameterType, value.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            // Handle semantic types
+            else if (parameterType == typeof(Uri))
+                return new Uri(value);
             // Handle complex types (e.g. Dictionaries)
             // TODO: PENDING (Consider using JSON library to help)
 
