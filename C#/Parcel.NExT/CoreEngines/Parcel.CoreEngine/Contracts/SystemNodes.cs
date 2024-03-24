@@ -13,6 +13,11 @@
         public const string FunctionDefinitionReturnNodeTarget = "Parcel.FunctionReturn:Construct";
         public const string StandardPrintNodeTarget = "Parcel.Print:Core";
         public const string FrontEndUsePreviewNodeTarget = "Parcel.Preview:Frontend";
+        public const string FrontEndLabelAnnotationNodeTarget = "Parcel.Annotation.Label:Frontend";
+        public const string FrontEndImageAnnotationNodeTarget = "Parcel.Annotation.Image:Frontend";
+        public const string FrontEndAudioAnnotationNodeTarget = "Parcel.Annotation.Audio:Frontend";
+        public const string FrontEndShapeAnnotationNodeTarget = "Parcel.Annotation.Shape:Frontend";
+        public const string FrontEndVideoAnnotationNodeTarget = "Parcel.Annotation.Video:Frontend";
         public const string PrimitiveNumberNodeTarget = "Parcel.Number:Primitive";
         public const string PrimitiveStringNodeTarget = "Parcel.String:Primitive";
         public const string FlowChartDataEntityNodeTarget = "Parcel.DataEntity:FlowChart";
@@ -46,7 +51,14 @@
 
             // Generic conceptual flow chart representation
             FlowChartDataEntityNodeTarget, // A representational node for flowchart data entity, it contains no logic and is used just like Custom node but semantically refers to a data input or output. Users can create attributes on this and make connections. All runtimes should generally just ignore this node during evaluation.
-            FlowChartActionEntityNodeTarget // A representational node for flowchart action entity, it contains no logic and is used just like Custom node but semantically refers to an action or processing step. Users can create attributes on this and make connections. All runtimes should generally just ignore this node during evaluation.
+            FlowChartActionEntityNodeTarget, // A representational node for flowchart action entity, it contains no logic and is used just like Custom node but semantically refers to an action or processing step. Users can create attributes on this and make connections. All runtimes should generally just ignore this node during evaluation.
+
+            // Frontend Use Annotations
+            FrontEndLabelAnnotationNodeTarget,
+            FrontEndImageAnnotationNodeTarget,
+            FrontEndAudioAnnotationNodeTarget,
+            FrontEndShapeAnnotationNodeTarget,
+            FrontEndVideoAnnotationNodeTarget,
         ];
     }
 }
