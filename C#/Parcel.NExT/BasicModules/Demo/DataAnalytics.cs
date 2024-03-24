@@ -28,15 +28,20 @@ namespace Demo
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Reads a CSV and returns content as CSV string
-        /// </summary>
-        public static string? ReadCSV(string path)
+        public static Dictionary<string, double>? Summarize(DataGrid? data)
         {
-            if (File.Exists(path))
-                return File.ReadAllText(path);
-            return null;
+            if (data == null)
+                return null;
+
+            return new Dictionary<string, double>()
+            {
+                { "Sum", 15 },
+                { "Average", 15 },
+                { "Min", 5 },
+                { "Length", data.Raw.Length }
+            };
         }
+
         /// <summary>
         /// Reads a csv string and computes all known stats on computable columns;
         /// Assumes csv has header
@@ -63,6 +68,13 @@ namespace Demo
         /// Returns a new DataGrid.
         /// </returns>
         public static ParcelPayload Query(DataGrid data, string sql)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Run SQL query on data
+        /// </summary>
+        public static string Query(string source1, string source2)
         {
             throw new NotImplementedException();
         }
