@@ -15,7 +15,7 @@ namespace Parcel.CoreEngine.Service.UnitTests
             ParcelDocument document = CreateGraph();
             document.Execute();
             ParcelNode previewNode = document.MainGraph.MainLayout.Placements.Single(n => n.Node.Target == "{Preview}").Node!;
-            string? value = ParcelNodeUnifiedAttributesHelper.GetFromUnifiedAttribute(previewNode, document.NodePayloadLookUps[previewNode], "value");
+            string? value = ParcelNodeUnifiedAttributesHelper.GetFromUnifiedAttribute(previewNode, document.NodePayloads[previewNode], "value");
             Assert.Equal(5 + 12 + 15, double.Parse(value));
         }
 

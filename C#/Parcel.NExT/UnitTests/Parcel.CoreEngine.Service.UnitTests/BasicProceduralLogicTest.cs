@@ -15,7 +15,7 @@ namespace Parcel.CoreEngine.Service.UnitTests
             ParcelDocument document = CreateGraph();
             document.Execute();
             ParcelNode previewNode = document.MainGraph.MainLayout.Placements.Single(n => n.Node.Target == "Preview").Node!;
-            Assert.Equal(5 + 12 + 15, (double)document.NodePayloadLookUps[previewNode].PayloadData.First().Value);
+            Assert.Equal(5 + 12 + 15, (double)document.NodePayloads[previewNode].PayloadData.First().Value);
         }
 
         #region Routines

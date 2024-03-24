@@ -8,7 +8,6 @@ namespace Parcel.CoreEngine
     public sealed class ParcelDocument: ParcelDocumentBase
     {
         #region Management Properties
-        public Dictionary<ParcelNode, ParcelPayload> NodePayloadLookUps { get; } = [];
         public Dictionary<ParcelNode, ParcelGraph> NodeGraph { get; } = [];
         public Dictionary<ParcelGraph, ParcelGraphRuntime> GraphRuntimeLookUps { get; } = [];
         #endregion
@@ -66,7 +65,7 @@ namespace Parcel.CoreEngine
 
         #region Runtime Data Sections
         public List<ParcelGraphRuntime> GraphRuntimes = new();
-        public List<ParcelPayload> Payloads = new();
+        public Dictionary<ParcelNode, ParcelPayload> NodePayloads = [];
         #endregion
 
         #region Document Properties

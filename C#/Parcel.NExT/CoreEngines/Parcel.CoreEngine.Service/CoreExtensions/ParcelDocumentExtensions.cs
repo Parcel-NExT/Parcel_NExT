@@ -1,4 +1,5 @@
-﻿using Parcel.CoreEngine.Serialization;
+﻿using Parcel.CoreEngine.Document;
+using Parcel.CoreEngine.Serialization;
 using Parcel.CoreEngine.Service.Interpretation;
 
 namespace Parcel.CoreEngine.Service.CoreExtensions
@@ -8,7 +9,7 @@ namespace Parcel.CoreEngine.Service.CoreExtensions
         #region Runtime
         public static void Execute(this ParcelDocument document)
         {
-            new GraphRuntime(document.MainGraph, document.NodePayloadLookUps).Execute();
+            new GraphRuntime(document.MainGraph, document.NodePayloads).Execute();
         }
         #endregion
 

@@ -193,10 +193,10 @@ Instructions
     Revisions (Nodes) (Magic: REVN)
 (Optionally Externalized and Binary)
     (Internalized) Current Graph Runtime (RUNT)
-    (Internalized) Payloads (Magic: PAYL)
+    (Internalized) Payloads (Magic: PAYL) (Ordered by node ID)
 (Optional) Parcel Graph External Payload Pack
     (Internalized) Current Graph Runtime (RUNT)
-    (Internalized) Payloads (Magic: PAYL)
+    (Internalized) Payloads (Magic: PAYL) (Ordered by node ID)
 ```
 
 Parcel supports those serialization: Binary (C# style/.Net core/.Net standard, little endian), (JSON), YAML, (RTS). Additional types might be provided through converters (if necessary). Parcel MAGIC number is ~~`PARCEL WORKFLOW ENGINE - BINARY`~~ `PSF-B` for binary file, and ~~`PARCEL WORKFLOW ENGINE - TEXT\n`~~ `PSF-T` for text file.
