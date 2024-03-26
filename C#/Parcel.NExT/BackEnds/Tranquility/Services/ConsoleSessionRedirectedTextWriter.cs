@@ -35,7 +35,7 @@ namespace Tranquility.Services
         {
             ConsoleSession.BroadcastMessages(new string(buffer.Skip(index).Take(count).ToArray()));
         }
-        public override void Write(char[] buffer)
+        public override void Write(char[]? buffer)
         {
             ConsoleSession.BroadcastMessages(new string(buffer));
         }
@@ -59,37 +59,44 @@ namespace Tranquility.Services
         {
             ConsoleSession.BroadcastMessages(value.ToString());
         }
-        public override void Write(object value)
+        public override void Write(object? value)
         {
-            ConsoleSession.BroadcastMessages(value.ToString());
+            if (value != null)
+            {
+                string? message = value.ToString();
+                if (message != null)
+                    ConsoleSession.BroadcastMessages(message);
+            }
         }
         public override void Write(ReadOnlySpan<char> buffer)
         {
             ConsoleSession.BroadcastMessages(buffer.ToString());
         }
-        public override void Write([StringSyntax("CompositeFormat")] string format, object arg0)
+        public override void Write([StringSyntax("CompositeFormat")] string format, object? arg0)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg0));
         }
-        public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1)
+        public override void Write([StringSyntax("CompositeFormat")] string format, object? arg0, object? arg1)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg0, arg1));
         }
-        public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2)
+        public override void Write([StringSyntax("CompositeFormat")] string format, object? arg0, object? arg1, object? arg2)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg0, arg1, arg2));
         }
-        public override void Write([StringSyntax("CompositeFormat")] string format, params object[] arg)
+        public override void Write([StringSyntax("CompositeFormat")] string format, params object?[] arg)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg));
         }
-        public override void Write(string value)
+        public override void Write(string? value)
         {
-            ConsoleSession.BroadcastMessages(value.ToString());
+            if (value != null)
+                ConsoleSession.BroadcastMessages(value);
         }
-        public override void Write(StringBuilder value)
+        public override void Write(StringBuilder? value)
         {
-            ConsoleSession.BroadcastMessages(value.ToString());
+            if (value != null)
+                ConsoleSession.BroadcastMessages(value.ToString());
         }
         public override void Write(uint value)
         {
@@ -115,9 +122,10 @@ namespace Tranquility.Services
         {
             ConsoleSession.BroadcastMessages(new string(buffer.Skip(index).Take(count).ToArray()) + Environment.NewLine);
         }
-        public override void WriteLine(char[] buffer)
+        public override void WriteLine(char[]? buffer)
         {
-            ConsoleSession.BroadcastMessages(new string(buffer) + Environment.NewLine);
+            if (buffer != null)
+                ConsoleSession.BroadcastMessages(new string(buffer) + Environment.NewLine);
         }
         public override void WriteLine(decimal value)
         {
@@ -139,37 +147,44 @@ namespace Tranquility.Services
         {
             ConsoleSession.BroadcastMessages(value.ToString() + Environment.NewLine);
         }
-        public override void WriteLine(object value)
+        public override void WriteLine(object? value)
         {
-            ConsoleSession.BroadcastMessages(value.ToString() + Environment.NewLine);
+            if (value != null)
+            {
+                string? message = value.ToString();
+                if (message != null)
+                    ConsoleSession.BroadcastMessages(message + Environment.NewLine);
+            }
         }
         public override void WriteLine(ReadOnlySpan<char> buffer)
         {
             ConsoleSession.BroadcastMessages(buffer.ToString() + Environment.NewLine);
         }
-        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0)
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object? arg0)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg0) + Environment.NewLine);
         }
-        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1)
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object? arg0, object? arg1)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg0, arg1) + Environment.NewLine);
         }
-        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2)
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, object? arg0, object? arg1, object? arg2)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg0, arg1, arg2) + Environment.NewLine);
         }
-        public override void WriteLine([StringSyntax("CompositeFormat")] string format, params object[] arg)
+        public override void WriteLine([StringSyntax("CompositeFormat")] string format, params object?[] arg)
         {
             ConsoleSession.BroadcastMessages(string.Format(format, arg) + Environment.NewLine);
         }
-        public override void WriteLine(string value)
+        public override void WriteLine(string? value)
         {
-            ConsoleSession.BroadcastMessages(value + Environment.NewLine);
+            if (value != null)
+                ConsoleSession.BroadcastMessages(value + Environment.NewLine);
         }
-        public override void WriteLine(StringBuilder value)
+        public override void WriteLine(StringBuilder? value)
         {
-            ConsoleSession.BroadcastMessages(value.ToString() + Environment.NewLine);
+            if (value != null)
+                ConsoleSession.BroadcastMessages(value.ToString() + Environment.NewLine);
         }
         public override void WriteLine(uint value)
         {

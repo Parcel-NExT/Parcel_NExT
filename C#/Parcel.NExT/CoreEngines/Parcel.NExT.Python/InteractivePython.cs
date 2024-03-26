@@ -57,7 +57,7 @@ namespace Parcel.NExT.Python
                 {
                     return PythonScope.Eval(scripts);
                 }
-                catch (Exception nonExpression)
+                catch (Exception) // When exception first get raised here, it could indicate the scripts is not an expression, so we proceed to "Exec" it instead
                 {
                     try
                     {

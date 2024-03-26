@@ -34,10 +34,13 @@ namespace Tranquility
         {
             lock (ConsoleSessionRedirectedTextWriter.ConsoleStateChangeLock)
             {
-                var currentWriter = Console.Out;
-                Console.SetOut(StandardOutput);
-                Console.WriteLine(outputLine);
-                Console.SetOut(currentWriter);
+                if (StandardOutput != null)
+                {
+                    var currentWriter = Console.Out;
+                    Console.SetOut(StandardOutput);
+                    Console.WriteLine(outputLine);
+                    Console.SetOut(currentWriter);
+                }
             }
         }
         #endregion

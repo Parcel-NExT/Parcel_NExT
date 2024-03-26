@@ -42,13 +42,13 @@ namespace Parcel.CoreEngine.Service.UnitTests
 
             // Perform mathamtical computation
             ParcelNode n4 = new("Result", "Parcel.CoreEngine.Primitives.Number.Add");
-            n4.Inputs.Add(new ParcelNodeInputDefinition("A", "$Test Variable"));
-            n4.Inputs.Add(new ParcelNodeInputDefinition("B", ":15"));
-            n4.Inputs.Add(new ParcelNodeInputDefinition("C", "@Literal"));
+            n4.AddInput("A", "$Test Variable");
+            n4.AddInput("B", ":15");
+            n4.AddInput("C", "@Literal");
 
             // Hook up preview node
             ParcelNode n5 = new("{Preview}");
-            n5.Inputs.Add(new ParcelNodeInputDefinition("source", "@Result.value"));
+            n5.AddInput("source", "@Result.value");
 
             // Create document
             ParcelDocument document = new();

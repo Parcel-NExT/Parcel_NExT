@@ -30,7 +30,7 @@ namespace Parcel.NExT.Python.Helpers
             return outputs;
         }
 
-        public static string GetOutputWithInput(string program, string[] args, string input)
+        public static string GetOutputWithInput(string program, string[]? args, string input)
         {
             using Process p = new()
             {
@@ -40,7 +40,7 @@ namespace Parcel.NExT.Python.Helpers
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     FileName = program,
-                    Arguments = args.JoinAsArguments()
+                    Arguments = args?.JoinAsArguments() ?? string.Empty
                 }
             };
             p.Start();
