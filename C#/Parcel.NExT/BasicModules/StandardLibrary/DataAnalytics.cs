@@ -1,7 +1,7 @@
 ﻿using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.SemanticTypes;
 
-namespace Demo
+namespace StandardLibrary
 {
     /// <summary>
     /// A very basic module that exports some very basic operations

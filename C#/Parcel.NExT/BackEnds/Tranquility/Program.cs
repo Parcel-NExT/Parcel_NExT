@@ -15,13 +15,13 @@ namespace Tranquility
 
         #region Default Runtime Context
         /// <summary>
-        /// Whether backend should load demo assemblies during initialization; Those assemblies can serve as the default "standard" libraries available
+        /// Whether backend should load standard assemblies during initialization
         /// </summary>
-        public bool LoadDemoAssemblis { get; set; } = true;
+        public bool LoadStandardAssemblis { get; set; } = true;
         /// <summary>
         /// Backend specific runtime initialization behavior
         /// </summary>
-        public string[] DemoAssemblies { get; set; } = [nameof(Demo)];
+        public string[] StandardAssemblies { get; set; } = [nameof(StandardLibrary)];
         #endregion
     }
 
@@ -60,8 +60,8 @@ namespace Tranquility
         }
         private static void StartService(TranquilityOptions options)
         {
-            if (options.LoadDemoAssemblis)
-                foreach (var name in options.DemoAssemblies)
+            if (options.LoadStandardAssemblis)
+                foreach (var name in options.StandardAssemblies)
                     Assembly.LoadFrom(name);
 
             Logging.Info($"Start {nameof(Tranquility)} at {options.ServerAddress}...");

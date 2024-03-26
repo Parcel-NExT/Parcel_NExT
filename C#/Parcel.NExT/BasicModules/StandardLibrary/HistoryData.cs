@@ -1,6 +1,6 @@
 ﻿using Parcel.CoreEngine.SemanticTypes;
 
-namespace Demo
+namespace StandardLibrary.Demo
 {
     /// <summary>
     /// Single-name single-column numerical history data

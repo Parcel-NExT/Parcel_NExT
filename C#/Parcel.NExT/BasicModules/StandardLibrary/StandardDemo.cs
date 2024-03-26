@@ -1,5 +1,5 @@
 ﻿// Define a whole suite of standard demo-use nodes, categorized in this case using classes.
-namespace Demo.Standard
+namespace StandardLibrary.Demo.Standard
 {
     /// <summary>
     /// Primitives from texts
