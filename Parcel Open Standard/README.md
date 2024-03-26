@@ -28,6 +28,8 @@ The Parcel virtual machine (PVM) defines an intermediate layer between higher le
 
 A proper parcel program is thus just the description in the form of this node graph - called "Parcel Node Graph (PNG)", and nothing more, and nothing less. The material behavior of such a parcel program when executed by an execution engine depends on implementation. This specifically specifies how any particular implementation should interpret the contents of a parcel program.
 
+<!-- (Remark, #20240326) What's the relation of PIS and PNI (Parcel Native Instructions)? -->
+
 ### Parcel Instruction Sets (PIS)
 
 A plain text based stated sequential sequence of instructions that implements the same functions/execution model as the graphs. This is for runtime implementations that do not handle graphs as defined in earlier sections. On the other hand, all runtimes/backend engines should implement this section to ensure proper understanding of the execution logic and as a fallback way of executing the graph. The text instructions each occupy a single line and thus have line significance, should always end a line with `\n` and line order is VERY important. The instructions are written in Parcel Instruction Set (PIS) - see Parcel Virtual Machine (PVM) documentation for more details. The instructions second should NOT have trailing empty lines.
@@ -55,7 +57,7 @@ Those are ALL the PIS instructions! As you can see, two notably features of PIS 
 
 1. It's text-based.
 2. Its variables can hold arbitrary things.
-3. The instruction set itself provides no way to represent binary values in text format - however variables can hold binary variables per runtime implementation. Parcel Standard Libraries will define functions that provides conversion of plain-text to binary.
+3. The instruction set itself provides no way to represent binary values in text format - however variables can hold binary variables per runtime implementation<!--(Remark) E.g. As payload reference? Needs a bit clarification here.-->. Parcel Standard Libraries will define functions that provides conversion of plain-text to binary.
 4. PIS on its own DO NOT define functional programs - all such functionalities require functions, which are provided by the runtime.
 
 All implementations must provide those variable names (the `$` has no significance):
@@ -524,6 +526,8 @@ A more advanced implementation is to generate codes for each node and execution 
 
 ## Parcel Native Style, Standard Libraries and Original Frameworks
 
+<!-- Also see Parcel Dev Day 2024 slides on "Graph Native Approach" -->
+
 A node is parcel native if it's implemented as Parcel graph using nodes without external codes.  
 POF get things done at unprecedented high level intent and efficiency, with as few nodes as possible.
 
@@ -540,6 +544,14 @@ Only specific subset of runtime and derived functionalities will be exposed thro
 * File IO
 * Socket IO
 * Web Services
+
+"Graph-native approach" have the following features:
+
+* Combination of visualization/preview, graph/node wire connections, annotations, and code function executions.
+* Automatic pin/node generation based on functionalities.
+* Configuration-drive, declarative, functional frameworks, e.g. for website construction.
+* GUI builder capabilities, e.g. sliders for primitive numbers.
+* Multi-layer graphs, subgraphs, and grouping.
 
 ## Canonical Implementation: Parcel NExT (2024) - Reference Implementation
 
@@ -622,6 +634,7 @@ This suite is collectively known as **Parcel.NExT**, including following notable
 * Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
 * Catalyst: Gospel based cloud processing platform. Repository sharing platform, plain text only + dlls. Icon: Open box, Pandora style, stars.
 <!-- Use Medalian and myth names -->
+* Tangram: Experimental configuration web serving framework. Tangram on its own is a highly configurable standalone web application. Through adjusting data-driven configurations, one can "deploy" a parcel node graph as a website. This is in contract to a Parcel-native implementation where we might embed the entire Parcel Engine inside the web framework itself (Actually we might do that with Tangram as well).
 
 Additional (experimental) Front-ends:
 

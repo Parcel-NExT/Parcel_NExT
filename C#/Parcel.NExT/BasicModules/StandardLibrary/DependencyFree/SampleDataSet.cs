@@ -1,4 +1,4 @@
-﻿namespace StandardLibrary.Demo
+﻿namespace StandardLibrary.DependencyFree
 {
     /// <summary>
     /// Single-name single-column numerical history data

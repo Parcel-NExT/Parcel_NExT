@@ -1,12 +1,15 @@
-# Parcel Standard Libraries/Parcel Native Instructions (PNI)
+# (Experimental) Parcel Native Instructions (PNI)
 
-<!-- We may or may not move this to Parcel Open Standards -->
+<!-- (Remark, #20240326) Parcel Native Instructions should be a much smaller subset of PSL (Parcel Standard Libraries), which in theory when provided should be able to implement all upper layer functionalities directly as Parcel nodes/instructions -->
+<!-- (Remark, #20240326) It looks like the original intention with PNI is to be used with MiniParcel, in which case it's still going to be a subset of PSL but it makes sense to be quite robust and comprehensive like PowerShell -->
+
+<!-- We may or may not move this to Parcel Open Standards; At the moment, let's develop this as a standalone piece -->
 
 One feature of Parcel original functions are:
 
-1. Usually features standalone use
+1. Usually features standalone use (i.e. without need for constructions as in C++ style, and do not usually require additional wirings)
 2. Supports simple and straightforward and common-place syntax like typical languages
-3. Feature packed with options and customizable behaviors with lots of defaults
+3. Feature-packed with options and customizable behaviors with lots of defaults
 
 ## Standard Constructions
 

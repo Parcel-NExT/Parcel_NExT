@@ -1,4 +1,4 @@
-# ParcelV7
+# ParcelV7 (Parcel NExT)
 
 General purpose visual scripting platform and workflow execution engine. This is the current *active* repository containing the official and final attempt of implementing Parcel, this time focusing on Electron as frontend.
 
@@ -11,5 +11,8 @@ title Parcel Development Timeline
         : Iterative designs
         : Attempted implementation in SFML
     2024
-        : Start implementation in NodeJS
+        : Attempting implementation (frontend and backend) in NodeJS
+        : Deprecate JS based approach and Electron GUI, use Godot for frontend and C# WebSocket for backend
+        : Develop Gospel
+        : Develop Tranquility
 ```

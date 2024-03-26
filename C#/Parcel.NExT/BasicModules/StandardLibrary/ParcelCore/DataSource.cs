@@ -1,6 +1,6 @@
 ﻿using Parcel.CoreEngine.SemanticTypes;
 
-namespace StandardLibrary
+namespace StandardLibrary.ParcelCore
 {
     public static class DataSource
     {
