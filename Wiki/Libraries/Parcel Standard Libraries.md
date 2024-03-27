@@ -90,6 +90,10 @@ PENDING
 * SQL: Execute a SQL command in place with Pseudotables. Inputs: Multiple tables as data source.
 * Pivot
 
+## Finance, Economics, and Investment
+
+Provides financial product pricing models.
+
 ## Math and Foundational Computing
 
 For domain-oriented usages.
@@ -183,6 +187,10 @@ Execute a SQL command in place with Pseudotables. Inputs: Multiple tables as dat
 * Serialize Data: Save Table into efficient binary form
 * Serve Dashboard
 
+# Physics and Engineering
+
+Provides well-known single dimensional and multi-dimensional mechanics, fluid dynamics and other equations. Provides chemical equation formulas. Provides fast fourier transform implementations. Provides circuit simulations.
+
 ## Preliminary Frameworks
 
 ### Service
@@ -206,3 +214,7 @@ The purpose of this is to save form having to make multiple separate "Open" node
 * Append/Concat
 * Sublist
 * Filter/Find/Search
+
+## Time Domain Models and Simulations
+
+PENDING, might provide some as simple utility functions and mini-frameworks, and other more evolved ones and dedicated Parcel Original Frameworks. Used for things like doing time-domain simulation with custom codes (as lambdas) for stock trading, physics simulation, and other stuff.
