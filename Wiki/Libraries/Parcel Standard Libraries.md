@@ -94,6 +94,10 @@ PENDING
 
 Provides financial product pricing models.
 
+* Black Schole for European Call Option
+* Black Schole for European Put Option
+* Discouting Price with Risk Free Interest Rate
+
 ## Math and Foundational Computing
 
 For domain-oriented usages.
