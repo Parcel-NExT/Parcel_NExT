@@ -1,12 +1,9 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Parcel.CoreEngine.Contracts;
+﻿using Parcel.CoreEngine.Contracts;
 using Parcel.CoreEngine.Conversion;
-using Parcel.CoreEngine.DependencySolver;
 using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.LibraryProvider;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace Parcel.CoreEngine.Service.Interpretation
 {
@@ -70,6 +67,21 @@ namespace Parcel.CoreEngine.Service.Interpretation
                 // TODO: Return a payload containing error
                 return PayloadConstructionHelper.ConstructError(node, new ParcelNodeExecutionException(e.Message));
             }
+        }
+        #endregion
+
+        #region Document State Management
+        public string? UpdateNodeAttributes(long id, IDictionary<string, object> attributes)
+        {
+            if (_parcelDocument.NodeGUIDs.Reverse.Contains(id))
+                _parcelDocument.NodeGUIDs.Reverse[id].Attributes = attributes.ToDictionary(v => v.Key, v => v.Value.ToString()!);
+            return "Success";
+        }
+        public string? UpdateNodePayload(long id, IDictionary<string, object> values)
+        {
+            if (_parcelDocument.NodeGUIDs.Reverse.Contains(id))
+                _parcelDocument.NodePayloads[_parcelDocument.NodeGUIDs.Reverse[id]].PayloadData = values.ToDictionary(v => v.Key, v => v.Value); // TODO: Implement better marshaling
+            return "Success";
         }
         #endregion
 
