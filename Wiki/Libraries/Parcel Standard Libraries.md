@@ -191,11 +191,11 @@ Execute a SQL command in place with Pseudotables. Inputs: Multiple tables as dat
 * Serialize Data: Save Table into efficient binary form
 * Serve Dashboard
 
-# Physics and Engineering
+## Physics and Engineering
 
 Provides well-known single dimensional and multi-dimensional mechanics, fluid dynamics and other equations. Provides chemical equation formulas. Provides fast fourier transform implementations. Provides circuit simulations.
 
-## Preliminary Frameworks
+### Preliminary Frameworks
 
 ### Service
 
@@ -222,3 +222,15 @@ The purpose of this is to save form having to make multiple separate "Open" node
 ## Time Domain Models and Simulations
 
 PENDING, might provide some as simple utility functions and mini-frameworks, and other more evolved ones and dedicated Parcel Original Frameworks. Used for things like doing time-domain simulation with custom codes (as lambdas) for stock trading, physics simulation, and other stuff.
+
+## (Toy) (Excel) Neural Networks -> Inference Engine
+
+Those are implemented either as a single spreadsheet, or as neural network graph. This part of the package is known as "macros" - those are auto-expanding networks instead of a single node. The way we can implement this is to either use MiniParcel or Gospel (Console) Commands (.gc) by sending those to the front-end. Alternatively, we could also utilize the same dedicated communication channel for "Load File" behaviors.
+
+The purpose of this library is to collect a whole bunch of exiting usable models as plain and visible parameters and network components.
+
+<!-- For in-progress collection of models, see Programming/Neural Networks. -->
+
+### Binary BW Handwriting Letter Recognition
+
+PENDING.
