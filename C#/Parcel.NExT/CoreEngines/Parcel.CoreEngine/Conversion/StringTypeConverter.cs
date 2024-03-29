@@ -91,6 +91,17 @@ namespace Parcel.CoreEngine.Conversion
                 return ConvertType(parameterType, stringValue);
             else throw new ArgumentException($"Unexpected non-string parameter value: {value}");
         }
+        public static object ConvertObjectBestGuess(string value)
+        {
+            if (int.TryParse(value, out int i))
+                return i;
+            else if (bool.TryParse(value, out bool b))
+                return b;
+            else if (double.TryParse(value, out double d))
+                return d;
+            else
+                return value;
+        }
         public static object? ConvertType(Type parameterType, string value)
         {
             // Provide explicit conversion of known types
@@ -122,6 +133,12 @@ namespace Parcel.CoreEngine.Conversion
             // Handle simple types
             if (primitiveTypes.Contains(parameterType))
                 return ConvertSingle(parameterType, value);
+            // Handle DataGrid
+            else if (parameterType == typeof(DataGrid))
+                return new DataGrid(value);
+            // Semantic types
+            else if (parameterType == typeof(Text))
+                return new Text(value);
             // Handle nullable
             else if (Nullable.GetUnderlyingType(parameterType) != null)
                 return ConvertSingle(parameterType.GetGenericArguments()[0], value);
