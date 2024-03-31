@@ -223,6 +223,10 @@ The purpose of this is to save form having to make multiple separate "Open" node
 
 PENDING, might provide some as simple utility functions and mini-frameworks, and other more evolved ones and dedicated Parcel Original Frameworks. Used for things like doing time-domain simulation with custom codes (as lambdas) for stock trading, physics simulation, and other stuff.
 
+## (Experimental) Deep Learning
+
+Yes, Parcel will be the first programming platform that's AI-native: come with deep learning tools out of the box. <!--(Remark) Actually, both MATLAB and Mathematica had it - that's the hullmark of a 4th generation programming language. -->
+
 ## (Toy) (Excel) Neural Networks -> Inference Engine
 
 Those are implemented either as a single spreadsheet, or as neural network graph. This part of the package is known as "macros" - those are auto-expanding networks instead of a single node. The way we can implement this is to either use MiniParcel or Gospel (Console) Commands (.gc) by sending those to the front-end. Alternatively, we could also utilize the same dedicated communication channel for "Load File" behaviors.
