@@ -6,15 +6,16 @@
     /// </summary>
     public static class EngineVersion
     {
-        public static readonly string Version = "Parcel.NExT v0.0.2 (Build: 2024.02)";
+        public static readonly string Version = "Parcel.NExT v0.0.3 (Build: 2024.03)";
 
         /// <summary>
         /// Format: version, key summary, component highlights, timeline.
         /// </summary>
         public static readonly string Changelog = """
             Parcel.NExT
-            v 0.0.1: Initialization. 2024.01 - 2024.02.
-            v 0.0.2: Service class implementation; Tranquility. 2024.02 - Now.
+            v0.0.1: Initialization. 2024.01 - 2024.02.
+            v0.0.2: Service class implementation; Tranquility. 2024.02 - 2024.03.
+            v0.0.3: Ama runtime engine. 2024.03 - Now.
             """;
     }
 }

@@ -1,5 +1,5 @@
 ﻿// Define a whole suite of standard demo-use nodes, categorized in this case using classes.
-namespace Demo.Standard
+namespace StandardLibrary.DependencyFree
 {
     /// <summary>
     /// Primitives from texts
@@ -41,6 +41,12 @@ namespace Demo.Standard
         public static bool[] MakeBoolArray(params bool[] values)
             => values;
         #endregion
+    }
+
+    public static class SystemFunctions
+    {
+        public static void PrintLine(string message)
+            => Console.WriteLine(message); // TODO: How do we implement this with the front-end? A possible approach is to utilize seperate front-end service.
     }
 
     /// <summary>

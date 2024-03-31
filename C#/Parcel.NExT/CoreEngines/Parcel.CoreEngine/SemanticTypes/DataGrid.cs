@@ -7,11 +7,21 @@ namespace Parcel.CoreEngine.SemanticTypes
     /// </summary>
     public sealed class DataGrid : IParcelSerializable
     {
-        public DataGrid(string csv)
+        #region Constructor
+        public DataGrid(string csv, bool hasHeader = true)
         {
             Raw = csv;
         }
-
         public string Raw { get; }
+        #endregion
+
+        #region Temporary Implementation
+        public string[] Headers => Raw.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)[0].Split(',');
+        public IEnumerable<string[]> QuickSplit(bool skipFirstRow)
+        {
+            var lines = Raw.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            return lines.Skip(skipFirstRow ? 1 : 0).Select(r => r.Split(',')); // TODO: Proper csv value escaping
+        }
+        #endregion
     }
 }

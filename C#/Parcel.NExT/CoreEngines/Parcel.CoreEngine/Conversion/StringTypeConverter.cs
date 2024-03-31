@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.Primitives;
 using Parcel.CoreEngine.SemanticTypes;
 using System.Collections;
@@ -60,12 +61,46 @@ namespace Parcel.CoreEngine.Conversion
                 return SerializeFlatStringDictionaryStructure((Dictionary<string, string>)result);
             else if (resultType == typeof(Dictionary<string, SimplexString>))
                 return SerializeFlatSimplexStringDictionaryStructure((Dictionary<string, SimplexString>)result);
+            // Serialize other basic dictionares
+            else if (resultType == typeof(Dictionary<string, byte>))
+                return SerializeFlatStringDictionaryStructure(((Dictionary<string, byte>)result).ToDictionary(r => r.Key, r => r.Value.ToString()));
+            else if (resultType == typeof(Dictionary<string, int>))
+                return SerializeFlatStringDictionaryStructure(((Dictionary<string, int>)result).ToDictionary(r => r.Key, r => r.Value.ToString()));
+            else if (resultType == typeof(Dictionary<string, long>))
+                return SerializeFlatStringDictionaryStructure(((Dictionary<string, long>)result).ToDictionary(r => r.Key, r => r.Value.ToString()));
+            else if (resultType == typeof(Dictionary<string, float>))
+                return SerializeFlatStringDictionaryStructure(((Dictionary<string, float>)result).ToDictionary(r => r.Key, r => r.Value.ToString()));
+            else if (resultType == typeof(Dictionary<string, double>))
+                return SerializeFlatStringDictionaryStructure(((Dictionary<string, double>)result).ToDictionary(r => r.Key, r => r.Value.ToString()));
 
             // Serialize serializable Parcel-specific types
             else if (resultType == typeof(DataGrid))
                 return SerializaDataGrid((DataGrid)result);
-            // TODO: Serialize Payload, and MetaInstructions
-            throw new NotImplementedException("Unrecognized object type.");
+            // TODO: Use standard serialization procedure (as shared with TextSerializer); Deal with non-serializable payloads (which are useful at runtime but cannot be transferred across internet and cannot be saved to document)
+            // TODO: Serialize Payload, including MetaInstructions
+            else if (resultType == typeof(ParcelPayload))
+                return SerializePayload((ParcelPayload)result);
+            else
+                throw new NotImplementedException("Unrecognized object type.");
+        }
+        public static object? ConvertType(Type parameterType, object value)
+        {
+            if (parameterType == value.GetType())
+                return value;
+            else if (value is string stringValue)
+                return ConvertType(parameterType, stringValue);
+            else throw new ArgumentException($"Unexpected non-string parameter value: {value}");
+        }
+        public static object ConvertObjectBestGuess(string value)
+        {
+            if (int.TryParse(value, out int i))
+                return i;
+            else if (bool.TryParse(value, out bool b))
+                return b;
+            else if (double.TryParse(value, out double d))
+                return d;
+            else
+                return value;
         }
         public static object? ConvertType(Type parameterType, string value)
         {
@@ -98,12 +133,21 @@ namespace Parcel.CoreEngine.Conversion
             // Handle simple types
             if (primitiveTypes.Contains(parameterType))
                 return ConvertSingle(parameterType, value);
+            // Handle DataGrid
+            else if (parameterType == typeof(DataGrid))
+                return new DataGrid(value);
+            // Semantic types
+            else if (parameterType == typeof(Text))
+                return new Text(value);
             // Handle nullable
             else if (Nullable.GetUnderlyingType(parameterType) != null)
                 return ConvertSingle(parameterType.GetGenericArguments()[0], value);
             // Handle arrays
             else if (value.Contains('\n'))
                 return ConvertValue(parameterType, value.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            // Handle semantic types
+            else if (parameterType == typeof(Uri))
+                return new Uri(value);
             // Handle complex types (e.g. Dictionaries)
             // TODO: PENDING (Consider using JSON library to help)
 
@@ -204,9 +248,31 @@ namespace Parcel.CoreEngine.Conversion
         private static string SerializaDataGrid(DataGrid result)
         {
             if (result.Raw != null)
-                return result.Raw;
+                return $"\"{result.Raw.Replace("\n", "\\n")}\"";
             else
                 throw new NotImplementedException();
+        }
+        private static string SerializePayload(ParcelPayload payload)
+        {
+            // TODO: Differentiate between serializable and non-serializable fields
+
+            // Remark: At the moment we are only serializing simple values
+            StringBuilder result = new();
+            result.AppendLine("{");
+            foreach (KeyValuePair<string, object> item in payload.PayloadData)
+            {
+                try
+                {
+                    string valueSerialization = SerializeResult(item.Value);
+                    result.AppendLine($"\"{item.Key}\": {valueSerialization}");
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            result.AppendLine("}");
+            return result.ToString().TrimEnd();
         }
         #endregion
     }

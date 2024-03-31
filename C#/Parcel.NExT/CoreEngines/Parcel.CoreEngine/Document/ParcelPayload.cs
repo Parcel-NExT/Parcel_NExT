@@ -9,6 +9,6 @@
         }
 
         public ParcelNode Node;
-        public Dictionary<string, object> PayloadData { get; }
+        public Dictionary<string, object> PayloadData { get; set; }
     }
 }

@@ -1,17 +1,5 @@
 ﻿namespace Parcel.CoreEngine.Document
 {
-    public sealed class ParcelNodeInputDefinition
-    {
-        public ParcelNodeInputDefinition(string name, string source)
-        {
-            Name = name;
-            Source = source;
-        }
-
-        public string Name { get; set; }
-        public string Source { get; set; }
-    }
-
     public sealed class ParcelNode
     {
         #region Constructors
@@ -33,8 +21,7 @@
         public string Name { get; set; }
         public string Target { get; set; }
         public Dictionary<string, string> Attributes { get; set; }
-        public List<ParcelNodeInputDefinition> Inputs { get; set; } = [];
-        public List<string> Outputs { get; set; } = [];
+        public List<string> Tags { get; set; }
         #endregion
     }
 }

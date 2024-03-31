@@ -2,6 +2,8 @@
 using System.Net;
 using WebSocketSharp.Server;
 using System.Reflection;
+using Tranquility.Sessions;
+using Tranquility.Services;
 
 namespace Tranquility
 {
@@ -13,18 +15,19 @@ namespace Tranquility
 
         #region Default Runtime Context
         /// <summary>
-        /// Whether backend should load demo assemblies during initialization; Those assemblies can serve as the default "standard" libraries available
+        /// Whether backend should load standard assemblies during initialization
         /// </summary>
-        public bool LoadDemoAssemblis { get; set; } = true;
+        public bool LoadStandardAssemblis { get; set; } = true;
         /// <summary>
         /// Backend specific runtime initialization behavior
         /// </summary>
-        public string[] DemoAssemblies { get; set; } = [nameof(Demo)];
+        public string[] StandardAssemblies { get; set; } = [nameof(StandardLibrary)];
         #endregion
     }
 
     public static class Program
     {
+        #region Main
         static void Main(string[] args)
         {
             if (args.Length == 0 || args.First() == "--help")
@@ -40,23 +43,42 @@ namespace Tranquility
             }
 
             TranquilityOptions options = ParseOptions(args);
+            RedirectStandardOutput();
+            StartService(options);
+        }
+        #endregion
 
-            if (options.LoadDemoAssemblis)
-                foreach (var name in options.DemoAssemblies)
+        #region Routines
+        private static void RedirectStandardOutput()
+        {
+            lock (ConsoleSessionRedirectedTextWriter.ConsoleStateChangeLock)
+            {
+                ConsoleSessionRedirectedTextWriter outputWriter = new();
+                Logging.StandardOutput = Console.Out;
+                Console.SetOut(outputWriter);
+            }
+        }
+        private static void StartService(TranquilityOptions options)
+        {
+            if (options.LoadStandardAssemblis)
+                foreach (var name in options.StandardAssemblies)
                     Assembly.LoadFrom(name);
 
             Logging.Info($"Start {nameof(Tranquility)} at {options.ServerAddress}...");
             WebSocketServer wssv = new(options.ServerAddress);
 
             wssv.AddWebSocketService<TranquilitySession>("/Tranquility");
+            wssv.AddWebSocketService<ConsoleSession>("/Console");
+            wssv.AddWebSocketService<StatedSession>("/Stated");
             wssv.Start();
 
-            Console.WriteLine("Tranquility is started. Press any key to quit.");
+            Logging.PrintToStandardOutput("Tranquility is started. Press any key to quit.");
             Console.ReadKey(true);
             wssv.Stop();
         }
+        #endregion
 
-        #region Routines
+        #region Subroutines
         private static void PrintHelp()
         {
             Console.WriteLine("""
@@ -69,7 +91,6 @@ namespace Tranquility
                     --get_port: Print a free port number and exit.
                 """);
         }
-
         private static TranquilityOptions ParseOptions(string[] args)
         {
             const string envVar = "PARCEL_TRANQUILITY_SERVER_ADDRESS";

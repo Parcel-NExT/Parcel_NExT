@@ -5,22 +5,14 @@ using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.CoreEngine.Service.LibraryProvider;
 using System.Reflection;
 using WebSocketSharp;
-using WebSocketSharp.Server;
 
-namespace Tranquility
+namespace Tranquility.Sessions
 {
-    public record ServiceEndpoint(ServiceProvider Provider, MethodInfo Method);
-    public class TranquilitySession : WebSocketBehavior
+    public class TranquilitySession : BaseSession
     {
         #region States
         private Dictionary<string, ServiceEndpoint>? _AvailableEndPoints; // TODO: This could be static and global
         private List<ServiceProvider>? _ServiceProviders;
-        #endregion
-
-        #region Helpers
-        public string Identifier => $"Session {ID[..6]}";
-        public void LogInfo(string message)
-            => Logging.Info($"({Identifier}) {message}");
         #endregion
 
         #region Framework Functions
@@ -30,9 +22,9 @@ namespace Tranquility
 
             LogInfo("New connection.");
 
-            _ServiceProviders = [new LibraryProviderServices(), new InterpolationServiceProvider()];
+            _ServiceProviders = [new LibraryProviderServices(), new InterpolationServiceProvider(), new AmaServiceProvider()];
             _AvailableEndPoints = [];
-            foreach (var provider in _ServiceProviders)
+            foreach (ServiceProvider provider in _ServiceProviders)
             {
                 string providerName = provider.GetType().Name;
                 Dictionary<string, MethodInfo> availableServices = provider.GetAvailableServices();
@@ -65,24 +57,9 @@ namespace Tranquility
         #endregion
 
         #region Routines
-        private void SendMultiPartReply(string message, int sizeLimit = short.MaxValue / 2)
-        {
-            if (message.Length < sizeLimit)
-                Send(message);
-            else
-            {
-                int segments = (int)Math.Ceiling(message.Length / (double)sizeLimit);
-                for (int i = 0; i < segments; i++)
-                {
-                    string fragmentHeader = $"MULTIPART:{i+1} {segments} {message.Length}"; // We make this format simple so for Gospel it's less parsing.
-                    string fragment = message.Substring(i * sizeLimit, Math.Min(message.Length - i * sizeLimit, sizeLimit));
-                    Send($"{fragmentHeader}\n{fragment}");
-                    Thread.Sleep(5); // Remark-cz: (Hack) Give front-end some processing time before buffer fills up. We have tested that on localhost, both 100ms, 10ms, 5ms and 1ms seems to work - though it largely depends on how fast frontend (Gospel) can digest it. If this time is to short, Godot might either simply run out of buffer memory and output error, or just drop packets silently. 1ms works on a fast PC, while 5ms is minimal requirement for a slow laptop. Theoratically speaking, in terms of Godot, it depends on FPS - because process() is called per frame.
-                }
-            }
-        }
         private void HandleMessageJSONStyle(string jsonMessage)
         {
+            // TODO: Handle ParcelNodeRuntimeException
             IDictionary<string, object>? json = (IDictionary<string, object>)SimpleJson.SimpleJson.DeserializeObject(jsonMessage);
 
             const string endPointToken = "endPoint";
@@ -120,6 +97,7 @@ namespace Tranquility
         }
         private void HandleMessageCLIStyle(string message)
         {
+            // TODO: Handle ParcelNodeRuntimeException
             string[] arguments = message.SplitCommandLineArguments();
             string methodName = arguments.First();
             if (methodName == "Echo")
@@ -146,13 +124,6 @@ namespace Tranquility
             }
             else
                 SendMultiPartReply("ERROR: Unknown endpoint.");
-        }
-        #endregion
-
-        #region Helpers
-        private object[]? MarshalStringArgumentsToMethodInputs(ParameterInfo[] parameterInfos, string[] stringValues)
-        {
-            return stringValues; // TODO: Implement actual logic
         }
         #endregion
     }

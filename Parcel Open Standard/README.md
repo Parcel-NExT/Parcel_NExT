@@ -28,6 +28,69 @@ The Parcel virtual machine (PVM) defines an intermediate layer between higher le
 
 A proper parcel program is thus just the description in the form of this node graph - called "Parcel Node Graph (PNG)", and nothing more, and nothing less. The material behavior of such a parcel program when executed by an execution engine depends on implementation. This specifically specifies how any particular implementation should interpret the contents of a parcel program.
 
+<!-- (Remark, #20240326) What's the relation of PIS and PNI (Parcel Native Instructions)? -->
+
+### Parcel Instruction Sets (PIS)
+
+A plain text based stated sequential sequence of instructions that implements the same functions/execution model as the graphs. This is for runtime implementations that do not handle graphs as defined in earlier sections. On the other hand, all runtimes/backend engines should implement this section to ensure proper understanding of the execution logic and as a fallback way of executing the graph. The text instructions each occupy a single line and thus have line significance, should always end a line with `\n` and line order is VERY important. The instructions are written in Parcel Instruction Set (PIS) - see Parcel Virtual Machine (PVM) documentation for more details. The instructions second should NOT have trailing empty lines.
+
+Below defines all instructions: <!--Consider moving this section to PVM, or just talk about PVM in this document instead of as a dedicated document-->
+
+|Instruction|Name|Meaning|
+|-|-|-|
+|` `|Empty line|Should ignore; Do not count to line number.|
+|`#`|Comment line|Parser should ignore; Do not count to line number.|
+|`.<Section Name>`|Section|Defines a code section, can be used for function definitions etc. Non-essential: if an implementation handles this, then it should allow `CALL` to provide section name as the first parameter; Otherwise an implementation can just ignore this. Do not count to line number.|
+|`PRELOAD <Package Name>`|Preload|(Use multiple PRELOAD commands to) Defines all dependant modules for the purpose of ease of implementation. All functions must be fully simple addressed without runtime information and understand single addressing space. Function names should start with module name.|
+|`SET <Variable Name> <Variable Value>`|Set variable|Sets a named variable; Different implementations shall provide different number of variables and different available variable names, but those four variables must be provided (the `$` prefix has no significance): `$1`, `$2`, `$3`, `$4`. The `<Variable Value>` is plain text value that may represent either string or number.|
+|`COPY <Source Variable> <Target Variable>`|Copy variable|Copies value from source variable to target variable.|
+|`CALL <Function Name> [<Function Parameters>...]`|Call function|Calls a function, optionally with a sequence of arguments - the argument values MUST be provided in variables, thus the parameters are all variable names.|
+|`JUMP <Line Number>`|Jump|Jump next execution to specified line number (inclusive).|
+|`BRANCH <Variable> <Line Number 1> <Line Number 2>`|Branch|Point IP to Line number 1 if variable is true, otherwise point IP to line number 2.|
+|`LINE <Line Value>`|Line|Denotes a single value|
+|`TEXT <Variable Name> <Line Range>`|Set text|Assigns multi-line text to variables; Since each instruction is a single line thus variable values in instructions do not have capacity to contain new line, the TEXT command is provided to assign multi-line values to a variable. Line range has the format like this: 15-75; It can also be a single line: 15.|
+
+There is no ABI (application binary interface) since it's text-based, and there is no primitive operators like `ADD` or `SUB` because those must be implemented as functions. When passing variables to functions, the address are always passed - depending on implementation and the functions, such addresses might immediately be interpreted as values, or used as is (i.e. inside functions, they can modify variable values).
+Besides above, there is a special `@` symbol that can be used to denote valid program lines and is optional. On the other hand, all parameters are space delimited and spaces can be escaped using `"` quotes. That it's, it's just like plain CLI arguments.
+
+Those are ALL the PIS instructions! As you can see, two notably features of PIS are:
+
+1. It's text-based.
+2. Its variables can hold arbitrary things.
+3. The instruction set itself provides no way to represent binary values in text format - however variables can hold binary variables per runtime implementation<!--(Remark) E.g. As payload reference? Needs a bit clarification here.-->. Parcel Standard Libraries will define functions that provides conversion of plain-text to binary.
+4. PIS on its own DO NOT define functional programs - all such functionalities require functions, which are provided by the runtime.
+
+All implementations must provide those variable names (the `$` has no significance):
+
+|Variable|Name|Purpose|Size|
+|-|-|-|-|
+|`$i`|Instruction Pointer|The next execution line. Notice with `SET` and `COPY` one can assign to this variable directly.|8 bytes|
+|`$1`|Variable 1|Holds variable.|Varying size.|
+|`$2`|Variable 2|Holds variable.|Varying size.|
+|`$3`|Variable 3|Holds variable.|Varying size.|
+|`$4`|Variable 4|Holds variable.|Varying size.|
+|`$r`|Function Result|Holds result of last function call.|Varying size.|
+
+To illustrate the point, here is a basic "Hello World!" example written in PIS:
+
+```PIS
+# Call print
+SET $1 "Hello World"
+CALL Print $1
+```
+
+This example illustrates calculating `sin(PI)` and print in formatted string:
+
+```PIS
+# Do calculation
+@1 SET $1 3.1415926
+@2 SET $2 "Calculation result: %i"
+@3 CALL Sin $1
+@4 CALL Print $2 $r
+```
+
+A C++ implementation of a PVM will be provided for reference purpose that can understand all functions that are defined in Parcel Standard Libraries (PSL).
+
 ## Parcel Solution Architecture
 
 A typical parcel implementation includes an editor, an execution engine, and a graph description.
@@ -40,6 +103,7 @@ mindmap
         Backend
     Execution Engine
         Runtimes
+        CLI Runner
     Graph Document
         Binary
         Text
@@ -131,10 +195,10 @@ Instructions
     Revisions (Nodes) (Magic: REVN)
 (Optionally Externalized and Binary)
     (Internalized) Current Graph Runtime (RUNT)
-    (Internalized) Payloads (Magic: PAYL)
+    (Internalized) Payloads (Magic: PAYL) (Ordered by node ID)
 (Optional) Parcel Graph External Payload Pack
     (Internalized) Current Graph Runtime (RUNT)
-    (Internalized) Payloads (Magic: PAYL)
+    (Internalized) Payloads (Magic: PAYL) (Ordered by node ID)
 ```
 
 Parcel supports those serialization: Binary (C# style/.Net core/.Net standard, little endian), (JSON), YAML, (RTS). Additional types might be provided through converters (if necessary). Parcel MAGIC number is ~~`PARCEL WORKFLOW ENGINE - BINARY`~~ `PSF-B` for binary file, and ~~`PARCEL WORKFLOW ENGINE - TEXT\n`~~ `PSF-T` for text file.
@@ -145,6 +209,18 @@ We use those somewhat confusing extensions for official parcel file format:
 * ~~`.document`~~ `.psft` for text-based storage
 * ~~`.graph`~~ `.psfb` for binary files storage
 
+### Document
+
+### Graphs
+
+All documents must always have a "Default" graph - though the naming can be something else. By default, it's named as `Default`.
+
+Anonymous graphs are also graphs. But they take a special naming convention: Use symbol `@` as prefix for anonymous graphs.
+
+### Nodes
+
+### Payloads
+
 ### Parcel File Format Storage Requirements Specification
 
 * Take Blender style file blocks that allows easier and more selective use of data and arbitrary data payload
@@ -153,11 +229,13 @@ We use those somewhat confusing extensions for official parcel file format:
 
 ### Text-Based Command-Line Format (MiniParcel)
 
-(Pending consolidating with Mini Parcel)
+MiniParcel can be used for data transfer of sub node networks, see sections on MiniParcel. MiniParcel is not suited for full serialization notably because: 1) It has instruction only and is intended to be simple and high level, 2) It doesn't not name specific end targets (???), 3) It doesn't have concept of binary payload, 4) It's node invocation is positionally based and not Parcel document graph-based or key:value attribute based.
 
-MiniParcel is not suited for full serialization notably because: 1) It's instruction only and intended to be simply and high level, 2) It doesn't not name specific end targets, 3) It doesn't have concept of binary payload, 4) It's node invocation is positional based and not Parcel document graph-based and key:value attribute based.
+<!-- (Comment) Because Payloads are in principle ABSENT by default, but all nodes have practical needs for "outputs". In this case, the only way to supply it on the node specification level is to utilize attributes, as originally proposed. However, the actual value is NOT stored on attribute themselves at all: in this case it's essential for attribute (values) to have an addressing syntax to refer to payloads. -->
 
 ### General Serialization Formats
+
+(PENDING FULL DOC WHEN IMPLEMENTATION IS COMPLETE)
 
 * Header takes two lines
 * May contain (file-format-level) comments: just ignore when parsing
@@ -375,7 +453,7 @@ Payload data is either plain string or full binary data (we have to support bina
 
 ALL GRAPH AND SUBGRAPH NODES will have cached payloads from previous invocation.
 
-ALL PAYLOADS WILL HAVE A `value` section (tentatively name those as: `result`, `preview`).
+ALL PAYLOADS WILL HAVE A `value` section (tentatively name those as: `result`, `preview`, `content`).
 
 Payloads serve critical functions like:
 
@@ -388,66 +466,39 @@ Like attributes, payload names are repurposed for specialized usages, and corres
 * `!instruct`: This section contains instruction to frontends for graph-level meta-programming purpose; A semi-standard format will be provided.
 * `%message`: This provides a front-end use-only (distinct from console prints) messages on the display medium. Use `%error` for errors (e.g. exceptions.)
 * `%error`
+* `%preview`: Consider it like C# `ToString()`, it's for display purpose. Especially useful in real-time displays.
+* `data/value/content`: Main data of paylod.
 
 ### Instructions
 
-A plain text based stated sequential sequence of instructions that implements the same functions/execution model as the graphs. This is for runtime implementations that do not handle graphs as defined in earlier sections. On the other hand, all runtimes/backend engines should implement this section to ensure proper understanding of the execution logic and as a fallback way of executing the graph. The text instructions each occupy a single line and thus have line significance, should always end a line with `\n` and line order is VERY important. The instructions are written in Parcel Instruction Set (PIS) - see Parcel Virtual Machine (PVM) documentation for more details. The instructions second should NOT have trailing empty lines.
+Instructions are used for meta-programming. There are a few semantic fields of Payloads that should be utilized for primary general purpose backend-frontend communication.
 
-Below defines all instructions: <!--Consider moving this section to PVM, or just talk about PVM in this document instead of as a dedicated document-->
+PENDING.
 
-|Instruction|Name|Meaning|
-|-|-|-|
-|` `|Empty line|Should ignore; Do not count to line number.|
-|`#`|Comment line|Parser should ignore; Do not count to line number.|
-|`.<Section Name>`|Section|Defines a code section, can be used for function definitions etc. Non-essential: if an implementation handles this, then it should allow `CALL` to provide section name as the first parameter; Otherwise an implementation can just ignore this. Do not count to line number.|
-|`SET <Variable Name> <Variable Value>`|Set variable|Sets a named variable; Different implementations shall provide different number of variables and different available variable names, but those four variables must be provided (the `$` prefix has no significance): `$1`, `$2`, `$3`, `$4`. The `<Variable Value>` is plain text value that may represent either string or number.|
-|`COPY <Source Variable> <Target Variable>`|Copy variable|Copies value from source variable to target variable.|
-|`CALL <Function Name> [<Function Parameters>...]`|Call function|Calls a function, optionally with a sequence of arguments - the argument values MUST be provided in variables, thus the parameters are all variable names.|
-|`JUMP <Line Number>`|Jump|Jump next execution to specified line number (inclusive).|
-|`BRANCH <Variable> <Line Number 1> <Line Number 2>`|Branch|Point IP to Line number 1 if variable is true, otherwise point IP to line number 2.|
-|`LINE <Line Value>`|Line|Denotes a single value|
-|`TEXT <Variable Name> <Line Range>`|Set text|Assigns multi-line text to variables; Since each instruction is a single line thus variable values in instructions do not have capacity to contain new line, the TEXT command is provided to assign multi-line values to a variable. Line range has the format like this: 15-75; It can also be a single line: 15.|
+## Core Standards
 
-There is no ABI (application binary interface) since it's text-based, and there is no primitive operators like `ADD` or `SUB` because those must be implemented as functions. When passing variables to functions, the address are always passed - depending on implementation and the functions, such addresses might immediately be interpreted as values, or used as is (i.e. inside functions, they can modify variable values).
-Besides above, there is a special `@` symbol that can be used to denote valid program lines and is optional. On the other hand, all parameters are space delimited and spaces can be escaped using `"` quotes. That it's, it's just like plain CLI arguments.
+The Core Standards consist of a few most important specifications pertaining to Parcel implementations.
 
-Those are ALL the PIS instructions! As you can see, two notably features of PIS are:
+```mermaid
+---
+title: Parcel Core Standards
+---
+flowchart TD
+    id1["Parcel Open Standards (POS)"]
+    id2["Parcel Virtual Machine (PVM)"]
+    id3["Parcel Instruction Sets (PIS)"]
+    id4["Parcel Standard Libraries (PSL)"]
+    id5["MiniParcel"]
+    id6["Parcel Document Specification (PDS)"]
 
-1. It's text-based.
-2. Its variables can hold arbitrary things.
-3. The instruction set itself provides no way to represent binary values in text format - however variables can hold binary variables per runtime implementation. Parcel Standard Libraries will define functions that provides conversion of plain-text to binary.
-4. PIS on its own DO NOT define functional programs - all such functionalities require functions, which are provided by the runtime.
-
-All implementations must provide those variable names (the `$` has no significance):
-
-|Variable|Name|Purpose|Size|
-|-|-|-|-|
-|`$i`|Instruction Pointer|The next execution line. Notice with `SET` and `COPY` one can assign to this variable directly.|8 bytes|
-|`$1`|Variable 1|Holds variable.|Varying size.|
-|`$2`|Variable 2|Holds variable.|Varying size.|
-|`$3`|Variable 3|Holds variable.|Varying size.|
-|`$4`|Variable 4|Holds variable.|Varying size.|
-|`$r`|Function Result|Holds result of last function call.|Varying size.|
-
-To illustrate the point, here is a basic "Hello World!" example written in PIS:
-
-```PIS
-# Call print
-SET $1 "Hello World"
-CALL Print $1
+    id1 --> Behaviors
+    id1 --> Syntax
+    Behaviors --> id2
+    Syntax --> id3
+    Behaviors --> id4
+    Syntax --> id5
+    Syntax --> id6
 ```
-
-This example illustrates calculating `sin(PI)` and print in formatted string:
-
-```PIS
-# Do calculation
-@1 SET $1 3.1415926
-@2 SET $2 "Calculation result: %i"
-@3 CALL Sin $1
-@4 CALL Print $2 $r
-```
-
-A C++ implementation of a PVM will be provided for reference purpose that can understand all functions that are defined in Parcel Standard Libraries (PSL).
 
 ## Engine (Execution Behavior)
 
@@ -461,6 +512,8 @@ In this section we document and specifies some expected engine behavior:
 
 Any functional frontend should NOT ONLY target node-graph drafting completeness but take the efficiency of such construction - both in terms of keyboard shortcuts, non-mouse usage, and version control capabilities - to the highest standard. Houdini is a decent but not good enough example, Unreal Engine Blueprint is an exceptionally bad despite pretty looking example.
 
+A proper graph editor front-end must support displaying node attributes in potential grouped/tabbed manner, and suppprt adding/removing attributes. Attributes may also be multi-dimensional vector/array or grid format and a native per-primitive (typed) editor control is preferred over pop-ups and text-based entries. As a reference, Consult Houdini Fluid Source node.
+
 ## Parcel Back-Ends
 
 Unless explicitly running node by node or as interpretative mode, type check for all nodes should happen at compile time.
@@ -472,6 +525,8 @@ A naive implementation might treat all nodes as strongly typed objects, then run
 A more advanced implementation is to generate codes for each node and execution of node graph is just execution of those generated codes. There are lots of ways to implement this scheme: we can generate object definitions for each node, or we can directly generate the final execution code for the entire graph without objectify each node.
 
 ## Parcel Native Style, Standard Libraries and Original Frameworks
+
+<!-- Also see Parcel Dev Day 2024 slides on "Graph Native Approach" -->
 
 A node is parcel native if it's implemented as Parcel graph using nodes without external codes.  
 POF get things done at unprecedented high level intent and efficiency, with as few nodes as possible.
@@ -489,6 +544,14 @@ Only specific subset of runtime and derived functionalities will be exposed thro
 * File IO
 * Socket IO
 * Web Services
+
+"Graph-native approach" have the following features:
+
+* Combination of visualization/preview, graph/node wire connections, annotations, and code function executions.
+* Automatic pin/node generation based on functionalities.
+* Configuration-drive, declarative, functional frameworks, e.g. for website construction.
+* GUI builder capabilities, e.g. sliders for primitive numbers.
+* Multi-layer graphs, subgraphs, and grouping.
 
 ## Canonical Implementation: Parcel NExT (2024) - Reference Implementation
 
@@ -569,8 +632,10 @@ This suite is collectively known as **Parcel.NExT**, including following notable
 * Tranquility (C#): WebSocket based stated full-feature C# backend.
 * Flux: Standalone package manager program. (Might also provide Forge: standalone packager or uploader to Arcanum)
 * Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
-* Catalyst: Gospel based cloud processing platform.
+* Catalyst: Gospel based cloud processing platform. Repository sharing platform, plain text only + dlls. Icon: Open box, Pandora style, stars.
 <!-- Use Medalian and myth names -->
+* Tangram: Experimental configuration web serving framework. Tangram on its own is a highly configurable standalone web application. Through adjusting data-driven configurations, one can "deploy" a parcel node graph as a website. This is in contract to a Parcel-native implementation where we might embed the entire Parcel Engine inside the web framework itself (Actually we might do that with Tangram as well).
+* SBF Inference Engine: Slow-but-functional. The thing is it just works, without tedious GPU setup.
 
 Additional (experimental) Front-ends:
 
@@ -659,17 +724,23 @@ A typical usage scenario goes like this:
 3. User optionally imports existing user libraries from discovery paths, or drag in directly (will reference as relative path by default)
 4. User keeps adding nodes and complete the graph functionalities.
 
-Annoymous/In-line graphs are supported to keep lambda-like references simple and clean.
+Anonymous/In-line graphs are supported to keep lambda-like references simple and clean.
 
 When promoting user to select node, Parcel.NExT presents the nodes through three different dimensions: by application domain, by (operating) object types, and by high-level libraries/categories. One can also search for nodes by name and tags, have favorites, and have history sorted by most frequent use, and show nodes already used in current document.
 
 ### MiniParcel
 
-Either the text format proper, or a REPL DSL frontend.
+MiniParcel is part of Core Engine, provided as a module for other services to consume. It is both a DSL language, a potent text-based serialization format (mostly for compact sub node network transfer purpose, provide a subset of full PDS capabilities), and the name refers to a standalone REPL frontend parser (C# based). MiniParcel is a procedural language and provides core syntax elements for attribute connections for PVM.
 
-MiniParcel is human-oriented declarative scripting language that provides a quick interface into graph authorization. It is less verbose to proper text-based format.
+MiniParcel is human-oriented declarative scripting language that provides a quick interface into graph authorization. It is less verbose to fully-featured Parcel text serialization format. MiniParcel makes assumptions about target names and function calling signatures and greatly simplifies syntax. It's designed to be both versatile enough for quick scripting purpose, and robust enough to express complete sub node networks for specification and interoperation purpose.
 
-MiniParcel makes assumptions about target names and function calling signatures and greatly simplifes syntax.
+### Core Syntax
+
+PENDING.
+
+### Attribute connections
+
+* Per PVM and PDS, Parcel documents do not contain edges or explicit definition of connections. MiniParcel DSL provides syntax for node addressing and attribute connections.
 
 ## Key Design Decisions
 

@@ -1,4 +1,5 @@
-﻿using WebSocketSharp;
+﻿using Tranquility.Sessions;
+using WebSocketSharp;
 using WebSocketSharp.Server;
 
 namespace Tranquility.UnitTests

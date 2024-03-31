@@ -34,7 +34,7 @@ namespace Parcel.NExT.Python.Helpers
         #endregion
 
         #region Routines
-        static string EnumerateEnvironmentVariablesSearchingForFilePattern(string[] environmentVariables, string fileNamePattern)
+        static string? EnumerateEnvironmentVariablesSearchingForFilePattern(string[] environmentVariables, string fileNamePattern)
         {
             foreach (var variable in environmentVariables)
             {

@@ -8,7 +8,7 @@ namespace Parcel.CoreEngine.Service.CoreExtensions
         #region Runtime
         public static void Execute(this ParcelDocument document)
         {
-            new GraphRuntime(document.MainGraph, document.NodePayloadLookUps).Execute();
+            new GraphRuntime(document.MainGraph, document.NodePayloads).Execute();
         }
         #endregion
 
