@@ -40,6 +40,7 @@ if (Get-Command "dotnet" -ErrorAction SilentlyContinue)
     }
 }
 else { Write-Host "Command `dotnet` doesn't exist." }
+# Build Front-end
 if (Get-Command "Godot_v4.2.1-stable_win64.exe" -ErrorAction SilentlyContinue)
 {
     if (!(Test-Path "$outputDirectory/Gospel.exe"))
@@ -49,6 +50,16 @@ if (Get-Command "Godot_v4.2.1-stable_win64.exe" -ErrorAction SilentlyContinue)
 }
 else { Write-Host "Godot_v4.2.1-stable_win64.exe `dotnet` doesn't exist." }
 
+# Build essential dependancies: StandardLibrary
+if (Get-Command "dotnet" -ErrorAction SilentlyContinue)
+{
+    if (!(Test-Path "$outputDirectory/StandardLibrary.dll"))
+    {
+        dotnet publish "$tranquilityServerProjectLocation/../../BasicModules/StandardLibrary" --output "$outputDirectory" --use-current-runtime -p:PublishReadyToRunShowWarnings=true
+    }
+}
+else { Write-Host "Command `dotnet` doesn't exist." }
+
 # Compress archive
 if (Test-Path "$outputDirectory")
 {
@@ -56,6 +67,7 @@ if (Test-Path "$outputDirectory")
         Path = "$outputDirectory/*"
         CompressionLevel = "Optimal"
         DestinationPath = "$outputDirectory/../Parcel_NExT_Gospel_Windows_$(Get-Date -Format "yyyyMMdd")_v0.0.0.zip"
+        
     }
-    Compress-Archive @compress
+    Compress-Archive -Update @compress
 }
