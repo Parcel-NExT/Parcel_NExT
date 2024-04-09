@@ -176,6 +176,12 @@ Execute a SQL command in place with Pseudotables. Inputs: Multiple tables as dat
 
 * Rename: Rename source to destination with regular expression; Optionally only change file name (so we don't need to explicitly specify target folder)
 
+### Registry and Meta-Storage
+
+Provide standardized API for such things and different OS/implementation can have their own underlying implementation. Just as on C#.
+
+* Environment variable manipulation (local, process/session, machine)
+
 ## Parcel-Native, Graph Native
 
 ### Data Source Nodes/Inputs
