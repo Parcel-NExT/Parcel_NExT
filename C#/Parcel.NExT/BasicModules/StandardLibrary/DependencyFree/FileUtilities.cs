@@ -6,7 +6,7 @@
         /// Search keywords in a list of files
         /// </summary>
         /// <returns>Result file and line number containing keywords and a snippet of the line.</returns>
-        public static string[] SearchInFiles(params string[] files, string pattern)
+        public static string[] SearchInFiles(string pattern, params string[] files)
         {
             return files
                 .Where(File.Exists)
