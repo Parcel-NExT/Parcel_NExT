@@ -131,3 +131,6 @@ dist
 
 # Publish
 Publish
+
+# Workspace
+.vscode
