@@ -108,6 +108,8 @@ For domain-oriented usages.
 * Rand
 * Vlookup
 
+See discussion: https://github.com/Charles-Zhang-Parcel/Parcel_NExT/discussions/10
+
 ### Basic Arithmetics
 
 Notice despite native expression evaluation and front-end side nodes that might facilitate numerical operations. It's still essential that we provide those as invokable functions.
@@ -116,6 +118,20 @@ Notice despite native expression evaluation and front-end side nodes that might 
 * Subtract
 * Multiply
 * Divide
+
+### Matrix & Matrix-Based Computing
+
+Dedicated matrix handling routines (distinct from DataGrid) this is highly useful e.g. for simulation liquidity PnL manipulation (aggregation etc), and other pure numerical data. From basic linear algebra to frequency domain analysis (engineering) to time series manipulation and solving linear equations.
+
+(Can be implemented as a wrapper around Math.Net, with interface enhancements)
+
+* Create from csv/string, data grid
+* Basic whole matrix element wise +-*/^
+* Linear algebra matrix multiply
+* Matrix inverse
+* Solve system of linear equations
+* Find correlations between columns or rows
+* Utility: Aggregate (add) a whole array of matrix <!--Functions like this are very essential so in a graph environment users do not need to write their own loops-->
 
 ### Finance Library
 
