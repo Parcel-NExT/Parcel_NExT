@@ -1,5 +1,6 @@
 # Parcel Open Standard (POS)
 
+> Parcel is an advanced light-weight general-purpose functional/procedural node-based visual scripting platform and workflow execution engine built on top of C# .Net, with support for Python (both in the form of interoperation and embedded usage).
 > (Motto) Make advanced data analysis easy and fun. Use visual and graphical programming to solve common problems.
 > A scripting platform is just one-third of the solution: the other two is domain specific methods, and actually getting the work done. But a good platform can make one start far.
 
@@ -7,6 +8,10 @@ Parcel Open Standard is the core specification of expected behaviors for interop
 
 The core aspect of this standard is **graph behavior compatibility**, which refers to and contains directly **user-authored contents**, while all frontend and backends are generally tolerant and free-for-all-kinds-of-implementations.  
 In general, any successful Parcel implementation should have a super lightweight, fast and efficient core engine, versatile backend services, and very heavy and powerful and intelligent frontend.
+
+TODO:
+
+- [ ] Define `fully-addressed` node type; Refine node address format (support local DLL, smart/shorthand name, url loading, and in-graph reference).
 
 ## Premise: High-Level Design Goal
 
