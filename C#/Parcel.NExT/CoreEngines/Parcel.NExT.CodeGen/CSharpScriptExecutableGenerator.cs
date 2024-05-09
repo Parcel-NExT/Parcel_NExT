@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Parcel.NExT.Interpreter.CodeGeneration
+namespace Parcel.NExT.CodeGen
 {
     /// <summary>
     /// Generates .exe files from C# scripts using dotnet build tool;

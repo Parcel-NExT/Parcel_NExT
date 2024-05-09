@@ -22,4 +22,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\..\CoreEngines\Parcel.NExT.CodeGen\Parcel.NExT.CodeGen.csproj" />
+  </ItemGroup>
+
 </Project>

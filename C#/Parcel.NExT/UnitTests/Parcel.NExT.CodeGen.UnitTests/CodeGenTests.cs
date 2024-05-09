@@ -1,8 +1,7 @@
-﻿using Parcel.NExT.Interpreter.CodeGeneration;
-using System.Diagnostics;
-using static Parcel.NExT.Interpreter.CodeGeneration.CSharpScriptExecutableGenerator;
+﻿using System.Diagnostics;
+using static Parcel.NExT.CodeGen.CSharpScriptExecutableGenerator;
 
-namespace Parcel.NExT.Interpreter.UnitTests
+namespace Parcel.NExT.CodeGen.UnitTests
 {
     public class CodeGenTests
     {
