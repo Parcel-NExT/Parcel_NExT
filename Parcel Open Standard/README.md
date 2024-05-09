@@ -656,6 +656,15 @@ Other names:
 * Phanto: Time-domain simulation
 * Polyglot: CodeGen
 
+<!-- We may want to move the sections below out of Parcel Open Standard because it sounds too business specific -->
+
+Parcel.NExT Derived Standalone Applications, Application Frameworks and Standalone Solutions (Not cloud based but could be cloud-enabled): ("Parcel as engine") (Likely with highly customized GUI along with standardized node-based interface) <!--Along with the cloud-enabled future, operating system GUI system capabilities, and investment/engineering software solution consulting, this suite of applications could be part of our core business-->
+
+1. Prophecy: Standalone Parcel.NExT database application. (Per comparing to Oracle database and more importantly Microsoft Access)
+2. Total Insight: Standalone business intelligence dashboard application. (Per comparison to powerBI)
+3. Exordium (Parcel Workflow Engine): Daemon/Service oriented workflow handler and manager. (Per comparing to Task Scheduler, BuildBot, and Microsoft Workflow Foundation; Operating system independent; GUI and CLI controllable)
+4. Composer: Node-based music composition and synthesizer.
+
 ### Core Engine
 
 The core engine will be an interpretative engine with support for (final) code generation. This is chosen so debugging is possible and easier - if we were to actually compile the code, then it's harder to set breakpoints and have meaningful intermediate REPL-like prompts. The interpretation engine is based on Roslyn and implementation is similar to Pure.
@@ -797,3 +806,7 @@ Reference implementations:
 * SWIProlog
 * Elixir
 * Haskell
+
+## Glossary
+
+* POS: Parcel Open Standards, Parcel Operating System/Parcel OS (alternative name for Parcel NExT)

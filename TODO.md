@@ -100,3 +100,21 @@ When payload is updated, call (only) immediately next connected nodes on_incomin
 All node attribute follow JSON and GDscript naming convention aka. snake case. All C# modules should use proper C# convention, and Python modules vice versa. A strictly followed naming conversion will be implemented and handled by the backend for missing attributes when mapping to function/type method calls, and thus following such convention when writing libraries are advised. Node names are PascalCase.
 All nodes and pins for front-end with have proper "Human Natural Language" format with proper spacing.
 (Design Decision, #20240213) Attribute level comments might make node graphs too verbose. An alternative is to provide a parsed "Style-sheet" that "drops-in" providing archetype-like functionality, adding comments through layering in a tartget-type-attribute addressing schemes. Either way, having ~as reserved special format is a good thing.
+
+### Current as of 20240331
+
+Casual progress:
+* PSL and functional overall processing pipeline (Ama engine)
+* DataTable: Provide Change Size, Change Headers with dedicated pop-ups.
+* String-based Array Node
+
+Gospel frontend:
+* Exception display (backend-frontend communication)
+* Notification push
+
+Gosple Nodes:
+* Might want to provide Data Table and Spreadsheet an input of DataGrid which ONLY when changed populates values. (And might want to automatically disconnect?)
+
+Core engine and usability:
+* Replace Notebook with Parcel implementation for Singleton context Pure (by simply providing some nodes where we can type the snippets)
+* Backend to front-end communication (Create node, create payload, update attributes). When this is done we will be able to load documents.
