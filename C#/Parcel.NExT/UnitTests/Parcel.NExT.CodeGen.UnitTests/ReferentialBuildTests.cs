@@ -7,7 +7,7 @@ namespace Parcel.NExT.CodeGen.UnitTests
     public class ReferentialBuildTests
     {
         [Fact]
-        public void Test1()
+        public void ShouldGenerateProjectFromDocument()
         {
             string tempFolder = Path.Combine(Path.GetTempPath(), "Parcel", nameof(ReferentialBuildTests));
             string publishFolder = Path.Combine(tempFolder, "Build");
@@ -43,7 +43,7 @@ namespace Parcel.NExT.CodeGen.UnitTests
         }
 
         #region Helpers
-        private static string RunProcess(string executable, string workingDirectory)
+        private static string RunProcess(string executable, string workingDirectory) // TODO: Unify all run process functions inside a single utility class
         {
             var process = new Process()
             {

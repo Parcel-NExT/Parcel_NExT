@@ -16,13 +16,18 @@ namespace Parcel.NExT.CodeGen
         }
         public static bool CheckSDKsInstalled()
         {
+            bool allPassed = true;
+
             // Check dotnet sdk is installed and available in PATH
-            // ...
+            allPassed = allPassed && CSharpScriptExecutableGenerator.AssertSDKVersion(CSharpScriptExecutableGenerator.GetDotnetSDKVersion());
 
             // Check Python is installed and available in PATH
             // ...
 
-            throw new NotImplementedException();
+            // Check Parcel standard library dlls/nugets are available
+            // ...
+
+            return allPassed;
         }
         #endregion
     }

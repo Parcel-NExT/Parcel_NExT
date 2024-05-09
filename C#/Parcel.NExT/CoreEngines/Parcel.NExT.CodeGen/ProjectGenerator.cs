@@ -4,6 +4,18 @@ namespace Parcel.NExT.CodeGen
 {
     public struct ProjectGenerationOptions
     {
+        public enum OptimizationLevel
+        {
+            /// <summary>
+            /// Keeps all node/graph names
+            /// </summary>
+            Verbose,
+            /// <summary>
+            /// Use as little code as possible while maintaining readability, fully utilize dependency solver
+            /// </summary>
+            Succinct
+        }
+
         #region Overall Configurations
         public string ProjectName { get; set; }
         public string SourceCodeOutputFolder { get; set; }
@@ -22,6 +34,8 @@ namespace Parcel.NExT.CodeGen
         #region Source Code
         public bool KeepIntermediateSourceFiles { get; set; }
         public bool ProduceSingleSourceFile { get; set; }
+        public bool UseTopLevelStatementsForEntryScript { get; set; }
+        public OptimizationLevel Optimization { get; set; }
         #endregion
 
         #region Package Type
@@ -37,10 +51,42 @@ namespace Parcel.NExT.CodeGen
 
     public class ProjectGenerator
     {
+        /// <summary>
+        /// Generate source files, build, and return final executable.
+        /// Throws exceptions during compilation errors.
+        /// </summary>
         public string GenerateProject(ParcelDocument document, ProjectGenerationOptions options)
         {
+            CSharpScriptExecutableGenerator.ScriptFile[] scripts = document.GraphNodes
+                .Select(p => CodeGenerator.GenerateGraphCodes(options.ProjectName, document, p.Key, p.Value, document.MainGraph == p.Key, options.UseTopLevelStatementsForEntryScript))
+                .ToArray();
+
+            // Provide main function (Program.cs) when we have more than one graphs and the main graph is not using top level statement
+            if (document.Graphs.Count != 1 && !options.UseTopLevelStatementsForEntryScript)
+                scripts = [MakeMainScript(options.ProjectName, document), .. scripts];
+
+            // TODO: Handle build errors (throw as exception)
             // Returns executable file path
-            throw new NotImplementedException();
+            string executable = new CSharpScriptExecutableGenerator().Generate(options.ProjectName, null, scripts, options.SourceCodeOutputFolder, options.BuildOutputFolder, options.ProduceSingleExecutable, out string messages); // TODO: Support dependencies
+            return executable;
         }
+
+        #region Routines
+        private CSharpScriptExecutableGenerator.ScriptFile MakeMainScript(string projectName, ParcelDocument document)
+        {
+            return new CSharpScriptExecutableGenerator.ScriptFile("Program.cs", $$"""
+                namespace {{projectName}}
+                {
+                    public static class Program
+                    {
+                        public static void Main(string[] args)
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+                }
+                """);
+        }
+        #endregion
     }
 }

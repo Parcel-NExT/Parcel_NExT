@@ -7,19 +7,30 @@ namespace Parcel.CoreEngine
 {
     public sealed class ParcelDocument: ParcelDocumentBase
     {
+        #region Accessor
+        public Dictionary<ParcelGraph, ParcelNode[]> GraphNodes
+            => NodeGraph
+                .GroupBy(p => p.Value)
+                .ToDictionary(g => g.Key, g => g.Select(g => g.Key).ToArray());
+        #endregion
+
         #region Management Properties
         public Dictionary<ParcelNode, ParcelGraph> NodeGraph { get; } = [];
         public Dictionary<ParcelGraph, ParcelGraphRuntime> GraphRuntimeLookUps { get; } = [];
         #endregion
 
         #region Construction API
-        public long AddNode(ParcelGraph graph, ParcelNode node, Vector2 position)
+        public long AddNode(ParcelGraph graph, ParcelNode node, Vector2? position = null, Vector2? size = null)
         {
+            // Define position and size
+            CanvasElement element = new CanvasElement(node);
+            if (position != null)
+                element.Position = position.Value; // Remark: We are not automatically adjust position here to avoid unnecessary computing
+            if (size != null)
+                element.CanonicalSize = size.Value;
+
             // Add to layout
-            graph.MainLayout.Placements.Add(new CanvasElement(node)
-            {
-                Position = position
-            });
+            graph.MainLayout.Placements.Add(element);
 
             // Add to main data
             Nodes.Add(node);

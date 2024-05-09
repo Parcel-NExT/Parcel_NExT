@@ -15,7 +15,7 @@ namespace Parcel.NExT.CodeGen.UnitTests
             const string testOutputMessage = "Hello World!";
             string outputExecutable = new CSharpScriptExecutableGenerator().Generate("MyProgram", null, [new ScriptFile("Main", $"""
                 Console.WriteLine("{testOutputMessage}");
-                """)], tempFolder, true, out string messages);
+                """)], tempFolder, null, true, out string messages);
 
             // Assert generation is successful
             Assert.True(File.Exists(outputExecutable));
