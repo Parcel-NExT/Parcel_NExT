@@ -133,7 +133,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         }
         public Dictionary<string, SimplexString> GetModuleMembers(string moduleName)
         {
-            Assembly assembly = Assembly.LoadFrom(moduleName);
+            Assembly assembly = Assembly.Load(moduleName); // Remark-cz: Consult https://codingarchitect.wordpress.com/2006/09/11/assembly-load-vs-loadfile-vs-loadfrom/
             // TODO: Might want to remove types that are *Options aka. define function options (maybe they can inherit from specific class? Or we just use naming convention as filter: <MethodName>Options struct).
             Type[] types = assembly.GetExportedTypes()
                 .Where(t => t.Name != "Object").ToArray();
