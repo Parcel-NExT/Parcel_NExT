@@ -118,3 +118,30 @@ Gosple Nodes:
 Core engine and usability:
 * Replace Notebook with Parcel implementation for Singleton context Pure (by simply providing some nodes where we can type the snippets)
 * Backend to front-end communication (Create node, create payload, update attributes). When this is done we will be able to load documents.
+
+### Unofficial Tasks as of 20240510
+
+Pending moving to ADO when tasks are official.
+
+(Feature) Preview Node
+(User Story) Add Audio Mode (Per DSP DSL)
+(User Story) Add Video Mode (Per Video Editing DSL)
+(User Story) Add Viewport (2D) Mode (Per 2D Graphics Novel Game DSL)
+(User Stort) Add Viewport (3D) Mode (Per Procedural Modeling DSL)
+
+(ADO) (Story) Investigate Advanced Custom GraphEdit Drawing
+https://www.reddit.com/r/godot/comments/17apon5/possible_to_animate_edges_in_a_graphedit_node/ Might need to touch C++ source, which is not too much, but we must ensure Windows/Mac/Linux/Web builds still works and we are able to easily maintain forward compatibility with new engine versions, in general, avoid excessive changes.
+Put results in Investigation folder.
+- Study behaviors
+- Summarize in design document
+- Create demo setup
+
+(ADO) Marketing
+-> Personel Marketing
+-> Name cards: Charles Zhang (CEO)
+Charles Zhang
+CEO
+Methodox, Inc.
+Mobile: +1 (647) 382 6850
+Website: www.methodox.io
+Email: Charles@methodox.io
