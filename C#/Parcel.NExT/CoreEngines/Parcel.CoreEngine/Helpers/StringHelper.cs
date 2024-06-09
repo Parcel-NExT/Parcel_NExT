@@ -22,7 +22,6 @@ namespace Parcel.CoreEngine.Helpers
                 return hash1 + hash2 * 1566083941;
             }
         }
-
         public static string[] SplitCommandLineArguments(this string inputString, char separator = ' ', bool includeQuotesInString = false)
         {
             List<string> parameters = [];
@@ -55,6 +54,10 @@ namespace Parcel.CoreEngine.Helpers
             if (current.Length != 0)
                 parameters.Add(current.ToString());
             return parameters.ToArray();
+        }
+        public static string Camelize(this string original)
+        {
+            return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(original);
         }
     }
 }

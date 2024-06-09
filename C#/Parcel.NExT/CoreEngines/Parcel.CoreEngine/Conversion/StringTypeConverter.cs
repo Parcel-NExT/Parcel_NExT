@@ -1,10 +1,10 @@
-﻿using Humanizer;
-using Parcel.CoreEngine.Document;
+﻿using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.Primitives;
 using Parcel.CoreEngine.SemanticTypes;
 using System.Collections;
 using System.ComponentModel;
 using System.Text;
+using Parcel.CoreEngine.Helpers;
 
 namespace Parcel.CoreEngine.Conversion
 {
@@ -196,9 +196,7 @@ namespace Parcel.CoreEngine.Conversion
         {
             TypeConverter typeConverter = TypeDescriptor.GetConverter(type);
             object? objValue = typeConverter.ConvertFromString(value);
-            if (objValue == null)
-                throw new ApplicationException($"Cannot convert {value} to type {type.Name}.");
-            return objValue!;
+            return objValue ?? throw new ApplicationException($"Cannot convert {value} to type {type.Name}.");
         }
         #endregion
 
