@@ -214,6 +214,10 @@ We use those somewhat confusing extensions for official parcel file format:
 * ~~`.document`~~ `.psft` for text-based storage
 * ~~`.graph`~~ `.psfb` for binary files storage
 
+### Requirements
+
+- [ ] Might somehow Incorporate (fixed) node version metadata (part of documentation). I.e. At each time we support only a single version in runtime but nodes themselves and doc might need to keep track version differences, or at least have this capability.
+
 ### Document
 
 ### Graphs
@@ -231,6 +235,10 @@ Anonymous graphs are also graphs. But they take a special naming convention: Use
 * Take Blender style file blocks that allows easier and more selective use of data and arbitrary data payload
 
 ## Parcel Serialization Formats
+
+PSFs are capable of storing all media data (and any other data) inside a single file. Even the file itself can change during execution time (meta programming) - but that's mostly for meta-programming purposes and not for storing data (e.g. database) (though some database library could certainly make use of this). For both binary and text-based serialization format, there is embedded and reference mode where such media data could either be externally referenced or stored directly inside (while to the APIs it's transparent).
+
+<!-- For instance, an Image annotation node might reference an image, the data of which could either come from inside the document or from an external file. The handling of such behaviors could either be explicit with the node, or the node just expect an input data of Bitmap while the framework handles translation. This happens for all supported image, audio, database/data, and arbitrary binary files. "You don't worry where I get the data, I just feed you with the data itself, raw or structured/objectified." -->
 
 ### Text-Based Command-Line Format (MiniParcel)
 

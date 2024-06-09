@@ -121,7 +121,7 @@ Core engine and usability:
 
 ### Unofficial Tasks as of 20240510
 
-Pending moving to ADO when tasks are official.
+Those are legit tasks but we haven't allocated much thought or scheduled them for execution. Pending moving to ADO when tasks are official.
 
 (Feature) Preview Node
 (User Story) Add Audio Mode (Per DSP DSL)
@@ -145,3 +145,17 @@ Methodox, Inc.
 Mobile: +1 (647) 382 6850
 Website: www.methodox.io
 Email: Charles@methodox.io
+
+(ADO) Automatic "MakeXXXX" for any type (class, structure, record) that have a public constructor. THIS IS HANDLED BY A SINGLE MakeTypeInstance node per standard or otherwise can be specially handled by runtime implementations.
+
+(ADO) Investigate ElsaWorkflows (C#) and see whether we can: 1) build entire Methodox just by providnig DSLs for it; 2) Use it as a readily-usable cloud-ready front-end; 3) Make use of some of the backend runtime engines offered by this platform. Notice Elsa is MIT license so we should be fine.
+
+(ADO) Research: Survey, Test, Practice potentially useful JS runtimes for C# - must make sure it's cross-platform and very easy to use and ideally robust and can consume existing NodeJS librarires. See: https://github.com/sebastienros/jint https://andrewlock.net/running-javascript-in-a-dotnet-app-with-javascriptengineswitcher/ Notice we are still pending an architecture design for using JS for front-end purpose.
+
+(ADO) Feature: Allow limiting available nodes/libraries/function sets for any given graph. Useful for education or delivering to end-user purpose. Notice graphs users can still invoke advanced nodes but mostly no additional (selected types) nodes can be added. 
+
+(ADO) Gospel "Publish" Document
+Instead of using the exact same source file (extension), we use Publish to explicitly publish a read-only/presentation-mode/application from current graph. This gives a more streamlined experience. The published file has a different file extension but is otherwise exactly the same as source Parcel file. It's just the meta-data there disallows editing when opened in Gospel. People with text editor can of course directly edit the source file to switch such toggles. On the other hand, the Publishing process may allow stripping off all irrelevant design time stuff including nodes and graphs (and keeps generated codes only) for execution purpose.
+
+(ADO) Support binary file compression with standard Oz4 format.
+(ADO) Support binary file compression with password protection (content encryption) especially during Export time (exported binary presentation file). Notice to implement this properly we need to guarantee during program runtime everything is in memory - there is no intermediate dump files that might leak crucial data/information.

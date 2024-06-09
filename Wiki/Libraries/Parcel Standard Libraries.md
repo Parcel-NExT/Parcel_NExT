@@ -76,6 +76,16 @@ flowchart TD
     id1 --> id2 --> id3 --> id4 --> id5 --> id6
 ```
 
+## Binary Processing
+
+Utilizing graphs for very straightforward and error-free binary formatting and serialization.
+
+### Bitwise Manipulations
+
+### Serialization
+
+(PENDING)
+
 ## Database Foundations
 
 ### Database Functions
@@ -90,6 +100,17 @@ PENDING
 * SQL: Execute a SQL command in place with Pseudotables. Inputs: Multiple tables as data source.
 * Pivot
 
+## Desktop System
+
+Provides comprehensive desktop/GUI navigation features to the file system.
+
+* Favorites: Provides links/quick launch to favorite links, paths (file and folder), programs.
+* File Explorer: Comprehensive on-node file system navigation with saved navigation states.
+* Launcher: Quick launch as buttons/searchable list.
+* Programs: Similar to Windows "Programs".
+* File Preview: Displays (on-surfacE) file preview.
+* File Details: Displays (on-surface) file metadata.
+
 ## Finance, Economics, and Investment
 
 Provides financial product pricing models.
@@ -98,9 +119,30 @@ Provides financial product pricing models.
 * Black Schole for European Put Option
 * Discouting Price with Risk Free Interest Rate
 
+## Hosting Services
+
+### WebSocket
+
+### HTTP/HTTPs
+
+Runs as background service.
+
+* Configure HTTP Server
+* Start Server
+* Stop Server
+
 ## Math and Foundational Computing
 
 For domain-oriented usages.
+
+### Fundamental Constants
+
+The fundamental constants must be provided to arbitrary accuracy! And we should provide default cached versions for commonly used accuracies (and those are mentioned in doc). The commonly reserved/cached accuracies are: 2 digits, 5 digits, 7 digits, 12 digits, 15 digits, 50 digits and 100 digits.
+
+* Pi
+* e
+* Golden ratio
+* Some other series (represented as rationals)
 
 ### Basic Excel Functions
 
@@ -260,3 +302,34 @@ The purpose of this library is to collect a whole bunch of exiting usable models
 ### Binary BW Handwriting Letter Recognition
 
 PENDING.
+
+## Appendix: Parcel Standard Library Implementation Supports
+
+(Draft, WIP)
+
+At the moment full POS-compliant systems include Pure 2, Parcel V1 Neo and Parcel NExT.
+
+**Support Map**
+
+|Domain|Feature Set|Support in Parcel V1 Neo|Support in Pure|Support in Parcel NExT|
+|-|-|-|-|-|
+|Database Foundations|||||
+|Data Grid Paradigm|||||
+|Finance, Economics, and Investment|||||
+|Math and Foundational Computing|Fundamental Constants||||
+||Basic Excel Functions||||
+||Basic Arithmetics||||
+||Matrix & Matrix-Based Computing||||
+||Finance Lbrary||||
+||Statistics||||
+|Multimedia|||||
+|Operating System Interface|||||
+|Parcel-Native, Graph Native|||||
+|Physics and Engineering|||||
+|Programming & Data Structures|||||
+|Time Domain Models and Simulations|||||
+|Deep Learning|||||
+|Inference Engine|||||
+|Appendix: Parcel Standard Library Implementation Supports|||||
+
+<!-- Possible support status: ✅ ❎ Full/Partial (Specific Nodes) -->
