@@ -234,8 +234,8 @@ namespace Parcel.NExT.Interpreter.Scripting
                     "System.IO", 
                     "System.Linq")
                 // Pure language essential namespaces, types, and global static functions
-                .AddImports($"{nameof(Parcel.NExT.Interpreter.Scripting)}")
-                .AddImports($"{nameof(Parcel.NExT.Interpreter.Scripting)}.{nameof(Construct)}");
+                .AddImports($"Parcel.NExT.Interpreter.{nameof(Scripting)}")
+                .AddImports($"Parcel.NExT.Interpreter.{nameof(Scripting)}.{nameof(Construct)}");
             // Add additional assembly references (won't automatically import namespaces)
             if (additionalReferences != null )
                 options.AddReferences(additionalReferences.ToArray());
