@@ -24,6 +24,7 @@ namespace Parcel.CoreEngine.Helpers
         }
         public static string[] SplitCommandLineArguments(this string inputString, char separator = ' ', bool includeQuotesInString = false)
         {
+            // Remark: In some codes I authored before, this is also called "SplitArgumentsLikeCsv"
             List<string> parameters = [];
             StringBuilder current = new();
 
@@ -58,6 +59,13 @@ namespace Parcel.CoreEngine.Helpers
         public static string Camelize(this string original)
         {
             return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(original);
+        }
+
+        public static string JoinAsArguments(this string[] args)
+        {
+            if (args == null || args.Length == 0)
+                return "";
+            return string.Join(" ", args.Select(a => a.Contains('"') ? $"\"{a}\"" : a));
         }
     }
 }
