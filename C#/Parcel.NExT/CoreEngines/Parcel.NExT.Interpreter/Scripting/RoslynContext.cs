@@ -357,9 +357,14 @@ namespace Parcel.NExT.Interpreter.Scripting
         {
             var match = HelpItemRegex().Match(input);
             string name = match.Groups[1].Value;
-            bool isPrintMetaData = PrintName(name);
-            if (!isPrintMetaData)
-                ParseSingle(input);
+            if (string.IsNullOrEmpty(name))
+                PrintGeneralHelp();
+            else
+            {
+                bool isPrintMetaData = PrintName(name);
+                if (!isPrintMetaData)
+                    ParseSingle(input);
+            }
         }
         #endregion
 
@@ -475,6 +480,15 @@ namespace Parcel.NExT.Interpreter.Scripting
         #endregion
 
         #region Helpers
+        public static void PrintGeneralHelp()
+        {
+            Console.WriteLine("""
+                Help() command can be used to view type information and member information.
+                  Help(<Namespace>): Prints all types available under a namespace.
+                  Help(<Type>): Prints all members of a given type.
+                  Help(<Object Instance>): Prints members information of the type of a given instance.
+                """);
+        }
         public static bool PrintName(string name)
         {
             string[] nameSpaces = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Select(t => t.Namespace)).Distinct().ToArray();
