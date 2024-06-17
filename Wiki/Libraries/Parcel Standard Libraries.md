@@ -8,6 +8,23 @@
 <!-- Notice we had a Draw.io diagram from earlier Parcel design notes - migrate it here. -->
 <!-- (Remark, Design Note, Principle, #20240326) Notice the goal here, CONTRARY to typical programming languages like Python and C, is to provide high-level business/application related functions (as single nodes) first, then provide programming features. For instance, a large suite of C++ STL is for foundational programming, while all of Excel and MATLAB functions are for domain-specific computing. Because of the nature of graph-native approach of Parcel, it is NOT suited to follow the steps of either: Parcel should first and foremost "get things done", then it gradually expose more control and programmable features. -->
 <!-- (Remark, #20240609) Consider putting all non-os non-essential libraries into packages instead of requiring them to be PSL. On the other hand, this approach might make some packages impossible to be built on top of PSL. Also, if most of the official packages are not built on top of PSL but relies on low-level C#, then what's the point of having PSL in the first place? -->
+<!-- (Remark, #Urgent, Terminology) We need immediate clarification around the term "Standard library" as in the context of PSL vs DSL vs Pure "standard libraries". Most likely moving forward it goes like this:
+1. "Standard Library" should only occur in the context of POS and as in PSL
+2. All useful higher-level functionalities are going to be exposed through DSLs: those DSLs may or may not depend on PSL libraries especially because they are implemented directly in C# (not in graphs)
+3. There will be a suite of "Core" Parcel packages which are NOT part of PSL; Notice Parcel DSL and Parcel Core are NOT built on top of PSL, but is conceptually parallel to it
+4. Pure 2 will not have any custom libraries
+
+Below illustrates it:
+
+* Implementation Layer (Assembly Level)
+    * Parcel Core Packages
+    * Parcel DSL Packages
+* User Layer (Graph Level)
+    * Parcel Standard Libraries
+        * User Graphs
+        * Graphs as Libraries
+-->
+<!-- (Remark) Parcel Standard Libraries is simply an abstraction layer on top of most system/C# standard APIs for the purpose of interoperation on the graph level between different runtime engines. Notice most likely when runtime engines differ, only pure-PSL-based graphs can still execute - most of the DSL dependent graphs are going to fail. -->
 
 From a Parcel-native perspective, we provide a layer of indirection from user graphs and underlying implementation, to remove the direct dependency on implementation-specific functionalities. For instance, `Print` should be a standard Parcel node with standard behaviors, irrelevant whether it's implemented or mapped directly to underlying C# or python or custom implementation. The direct source of referencing when devising such a standard library follows the clues in this order: standard lua library, standard C library, standard Python libraries, standard .Net libraries, standard C++ libraries, standard Pure libraries. Notice when we reference those libraries, we reference both interface and behavior - but more importantly, the intention of providing such functionalities and the ubiquity of the application. Below we provide some high-level rationale:
 
