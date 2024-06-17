@@ -159,3 +159,9 @@ Instead of using the exact same source file (extension), we use Publish to expli
 
 (ADO) Support binary file compression with standard Oz4 format.
 (ADO) Support binary file compression with password protection (content encryption) especially during Export time (exported binary presentation file). Notice to implement this properly we need to guarantee during program runtime everything is in memory - there is no intermediate dump files that might leak crucial data/information.
+
+### Unofficial Tasks as of 20240616
+
+(ADO) Gospel (Beta Test) Add Node-Level User Engagement Buttons (RMB menu)
+* Get Help: Jump to node doc with examples (online or in-app)
+* Make Suggestion: Jump to contact form/issue/forum (online or in-app)
