@@ -91,7 +91,7 @@ namespace Parcel.NExT.Interpreter
         #region Methods
         public void Start(Action<string> outputHandler = null, IEnumerable<Assembly> additionalReferences = null, string[] additionalLibraryDllPaths = null)
         {
-            // Pure core standard libraries
+            // Pure core "standard" libraries
             AddDefaultLibraryFolderToEnvironmentPath();
             if (additionalLibraryDllPaths != null)
                 foreach (var path in additionalLibraryDllPaths)
