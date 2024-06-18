@@ -187,3 +187,5 @@ Applicable only to such "content" type controls (as in a PowerBI dashboard), and
 (ADO, Feature proposal) Like PowerBI, but more like PPT - imagine being able to interactively filter and show things update in real time while having a PPT presentation. This is slightly different from mere presentation mode (focused area) but can essentially be the same if we:
 1. In presentation mode enable "Hide All Other Nodes" when doing focused presentation areas (such areas can be drawn just like group box)
 2. In presentation mode enable all kinds of auxiliary adornments like background, page atyling, page number etc. when switching between focuses areas - just like when jumping between slides.
+
+(ADO, Experiment, #New, #Important, @New Skill) Experiment with C# to Graph Conversion (using syntax analyzer), see how far we can go.
