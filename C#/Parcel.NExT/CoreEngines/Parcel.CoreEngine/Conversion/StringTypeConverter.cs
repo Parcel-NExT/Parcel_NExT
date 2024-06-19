@@ -144,7 +144,7 @@ namespace Parcel.CoreEngine.Conversion
                 return ConvertSingle(parameterType.GetGenericArguments()[0], value);
             // Handle arrays
             else if (value.Contains('\n'))
-                return ConvertValue(parameterType, value.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+                return ConvertValue(parameterType, value.SplitLines(true));
             // Handle semantic types
             else if (parameterType == typeof(Uri))
                 return new Uri(value);

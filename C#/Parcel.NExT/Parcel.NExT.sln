@@ -68,25 +68,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Neo", "..\..\..\Expe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{5DAC94E8-D40A-48D4-81A8-206229E281E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DataGrid", "Packages\Parcel.DataGrid\Parcel.DataGrid.csproj", "{DA1C8A6E-552F-43E6-A67E-320BC8A75FCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.DataGrid", "Packages\Parcel.DataGrid\Parcel.DataGrid.csproj", "{DA1C8A6E-552F-43E6-A67E-320BC8A75FCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Excel", "Packages\Parcel.Excel\Parcel.Excel.csproj", "{98D21307-D286-48D4-B21D-D37F42DDB645}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Excel", "Packages\Parcel.Excel\Parcel.Excel.csproj", "{98D21307-D286-48D4-B21D-D37F42DDB645}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.CSV", "Packages\Parcel.CSV\Parcel.CSV.csproj", "{AFB57A0C-3DD4-404C-8AC8-75D4489054B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.CSV", "Packages\Parcel.CSV\Parcel.CSV.csproj", "{AFB57A0C-3DD4-404C-8AC8-75D4489054B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.REST", "Packages\Parcel.REST\Parcel.REST.csproj", "{F526A023-1055-406D-9E71-3F9DFA7C8514}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.REST", "Packages\Parcel.REST\Parcel.REST.csproj", "{F526A023-1055-406D-9E71-3F9DFA7C8514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DataAnalytics", "Packages\Parcel.DataAnalytics\Parcel.DataAnalytics.csproj", "{138A2321-0243-4C20-A21E-F73385FC1715}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.DataAnalytics", "Packages\Parcel.DataAnalytics\Parcel.DataAnalytics.csproj", "{138A2321-0243-4C20-A21E-F73385FC1715}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.InMemoryDB", "Packages\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj", "{F7290E2D-ADC7-43E3-A544-E02500A07F57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.InMemoryDB", "Packages\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj", "{F7290E2D-ADC7-43E3-A544-E02500A07F57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.MSAnalysisService", "Packages\Parcel.MSAnalysisService\Parcel.MSAnalysisService.csproj", "{E0A1A6DC-5395-442E-B563-48F57E4FE847}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.MSAnalysisService", "Packages\Parcel.MSAnalysisService\Parcel.MSAnalysisService.csproj", "{E0A1A6DC-5395-442E-B563-48F57E4FE847}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Matrix", "Packages\Parcel.Matrix\Parcel.Matrix.csproj", "{618CAF34-D332-4E5A-9900-09F9002B8DD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Matrix", "Packages\Parcel.Matrix\Parcel.Matrix.csproj", "{618CAF34-D332-4E5A-9900-09F9002B8DD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Vector", "Packages\Parcel.Vector\Parcel.Vector.csproj", "{8ADE9F70-BE4D-4CFC-9C20-BFD2C89C10F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Vector", "Packages\Parcel.Vector\Parcel.Vector.csproj", "{8ADE9F70-BE4D-4CFC-9C20-BFD2C89C10F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Statistics", "Packages\Parcel.Statistics\Parcel.Statistics.csproj", "{2147E5E9-E0A6-448D-8C9F-8A02560D7BF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Statistics", "Packages\Parcel.Statistics\Parcel.Statistics.csproj", "{2147E5E9-E0A6-448D-8C9F-8A02560D7BF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{36260A24-6347-431E-B3FC-0F92D280A840}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DataGrid.UnitTests", "UnitTests\Parcel.DataGrid.UnitTests\Parcel.DataGrid.UnitTests.csproj", "{0440BB25-8CA7-4BF0-A776-5F16EEDA04E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,6 +214,10 @@ Global
 		{2147E5E9-E0A6-448D-8C9F-8A02560D7BF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2147E5E9-E0A6-448D-8C9F-8A02560D7BF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2147E5E9-E0A6-448D-8C9F-8A02560D7BF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0440BB25-8CA7-4BF0-A776-5F16EEDA04E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0440BB25-8CA7-4BF0-A776-5F16EEDA04E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0440BB25-8CA7-4BF0-A776-5F16EEDA04E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0440BB25-8CA7-4BF0-A776-5F16EEDA04E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -248,6 +256,8 @@ Global
 		{618CAF34-D332-4E5A-9900-09F9002B8DD6} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{8ADE9F70-BE4D-4CFC-9C20-BFD2C89C10F3} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{2147E5E9-E0A6-448D-8C9F-8A02560D7BF8} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{36260A24-6347-431E-B3FC-0F92D280A840} = {AF4E4472-BC69-414F-B764-C5413B9D74CF}
+		{0440BB25-8CA7-4BF0-A776-5F16EEDA04E6} = {36260A24-6347-431E-B3FC-0F92D280A840}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}

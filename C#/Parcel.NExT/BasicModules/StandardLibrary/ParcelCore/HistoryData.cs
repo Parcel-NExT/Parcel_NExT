@@ -1,4 +1,5 @@
-﻿using Parcel.CoreEngine.SemanticTypes;
+﻿using Parcel.CoreEngine.Helpers;
+using Parcel.CoreEngine.SemanticTypes;
 
 namespace StandardLibrary.ParcelCore
 {
@@ -13,7 +14,7 @@ namespace StandardLibrary.ParcelCore
             HttpClient client = new();
             string csv = client.GetStringAsync(@"https://charles-zhang-investment.github.io/HistoryDataService/TimeSeries/Daily/SPX500.csv").Result;
             return csv
-                .Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .SplitLines(true)
                 .Skip(1)
                 .Select(line => line.Split(',')[5])
                 .Select(double.Parse)

@@ -1,4 +1,5 @@
-﻿using Parcel.CoreEngine.Interfaces;
+﻿using Parcel.CoreEngine.Helpers;
+using Parcel.CoreEngine.Interfaces;
 
 namespace Parcel.CoreEngine.SemanticTypes
 {
@@ -16,10 +17,10 @@ namespace Parcel.CoreEngine.SemanticTypes
         #endregion
 
         #region Temporary Implementation
-        public string[] Headers => Raw.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)[0].Split(',');
+        public string[] Headers => Raw.SplitLines(true)[0].Split(',');
         public IEnumerable<string[]> QuickSplit(bool skipFirstRow)
         {
-            var lines = Raw.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = Raw.SplitLines(true);
             return lines.Skip(skipFirstRow ? 1 : 0).Select(r => r.Split(',')); // TODO: Proper csv value escaping
         }
         #endregion
