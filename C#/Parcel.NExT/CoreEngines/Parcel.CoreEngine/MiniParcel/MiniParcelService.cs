@@ -7,7 +7,7 @@ namespace Parcel.CoreEngine.MiniParcel
     {
         #region Interface
         public static ParcelDocument Parse(string scripts)
-            => Parse(scripts.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            => Parse(scripts.SplitLines(true));
         public static ParcelDocument Parse(string[] lines)
         {
             ParcelDocument document = new();

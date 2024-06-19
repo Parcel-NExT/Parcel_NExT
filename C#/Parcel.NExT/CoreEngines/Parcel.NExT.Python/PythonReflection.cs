@@ -1,4 +1,5 @@
-﻿using Parcel.NExT.Python.Helpers;
+﻿using Parcel.CoreEngine.Helpers;
+using Parcel.NExT.Python.Helpers;
 using System.Text.RegularExpressions;
 
 namespace Parcel.NExT.Python
@@ -27,7 +28,7 @@ namespace Parcel.NExT.Python
 
             static string[] ParsePythonPydocOutputs(string output)
             {
-                return output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                return output.SplitLines(true)
                     .Where(line => !string.IsNullOrWhiteSpace(line)) // SKip Empty lines
                     .Where(line => Regex.IsMatch(line, @"^((\w+?)\s+)+$")) // Match table-like lines
                     .SelectMany(line => line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
@@ -44,7 +45,8 @@ namespace Parcel.NExT.Python
 
             static string[] ParsePipPackageOutputs(string output)
             {
-                return output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                return output
+                    .SplitLines(true)
                     .Skip(2) // Skip table headers
                     .Where(line => !string.IsNullOrWhiteSpace(line)) // SKip Empty lines
                     .Where(line => !Regex.IsMatch(line, @"^\[.*?\].*$")) // Skip notice lines
@@ -57,7 +59,8 @@ namespace Parcel.NExT.Python
         {
             HttpClient client = new();
             string html = client.GetStringAsync(@"https://pypi.org/simple/").Result; // Remark: See https://discuss.python.org/t/getting-full-list-of-published-packages-from-pypi-org/23337
-            (string Link, string Name)[] definitions = html.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            (string Link, string Name)[] definitions = html
+                .SplitLines(true)
                 .Select(line => Regex.Match(line, @"<a href=""(.*?)"">(.*)</a>"))
                 .Where(match => match.Success)
                 .Select(match => (Link: match.Groups[1].Value, Name: match.Groups[2].Value))
