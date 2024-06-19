@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections;
+using System.Data;
 using System.Dynamic;
 using System.Text;
 
@@ -145,7 +146,7 @@ namespace Parcel.Types
         }
         #endregion
     }
-    public class DataGrid
+    public class DataGrid : IEnumerable<object[]>, IEnumerable
     {
         #region Helper
         /// <summary>
@@ -594,6 +595,16 @@ namespace Parcel.Types
                     Columns[col].Add(row[col]);
             }
         }
+        #endregion
+
+        #region Enumerable Interface
+        public IEnumerator<object[]> GetEnumerator()
+        {
+            for (int row = 0; row < RowCount; row++)
+                yield return Enumerable.Range(0, ColumnCount).Select(col => Columns[col][row]).ToArray();
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
         #endregion
     }
     #endregion
