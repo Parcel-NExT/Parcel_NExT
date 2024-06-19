@@ -4,8 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Parcel.Data</RootNamespace>
+    <RootNamespace>Parcel.FileFormats</RootNamespace>
     <Version>0.0.1</Version>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
   </PropertyGroup>
 
 </Project>
