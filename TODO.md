@@ -160,6 +160,9 @@ Instead of using the exact same source file (extension), we use Publish to expli
 (ADO) Support binary file compression with standard Oz4 format.
 (ADO) Support binary file compression with password protection (content encryption) especially during Export time (exported binary presentation file). Notice to implement this properly we need to guarantee during program runtime everything is in memory - there is no intermediate dump files that might leak crucial data/information.
 
+(ADO, Package) Support Remapping: Larger packages like DataAnalytics might provide extension methods which are best addressed in some more well-recognized namespaces. E.g. Parcel.DataGrid is a zero-dependency package, while Parcel.Excel provides excel reading and has nothing to do with DataGrid, but `Parcel.DataAnalytics` implemented `Parcel.DataAnalytics.DataGrid.DataGridExtensions.ReadExcel` - we wish to address it all under `DataGrid.Sourcing.XXX` "endpoint". Remapping can only be provided by sourcing package. (Remark) Might not be necessary since node typenames are usually displayed just as `type.method`.
+(We had some notes on this, pending find where we mentioned it in POS.)
+
 ### Unofficial Tasks as of 20240616
 
 (ADO) Gospel (Beta Test) Add Node-Level User Engagement Buttons (RMB menu)
