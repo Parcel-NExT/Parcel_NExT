@@ -163,8 +163,29 @@ Instead of using the exact same source file (extension), we use Publish to expli
 (ADO, Package) Support Remapping: Larger packages like DataAnalytics might provide extension methods which are best addressed in some more well-recognized namespaces. E.g. Parcel.DataGrid is a zero-dependency package, while Parcel.Excel provides excel reading and has nothing to do with DataGrid, but `Parcel.DataAnalytics` implemented `Parcel.DataAnalytics.DataGrid.DataGridExtensions.ReadExcel` - we wish to address it all under `DataGrid.Sourcing.XXX` "endpoint". Remapping can only be provided by sourcing package. (Remark) Might not be necessary since node typenames are usually displayed just as `type.method`.
 (We had some notes on this, pending find where we mentioned it in POS.)
 
+(ADO, Feature) Must provide cross-file searching capabilities
+This is especially true since most of the graphs are going to be stored as binary. Very useful/essential when looking for stuff. Ideally Parcel can automatically detect ALL graph files on local system without needing user to have Everything. 
+We can achieve that through two mechanisms:
+1. Automatically cache and save locations of all opened graph files in app data
+2. Allow specifying "search" folder and "including/exclusion" rules
+3. Expose searching directly as nodes (part of Parcel NExT Services package)
+Can alternatively also expose as a standalone tool: passing in an array of such files and search through all of them.
+
 ### Unofficial Tasks as of 20240616
+
+For "feature requests" (our own ideas), we might need a dedicated place for such feature proposals - those are internal implementation ideas and should not be shared with public. (In general, this is just part of stack/TODO, but more towards "proposal/idea" but not formal; Could be managed with ADO - just mark as NOT DO if we don't accept it)
 
 (ADO) Gospel (Beta Test) Add Node-Level User Engagement Buttons (RMB menu)
 * Get Help: Jump to node doc with examples (online or in-app)
 * Make Suggestion: Jump to contact form/issue/forum (online or in-app)
+
+(ADO, Feature Proposal) Presentation Mode
+Ordered (specific) control/component interactive highlighted focused presentation.
+e.g. We have a expense hierarchy, and we want to present it. If we RMB on it, it enters a PPT-slide like interface with a dedicated header and maybe a single paragraph and some background and other decorative elements PLUS the element itself rendered in a suitable format for large screen presentation, and we can click on it just to see it expanding and contents chsnge.
+Applicable only to such "content" type controls (as in a PowerBI dashboard), and is configured using dedicated nodes.
+
+(ADO, Feature proposal) Like PowerBI, but more like PPT - imagine being able to interactively filter and show things update in real time while having a PPT presentation. This is slightly different from mere presentation mode (focused area) but can essentially be the same if we:
+1. In presentation mode enable "Hide All Other Nodes" when doing focused presentation areas (such areas can be drawn just like group box)
+2. In presentation mode enable all kinds of auxiliary adornments like background, page atyling, page number etc. when switching between focuses areas - just like when jumping between slides.
+
+(ADO, Experiment, #New, #Important, @New Skill) Experiment with C# to Graph Conversion (using syntax analyzer), see how far we can go.

@@ -30,9 +30,14 @@ namespace Parcel.CoreEngine.Helpers
                 return hash1 + hash2 * 1566083941;
             }
         }
+        /// <summary>
+        /// Works both on command line arguments and csv lines (without line escaping support)
+        /// </summary>
+        /// <remarks>
+        /// In some codes I authored before, this is also called "SplitArgumentsLikeCsv"
+        /// </remarks>
         public static string[] SplitCommandLineArguments(this string inputString, char separator = ' ', bool includeQuotesInString = false)
         {
-            // Remark: In some codes I authored before, this is also called "SplitArgumentsLikeCsv"
             List<string> parameters = [];
             StringBuilder current = new();
 
