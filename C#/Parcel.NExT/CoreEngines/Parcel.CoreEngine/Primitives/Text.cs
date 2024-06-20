@@ -1,4 +1,4 @@
-﻿namespace Parcel.CoreEngine.SemanticTypes
+﻿namespace Parcel.CoreEngine.Primitives
 {
     /// <summary>
     /// Multi-line string

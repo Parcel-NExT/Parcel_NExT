@@ -1,4 +1,4 @@
-﻿using Parcel.CoreEngine.SemanticTypes;
+﻿using Parcel.CoreEngine.Primitives;
 
 namespace StandardLibrary.ParcelCore
 {
@@ -7,7 +7,7 @@ namespace StandardLibrary.ParcelCore
         /// <summary>
         /// Reads a CSV and returns content as DataGrid
         /// </summary>
-        public static DataGrid? LoadFromCSV(Uri uri)
+        public static RawDataGrid? LoadFromCSV(Uri uri)
         {
             if (uri == null)
                 return null;
@@ -20,7 +20,7 @@ namespace StandardLibrary.ParcelCore
                 if (File.Exists(filePath))
                 {
                     string csv = File.ReadAllText(filePath);
-                    return new DataGrid(csv);
+                    return new RawDataGrid(csv);
                 }
                 return null;
             }

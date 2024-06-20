@@ -1,6 +1,5 @@
 ﻿using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.Primitives;
-using Parcel.CoreEngine.SemanticTypes;
 using System.Collections;
 using System.ComponentModel;
 using System.Text;
@@ -74,8 +73,8 @@ namespace Parcel.CoreEngine.Conversion
                 return SerializeFlatStringDictionaryStructure(((Dictionary<string, double>)result).ToDictionary(r => r.Key, r => r.Value.ToString()));
 
             // Serialize serializable Parcel-specific types
-            else if (resultType == typeof(DataGrid))
-                return SerializaDataGrid((DataGrid)result);
+            else if (resultType == typeof(RawDataGrid))
+                return SerializaDataGrid((RawDataGrid)result);
             // TODO: Use standard serialization procedure (as shared with TextSerializer); Deal with non-serializable payloads (which are useful at runtime but cannot be transferred across internet and cannot be saved to document)
             // TODO: Serialize Payload, including MetaInstructions
             else if (resultType == typeof(ParcelPayload))
@@ -134,8 +133,8 @@ namespace Parcel.CoreEngine.Conversion
             if (primitiveTypes.Contains(parameterType))
                 return ConvertSingle(parameterType, value);
             // Handle DataGrid
-            else if (parameterType == typeof(DataGrid))
-                return new DataGrid(value);
+            else if (parameterType == typeof(RawDataGrid))
+                return new RawDataGrid(value);
             // Semantic types
             else if (parameterType == typeof(Text))
                 return new Text(value);
@@ -243,7 +242,7 @@ namespace Parcel.CoreEngine.Conversion
             jsonBuilder.Append("\n}\n");
             return jsonBuilder.ToString().TrimEnd();
         }
-        private static string SerializaDataGrid(DataGrid result)
+        private static string SerializaDataGrid(RawDataGrid result)
         {
             if (result.Raw != null)
                 return $"\"{result.Raw.Replace("\n", "\\n")}\"";

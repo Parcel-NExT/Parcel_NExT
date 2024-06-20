@@ -1,4 +1,4 @@
-﻿using Parcel.CoreEngine.SemanticTypes;
+﻿using Parcel.CoreEngine.Primitives;
 using Parcel.NExT.Interpreter.Scripting;
 
 namespace StandardLibrary.ParcelCore
