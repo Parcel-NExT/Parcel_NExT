@@ -598,6 +598,7 @@ namespace Parcel.Types
         #endregion
 
         #region Enumerable Interface
+        // TODO: Return more useful real objects (e.g. Expandos) (Or event better: dynamically construct a new type with name `<TableName>Row` - should be possible with Parcel.CoreEngine
         public IEnumerator<object[]> GetEnumerator()
         {
             for (int row = 0; row < RowCount; row++)

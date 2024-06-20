@@ -3,10 +3,10 @@
     public static class CSV
     {
         #region Interface
-        public static IEnumerable<string[]> Parse(string csv, out string[]? headers, bool containsHeader)
+        public static string[][] Parse(string csv, out string[]? headers, bool containsHeader)
         {
             IEnumerable<string[]> lines = ParseCSV(csv, out headers, containsHeader);
-            return lines;
+            return lines.ToArray();
         }
         #endregion
 
