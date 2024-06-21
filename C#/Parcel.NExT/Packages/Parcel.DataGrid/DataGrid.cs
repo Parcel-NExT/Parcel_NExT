@@ -209,6 +209,26 @@ namespace Parcel.Types
         {
             LoadFromDataTable(false, dataTable);
         }
+        /// <summary>
+        /// Initialize from an array of values (double, int, string).
+        /// </summary>
+        public DataGrid(string name, IEnumerable values)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Generators
+        public static DataGrid GenerateRandomNumbers(int count, double min, double max)
+        {
+            Random random = new();
+            return new DataGrid(Enumerable.Range(0, count).Select(_ => random.NextDouble() * (max - min) + min));
+        }
+        public static DataGrid GenerateRandomIntegers(int count, int min, int max)
+        {
+            Random random = new();
+            return new DataGrid(Enumerable.Range(0, count).Select(_ => random.Next((int)min, (int)max)));
+        }
         #endregion
 
         #region Array Constructors
