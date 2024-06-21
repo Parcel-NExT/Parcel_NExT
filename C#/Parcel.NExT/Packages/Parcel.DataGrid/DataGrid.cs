@@ -294,7 +294,7 @@ namespace Parcel.Types
         public DataColumn? GetDataColumn(string headerOrIndex)
         {
             if (int.TryParse(headerOrIndex, out int index))
-                return Columns[0];
+                return Columns[index];
             else return Columns.FirstOrDefault(c => c.Header == headerOrIndex);
         }
         public DataTable ToDataTable()
@@ -355,6 +355,13 @@ namespace Parcel.Types
         #region Convinience
         public void Save(string path)
             => File.WriteAllText(path, ToCSV());
+        #endregion
+
+        #region Non-Stated Functions
+        public static DataGrid Pivot(DataGrid source, string row, string column, string value, bool subtotal, bool total, bool remaining)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Editors (In-Place Operations)
