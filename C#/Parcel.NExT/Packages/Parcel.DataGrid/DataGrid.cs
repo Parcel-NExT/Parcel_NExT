@@ -165,8 +165,9 @@ namespace Parcel.Types
 
         #region Constructors
         public DataGrid() { }
-        public DataGrid(ExpandoObject expando)
+        public DataGrid(string name, ExpandoObject expando)
         {
+            TableName = name;
             IDictionary<string, object> dict = expando;
             foreach (string key in dict.Keys)
             {
@@ -192,6 +193,11 @@ namespace Parcel.Types
                 for (var i = 0; i < line.Length; i++)
                     Columns[i].Add(noParsing ? line[i] : Preformatting(line[i]));
             }
+        }
+        public DataGrid(string name, params DataColumn[] columns)
+        {
+            TableName = name;
+            Columns = columns.ToList();
         }
         public DataGrid(DataSet dataset, bool forceFirstLineAsHeader = false)
         {
@@ -285,7 +291,13 @@ namespace Parcel.Types
                 return $"\"{name.Trim()}\"";
             }
         }
-        internal DataTable ToDataTable()
+        public DataColumn? GetDataColumn(string headerOrIndex)
+        {
+            if (int.TryParse(headerOrIndex, out int index))
+                return Columns[0];
+            else return Columns.FirstOrDefault(c => c.Header == headerOrIndex);
+        }
+        public DataTable ToDataTable()
         {
             Dictionary<string, int> repeatNameCounter = [];
             List<string> headers = [];
