@@ -1,6 +1,4 @@
-﻿using ScottPlot;
-
-namespace Parcel.Graphing
+﻿namespace Parcel.Graphing
 {
     public static class Plot
     {
