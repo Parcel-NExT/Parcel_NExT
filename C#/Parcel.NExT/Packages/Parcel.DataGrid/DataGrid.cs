@@ -197,7 +197,7 @@ namespace Parcel.Types
         public DataGrid(string name, params DataColumn[] columns)
         {
             TableName = name;
-            Columns = columns.ToList();
+            Columns = [.. columns];
         }
         public DataGrid(DataSet dataset, bool forceFirstLineAsHeader = false)
         {
@@ -214,7 +214,12 @@ namespace Parcel.Types
         /// </summary>
         public DataGrid(string name, IEnumerable values)
         {
-            throw new NotImplementedException();
+            TableName = name;
+            DataColumn col = new("Values");
+            // TODO: Type detection and in-place type specification
+            foreach (object value in values)
+                col.Add(value.ToString());
+            Columns.Add(col);
         }
         #endregion
 
