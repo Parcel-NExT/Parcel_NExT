@@ -102,11 +102,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.LLM", "Packages\Parc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.VisualNovel", "Packages\Parcel.VisualNovel\Parcel.VisualNovel.csproj", "{BF2B29C4-5F0F-4566-8D4A-6732BE1F1C81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DevelopmentWebServer", "Packages\Parcel.DevelopmentWebServer\Parcel.DevelopmentWebServer.csproj", "{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.DevelopmentWebServer", "Packages\Parcel.DevelopmentWebServer\Parcel.DevelopmentWebServer.csproj", "{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.HTTPServer", "Packages\Parcel.HTTPServer\Parcel.HTTPServer.csproj", "{92145480-8EB0-4C99-98AD-6E06EC687A46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.HTTPServer", "Packages\Parcel.HTTPServer\Parcel.HTTPServer.csproj", "{92145480-8EB0-4C99-98AD-6E06EC687A46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DataAnalytics.Integrations", "Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj", "{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.DataAnalytics.Integrations", "Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj", "{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.JSON", "Packages\Parcel.JSON\Parcel.JSON.csproj", "{36C8B7B5-113A-464E-8821-DB5D878A7FB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Github", "Packages\Parcel.Github\Parcel.Github.csproj", "{07F66909-EDF6-43D5-97DA-5EA606268369}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.BuildBot", "Packages\Parcel.BuildBot\Parcel.BuildBot.csproj", "{3914F981-3B28-455C-A54A-7D66ED1186C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -266,6 +272,18 @@ Global
 		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C8B7B5-113A-464E-8821-DB5D878A7FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C8B7B5-113A-464E-8821-DB5D878A7FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C8B7B5-113A-464E-8821-DB5D878A7FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C8B7B5-113A-464E-8821-DB5D878A7FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07F66909-EDF6-43D5-97DA-5EA606268369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07F66909-EDF6-43D5-97DA-5EA606268369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07F66909-EDF6-43D5-97DA-5EA606268369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07F66909-EDF6-43D5-97DA-5EA606268369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3914F981-3B28-455C-A54A-7D66ED1186C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3914F981-3B28-455C-A54A-7D66ED1186C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3914F981-3B28-455C-A54A-7D66ED1186C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3914F981-3B28-455C-A54A-7D66ED1186C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -314,6 +332,9 @@ Global
 		{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{92145480-8EB0-4C99-98AD-6E06EC687A46} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{36C8B7B5-113A-464E-8821-DB5D878A7FB9} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{07F66909-EDF6-43D5-97DA-5EA606268369} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{3914F981-3B28-455C-A54A-7D66ED1186C0} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}

@@ -1,6 +1,6 @@
 # Parcel.InMemoryDB
 
-Provides Parcel NExT abstraction for in-memory DB.
+Provides Parcel NExT abstraction for in-memory DB and related services.
 
 ## TODO
 
