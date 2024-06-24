@@ -2,6 +2,11 @@
 
 Unfortunately, image rendering is platform dependent,and front-end dependent, so without creating all that bitmap, image, drawing infrastructure ourselves, this particular library at the moment handles everything as plain files.
 
+## Plot Types
+
+- [ ] Line Plot
+- [ ] Pie Plot
+
 ## TODO
 
 For all charts we shall provide a single cosmetic options input:

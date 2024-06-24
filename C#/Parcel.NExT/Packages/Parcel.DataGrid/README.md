@@ -4,9 +4,7 @@ Provides Parcel NExT abstraction for DataGrid. This library is completely self-c
 
 ## Design Philosophy
 
-PENDING.
-
-See RFC (pending link).
+PENDING. See RFC (pending link).
 
 ## TODO
 

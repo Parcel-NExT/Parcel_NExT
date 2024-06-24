@@ -4,18 +4,18 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Parcel.Database</RootNamespace>
+    <RootNamespace>Parcel.Database.InMemoryDB.Integration</RootNamespace>
     <Version>0.0.1</Version>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
+    <PackageReference Include="ConsoleTables" Version="2.6.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
-    <ProjectReference Include="..\Parcel.DataTable\Parcel.DataTable.csproj" />
+    <ProjectReference Include="..\Parcel.DataGrid\Parcel.DataGrid.csproj" />
+    <ProjectReference Include="..\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
   </ItemGroup>
 
 </Project>

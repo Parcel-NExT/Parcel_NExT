@@ -4,13 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Parcel.Services</RootNamespace>
+    <RootNamespace>Parcel.Types</RootNamespace>
     <Version>0.0.1</Version>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Parcel.CellSet\Parcel.CellSet.csproj" />
-  </ItemGroup>
 
 </Project>
