@@ -98,9 +98,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Generators", "Packag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Plots", "Packages\Parcel.Plots\Parcel.Plots.csproj", "{3F4B7A37-8060-4D3D-ACF2-E034D5CFBC28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.LLM", "Packages\Parcel.LLM\Parcel.LLM.csproj", "{6668FED9-F027-4BB5-BF3A-F474268F5183}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.LLM", "Packages\Parcel.LLM\Parcel.LLM.csproj", "{6668FED9-F027-4BB5-BF3A-F474268F5183}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.VisualNovel", "Packages\Parcel.VisualNovel\Parcel.VisualNovel.csproj", "{BF2B29C4-5F0F-4566-8D4A-6732BE1F1C81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.VisualNovel", "Packages\Parcel.VisualNovel\Parcel.VisualNovel.csproj", "{BF2B29C4-5F0F-4566-8D4A-6732BE1F1C81}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DevelopmentWebServer", "Packages\Parcel.DevelopmentWebServer\Parcel.DevelopmentWebServer.csproj", "{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.HTTPServer", "Packages\Parcel.HTTPServer\Parcel.HTTPServer.csproj", "{92145480-8EB0-4C99-98AD-6E06EC687A46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DataAnalytics.Integrations", "Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj", "{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -248,6 +254,18 @@ Global
 		{BF2B29C4-5F0F-4566-8D4A-6732BE1F1C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF2B29C4-5F0F-4566-8D4A-6732BE1F1C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF2B29C4-5F0F-4566-8D4A-6732BE1F1C81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92145480-8EB0-4C99-98AD-6E06EC687A46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92145480-8EB0-4C99-98AD-6E06EC687A46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92145480-8EB0-4C99-98AD-6E06EC687A46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92145480-8EB0-4C99-98AD-6E06EC687A46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -293,6 +311,9 @@ Global
 		{3F4B7A37-8060-4D3D-ACF2-E034D5CFBC28} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{6668FED9-F027-4BB5-BF3A-F474268F5183} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{BF2B29C4-5F0F-4566-8D4A-6732BE1F1C81} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{F0BDFC04-3DC1-444F-997E-3FD9AC66E25B} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{92145480-8EB0-4C99-98AD-6E06EC687A46} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{2CFEC0B7-1A69-4497-91DF-A5867CB82C7A} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}

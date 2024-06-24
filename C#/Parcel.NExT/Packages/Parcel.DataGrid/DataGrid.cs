@@ -550,8 +550,24 @@ namespace Parcel.Types
         }
         #endregion
 
-        #region Routines
-        public struct ColumnInfo
+        #region Row Operations
+        public enum GrowRowBehavior
+        {
+            FillZero,
+            CopyAbove,
+            LinearInterpolate
+        }
+        /// <summary>
+        /// Grow and fill certain rows
+        /// </summary>
+        public void GrowRows(int count, GrowRowBehavior growthPattern)
+        {
+            throw new NotImplementedException();
+        }
+    #endregion
+
+    #region Routines
+    public struct ColumnInfo
         {
             public string NewKey { get; set; }
             public string OriginalHeader { get; set; }

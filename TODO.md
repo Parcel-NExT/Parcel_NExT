@@ -203,3 +203,6 @@ foreach(var o in objects)
 ```
 So instead of writing that long for-loop, we could offer such a construct that implements such a functionality through automatic mechanism.
 (Idea from) A nice thing about pandas Excel, DataFrame, SQL, or Lisp is that they are "raw" or "minimal" - despite being tedious, there is ever one single data type to deal with: cell, table, and list. On the contrary, we are often facing the question whether certain operations should be implemented as Csv, Excel, Parcel DataGrid, Vector, or Matrix.
+
+(ADO, Front-end, Gospel) (Gospel RMB/tab menu feature)
+"How-to" For easy onboarding programming.
