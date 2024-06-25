@@ -130,7 +130,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.LighteningAgent", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.InMemoryDB.Integration", "Packages\Parcel.InMemoryDB.Integration\Parcel.InMemoryDB.Integration.csproj", "{E13858CA-6F74-4140-95AB-DE6A7910C237}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.ODBC", "Packages\Parcel.ODBC\Parcel.ODBC.csproj", "{A5A44672-C848-470D-BD4E-C4F51A5FFABE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.ODBC", "Packages\Parcel.ODBC\Parcel.ODBC.csproj", "{A5A44672-C848-470D-BD4E-C4F51A5FFABE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.InMemoryDB.CMS", "Packages\Parcel.InMemoryDB.CMS\Parcel.InMemoryDB.CMS.csproj", "{838E3D04-D45B-4162-AD50-0D4BF35BB495}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.InMemoryDB.WebSurveys", "Packages\Parcel.InMemoryDB.WebSurveys\Parcel.InMemoryDB.WebSurveys.csproj", "{4CA02B38-B915-4080-82A8-E1072AC4723D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -338,6 +342,14 @@ Global
 		{A5A44672-C848-470D-BD4E-C4F51A5FFABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5A44672-C848-470D-BD4E-C4F51A5FFABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5A44672-C848-470D-BD4E-C4F51A5FFABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838E3D04-D45B-4162-AD50-0D4BF35BB495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838E3D04-D45B-4162-AD50-0D4BF35BB495}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838E3D04-D45B-4162-AD50-0D4BF35BB495}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838E3D04-D45B-4162-AD50-0D4BF35BB495}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CA02B38-B915-4080-82A8-E1072AC4723D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CA02B38-B915-4080-82A8-E1072AC4723D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CA02B38-B915-4080-82A8-E1072AC4723D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CA02B38-B915-4080-82A8-E1072AC4723D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -398,6 +410,8 @@ Global
 		{24719DE3-0E1D-4127-BF37-8D40D001B08E} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{E13858CA-6F74-4140-95AB-DE6A7910C237} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{A5A44672-C848-470D-BD4E-C4F51A5FFABE} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{838E3D04-D45B-4162-AD50-0D4BF35BB495} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{4CA02B38-B915-4080-82A8-E1072AC4723D} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}
