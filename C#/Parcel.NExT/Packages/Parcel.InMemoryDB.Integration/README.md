@@ -1,6 +1,7 @@
 # Parcel.InMemoryDB.Integration
 
-Provides high level integration to Parcel.InMemoryDB, unifying all component libraries.
+Provides high level integration to Parcel.InMemoryDB, unifying all component libraries.  
+The complication mostly comes from the variation of data source/targets including: DataGrid, (In-memory) SQLite, ODBC and MS Analysis Service.
 
 ## TODO
 

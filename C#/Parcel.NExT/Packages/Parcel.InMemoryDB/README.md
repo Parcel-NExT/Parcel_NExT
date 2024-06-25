@@ -1,6 +1,6 @@
 # Parcel.InMemoryDB
 
-Provides Parcel NExT abstraction for in-memory DB and related services.
+Provides Parcel NExT abstraction for in-memory DB and related services. This package is for standalone use and only based on SQLite and doesn't involve any other advanced features offered in the entire InMemoryDB suite (e.g. ODBC integration, DataGrid integration, services etc.).
 
 ## TODO
 

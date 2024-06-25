@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Parcel.DataGrid\Parcel.DataGrid.csproj" />
-    <ProjectReference Include="..\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
   </ItemGroup>
 
 </Project>

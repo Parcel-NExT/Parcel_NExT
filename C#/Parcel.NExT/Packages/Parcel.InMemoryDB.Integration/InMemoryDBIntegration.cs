@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
-using Parcel.CoreEngine.Helpers;
+﻿using Parcel.CoreEngine.Helpers;
 using Parcel.Database.InMemoryDB.Integration;
 using Parcel.Services;
 using Parcel.Types;
@@ -10,37 +9,41 @@ using System.Text;
 
 namespace Parcel.Database.InMemoryDB
 {
-    public enum QuerySourceType
+    #region Types
+    public enum QueryDatabaseType
     {
         ODBC, // Target should target SQL database (ODBC DSN); Query is SQL
         MSAnalysisService, // Target should target Microsoft Analysis Service databse; Query is MDX
         CSV // Target refers to path to CSV file; Query is empty
     }
+    public record DataSourceQuery(QueryDatabaseType SourceType, string ConnectionTarget, string QueryCommand);
+    #endregion
 
     public static class InMemoryDBIntegration
     {
-        public static void Load(this ProceduralInMemoryDB connection, string tableName, QuerySourceType type, string target, string query)
+        #region Interface Methods
+        public static void Load(this ProceduralInMemoryDB connection, string tableName, DataSourceQuery query)
         {
             connection.Execute($"DROP TABLE IF EXISTS \"{tableName}\"");
-            if (type == QuerySourceType.ODBC)
+            if (query.SourceType == QueryDatabaseType.ODBC)
             {
-                var odbcConnection = new OdbcConnection($"DSN={target}");
+                var odbcConnection = new OdbcConnection($"DSN={query.ConnectionTarget}");
                 odbcConnection.Open();
 
                 DataTable datatable = new();
-                datatable.Load(new OdbcCommand(query, odbcConnection).ExecuteReader());
+                datatable.Load(new OdbcCommand(query.QueryCommand, odbcConnection).ExecuteReader());
                 connection.ImportAsTable(datatable, tableName);
                 connection.PerformBookkeepingRoutine(datatable, tableName);
             }
-            else if (type == QuerySourceType.MSAnalysisService)
+            else if (query.SourceType == QueryDatabaseType.MSAnalysisService)
             {
-                var datatable = MSAnalysisServiceExtension.ExecuteMDXQuery(target, query);
+                var datatable = MSAnalysisServiceExtension.ExecuteMDXQuery(query.ConnectionTarget, query.QueryCommand);
                 connection.ImportAsTable(datatable, tableName);
                 connection.PerformBookkeepingRoutine(datatable, tableName);
             }
-            else if (type == QuerySourceType.CSV)
+            else if (query.SourceType == QueryDatabaseType.CSV)
             {
-                string filePath = target;
+                string filePath = query.ConnectionTarget;
                 if (File.Exists(filePath))
                 {
                     connection.ImportAsTable(CSVHelper.ReadCSVFile(filePath, out string[] headers, true), headers, tableName, out DataTable table);
@@ -56,17 +59,18 @@ namespace Parcel.Database.InMemoryDB
         /// <summary>
         /// Append content of a dataGrid to target database.
         /// </summary>
-        public static void Push(this InMemorySQLIte connection, AutomaticTableTransferTarget target, string tableName, DataGrid dataGrid, string dsn)
+        public static void Push(this DataGrid dataGrid, AutomaticTableTransferTarget target, string tableName, InMemorySQLIte sqliteDB, string dsnDB)
         {
             if (target == AutomaticTableTransferTarget.InMemoryDB)
-                connection.InstanceConnection.InsertData(tableName, dataGrid);
+                sqliteDB.InstanceConnection.InsertData(tableName, dataGrid);
             else if (target == AutomaticTableTransferTarget.ODBC)
-                InsertODBCData(tableName, dataGrid, dsn);
+                InsertODBCData(tableName, dataGrid, dsnDB);
             else
                 throw new ArgumentException($"Invalid target: Target should be either `{AutomaticTableTransferTarget.InMemoryDB}` or `{AutomaticTableTransferTarget.ODBC}.");
         }
+        #endregion
 
-        #region Helpers
+        #region ODBC Helpers
         public static DataGrid FetchFromODBCDatabase(string query, string dsn)
         {
             DataTable dataTable = ODBCServices.FetchFromODBCDatabase(query, dsn, out string[] headers);

@@ -1,8 +1,5 @@
 ﻿using ConsoleTables;
-using Parcel.Types;
 using System.Data;
-using System.Drawing;
-using System.Text.RegularExpressions;
 
 namespace Parcel.Database.InMemoryDB.Integration
 {
@@ -24,16 +21,6 @@ namespace Parcel.Database.InMemoryDB.Integration
             }
             consoleTable.Write();
             return consoleTable.ToString();
-        }
-
-        public static void Display(DataGrid dataGrid)
-        {
-            Console.WriteLine(string.Join(',', dataGrid.Columns.Select(c => c.Header)), Color.Orange);
-            // Display with empty trailing line only if there is no data
-            string csv = dataGrid.ToCSV(false);
-            int lineCount = Regex.Matches(csv, Environment.NewLine).Count;
-            if (lineCount == 1) Console.WriteLine(csv);
-            else Console.WriteLine(csv.TrimEnd());
         }
     }
 }

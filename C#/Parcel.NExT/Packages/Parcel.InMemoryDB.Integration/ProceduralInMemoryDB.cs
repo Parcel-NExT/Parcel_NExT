@@ -14,7 +14,7 @@ namespace Parcel.Database
     {
         #region References
         private Dictionary<string, string> ViewProceduresReference { get; set; }
-        private Dictionary<string, (QuerySourceType Type, string Connection, string Query)> SourceQueriesReferences { get; set; }
+        private Dictionary<string, DataSourceQuery> SourceQueriesReferences { get; set; }
         #endregion
 
         #region Properties
@@ -31,7 +31,7 @@ namespace Parcel.Database
         #endregion
 
         #region Construction
-        public ProceduralInMemoryDB(Dictionary<string, string> views, Dictionary<string, (QuerySourceType Type, string Connection, string Query)> queries, bool generateDebugCSVs = true, bool printDebugOutputs = true)
+        public ProceduralInMemoryDB(Dictionary<string, string> views, Dictionary<string, DataSourceQuery> queries, bool generateDebugCSVs = true, bool printDebugOutputs = true)
         {
             ViewProceduresReference = views;
             SourceQueriesReferences = queries;
@@ -51,9 +51,9 @@ namespace Parcel.Database
                 throw new ArgumentException($"Table {tableName} already exists.");
 
             queryName ??= tableName;
-            (QuerySourceType Type, string Connection, string Query) queryInfo = SourceQueriesReferences[queryName];
-            string query = FormatQuery(SourceQueriesReferences[queryName].Query, parameters);
-            this.Load(tableName, queryInfo.Type, queryInfo.Connection, query);
+            DataSourceQuery queryInfo = SourceQueriesReferences[queryName];
+            string query = FormatQuery(SourceQueriesReferences[queryName].QueryCommand, parameters);
+            this.Load(tableName, new DataSourceQuery(queryInfo.SourceType, queryInfo.ConnectionTarget, query));
         }
         public void View(string viewName, Dictionary<string, object>? parameters = null, string? queryName = null)
         {
@@ -72,9 +72,9 @@ namespace Parcel.Database
         {
             string queryName = queryNameOverride != null ? queryNameOverride : tableName;
 
-            (QuerySourceType Type, string Connection, string Query) queryInfo = SourceQueriesReferences[queryName];
-            string query = FormatQuery(SourceQueriesReferences[queryName].Query, parameters);
-            this.Load(tableName, queryInfo.Type, queryInfo.Connection, query);
+            DataSourceQuery queryInfo = SourceQueriesReferences[queryName];
+            string query = FormatQuery(SourceQueriesReferences[queryName].QueryCommand, parameters);
+            this.Load(tableName, new DataSourceQuery(queryInfo.SourceType, queryInfo.ConnectionTarget, query));
         }
         /// <summary>
         /// Import a datagrid directly as in-memory table; If table already exists, raise an exception. Use Import() directly if you wish to rewrite.
