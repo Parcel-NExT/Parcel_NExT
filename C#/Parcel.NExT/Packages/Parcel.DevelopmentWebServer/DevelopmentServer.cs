@@ -1,13 +1,16 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using static Parcel.Infrastructure.EndpointDefinition;
 
 namespace Parcel.Infrastructure
 {
-    public class EndpointHandler(string endpoint, Func<Dictionary<string, string>, string, string> handler)
+    public class EndpointDefinition(string endpoint, EndpointHandler handler)
     {
+        public delegate string EndpointHandler(Dictionary<string, string> Parameters, string Body);
+
         public string Endpoint { get; } = endpoint;
-        public Func<Dictionary<string, string>, string, string> Handler { get; } = handler;
+        public EndpointHandler Handler { get; } = handler;
     }
     public class ServerMetadata
     {
@@ -23,7 +26,7 @@ namespace Parcel.Infrastructure
         #endregion
 
         #region Construction
-        public DevelopmentServer(EndpointHandler[]? endpoints = null)
+        public DevelopmentServer(EndpointDefinition[]? endpoints = null)
         {
             Endpoints = endpoints?.ToDictionary(e => e.Endpoint, e => e.Handler) ?? null;
         }
@@ -36,29 +39,29 @@ namespace Parcel.Infrastructure
         #endregion
 
         #region Settings
-        public Dictionary<string, Func<Dictionary<string, string>, string, string>>? Endpoints { get; }
+        public Dictionary<string, EndpointHandler>? Endpoints { get; }
         #endregion
 
         #region Interface Method
-        public static DevelopmentServer StartServer(EndpointHandler[]? endpoints)
+        public static DevelopmentServer StartServer(EndpointDefinition[]? endpoints)
         {
             var server = new DevelopmentServer(endpoints);
             server.Start(FindNextFreeTcpPort());
             return server;
         }
-        public static DevelopmentServer StartServer(EndpointHandler[]? endpoints, int port)
+        public static DevelopmentServer StartServer(EndpointDefinition[]? endpoints, int port)
         {
             var server = new DevelopmentServer(endpoints);
             server.Start(port);
             return server;
         }
-        public static DevelopmentServer StartServerInNewThread(EndpointHandler[]? endpoints, int port)
+        public static DevelopmentServer StartServerInNewThread(EndpointDefinition[]? endpoints, int port)
         {
             var server = new DevelopmentServer(endpoints);
             new Thread(() => server.Start(port)).Start();
             return server;
         }
-        public static DevelopmentServer StartServerInNewThread(EndpointHandler[]? endpoints)
+        public static DevelopmentServer StartServerInNewThread(EndpointDefinition[]? endpoints)
         {
             var server = new DevelopmentServer(endpoints);
             new Thread(() => server.Start(FindNextFreeTcpPort())).Start();
@@ -74,38 +77,42 @@ namespace Parcel.Infrastructure
             ServerAddress = $"http://localhost:{port}";
 
             // Main server loop
-            byte[] bytes = new byte[bufferSize]; // Buffer for reading data
             while (true) // TODO: Remark: At the moment we are handling in disconnected mode
             {
                 // Wait for connection
-                using TcpClient client = server.AcceptTcpClient();
-
-                // Loop to receive all the data sent by the client.
-                StringBuilder builder = new();
-                int i;
-                NetworkStream stream = client.GetStream();
-                while (stream.DataAvailable && (i = stream.Read(bytes, 0, bytes.Length)) != 0)
-                {
-                    // Translate data bytes to a string.
-                    string data = Encoding.UTF8.GetString(bytes, 0, i);
-                    builder.Append(data);
-                }
-
-                // Final request message
-                string requestMessage = builder.ToString().TrimEnd();
-
-                // Send reply
-                if (!string.IsNullOrWhiteSpace(requestMessage))
-                {
-                    byte[] replyData = MakeReply(requestMessage, out _, out _);
-                    stream.Write(replyData);
-                }
-                // Handshake
-                {
-                    byte[] replyData = Encoding.UTF8.GetBytes(requestMessage);
-                    stream.Write(replyData);
-                }
+                TcpClient client = server.AcceptTcpClient();
+                new Thread(() => HandleClient(client)).Start();
             }
+        }
+
+        private void HandleClient(TcpClient client)
+        {
+            // TODO Handle keep-alive connection type
+
+            byte[] bytes = new byte[bufferSize]; // Buffer for reading data
+
+            // Loop to receive all the data sent by the client.
+            StringBuilder builder = new();
+            int i;
+            NetworkStream stream = client.GetStream();
+            while (stream.DataAvailable && (i = stream.Read(bytes, 0, bytes.Length)) != 0)
+            {
+                // Translate data bytes to a string.
+                string data = Encoding.UTF8.GetString(bytes, 0, i);
+                builder.Append(data);
+            }
+
+            // Final request message
+            string requestMessage = builder.ToString().TrimEnd();
+
+            // Send reply
+            if (!string.IsNullOrWhiteSpace(requestMessage)) // Can be empty (e.g. Firefox constantly send empty requests)
+            {
+                byte[] replyData = MakeReply(requestMessage, out _, out _);
+                stream.Write(replyData);
+            }
+
+            client.Dispose();
         }
         #endregion
 
@@ -117,7 +124,7 @@ namespace Parcel.Infrastructure
             Dictionary<string, string> queryParameters = ParseQueries(parametersString);
 
             string replyMessage = string.Empty;
-            if (Endpoints?.TryGetValue(endpoint, out Func<Dictionary<string, string>, string, string>? handler) ?? false)
+            if (Endpoints?.TryGetValue(endpoint, out EndpointHandler? handler) ?? false)
                 replyMessage = HandleGenericRequest(handler, queryParameters, requestBody, out replyBody, out replyHeader);
             else
                 replyMessage = HandleNotFound(out replyBody, out replyHeader);
@@ -126,7 +133,7 @@ namespace Parcel.Infrastructure
             return replyData;
         }
 
-        private static string HandleGenericRequest(Func<Dictionary<string, string>, string, string> handler, Dictionary<string, string> queryParameters, string requestBody, out string replyBody, out string replyHeader)
+        private static string HandleGenericRequest(EndpointHandler handler, Dictionary<string, string> queryParameters, string requestBody, out string replyBody, out string replyHeader)
         {
             replyBody = handler(queryParameters, requestBody);
             replyHeader = $"""

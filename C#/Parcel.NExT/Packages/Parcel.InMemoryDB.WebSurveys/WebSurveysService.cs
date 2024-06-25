@@ -27,7 +27,7 @@ namespace Parcel.InMemoryDB.WebSurveys
     public static class SurveyBuilder
     {
         #region Layouts
-
+        public static SurveyContent LinearLayout() { return new SurveyContent() { Layout = new SurveyLayout() }; }
         #endregion
 
         #region Containers
