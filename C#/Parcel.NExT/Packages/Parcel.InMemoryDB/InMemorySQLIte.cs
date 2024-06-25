@@ -42,7 +42,7 @@ namespace Parcel.Database
 
         #region interface
         /// <summary>
-        /// Execute arbitrary query
+        /// Execute arbitrary query. This functions combines query/non-query type execution in a single function.
         /// </summary>
         public DataTable? Execute(string sqlQuery)
         {
