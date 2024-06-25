@@ -43,31 +43,22 @@ namespace Parcel.Infrastructure
         #endregion
 
         #region Interface Method
-        public static DevelopmentServer StartServer(EndpointDefinition[]? endpoints)
+        public static DevelopmentServer StartServer(EndpointDefinition[]? endpoints, int? port = null)
         {
             var server = new DevelopmentServer(endpoints);
-            server.Start(FindNextFreeTcpPort());
+            if (port == null)
+                server.Start(FindNextFreeTcpPort());
+            else server.Start(port.Value);
             return server;
         }
-        public static DevelopmentServer StartServer(EndpointDefinition[]? endpoints, int port)
+        public static DevelopmentServer StartServerInNewThread(EndpointDefinition[]? endpoints, int? port = null)
         {
             var server = new DevelopmentServer(endpoints);
-            server.Start(port);
+            if (port == null)
+                new Thread(() => server.Start(FindNextFreeTcpPort())).Start();
+            else new Thread(() => server.Start(port.Value)).Start();
             return server;
         }
-        public static DevelopmentServer StartServerInNewThread(EndpointDefinition[]? endpoints, int port)
-        {
-            var server = new DevelopmentServer(endpoints);
-            new Thread(() => server.Start(port)).Start();
-            return server;
-        }
-        public static DevelopmentServer StartServerInNewThread(EndpointDefinition[]? endpoints)
-        {
-            var server = new DevelopmentServer(endpoints);
-            new Thread(() => server.Start(FindNextFreeTcpPort())).Start();
-            return server;
-        }
-
         public void Start(int port)
         {
             TcpListener server = new(IPAddress.Any, port);

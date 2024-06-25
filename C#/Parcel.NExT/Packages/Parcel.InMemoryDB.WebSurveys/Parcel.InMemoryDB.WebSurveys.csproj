@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Parcel.DevelopmentWebServer\Parcel.DevelopmentWebServer.csproj" />
     <ProjectReference Include="..\Parcel.InMemoryDB.CMS\Parcel.InMemoryDB.CMS.csproj" />
+    <ProjectReference Include="..\Parcel.Razor\Parcel.Razor.csproj" />
   </ItemGroup>
 
 </Project>
