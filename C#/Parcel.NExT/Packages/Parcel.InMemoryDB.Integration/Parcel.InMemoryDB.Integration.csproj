@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Parcel.Database.InMemoryDB</RootNamespace>
+    <Version>0.0.1</Version>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\Parcel.CellSet\Parcel.CellSet.csproj" />
+    <ProjectReference Include="..\Parcel.DataGrid\Parcel.DataGrid.csproj" />
+    <ProjectReference Include="..\Parcel.DataTable\Parcel.DataTable.csproj" />
+    <ProjectReference Include="..\Parcel.InMemoryDB.Integration.CLI\Parcel.InMemoryDB.Integration.CLI.csproj" />
+    <ProjectReference Include="..\Parcel.InMemoryDB.Integration.DataGrid\Parcel.InMemoryDB.Integration.DataGrid.csproj" />
+    <ProjectReference Include="..\Parcel.InMemoryDB.Integration.ODBC\Parcel.InMemoryDB.Integration.ODBC.csproj" />
+    <ProjectReference Include="..\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
+    <ProjectReference Include="..\Parcel.MSAnalysisService\Parcel.MSAnalysisService.csproj" />
+    <ProjectReference Include="..\Parcel.ODBC\Parcel.ODBC.csproj" />
+  </ItemGroup>
+
+</Project>
