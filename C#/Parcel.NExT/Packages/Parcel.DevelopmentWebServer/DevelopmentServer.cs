@@ -194,7 +194,7 @@ namespace Parcel.Infrastructure
             return $"""
                    {replyHeader}
                    
-                   {replyContent}
+                   {replyContent.Content}
                    """;
         }
         private string HandleApplicationException(Exception e, Dictionary<string, string> queryParameters, string requestBody, out EndpointResponse replyContent, out string replyHeader)
