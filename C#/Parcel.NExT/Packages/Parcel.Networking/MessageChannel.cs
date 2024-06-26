@@ -27,6 +27,7 @@ namespace Parcel.Infrastructure.Networking
         /// </summary>
         public string Username { get; private set; }
         public Action<string> MessageHandler { get; private set; }
+        public string? ServerAddress { get; private set; }
         #endregion
 
         #region Thread Management
@@ -49,12 +50,12 @@ namespace Parcel.Infrastructure.Networking
         #endregion
 
         #region Entry & Stop
-        public static MessageChannel Start(ServiceMode mode, Action<string> messageHandler, string username)
+        public static MessageChannel Start(ServiceMode mode, Action<string> messageHandler, string identificationName)
         {
             MessageChannel channel = new()
             {
                 Mode = mode,
-                Username = username,
+                Username = identificationName,
                 IsRunning = true,
                 MessageHandler = messageHandler
             };
@@ -119,6 +120,7 @@ namespace Parcel.Infrastructure.Networking
         {
             IPHostEntry entry = Dns.GetHostEntry(DefaultHostAddress);
             IPEndPoint endpoint = new(entry.AddressList[0], DefaultNetworkPort);
+            ServerAddress = endpoint.Address.ToString();
             Socket = new Socket(endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             Socket.Bind(endpoint);
             Socket.Listen(10);
@@ -149,6 +151,7 @@ namespace Parcel.Infrastructure.Networking
         {
             IPHostEntry entry = Dns.GetHostEntry(DefaultHostAddress);
             IPEndPoint endpoint = new(entry.AddressList[0], DefaultNetworkPort);
+            ServerAddress = endpoint.Address.ToString();
             Socket = new Socket(endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             Socket.Connect(endpoint);
             SendMessage(Socket, Username);  // The first message

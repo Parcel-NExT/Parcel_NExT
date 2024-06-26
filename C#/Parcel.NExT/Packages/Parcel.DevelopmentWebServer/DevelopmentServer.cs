@@ -5,12 +5,37 @@ using static Parcel.Infrastructure.EndpointDefinition;
 
 namespace Parcel.Infrastructure
 {
-    public class EndpointDefinition(string endpoint, EndpointHandler handler)
+    public class EndpointDefinition
     {
-        public delegate string EndpointHandler(Dictionary<string, string> Parameters, string Body);
+        #region Constructors
+        public EndpointDefinition(string endpoint, EndpointHandler handler)
+        {
+            Endpoint = endpoint;
+            Handler = handler;
+        }
+        public EndpointDefinition(string method, string endpoint, EndpointHandler handler)
+        {
+            Method = method;
+            Endpoint = endpoint;
+            Handler = handler;
+        }
+        #endregion
 
-        public string Endpoint { get; } = endpoint;
-        public EndpointHandler Handler { get; } = handler;
+        #region Properties
+        public string Method { get; } = "Get";
+        public string Endpoint { get; }
+        public EndpointHandler Handler { get; }
+        #endregion
+
+        #region Constants
+        public const string GETMethod = "GET";
+        public const string POSTMethod = "POST";
+        public const string PUTMethod = "PUT";
+        #endregion
+
+        #region Delegates
+        public delegate string EndpointHandler(Dictionary<string, string> Parameters, string Body);
+        #endregion
     }
     public class ServerMetadata
     {

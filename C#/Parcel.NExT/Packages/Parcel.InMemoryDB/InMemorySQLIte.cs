@@ -10,8 +10,14 @@ namespace Parcel.Database
     {
         #region Construction
         public SqliteConnection InstanceConnection { get; }
+        /// <remarks>
+        /// Internal/Cross-module use only, might want to hide from Parcel front-ends.
+        /// TODO: (POS) Support hiding members.
+        /// </remarks>
+        public const string InMemorySQLiteDatabaseConnectionSourceNameToken = ":memory:";
+
         /// <param name="dataSource">Can be either file path to SQLite DB, a network connection (socket), or :memory:</param>
-        public InMemorySQLIte(string dataSource = ":memory:")
+        public InMemorySQLIte(string dataSource = InMemorySQLiteDatabaseConnectionSourceNameToken)
         {
             InstanceConnection = new($"Data Source={dataSource}");
             InstanceConnection.Open();

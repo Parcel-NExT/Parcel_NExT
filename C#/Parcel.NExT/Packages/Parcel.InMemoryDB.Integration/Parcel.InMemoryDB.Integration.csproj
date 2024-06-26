@@ -14,11 +14,13 @@
     <ProjectReference Include="..\Parcel.CellSet\Parcel.CellSet.csproj" />
     <ProjectReference Include="..\Parcel.DataGrid\Parcel.DataGrid.csproj" />
     <ProjectReference Include="..\Parcel.DataTable\Parcel.DataTable.csproj" />
+    <ProjectReference Include="..\Parcel.DevelopmentWebServer\Parcel.DevelopmentWebServer.csproj" />
     <ProjectReference Include="..\Parcel.InMemoryDB.Integration.CLI\Parcel.InMemoryDB.Integration.CLI.csproj" />
     <ProjectReference Include="..\Parcel.InMemoryDB.Integration.DataGrid\Parcel.InMemoryDB.Integration.DataGrid.csproj" />
     <ProjectReference Include="..\Parcel.InMemoryDB.Integration.ODBC\Parcel.InMemoryDB.Integration.ODBC.csproj" />
     <ProjectReference Include="..\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
     <ProjectReference Include="..\Parcel.MSAnalysisService\Parcel.MSAnalysisService.csproj" />
+    <ProjectReference Include="..\Parcel.Networking\Parcel.Networking.csproj" />
     <ProjectReference Include="..\Parcel.ODBC\Parcel.ODBC.csproj" />
   </ItemGroup>
 
