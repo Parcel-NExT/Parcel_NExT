@@ -1,4 +1,5 @@
-﻿using Parcel.Infrastructure;
+﻿using Parcel.CoreEngine.Helpers;
+using Parcel.Infrastructure;
 
 namespace Parcel.Database.InMemoryDB.Services
 {
@@ -29,23 +30,7 @@ namespace Parcel.Database.InMemoryDB.Services
         #region Handling Routines
         private EndpointResponse Frontpage(Dictionary<string, string> parameters, string body)
         {
-            return """
-                <!DOCTYPE html>
-                <html lang="en">
-                
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1">
-                  <title>In-Memory Database</title>
-                </head>
-                
-                <body>
-                  <h1>Welcome!</h1>
-                  <p>This is the front-end.</p>
-                </body>
-                
-                </html>
-                """;
+            return EmbeddedResourceHelper.ReadTextResource("Parcel.Database.InMemoryDB.Websites.Frontpage.html");
         }
         #endregion
     }

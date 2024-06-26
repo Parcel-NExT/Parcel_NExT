@@ -1,4 +1,5 @@
-﻿using Parcel.Database.InMemoryDB.Services;
+﻿using Parcel.CoreEngine.Helpers;
+using Parcel.Database.InMemoryDB.Services;
 using System.Text;
 
 namespace Parcel.Database.InMemoryDB
@@ -56,6 +57,8 @@ namespace Parcel.Database.InMemoryDB
                 HTTPWebsiteService websiteService = new(database);
                 string websiteServerAddress = websiteService.Start();
                 builder.AppendLine($"Website (HTTP) server: {websiteServerAddress}");
+
+                ProcessHelper.OpenFileWithDefaultProgramInterpreted(websiteServerAddress);
             }
 
             return builder.ToString().TrimEnd();

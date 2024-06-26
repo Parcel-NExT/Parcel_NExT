@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>In-Memory Database</title>
+
+  <style>
+    /* Table formatting */
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+    </style>
+
+    <style>
+      /* Navigation Formatting */
+      .tree{
+        --spacing : 1.5rem;
+        --radius  : 10px;
+      }
+
+      .tree li{
+        display      : block;
+        position     : relative;
+        padding-left : calc(2 * var(--spacing) - var(--radius) - 2px);
+      }
+
+      .tree ul{
+        margin-left  : calc(var(--radius) - var(--spacing));
+        padding-left : 0;
+      }
+
+      .tree ul li{
+        border-left : 2px solid #ddd;
+      }
+
+      .tree ul li:last-child{
+        border-color : transparent;
+      }
+
+      .tree ul li::before{
+        content      : '';
+        display      : block;
+        position     : absolute;
+        top          : calc(var(--spacing) / -2);
+        left         : -2px;
+        width        : calc(var(--spacing) + 2px);
+        height       : calc(var(--spacing) + 1px);
+        border       : solid #ddd;
+        border-width : 0 0 2px 2px;
+      }
+
+      .tree summary{
+        display : block;
+        cursor  : pointer;
+      }
+
+      .tree summary::marker,
+      .tree summary::-webkit-details-marker{
+        display : none;
+      }
+
+      .tree summary:focus{
+        outline : none;
+      }
+
+      .tree summary:focus-visible{
+        outline : 1px dotted #000;
+      }
+
+      .tree li::after,
+      .tree summary::before{
+        content       : '';
+        display       : block;
+        position      : absolute;
+        top           : calc(var(--spacing) / 2 - var(--radius));
+        left          : calc(var(--spacing) - var(--radius) - 1px);
+        width         : calc(2 * var(--radius));
+        height        : calc(2 * var(--radius));
+        border-radius : 50%;
+        background    : #ddd;
+      }
+
+      .tree summary::before{
+        z-index    : 1;
+        background : #696 url('expand-collapse.svg') 0 0;
+      }
+
+      .tree details[open] > summary::before{
+        background-position : calc(-2 * var(--radius)) 0;
+      }
+    </style>
+</head>
+
+<body>
+  <!--Header-->
+  <div style="background-color: lightgray; width: 100%; height: 85px;">
+    <h1>Welcome!</h1>
+    <p>This is the front-end.</p>
+  </div>
+  
+  <!--Main-->
+  <!-- TODO: How to take up "the rest of the page" entire space? -->
+  <main style="background-color: blue; width: 100%; height: 650px;">
+    <div style="background-color: red; width: 20%; height: 650px; float: left;">
+      <strong>Navigation</strong>
+      <ul class="tree">
+        <li>
+          <details open>
+            <summary>Giant planets</summary>
+            <ul>
+              <li>
+                <details>
+                  <summary>Gas giants</summary>
+                  <ul>
+                    <li>Jupiter</li>
+                    <li>Saturn</li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary>Ice giants</summary>
+                  <ul>
+                    <li>Uranus</li>
+                    <li>Neptune</li>
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </div>
+
+    <div style="background-color: yellow; width:80%; height: 650px; float: left;">
+      <div style="background-color: purple; width: 100%; height: 50%; display: flex; flex-direction: column;">
+        <strong>Query</strong>
+        <textarea style="flex-grow: 1; box-sizing: border-box;"></textarea>
+      </div>
+  
+      <div style="background-color: lightgreen; width:100%; height: 50%;">
+        <strong>Result</strong>
+        <table>
+          <tr>
+            <th>Company</th>
+            <th>Contact</th>
+            <th>Country</th>
+          </tr>
+          <tr>
+            <td>Alfreds Futterkiste</td>
+            <td>Maria Anders</td>
+            <td>Germany</td>
+          </tr>
+          <tr>
+            <td>Centro comercial Moctezuma</td>
+            <td>Francisco Chang</td>
+            <td>Mexico</td>
+          </tr>
+          <tr>
+            <td>Ernst Handel</td>
+            <td>Roland Mendel</td>
+            <td>Austria</td>
+          </tr>
+          <tr>
+            <td>Island Trading</td>
+            <td>Helen Bennett</td>
+            <td>UK</td>
+          </tr>
+          <tr>
+            <td>Laughing Bacchus Winecellars</td>
+            <td>Yoshi Tannamuri</td>
+            <td>Canada</td>
+          </tr>
+          <tr>
+            <td>Magazzini Alimentari Riuniti</td>
+            <td>Giovanni Rovelli</td>
+            <td>Italy</td>
+          </tr>
+        </table>
+        
+      </div>
+    </div>
+  </main>
+
+  <!--Footer-->
+  <footer style="background-color: yellowgreen; height: 30px;">
+    <p>Parcel InMemory Database Version 0.0.1</p>
+  </footer>
+</body>
+<!-- References:
+* https://blog.openreplay.com/resizable-split-panes-from-scratch/
+-->
+</html>
