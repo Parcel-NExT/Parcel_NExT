@@ -218,7 +218,7 @@ namespace Parcel.Infrastructure
         #endregion
 
         #region Helpers
-        public static int FindNextFreeTcpPort()
+        private static int FindNextFreeTcpPort()
         {
             TcpListener listener = new(IPAddress.Loopback, 0);
             listener.Start();

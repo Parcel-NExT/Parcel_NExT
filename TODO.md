@@ -206,3 +206,9 @@ So instead of writing that long for-loop, we could offer such a construct that i
 
 (ADO, Front-end, Gospel) (Gospel RMB/tab menu feature)
 "How-to" For easy onboarding programming.
+
+(ADO) Investigate Debugging for Code Generation
+Notice we will likely need one more layer on top of syntax analysis because we need to map execution points to the node levle.
+Notes: Study Visual Studio Code's C# extension and see how it works.
+Reference:
+https://stackoverflow.com/questions/4236303/i-want-to-make-my-own-c-sharp-debugger-how-would-one-do-that-what-tools-shoul
