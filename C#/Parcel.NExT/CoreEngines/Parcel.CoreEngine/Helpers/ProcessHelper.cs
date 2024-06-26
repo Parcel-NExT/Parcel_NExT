@@ -84,7 +84,7 @@ namespace Parcel.CoreEngine.Helpers
         /// Packages should generally use this instead of <seealso cref="OpenFileWithDefaultProgram(string)"/>.
         /// </summary>
         /// <remarks>
-        /// To facilitate cross-platform behavior and server-client architecture, the act of opening a file/url with default program should ultimately be handled by the front-end; This function provides an indirection and delete the job to any particular server/front-end.
+        /// To facilitate cross-platform behavior and server-client architecture, the act of opening a file/url with default program (or just to start some program on the user side) should ultimately be handled by the front-end (e.g. on a web environment if we open a process/url it's started on the server, but what we really want would be to open that url in a new browser tab); This function provides an indirection and delete the job to any particular server/front-end.
         /// </remarks>
         public static void OpenFileWithDefaultProgramInterpreted(string path)
         {

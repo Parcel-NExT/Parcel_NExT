@@ -10,12 +10,19 @@ namespace Parcel.Database
     {
         #region Construction
         public SqliteConnection InstanceConnection { get; }
-        /// <param name="dataSource">Can be either file path to SQLite DB, a network connection, or :memory:</param>
+        /// <param name="dataSource">Can be either file path to SQLite DB, a network connection (socket), or :memory:</param>
         public InMemorySQLIte(string dataSource = ":memory:")
         {
             InstanceConnection = new($"Data Source={dataSource}");
             InstanceConnection.Open();
             // Disposed in disposal routines
+        }
+        /// <summary>
+        /// Provides a semantic endpoint for connecting to file/path/protocol service (socket).
+        /// </summary>
+        public static InMemorySQLIte Connect(string url)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
