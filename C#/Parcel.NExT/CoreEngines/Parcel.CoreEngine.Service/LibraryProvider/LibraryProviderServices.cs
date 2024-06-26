@@ -33,7 +33,7 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
         #region Runtime Queries
         public string[] GetAvailableRuntimes()
         {
-            if (RuntimeHelper.FindPythonDLL() != null)
+            if (PythonRuntimeHelper.FindPythonDLL() != null)
                 return ["C#", "Python"];
             else
                 return ["C#"];

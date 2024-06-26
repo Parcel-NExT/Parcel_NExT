@@ -21,7 +21,7 @@ namespace Parcel.NExT.Python
         #region Construction
         public InteractivePython()
         {
-            var installedPython = RuntimeHelper.FindPythonDLL();
+            var installedPython = Helpers.PythonRuntimeHelper.FindPythonDLL();
             if (installedPython == null)
                 throw new ArgumentException("Cannot find any usable Python installation on the machine.");
 

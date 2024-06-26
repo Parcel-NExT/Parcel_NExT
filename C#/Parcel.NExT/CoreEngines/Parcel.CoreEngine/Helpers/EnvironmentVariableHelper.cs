@@ -1,19 +1,10 @@
-﻿using Parcel.CoreEngine.Helpers;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Parcel.NExT.Python.Helpers
+namespace Parcel.CoreEngine.Helpers
 {
-    public static class RuntimeHelper
+    public static class EnvironmentVariableHelper
     {
-        #region Methods
-        public static string? FindPythonDLL()
-        {
-            return EnumerateEnvironmentVariablesSearchingForFilePattern(["PATH"], @"python\d{2,3}\.dll");
-        }
-        public static string? FindPythonPip()
-        {
-            return EnumerateEnvironmentVariablesSearchingForFilePattern(["PATH"], @"pip.exe");
-        }
+        #region Helpers
         /// <summary>
         /// Find disk location of program
         /// </summary>
@@ -34,12 +25,12 @@ namespace Parcel.NExT.Python.Helpers
         }
         #endregion
 
-        #region Routines
-        static string? EnumerateEnvironmentVariablesSearchingForFilePattern(string[] environmentVariables, string fileNamePattern)
+        #region Environment Runtime
+        public static string? EnumerateEnvironmentVariablesSearchingForFilePattern(string[] environmentVariables, string fileNamePattern)
         {
             foreach (var variable in environmentVariables)
             {
-                foreach (string path in SplitArgumentsLikeCsv(Environment.GetEnvironmentVariable(variable)!, ';', true))
+                foreach (string path in Environment.GetEnvironmentVariable(variable)!.SplitArgumentsLikeCsv(';', true))
                 {
                     try
                     {
@@ -55,15 +46,6 @@ namespace Parcel.NExT.Python.Helpers
                 }
             }
             return null;
-        }
-        static string[] SplitArgumentsLikeCsv(string line, char separator = ',', bool ignoreEmptyEntries = false)
-        {
-            string[] arguments = line.SplitCommandLineArguments(separator);
-
-            if (ignoreEmptyEntries)
-                return arguments.Where(a => !string.IsNullOrWhiteSpace(a)).ToArray();
-            else
-                return arguments;
         }
         #endregion
     }

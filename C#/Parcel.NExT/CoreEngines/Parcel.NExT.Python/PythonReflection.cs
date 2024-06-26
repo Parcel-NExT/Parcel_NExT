@@ -1,5 +1,4 @@
 ﻿using Parcel.CoreEngine.Helpers;
-using Parcel.NExT.Python.Helpers;
 using System.Text.RegularExpressions;
 
 namespace Parcel.NExT.Python
@@ -13,7 +12,7 @@ namespace Parcel.NExT.Python
     {
         public static string[] GetAllAvailableModules()
         {
-            string? python = RuntimeHelper.FindProgram("python");
+            string? python = EnvironmentVariableHelper.FindProgram("python");
             if (python != null) 
             {
                 string outputs = ProcessHelper.GetOutputWithInput(python, null, """
@@ -38,7 +37,7 @@ namespace Parcel.NExT.Python
         }
         public static string[] GetInstalledPackages()
         {
-            string? pip = RuntimeHelper.FindPythonPip();
+            string? pip = Helpers.PythonRuntimeHelper.FindPythonPip();
             if (pip != null)
                 return ParsePipPackageOutputs(ProcessHelper.GetOutput(pip, "list")); // Remark: Alternative is to use `pkg_resources`
             return [];
