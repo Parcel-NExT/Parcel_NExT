@@ -19,15 +19,21 @@ namespace Parcel.Database.InMemoryDB.Services
         public string Start()
         {
             WebServer = DevelopmentServer.StartServerInNewThread(ServerEndpoints);
+            Thread.Sleep(1000); // Wait for socket to bind
             return WebServer.ServerAddress;
         }
         private EndpointDefinition[] ServerEndpoints => [
+            new(EndpointDefinition.POSTMethod, "/Welcome", HandleWelcome),
             new(EndpointDefinition.POSTMethod, "/", HandleCommands)
         ];
         #endregion
 
         #region Handling Routines
-        private string HandleCommands(Dictionary<string, string> parameters, string body)
+        private EndpointResponse HandleWelcome(Dictionary<string, string> parameters, string body)
+        {
+            return "Welcome!";
+        }
+        private EndpointResponse HandleCommands(Dictionary<string, string> parameters, string body)
         {
             string command = body;
             System.Data.DataTable? result = Database.Execute(command);

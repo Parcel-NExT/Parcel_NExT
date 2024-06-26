@@ -5,6 +5,25 @@ using static Parcel.Infrastructure.EndpointDefinition;
 
 namespace Parcel.Infrastructure
 {
+    public record EndpointResponse(string Content, int StatusCode, string ContentType)
+    {
+        #region Accessor
+        public int Length => Content.Length;
+        #endregion
+
+        #region Implicit Constructor
+        public static implicit operator EndpointResponse(string body) => new(body, 200, DetermineHeuristicType(body));
+        #endregion
+
+        #region Helper
+        private static string DetermineHeuristicType(string body)
+        {
+            if (body.StartsWith("<!DOCTYPE html"))
+                return MIMETypeNames.TextHtml;
+            else return MIMETypeNames.TextPlain;
+        }
+        #endregion
+    }
     public class EndpointDefinition
     {
         #region Constructors
@@ -25,6 +44,7 @@ namespace Parcel.Infrastructure
         public string Method { get; } = "Get";
         public string Endpoint { get; }
         public EndpointHandler Handler { get; }
+        public string EndpointIdentifier => $"{Method} {Endpoint}";
         #endregion
 
         #region Constants
@@ -33,8 +53,8 @@ namespace Parcel.Infrastructure
         public const string PUTMethod = "PUT";
         #endregion
 
-        #region Delegates
-        public delegate string EndpointHandler(Dictionary<string, string> Parameters, string Body);
+        #region Types
+        public delegate EndpointResponse EndpointHandler(Dictionary<string, string> Parameters, string Body);
         #endregion
     }
     public class ServerMetadata
@@ -53,7 +73,7 @@ namespace Parcel.Infrastructure
         #region Construction
         public DevelopmentServer(EndpointDefinition[]? endpoints = null)
         {
-            Endpoints = endpoints?.ToDictionary(e => e.Endpoint, e => e.Handler) ?? null;
+            Endpoints = endpoints?.ToDictionary(e => e.EndpointIdentifier, e => e.Handler) ?? null;
         }
         #endregion
 
@@ -70,7 +90,7 @@ namespace Parcel.Infrastructure
         #region Interface Method
         public static DevelopmentServer StartServer(EndpointDefinition[]? endpoints, int? port = null)
         {
-            var server = new DevelopmentServer(endpoints);
+            DevelopmentServer server = new(endpoints);
             if (port == null)
                 server.Start(FindNextFreeTcpPort());
             else server.Start(port.Value);
@@ -78,7 +98,7 @@ namespace Parcel.Infrastructure
         }
         public static DevelopmentServer StartServerInNewThread(EndpointDefinition[]? endpoints, int? port = null)
         {
-            var server = new DevelopmentServer(endpoints);
+            DevelopmentServer server = new(endpoints);
             if (port == null)
                 new Thread(() => server.Start(FindNextFreeTcpPort())).Start();
             else new Thread(() => server.Start(port.Value)).Start();
@@ -133,50 +153,66 @@ namespace Parcel.Infrastructure
         #endregion
 
         #region Routines
-        private byte[] MakeReply(string requestMessage, out string replyBody, out string replyHeader)
+        private byte[] MakeReply(string requestMessage, out EndpointResponse replyContent, out string replyHeader)
         {
             SplitMessageBody(requestMessage, out string requestHeader, out string requestBody);
-            Dictionary<string, string> headerFields = GetHeaders(requestHeader, out string endpoint, out string parametersString);
+            Dictionary<string, string> headerFields = GetHeaders(requestHeader, out string endpointIdentifier, out string parametersString);
             Dictionary<string, string> queryParameters = ParseQueries(parametersString);
 
             string replyMessage = string.Empty;
-            if (Endpoints?.TryGetValue(endpoint, out EndpointHandler? handler) ?? false)
-                replyMessage = HandleGenericRequest(handler, queryParameters, requestBody, out replyBody, out replyHeader);
+            if (Endpoints?.TryGetValue(endpointIdentifier, out EndpointHandler? handler) ?? false)
+            {
+                try
+                {
+                    replyMessage = HandleGenericRequest(handler, queryParameters, requestBody, out replyContent, out replyHeader);
+                }
+                catch (Exception e)
+                {
+                    replyMessage = HandleApplicationException(e, queryParameters, requestBody, out replyContent, out replyHeader);
+                }
+            }
             else
-                replyMessage = HandleNotFound(out replyBody, out replyHeader);
+                replyMessage = HandleNotFound(out replyContent, out replyHeader);
 
             byte[] replyData = Encoding.UTF8.GetBytes(replyMessage);
             return replyData;
         }
-
-        private static string HandleGenericRequest(EndpointHandler handler, Dictionary<string, string> queryParameters, string requestBody, out string replyBody, out string replyHeader)
+        private static string HandleGenericRequest(EndpointHandler handler, Dictionary<string, string> queryParameters, string requestBody, out EndpointResponse replyContent, out string replyHeader)
         {
-            replyBody = handler(queryParameters, requestBody);
+            replyContent = handler(queryParameters, requestBody);
             replyHeader = $"""
-                    HTTP/1.1 200 OK
+                    HTTP/1.1 {replyContent.StatusCode} OK
                     Date: {DateTime.Now.ToUniversalTime():r}
                     Connection: close
                     Vary: Origin
                     Cache-Control: public, max-age=0
                     Last-Modified: {DateTime.Now.ToUniversalTime():r}
                     ETag: W/"{Guid.NewGuid().ToString()[..15]}"
-                    Content-Type: text/html; charset=UTF-8
-                    Content-Length: {replyBody.Length}
+                    Content-Type: {replyContent.ContentType}; charset=UTF-8
+                    Content-Length: {replyContent.Length}
                     """;
             return $"""
                    {replyHeader}
                    
-                   {replyBody}
+                   {replyContent}
                    """;
         }
-
-        private static string HandleNotFound(out string replyBody, out string replyHeader)
+        private string HandleApplicationException(Exception e, Dictionary<string, string> queryParameters, string requestBody, out EndpointResponse replyContent, out string replyHeader)
         {
-            NotFoundReplyHandler.HandleReply(out replyBody, out replyHeader);
+            ApplicationRuntimeExceptionReplyHandler.HandleReply(e, queryParameters, requestBody, out replyContent, out replyHeader);
             return $"""
                    {replyHeader}
                    
-                   {replyBody}
+                   {replyContent.Content}
+                   """;
+        }
+        private static string HandleNotFound(out EndpointResponse replyContent, out string replyHeader)
+        {
+            NotFoundReplyHandler.HandleReply(out replyContent, out replyHeader);
+            return $"""
+                   {replyHeader}
+                   
+                   {replyContent.Content}
                    """;
         }
         #endregion
@@ -191,12 +227,13 @@ namespace Parcel.Infrastructure
                 .Select(parameter => parameter.Split('='))
                 .ToDictionary(pair => pair[0], pair => pair[1]);
         }
-        private static Dictionary<string, string> GetHeaders(string requestHeader, out string endpoint, out string parametersString)
+        private static Dictionary<string, string> GetHeaders(string requestHeader, out string endpointIdentifier, out string parametersString)
         {
             string[] headerLines = requestHeader.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             string firstLine = headerLines[0];
-            ParseFirstLine(firstLine, out string method, out endpoint, out parametersString, out string version);
+            ParseFirstLine(firstLine, out string method, out string endpoint, out parametersString, out string version);
+            endpointIdentifier = $"{method} {endpoint}";
 
             return headerLines
                 .Skip(1)
@@ -228,11 +265,11 @@ namespace Parcel.Infrastructure
         }
         private static void SplitMessageBody(string requestMessage, out string requestHeader, out string requestBody)
         {
-            int index = requestMessage.IndexOf("\n\n");
+            int index = requestMessage.IndexOf("\r\n\r\n"); // Remark: Notice the protocol specifically defines \r\n as header line break style, see https://stackoverflow.com/questions/5757290/http-header-line-break-style
             if (index != -1)
             {
                 requestHeader = requestMessage[..index];
-                requestBody = requestMessage[(index + 1)..];
+                requestBody = requestMessage[(index + 1)..].TrimStart();
             }
             else
             {
@@ -256,9 +293,9 @@ namespace Parcel.Infrastructure
 
     public class NotFoundReplyHandler
     {
-        public static void HandleReply(out string body, out string replyHeader)
+        public static void HandleReply(out EndpointResponse replyContent, out string replyHeader)
         {
-            body = $"""
+            string body = $"""
                     <!DOCTYPE html>
                     <html lang="en">
 
@@ -283,9 +320,61 @@ namespace Parcel.Infrastructure
                     Cache-Control: public, max-age=0
                     Last-Modified: {DateTime.Now.ToUniversalTime():r}
                     ETag: W/"{Guid.NewGuid().ToString()[..15]}"
-                    Content-Type: text/html; charset=UTF-8
+                    Content-Type: {MIMETypeNames.TextHtml}; charset=UTF-8
                     Content-Length: {body.Length}
                     """;
+            replyContent = new EndpointResponse(body, 404, MIMETypeNames.TextHtml);
+        }
+    }
+    public class ApplicationRuntimeExceptionReplyHandler
+    {
+        public static void HandleReply(Exception exception, Dictionary<string, string> queryParameters, string requestBody, out EndpointResponse replyContent, out string replyHeader)
+        {
+            // TODO: Add richer debug information e.g. http method (GET/POST), request header
+            // TODO: Refine context ifnormation regarding query parameters
+            string body = $"""
+                    <!DOCTYPE html>
+                    <html lang="en">
+
+                    <head>
+                      <meta charset="utf-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1">
+                      <title>Runtime Exception</title>
+                    </head>
+
+                    <body>
+                      <h1>Application Run Into An Unhandled Exception</h1>
+                      <p>
+                        The program runs into an unhandled exception: <strong>{exception.Message}<strong/>
+                        <br/>
+                        This is likely due to the lack of foresight and ommission of exception handling at the summoning site.
+                      </p>
+                      <code>
+                      {exception.StackTrace}
+                      </code>
+                      <br/>
+
+                      <h3>Context</h3>
+                      <p>This happens with the following request:</p>
+                      <code>
+                      {requestBody}
+                      </code>
+                      </body>
+
+                    </html>
+                    """;
+            replyHeader = $"""
+                    HTTP/1.1 500 Page Not Found
+                    Date: {DateTime.Now.ToUniversalTime():r}
+                    Connection: close
+                    Vary: Origin
+                    Cache-Control: public, max-age=0
+                    Last-Modified: {DateTime.Now.ToUniversalTime():r}
+                    ETag: W/"{Guid.NewGuid().ToString()[..15]}"
+                    Content-Type: {MIMETypeNames.TextHtml}; charset=UTF-8
+                    Content-Length: {body.Length}
+                    """;
+            replyContent = new EndpointResponse(body, 500, MIMETypeNames.TextHtml);
         }
     }
 }

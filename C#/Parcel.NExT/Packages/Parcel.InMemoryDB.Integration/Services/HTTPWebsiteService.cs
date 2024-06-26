@@ -18,6 +18,7 @@ namespace Parcel.Database.InMemoryDB.Services
         public string Start()
         {
             WebServer = DevelopmentServer.StartServerInNewThread(ServerEndpoints);
+            Thread.Sleep(1000); // Wait for socket to bind
             return WebServer.ServerAddress;
         }
         private EndpointDefinition[] ServerEndpoints => [
@@ -26,7 +27,7 @@ namespace Parcel.Database.InMemoryDB.Services
         #endregion
 
         #region Handling Routines
-        private string Frontpage(Dictionary<string, string> parameters, string body)
+        private EndpointResponse Frontpage(Dictionary<string, string> parameters, string body)
         {
             return """
                 <!DOCTYPE html>
