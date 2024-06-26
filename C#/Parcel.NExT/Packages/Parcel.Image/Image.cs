@@ -33,14 +33,27 @@ namespace Parcel.Types
         /// <remarks>
         /// Row-major, aka. Pixels[Row][Col] or Pixels[Height][Width]
         /// </remarks>
-        private Pixel[][] Pixels { get; set; }
+        private Pixel[][]? Pixels { get; set; }
+        /// <summary>
+        /// Use this to save having to load the file into memory.
+        /// </summary>
+        public string? FileReference { get; set; }
+        /// <summary>
+        /// Should load file from disk instead of relying on in-memory data
+        /// </summary>
+        public bool ShouldLoadFileDirectly => FileReference != null;
         #endregion
 
         #region Constructors
         public Image()
             => Pixels = AllocatePixles(0, 0);
-        public Image(string pngFile)
-            => Pixels = LoadFile(pngFile);
+        public Image(string pngFile, bool doNotLoad = true)
+        {
+            if (doNotLoad)
+                FileReference = pngFile;
+            else
+                Pixels = LoadFile(pngFile);
+        }
         public Image(int width, int height)
             => Pixels = AllocatePixles(width, height);
         public Image(Pixel[][] pixels)
@@ -69,7 +82,7 @@ namespace Parcel.Types
                 pixels[row] = new Pixel[width];
             return pixels;
         }
-        private Pixel[][] ConvertUintGrids(uint[][] uintPixels)
+        private static Pixel[][] ConvertUintGrids(uint[][] uintPixels)
         {
             int height = uintPixels.Length;
             int width = uintPixels.First().Length;
@@ -84,7 +97,7 @@ namespace Parcel.Types
             }
             return pixels;
         }
-        private Pixel[][] LoadFile(string pngFile)
+        private static Pixel[][] LoadFile(string pngFile)
         {
             using FileStream stream = File.OpenRead(pngFile);
             Png image = Png.Open(stream);
