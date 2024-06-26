@@ -1,4 +1,6 @@
-﻿namespace Parcel.Types
+﻿using BigGustave;
+
+namespace Parcel.Types
 {
     public struct Pixel
     {
@@ -17,6 +19,8 @@
         }
         public Pixel(byte[] bytes) 
             : this(bytes[0], bytes[1], bytes[2], bytes[3]) { }
+        public Pixel(BigGustave.Pixel pixel) 
+            : this(pixel.R, pixel.G, pixel.B, pixel.A) { }
     }
     /// <summary>
     /// Row-major 2D image pixel grid.
@@ -35,6 +39,8 @@
         #region Constructors
         public Image()
             => Pixels = AllocatePixles(0, 0);
+        public Image(string pngFile)
+            => Pixels = LoadFile(pngFile);
         public Image(int width, int height)
             => Pixels = AllocatePixles(width, height);
         public Image(Pixel[][] pixels)
@@ -76,6 +82,26 @@
                     pixels[row][col] = new Pixel(bytes);
                 }
             }
+            return pixels;
+        }
+        private Pixel[][] LoadFile(string pngFile)
+        {
+            using FileStream stream = File.OpenRead(pngFile);
+            Png image = Png.Open(stream);
+
+            int width = image.Width;
+            int height = image.Height;
+            Pixel[][] pixels = AllocatePixles(width, height);
+
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    BigGustave.Pixel pixel = image.GetPixel(col, row);
+                    pixels[row][col] = new Pixel(pixel);
+                }
+            }
+
             return pixels;
         }
         #endregion

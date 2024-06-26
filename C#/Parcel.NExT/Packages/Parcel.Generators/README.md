@@ -7,6 +7,8 @@ Provides random generations of all kinds. This focuses on raw data generations i
 4. (As integration service) General sample data for various parcel types to demonstrate the use of specific types e.g. DataGrid.
 5. Simple randomization functionalities.
 
+(Comment) Might be ok to depend on low-level basic types (as in Parcel.Types), e.g. Image and DataGrid.
+
 ## TODO
 
 - [ ] Generate random images (ideally meaningful and very fast) (To avoid dependencies, we can write to raw PNG or PPM) (Ideally we avoid depend on Parcel.Types.Image type)

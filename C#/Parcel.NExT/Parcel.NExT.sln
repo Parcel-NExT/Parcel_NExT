@@ -138,6 +138,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.ProceduralGeneration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Image", "Packages\Parcel.Image\Parcel.Image.csproj", "{FB1855E9-5A6E-42EE-9349-CE108479F5A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Charts", "Packages\Parcel.Charts\Parcel.Charts.csproj", "{AF837E1D-F39C-4389-A78E-08EBE9C1484D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -356,6 +358,10 @@ Global
 		{FB1855E9-5A6E-42EE-9349-CE108479F5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB1855E9-5A6E-42EE-9349-CE108479F5A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB1855E9-5A6E-42EE-9349-CE108479F5A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF837E1D-F39C-4389-A78E-08EBE9C1484D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF837E1D-F39C-4389-A78E-08EBE9C1484D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF837E1D-F39C-4389-A78E-08EBE9C1484D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF837E1D-F39C-4389-A78E-08EBE9C1484D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -419,6 +425,7 @@ Global
 		{95D23AA8-FB57-4A68-8885-69CD0B4AEB29} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{71729758-C961-4ED9-BFC9-BAC7ACB84344} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{FB1855E9-5A6E-42EE-9349-CE108479F5A4} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{AF837E1D-F39C-4389-A78E-08EBE9C1484D} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}
