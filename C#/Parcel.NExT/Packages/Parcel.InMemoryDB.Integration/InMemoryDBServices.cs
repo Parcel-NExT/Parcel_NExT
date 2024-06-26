@@ -14,8 +14,15 @@ namespace Parcel.Database.InMemoryDB
         public static string StartEmptyDatabaseService(out InMemorySQLIte database, bool startSocketServer, bool startRESTServer, bool startWebServer, string connection = InMemorySQLIte.InMemorySQLiteDatabaseConnectionSourceNameToken)
         {
             // Validate connection
-            if (connection != InMemorySQLIte.InMemorySQLiteDatabaseConnectionSourceNameToken && !File.Exists(connection))
+            try
+            {
+                if (connection != InMemorySQLIte.InMemorySQLiteDatabaseConnectionSourceNameToken && Path.GetFullPath(connection) != connection) // Remark: The Path.GetFullPath is to validate the path is a valid windows location, while the file may not exist yet
+                    throw new ArgumentException($"Connection {connection} is invalid. Only in-memory or on-disk source is supported.");
+            }
+            catch (Exception)
+            {
                 throw new ArgumentException($"Connection {connection} is invalid. Only in-memory or on-disk source is supported.");
+            }
 
             // Create new database and configure services for it
             database = new(connection);

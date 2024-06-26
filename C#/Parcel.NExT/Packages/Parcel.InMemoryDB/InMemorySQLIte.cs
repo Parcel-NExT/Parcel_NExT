@@ -19,7 +19,7 @@ namespace Parcel.Database
         /// <param name="dataSource">Can be either file path to SQLite DB, a network connection (socket), or :memory:</param>
         public InMemorySQLIte(string dataSource = InMemorySQLiteDatabaseConnectionSourceNameToken)
         {
-            InstanceConnection = new($"Data Source={dataSource}");
+            InstanceConnection = new($"Data Source={dataSource}"); // Remark: Notice we do not need any other connection string for automatic database creation; Mode=ReadWrite doens't work.
             InstanceConnection.Open();
             // Disposed in disposal routines
         }
