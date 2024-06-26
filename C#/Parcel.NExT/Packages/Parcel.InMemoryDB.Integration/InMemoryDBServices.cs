@@ -46,7 +46,7 @@ namespace Parcel.Database.InMemoryDB
                 string socketServerAddress = socketService.Start();
                 builder.AppendLine($"Socket server: {socketServerAddress}");
             }
-            if (startRESTServer)
+            if (startRESTServer && !startWebsiteServer) // Website server provides an equivalent set of APIs, so don't start RESTServer if we are going to start website server
             {
                 RESTAPIService restServerService = new(database);
                 string restServerAddress = restServerService.Start();
@@ -56,7 +56,7 @@ namespace Parcel.Database.InMemoryDB
             {
                 HTTPWebsiteService websiteService = new(database);
                 string websiteServerAddress = websiteService.Start();
-                builder.AppendLine($"Website (HTTP) server: {websiteServerAddress}");
+                builder.AppendLine($"Website (HTTP)/REST API server: {websiteServerAddress}");
 
                 ProcessHelper.OpenFileWithDefaultProgramInterpreted(websiteServerAddress);
             }
