@@ -23,15 +23,15 @@ namespace Parcel.Database.InMemoryDB.Services
             return WebServer.ServerAddress;
         }
         private EndpointDefinition[] ServerEndpoints => [
-            new(EndpointDefinition.POSTMethod, "/Welcome", HandleWelcome),
-            new(EndpointDefinition.POSTMethod, "/", HandleCommands)
+            new(EndpointDefinition.POSTMethod, "/", HandleWelcome),
+            new(EndpointDefinition.POSTMethod, "/Query", HandleCommands)
         ];
         #endregion
 
         #region Handling Routines
         private EndpointResponse HandleWelcome(Dictionary<string, string> parameters, string body)
         {
-            return "Welcome!";
+            return "Welcome! To get started, send a POST request to /Query with SQL query as plain body.";
         }
         private EndpointResponse HandleCommands(Dictionary<string, string> parameters, string body)
         {
