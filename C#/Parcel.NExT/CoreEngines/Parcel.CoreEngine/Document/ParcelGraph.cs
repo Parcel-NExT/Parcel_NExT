@@ -8,7 +8,7 @@ namespace Parcel.CoreEngine.Document
         public ParcelGraph(string name)
         {
             Name = name;
-            MainLayout = new ();
+            MainLayout = new();
             Layouts = [MainLayout];
         }
         #endregion

@@ -15,6 +15,7 @@ namespace Parcel.CoreEngine.Layouts
         #region Properties
         public ParcelNode Node { get; }
         public Vector2 Position { get; set; }
+        public Vector2 CanonicalSize { get; set; } = new Vector2(200, 100);
         #endregion
     }
 }

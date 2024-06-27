@@ -1,8 +1,7 @@
-﻿using Parcel.NExT.Interpreter.CodeGeneration;
-using System.Diagnostics;
-using static Parcel.NExT.Interpreter.CodeGeneration.CSharpScriptExecutableGenerator;
+﻿using System.Diagnostics;
+using static Parcel.NExT.CodeGen.CSharpScriptExecutableGenerator;
 
-namespace Parcel.NExT.Interpreter.UnitTests
+namespace Parcel.NExT.CodeGen.UnitTests
 {
     public class CodeGenTests
     {
@@ -16,7 +15,7 @@ namespace Parcel.NExT.Interpreter.UnitTests
             const string testOutputMessage = "Hello World!";
             string outputExecutable = new CSharpScriptExecutableGenerator().Generate("MyProgram", null, [new ScriptFile("Main", $"""
                 Console.WriteLine("{testOutputMessage}");
-                """)], tempFolder, true, out string messages);
+                """)], tempFolder, null, true, out string messages);
 
             // Assert generation is successful
             Assert.True(File.Exists(outputExecutable));

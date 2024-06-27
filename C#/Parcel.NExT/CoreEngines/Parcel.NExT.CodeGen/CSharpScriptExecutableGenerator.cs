@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Parcel.NExT.Interpreter.CodeGeneration
+namespace Parcel.NExT.CodeGen
 {
     /// <summary>
     /// Generates .exe files from C# scripts using dotnet build tool;
@@ -21,13 +21,16 @@ namespace Parcel.NExT.Interpreter.CodeGeneration
         /// <returns>
         /// Returns the path of the executable file itself, also outputs build messages as an out parameter.
         /// </returns>
-        public string Generate(string programName, string[]? dependancies, ScriptFile[] scripts, string outputFolder, bool singleFile, out string messages)
+        /// <remarks>
+        /// This does not deal with "main" (top-level) script and assumes scripts are correct; This function is not dealing with potential compilation errors.
+        /// </remarks>
+        public string Generate(string programName, string[]? dependancies, ScriptFile[] scripts, string projectOutputFolder, string? publishOutputFolder, bool singleFile, out string messages)
         {
-            string sdkVersion = GetSDKVersion();
-            if (!Regex.IsMatch(sdkVersion, @"^8\.(.+)$"))
+            string sdkVersion = GetDotnetSDKVersion();
+            if (!AssertSDKVersion(sdkVersion))
                 throw new Exception($"Invalid sdk version: {sdkVersion}");
 
-            string generatedProjectPath = Path.Combine(outputFolder, programName);
+            string generatedProjectPath = Path.Combine(projectOutputFolder, programName);
             Directory.CreateDirectory(generatedProjectPath);
 
             StringBuilder outputs = new();
@@ -43,9 +46,9 @@ namespace Parcel.NExT.Interpreter.CodeGeneration
             }
             // Publish
             if (singleFile)
-                outputs.AppendLine(RunBuildProjectSingleExecutable(generatedProjectPath));
+                outputs.AppendLine(RunBuildProjectSingleExecutable(generatedProjectPath, publishOutputFolder ?? "publish"));
             else
-                outputs.AppendLine(RunBuildProject(generatedProjectPath));
+                outputs.AppendLine(RunBuildProject(generatedProjectPath, publishOutputFolder ?? "publish"));
 
             messages = outputs.ToString().TrimEnd();
             return Path.Combine(generatedProjectPath, "publish", $"{Path.GetFileName(generatedProjectPath)}.exe"); // TODO: Fix suffix for non-windows platforms
@@ -54,15 +57,17 @@ namespace Parcel.NExT.Interpreter.CodeGeneration
 
         #region Helpers
         private const string SDKPath = "dotnet";
-        private static string GetSDKVersion()
+        public static bool AssertSDKVersion(string sdkVersion)
+            => Regex.IsMatch(sdkVersion, @"^8\.(.+)$"); // Remark: At the moment we assert version 8.+
+        public static string GetDotnetSDKVersion()
             => RunCommand(SDKPath, "--version", Directory.GetCurrentDirectory());
         private static string RunGenerateProject(string folder)
             => RunCommand(SDKPath, "new console", folder);
-        private static string RunBuildProject(string folder)
-            => RunCommand(SDKPath, "publish --output publish", folder);
-        private static string RunBuildProjectSingleExecutable(string folder)
-            => RunCommand(SDKPath, "publish --use-current-runtime --output publish -p:PublishSingleFile=true --self-contained false", folder);
-        private static string RunCommand(string program, string arguments, string workingDirectory)
+        private static string RunBuildProject(string projectFolder, string publishFolder) // TODO: Escape folder paths properly
+            => RunCommand(SDKPath, $"publish --output {publishFolder}", projectFolder);
+        private static string RunBuildProjectSingleExecutable(string projectFolder, string publishFolder) // TODO: Escape folder paths properly
+            => RunCommand(SDKPath, $"publish --use-current-runtime --output {publishFolder} -p:PublishSingleFile=true --self-contained false", projectFolder);
+        private static string RunCommand(string program, string arguments, string workingDirectory) // TODO: Unify all run process functions inside a single utility class
         {
             var process = new Process()
             {
