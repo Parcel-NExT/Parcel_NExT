@@ -7,15 +7,74 @@
   <title>In-Memory Database</title>
 
   <style>
+    /* Body formatting */
+    html, body {
+      margin: 0;
+      height: 100%;
+    }
+  </style>
+
+  <style>
+    /* Text Formatting */
+    * {
+      font-size: 100%;
+      font-family: Arial;
+      box-sizing: border-box;
+    }
+    p {
+      margin: 0;
+      padding: 0;
+    }
+    h3 {
+      font-size: medium;
+      color: rgb(84, 81, 81);
+      font-weight: bold;
+      margin: 0;
+      padding: 0.4em;
+      background-color: lightslategray;
+    }
+  </style>
+
+  <style>
+    /* Control Elements */
+    button {
+      display: inline-block;
+      color: white;
+      background-color: lightslategray;
+      border: black solid;
+      border-width: 1px;
+      cursor: pointer;
+      padding: 4px 4px;
+      margin: 0.2em 0.2em;
+      text-align: center;
+      text-decoration: none;
+    }
+    button:hover {
+      background-color: #0462aa;
+      color: white;
+    }
+    button:disabled {
+      background-color: rgb(103, 105, 107);
+      color: lightslategray;
+    }
+    textarea {
+      margin: 0.5em;
+      padding: 1em;
+    }
+  </style>
+
+  <style>
     /* Table formatting */
     table {
       font-family: arial, sans-serif;
       border-collapse: collapse;
-      width: 100%;
+      width: 95%;
+      margin-left: auto;
+      margin-right: auto;
     }
     
     td, th {
-      border: 1px solid #dddddd;
+      border: 1px solid #ffffff;
       text-align: left;
       padding: 8px;
     }
@@ -105,63 +164,70 @@
     </style>
 </head>
 
-<body>
-  <!-- TODO:
-  - [ ] Refine overall layout
-  -->
-
+<body style="display: flex; flex-direction: column; border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
   <!--Header-->
-  <div style="background-color: lightgray; width: 100%; height: 85px;">
-    <h1>Parcel InMemory Database</h1>
-    <h3>Welcome!</h3>
-    <p>This is the front-end.</p>
-  </div>
+  <strong style="color: beige; margin: 0; padding: 0.1em; background-color: rgba(62, 58, 58, 0.815);">Database Web Access Panel (Temporary Database)</strong>
   
   <!--Main-->
   <!-- TODO: How to take up "the rest of the page" entire space? -->
-  <main style="background-color: blue; width: 100%; height: 650px;">
-    <div style="background-color: red; width: 20%; height: 650px; float: left;">
-      <strong>Navigation</strong>
-      <ul class="tree">
-        <li>
-          <details open>
-            <summary>Giant planets</summary>
-            <ul>
-              <li>
-                <details>
-                  <summary>Gas giants</summary>
-                  <ul>
-                    <li>Jupiter</li>
-                    <li>Saturn</li>
-                  </ul>
-                </details>
-              </li>
-              <li>
-                <details>
-                  <summary>Ice giants</summary>
-                  <ul>
-                    <li>Uranus</li>
-                    <li>Neptune</li>
-                  </ul>
-                </details>
-              </li>
-            </ul>
-          </details>
-        </li>
-      </ul>
-      <p id="tempList">Hello World</p>
+  <main style="background-color: blue; flex-grow: 1; display: flex; flex-direction: row;">
+    <!-- Navigation Panel -->
+    <div style="background-color: rgb(217, 213, 213); width: 20%; float: left; display: flex; flex-direction: column;">
+      <!-- Tables/Views List -->
+      <div style="border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
+        <h3>Navigation</h3>
+        <ul class="tree">
+          <li>
+            <details open>
+              <summary>Giant planets</summary>
+              <ul>
+                <li>
+                  <details>
+                    <summary>Gas giants</summary>
+                    <ul>
+                      <li>Jupiter</li>
+                      <li>Saturn</li>
+                    </ul>
+                  </details>
+                </li>
+                <li>
+                  <details>
+                    <summary>Ice giants</summary>
+                    <ul>
+                      <li>Uranus</li>
+                      <li>Neptune</li>
+                    </ul>
+                  </details>
+                </li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+        <p id="tempList">Hello World</p>
+      </div>
+
+      <!-- Table Properties -->
+       <div style="flex-grow: 1; background-color: rgb(217, 213, 213); border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
+        <h3>Table Schema</h3>
+        <p>Creation schema:....</p>
+       </div>
     </div>
 
-    <div style="background-color: yellow; width:80%; height: 650px; float: left;">
-      <div style="background-color: purple; width: 100%; height: 50%; display: flex; flex-direction: column;">
-        <strong>Query</strong>
-        <textarea id="queryTextArea" style="flex-grow: 1; box-sizing: border-box;"></textarea>
-        <button type="button" onclick="submitQuery()">Submit</button>
+    <!-- Main Query/Document Panel -->
+    <div style="background-color: yellow; flex-grow: 1; display: flex; flex-direction: column;">
+      <div style="background-color: rgb(217, 213, 213); flex-grow: 1; display: flex; flex-direction: column; border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
+        <h3>Query</h3>
+        <textarea id="queryTextArea" style="flex-grow: 1; "></textarea>
+        <div>
+          <button type="button" onclick="submitQuery()" style="float: right;" disabled>Stop</button>
+          <button type="button" onclick="submitQuery()" style="float: right;">Submit</button>
+        </div>
       </div>
   
-      <div style="background-color: lightgreen; width:100%; height: 50%;">
-        <strong>Result</strong>
-        <div id="resultArea">
+      <div style="background-color: rgb(217, 213, 213); flex-grow: 1; display: flex; flex-direction: column; border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
+        <h3>Result</h3>
+        <p style="padding: 1em;">Welcome! This is the database access front-end. Enter some query to get started</p>
+        <div id="resultArea" style="flex-grow: 1; ">
           <table>
             <tr>
               <th>Company</th>
@@ -199,14 +265,20 @@
               <td>Italy</td>
             </tr>
           </table>
-        </div>        
+        </div>
+        <div>
+          <button type="button">Download CSV</button>
+        </div>
       </div>
     </div>
   </main>
 
   <!--Footer-->
-  <footer style="background-color: yellowgreen; height: 30px;">
-    <p>Parcel InMemory Database Version 0.0.1</p>
+  <footer style="background-color: rgb(90, 125, 90); margin: 0; padding: 0;">
+    <div style="margin: 0; padding: 0.1em 0.4em; color: lightgray; font-size: small;">
+      <span>Parcel InMemory Database Version 0.0.1</span>
+      <span style="float: right;">Server Status: Online</span>
+    </div>
   </footer>
 
   <!-- Script -->
