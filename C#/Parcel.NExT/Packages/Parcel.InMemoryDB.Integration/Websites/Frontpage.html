@@ -112,6 +112,12 @@
 
     <style>
       /* Navigation Formatting */
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Source: https://iamkate.com/code/tree-views/ */
       .tree{
         --spacing : 1.5rem;
         --radius  : 10px;
@@ -236,7 +242,7 @@
             </details>
           </li>
         </ul>
-        <p id="tempList">Hello World</p>
+        <p id="tempList">(Temporary) Tables List</p>
       </div>
 
       <!-- Table Properties -->
@@ -254,7 +260,7 @@
         <div>
           <!-- TODO: Implement stop button -->
           <button id="stopButton" type="button" onclick="submitQuery()" style="float: right;" disabled hidden>Stop</button>
-          <button type="button" onclick="submitQuery()" style="float: right;">Submit</button>
+          <button id="submitButton" type="button" onclick="submitQuery()" style="float: right;">Submit</button>
         </div>
       </div>
   
@@ -289,7 +295,8 @@
       document.getElementById("resultArea").innerHTML = "";
       // Update download CSV button
       document.getElementById('downloadCSVButton').disabled = true;
-      // Update stop button
+      // Update submit/stop button
+      document.getElementById('submitButton').disabled = true;
       document.getElementById('stopButton').disabled = false;
       // Update loading indicator
       document.getElementById('loadingIndicator').hidden = false;
@@ -332,7 +339,8 @@
               // Update download CSV button
               document.getElementById('downloadCSVButton').disabled = false;
 
-              // Update stop button
+              // Update submit/stop button
+              document.getElementById('submitButton').disabled = false;
               document.getElementById('stopButton').disabled = true;
             });
         });
