@@ -1,6 +1,6 @@
 # Parcel.CoreEngine
 
-CoreEngine provides the document model for Parcel NExT - i.e. basic types and protocol implementations conforming to POS and PDS, and provides graph resolving algorithms. It does not involve any runtime specific code; It does NOT provide anything related to module loading and function implementation.
+CoreEngine provides the document model for Parcel NExT - i.e. basic types and protocol implementations conforming to POS and PDS, and provides graph resolving algorithms. It does not involve any runtime specific code; It does NOT provide anything related to module loading and function implementation. On the other hand, it does provide a bunch of "helper" classes that might be used throughout other Parcel packages (We will refactor those whenever appropriate to avoid depending on Parcel.CoreEngine).
 
 Depiste being implemented in C#, this module should not be C#-tied and should be as general/abstract as possible - it mostly provides common sharable constructs that should be universal irrelevant of programming language. We try our best to eliminate external dependencies when we can!
 

@@ -1,5 +1,5 @@
 ﻿using Parcel.CoreEngine.Document;
-using Parcel.CoreEngine.SemanticTypes;
+using Parcel.CoreEngine.Primitives;
 
 namespace StandardLibrary.ParcelCore
 {
@@ -28,7 +28,7 @@ namespace StandardLibrary.ParcelCore
         #endregion
 
         #region Methods
-        public static Dictionary<string, double>? Summarize(DataGrid? data)
+        public static Dictionary<string, double>? Summarize(RawDataGrid? data)
         {
             if (data == null)
                 return null;
@@ -67,7 +67,7 @@ namespace StandardLibrary.ParcelCore
         /// <returns>
         /// Returns a new DataGrid.
         /// </returns>
-        public static ParcelPayload Query(DataGrid data, string sql)
+        public static ParcelPayload Query(RawDataGrid data, string sql)
         {
             throw new NotImplementedException();
         }

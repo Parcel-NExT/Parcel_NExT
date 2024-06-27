@@ -189,3 +189,26 @@ Applicable only to such "content" type controls (as in a PowerBI dashboard), and
 2. In presentation mode enable all kinds of auxiliary adornments like background, page atyling, page number etc. when switching between focuses areas - just like when jumping between slides.
 
 (ADO, Experiment, #New, #Important, @New Skill) Experiment with C# to Graph Conversion (using syntax analyzer), see how far we can go.
+
+(ADO, Idea) Graph Native: Map Edit
+Tags: #PENDING
+(Pending more investigation)
+One thing that is made possible in a graphical environment with code generation is we can do the following:
+```c#
+TType[] objects; // Some strongly typed objects
+Dictionary<string, string> mapping; // Some values we wish to replace
+// Pesudocode: Map(objects, "ObjectProperty", mapping)
+foreach(var o in objects)
+    o.ObjectProperty = mapping.TryGetValue(o.ObjectProperty, out string value) ? value : o.ObjectProperty;
+```
+So instead of writing that long for-loop, we could offer such a construct that implements such a functionality through automatic mechanism.
+(Idea from) A nice thing about pandas Excel, DataFrame, SQL, or Lisp is that they are "raw" or "minimal" - despite being tedious, there is ever one single data type to deal with: cell, table, and list. On the contrary, we are often facing the question whether certain operations should be implemented as Csv, Excel, Parcel DataGrid, Vector, or Matrix.
+
+(ADO, Front-end, Gospel) (Gospel RMB/tab menu feature)
+"How-to" For easy onboarding programming.
+
+(ADO) Investigate Debugging for Code Generation
+Notice we will likely need one more layer on top of syntax analysis because we need to map execution points to the node levle.
+Notes: Study Visual Studio Code's C# extension and see how it works.
+Reference:
+https://stackoverflow.com/questions/4236303/i-want-to-make-my-own-c-sharp-debugger-how-would-one-do-that-what-tools-shoul

@@ -1,5 +1,8 @@
 ﻿namespace Parcel.CoreEngine.Document
 {
+    /// <remarks>
+    /// Remark-cz: Keep it clean and implicit. No need for additional adnorments or information.
+    /// </remarks>
     public sealed class ParcelNode
     {
         #region Constructors

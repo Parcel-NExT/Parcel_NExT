@@ -823,3 +823,22 @@ Reference implementations:
 ## Glossary
 
 * POS: Parcel Open Standards, Parcel Operating System/Parcel OS (alternative name for Parcel NExT)
+
+# Fragments
+
+Pending organizing and consolidation.
+
+## Node Category (Unspecified, pending formalization)
+
+```C#
+/// <summary>
+/// Provides hints. Covers both declarative, procedural and logical use.
+/// </summary>
+public enum RuntimeNodeType
+{
+    Method = 0, // Including constructors and property getter/setter
+    Declaration = 1, // Implies constructor (types/class/struct etc.)
+    Property = 2, // Including attributes and members and properties
+    Special = 3, // E.g. for front-end use and other special use
+}
+```

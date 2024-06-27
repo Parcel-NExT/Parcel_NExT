@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Parcel.Processing</RootNamespace>
+    <Version>0.0.1</Version>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="13.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Parcel.Package.Metadata\Parcel.Package.Metadata.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ImageFilters\" />
+    <Folder Include="AIEffects\" />
+    <Folder Include="OCR\" />
+    <Folder Include="ImageRecognition\" />
+  </ItemGroup>
+
+</Project>

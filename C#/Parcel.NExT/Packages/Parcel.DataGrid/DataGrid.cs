@@ -165,8 +165,9 @@ namespace Parcel.Types
 
         #region Constructors
         public DataGrid() { }
-        public DataGrid(ExpandoObject expando)
+        public DataGrid(string name, ExpandoObject expando)
         {
+            TableName = name;
             IDictionary<string, object> dict = expando;
             foreach (string key in dict.Keys)
             {
@@ -193,6 +194,11 @@ namespace Parcel.Types
                     Columns[i].Add(noParsing ? line[i] : Preformatting(line[i]));
             }
         }
+        public DataGrid(string name, params DataColumn[] columns)
+        {
+            TableName = name;
+            Columns = [.. columns];
+        }
         public DataGrid(DataSet dataset, bool forceFirstLineAsHeader = false)
         {
             DataTable table = dataset.Tables[0];
@@ -202,6 +208,31 @@ namespace Parcel.Types
         public DataGrid(DataTable dataTable)
         {
             LoadFromDataTable(false, dataTable);
+        }
+        /// <summary>
+        /// Initialize from an array of values (double, int, string).
+        /// </summary>
+        public DataGrid(string name, IEnumerable values)
+        {
+            TableName = name;
+            DataColumn col = new("Values");
+            // TODO: Type detection and in-place type specification
+            foreach (object value in values)
+                col.Add(value.ToString());
+            Columns.Add(col);
+        }
+        #endregion
+
+        #region Generators
+        public static DataGrid GenerateRandomNumbers(int count, double min, double max)
+        {
+            Random random = new();
+            return new DataGrid(Enumerable.Range(0, count).Select(_ => random.NextDouble() * (max - min) + min));
+        }
+        public static DataGrid GenerateRandomIntegers(int count, int min, int max)
+        {
+            Random random = new();
+            return new DataGrid(Enumerable.Range(0, count).Select(_ => random.Next((int)min, (int)max)));
         }
         #endregion
 
@@ -285,7 +316,13 @@ namespace Parcel.Types
                 return $"\"{name.Trim()}\"";
             }
         }
-        internal DataTable ToDataTable()
+        public DataColumn? GetDataColumn(string headerOrIndex)
+        {
+            if (int.TryParse(headerOrIndex, out int index))
+                return Columns[index];
+            else return Columns.FirstOrDefault(c => c.Header == headerOrIndex);
+        }
+        public DataTable ToDataTable()
         {
             Dictionary<string, int> repeatNameCounter = [];
             List<string> headers = [];
@@ -343,6 +380,13 @@ namespace Parcel.Types
         #region Convinience
         public void Save(string path)
             => File.WriteAllText(path, ToCSV());
+        #endregion
+
+        #region Non-Stated Functions
+        public static DataGrid Pivot(DataGrid source, string row, string column, string value, bool subtotal, bool total, bool remaining)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Editors (In-Place Operations)
@@ -506,8 +550,24 @@ namespace Parcel.Types
         }
         #endregion
 
-        #region Routines
-        public struct ColumnInfo
+        #region Row Operations
+        public enum GrowRowBehavior
+        {
+            FillZero,
+            CopyAbove,
+            LinearInterpolate
+        }
+        /// <summary>
+        /// Grow and fill certain rows
+        /// </summary>
+        public void GrowRows(int count, GrowRowBehavior growthPattern)
+        {
+            throw new NotImplementedException();
+        }
+    #endregion
+
+    #region Routines
+    public struct ColumnInfo
         {
             public string NewKey { get; set; }
             public string OriginalHeader { get; set; }
@@ -598,6 +658,7 @@ namespace Parcel.Types
         #endregion
 
         #region Enumerable Interface
+        // TODO: Return more useful real objects (e.g. Expandos) (Or event better: dynamically construct a new type with name `<TableName>Row` - should be possible with Parcel.CoreEngine
         public IEnumerator<object[]> GetEnumerator()
         {
             for (int row = 0; row < RowCount; row++)

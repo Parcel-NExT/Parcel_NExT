@@ -83,6 +83,15 @@ namespace Parcel.CoreEngine.Helpers
         #endregion
 
         #region Command-Line String Parsing
+        public static string[] SplitArgumentsLikeCsv(this string line, char separator = ',', bool ignoreEmptyEntries = false)
+        {
+            string[] arguments = line.SplitCommandLineArguments(separator);
+
+            if (ignoreEmptyEntries)
+                return arguments.Where(a => !string.IsNullOrWhiteSpace(a)).ToArray();
+            else
+                return arguments;
+        }
         public static IEnumerable<string> SplitCSVLine(this string csvline)
             => SplitCommandLine(csvline, ',');
         public static IEnumerable<string> SplitCommandLine(this string commandLine, char delimiter = ' ')

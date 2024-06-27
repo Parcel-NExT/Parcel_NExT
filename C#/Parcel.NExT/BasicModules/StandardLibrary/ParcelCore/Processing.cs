@@ -1,5 +1,5 @@
 ﻿using Parcel.CoreEngine.Conversion;
-using Parcel.CoreEngine.SemanticTypes;
+using Parcel.CoreEngine.Primitives;
 using Parcel.NExT.Interpreter.Scripting;
 using System.Text;
 
@@ -7,7 +7,7 @@ namespace StandardLibrary.ParcelCore
 {
     public static class Processing
     {
-        public static DataGrid? ProcessRows(DataGrid? input, Text script)
+        public static RawDataGrid? ProcessRows(RawDataGrid? input, Text script)
         {
             if (input == null) return null;
             if (string.IsNullOrEmpty(input.Raw) || string.IsNullOrEmpty(script.Value))
@@ -26,7 +26,7 @@ namespace StandardLibrary.ParcelCore
                 result.AppendLine(string.Join(",", headers.Where(h => !string.IsNullOrEmpty(h)).Select(h => results[h].ToString())));
             }
 
-            return new DataGrid(result.ToString().TrimEnd());
+            return new RawDataGrid(result.ToString().TrimEnd());
 
             static Dictionary<string, object> ConvertRow(string[] names, string[] row)
             {
