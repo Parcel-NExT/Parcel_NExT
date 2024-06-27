@@ -58,8 +58,14 @@
       color: lightslategray;
     }
     textarea {
+      font-family: monospace;
+      font-size: large;
       margin: 0.5em;
       padding: 1em;
+    }
+    textarea::placeholder {
+      color: darkgray;
+      font-style: italic;
     }
   </style>
 
@@ -175,30 +181,37 @@
     <div style="background-color: rgb(217, 213, 213); width: 20%; float: left; display: flex; flex-direction: column;">
       <!-- Tables/Views List -->
       <div style="border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
-        <h3>Navigation</h3>
+        <h3>Database Navigation</h3>
         <ul class="tree">
           <li>
             <details open>
-              <summary>Giant planets</summary>
+              <summary>Tables</summary>
               <ul>
                 <li>
                   <details>
-                    <summary>Gas giants</summary>
+                    <summary>Table 1</summary>
                     <ul>
-                      <li>Jupiter</li>
-                      <li>Saturn</li>
+                      <li>Column 1</li>
+                      <li>Column 2</li>
                     </ul>
                   </details>
                 </li>
                 <li>
                   <details>
-                    <summary>Ice giants</summary>
+                    <summary>Table 2</summary>
                     <ul>
-                      <li>Uranus</li>
-                      <li>Neptune</li>
+                      <li>Column 1</li>
+                      <li>Column 2</li>
                     </ul>
                   </details>
                 </li>
+              </ul>
+            </details>
+          </li>
+          <li>
+            <details open>
+              <summary>Views</summary>
+              <ul>
               </ul>
             </details>
           </li>
@@ -217,7 +230,7 @@
     <div style="background-color: yellow; flex-grow: 1; display: flex; flex-direction: column;">
       <div style="background-color: rgb(217, 213, 213); flex-grow: 1; display: flex; flex-direction: column; border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
         <h3>Query</h3>
-        <textarea id="queryTextArea" style="flex-grow: 1; "></textarea>
+        <textarea id="queryTextArea" style="flex-grow: 1;" placeholder="Quick Reference&#10;1. CREATE Table&#10;CREATE TABLE [IF NOT EXISTS] [schema_name].table_name (&#10;	column_1 data_type PRIMARY KEY,&#10;   	column_2 data_type NOT NULL,&#10;	column_3 data_type DEFAULT 0,&#10;	table_constraints&#10;) [WITHOUT ROWID];&#10;&#10;2. SELECT Columns&#10;SELECT column_list&#10;FROM table;&#10;&#10;3. INSERT Values&#10;INSERT INTO table (column1,column2 ,..)&#10;VALUES( value1,	value2 ,...);&#10;&#10;4. UPDATE Table&#10;SET column_1 = new_value_1,&#10;    column_2 = new_value_2&#10;WHERE&#10;    search_condition &#10;ORDER column_or_expression&#10;LIMIT row_count OFFSET offset;"></textarea>
         <div>
           <button type="button" onclick="submitQuery()" style="float: right;" disabled>Stop</button>
           <button type="button" onclick="submitQuery()" style="float: right;">Submit</button>
