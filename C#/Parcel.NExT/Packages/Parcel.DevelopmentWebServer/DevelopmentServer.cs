@@ -100,8 +100,8 @@ namespace Parcel.Infrastructure
         {
             DevelopmentServer server = new(endpoints);
             if (port == null)
-                new Thread(() => server.Start(FindNextFreeTcpPort())).Start();
-            else new Thread(() => server.Start(port.Value)).Start();
+                new Thread(() => server.Start(FindNextFreeTcpPort())) { IsBackground = true }.Start();
+            else new Thread(() => server.Start(port.Value)) { IsBackground = true }.Start();
             return server;
         }
         public void Start(int port)
@@ -118,7 +118,7 @@ namespace Parcel.Infrastructure
             {
                 // Wait for connection
                 TcpClient client = server.AcceptTcpClient();
-                new Thread(() => HandleClient(client)).Start();
+                new Thread(() => HandleClient(client)) { IsBackground = true }.Start();
             }
         }
 

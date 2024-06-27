@@ -136,7 +136,7 @@ namespace Parcel.Infrastructure.Networking
                         string clientName = ReceiveMessage(client);  // The first message
                         SendMessage(client, Username);
                         Console.WriteLine($"New client is connected: {clientName}");
-                        new Thread(() => WaitForMessage(client)).Start();
+                        new Thread(() => WaitForMessage(client)) { IsBackground = true }.Start();
                     }
                 }
                 catch (Exception)
@@ -144,7 +144,7 @@ namespace Parcel.Infrastructure.Networking
                     // This happens when server is closed
                     Console.WriteLine("Server stopped.");
                 }
-            });
+            }) { IsBackground = true };
             ServiceThread.Start();
         }
         private void StartAsClient()
@@ -156,7 +156,7 @@ namespace Parcel.Infrastructure.Networking
             Socket.Connect(endpoint);
             SendMessage(Socket, Username);  // The first message
             Console.WriteLine($"Server username: {ReceiveMessage(Socket)}");
-            ServiceThread = new Thread(() => WaitForMessage(Socket));
+            ServiceThread = new Thread(() => WaitForMessage(Socket)) { IsBackground = true };
             ServiceThread.Start();
         }
         private void WaitForMessage(Socket socket)

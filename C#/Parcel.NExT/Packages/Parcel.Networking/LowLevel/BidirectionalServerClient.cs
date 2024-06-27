@@ -53,11 +53,11 @@ namespace Parcel.Infrastructure.Networking.LowLevel
                         Socket client = Socket.Accept();
                         Console.WriteLine("New client is connected.");
                         clients.Add(client);
-                        new Thread(() => ServerHandleClient(client, clientMessageHandlingCallback)).Start();
+                        new Thread(() => ServerHandleClient(client, clientMessageHandlingCallback)) { IsBackground = true }.Start();
                     }
                 }
                 catch (Exception) { }
-            }).Start();
+            }){ IsBackground = true }.Start();
             return servicePort;
 
             static void ServerHandleClient(Socket client, Action<int, byte[], Socket> callback)
@@ -83,7 +83,7 @@ namespace Parcel.Infrastructure.Networking.LowLevel
             IPEndPoint endpoint = new(entry.AddressList[0], servicePort);
             Socket = new Socket(endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             Socket.Connect(endpoint);
-            new Thread(() => ClientReceiveMessage(Socket, serverMessageCallback)).Start();
+            new Thread(() => ClientReceiveMessage(Socket, serverMessageCallback)) { IsBackground = true }.Start();
             return Socket;
 
             static void ClientReceiveMessage(Socket socket, Action<int, byte[]> callback)
