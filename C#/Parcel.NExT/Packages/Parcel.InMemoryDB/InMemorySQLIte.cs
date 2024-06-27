@@ -10,12 +10,25 @@ namespace Parcel.Database
     {
         #region Construction
         public SqliteConnection InstanceConnection { get; }
-        /// <param name="dataSource">Can be either file path to SQLite DB, a network connection, or :memory:</param>
-        public InMemorySQLIte(string dataSource = ":memory:")
+        /// <remarks>
+        /// Internal/Cross-module use only, might want to hide from Parcel front-ends.
+        /// TODO: (POS) Support hiding members.
+        /// </remarks>
+        public const string InMemorySQLiteDatabaseConnectionSourceNameToken = ":memory:";
+
+        /// <param name="dataSource">Can be either file path to SQLite DB, a network connection (socket), or :memory:</param>
+        public InMemorySQLIte(string dataSource = InMemorySQLiteDatabaseConnectionSourceNameToken)
         {
-            InstanceConnection = new($"Data Source={dataSource}");
+            InstanceConnection = new($"Data Source={dataSource}"); // Remark: Notice we do not need any other connection string for automatic database creation; Mode=ReadWrite doens't work.
             InstanceConnection.Open();
             // Disposed in disposal routines
+        }
+        /// <summary>
+        /// Provides a semantic endpoint for connecting to file/path/protocol service (socket).
+        /// </summary>
+        public static InMemorySQLIte Connect(string url)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
