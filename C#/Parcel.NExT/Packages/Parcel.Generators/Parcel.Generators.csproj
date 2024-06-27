@@ -12,4 +12,8 @@
     <PackageReference Include="RandomNameGeneratorNG" Version="2.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
+  </ItemGroup>
+
 </Project>

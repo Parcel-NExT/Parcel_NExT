@@ -1,15 +1,16 @@
-﻿namespace Parcel.Data
+﻿using Parcel.Types;
+
+namespace Parcel.Data
 {
     public static class RandomImage
     {
-        public static string GetRandomImage(uint? width = null, uint? height = null)
+        public static Image GetRandomImage(uint? width = null, uint? height = null)
         {
             string uri = GetPicsumPhotosUrl(width, height);
 
             string outputPath = GetTempImagePath();
             new HttpClient().DownloadFileTaskAsync(new Uri(uri), outputPath).GetAwaiter().GetResult();
-            return $"Image://{outputPath}";
-            
+            return new Image(outputPath);
 
             static string GetPicsumPhotosUrl(uint? width = null, uint? height = null)
             {

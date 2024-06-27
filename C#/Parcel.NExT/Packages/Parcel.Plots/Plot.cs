@@ -1,8 +1,10 @@
-﻿namespace Parcel.Graphing
+﻿using Parcel.Types;
+
+namespace Parcel.Graphing
 {
     public static class Plot
     {
-        public static string Scatter(double[] x, double[] y, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", string legend = "")
+        public static Image Scatter(double[] x, double[] y, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", string legend = "")
         {
             ScottPlot.Plot plot = new();
             var s = plot.Add.Scatter(x, y);
@@ -21,9 +23,9 @@
 
             string path = GetTempImagePath();
             plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
-            return $"Image://{path}";
+            return new Image(path);
         }
-        public static string ScatterTwoAxes(double[] x, double[] y1, double[]y2, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis1 = "", string yAxis2 = "", string legend1 = "", string legend2 = "")
+        public static Image ScatterTwoAxes(double[] x, double[] y1, double[]y2, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis1 = "", string yAxis2 = "", string legend1 = "", string legend2 = "")
         {
             ScottPlot.Plot plot = new();
             var sig1 = plot.Add.Scatter(x, y1);
@@ -56,9 +58,9 @@
 
             string path = GetTempImagePath();
             plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
-            return $"Image://{path}";
+            return new Image(path);
         }
-        public static string Line(double[] x, double[] y, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", string legend = "")
+        public static Image Line(double[] x, double[] y, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", string legend = "")
         {
             ScottPlot.Plot plot = new();
             if (!string.IsNullOrEmpty(legend))
@@ -76,9 +78,9 @@
 
             string path = GetTempImagePath();
             plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
-            return $"Image://{path}";
+            return new Image(path);
         }
-        public static string Histogram(double[] v, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", int histogramBars = 400)
+        public static Image Histogram(double[] v, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", int histogramBars = 400)
         {
             ScottPlot.Plot plot = new();
             
@@ -95,7 +97,7 @@
 
             string path = GetTempImagePath();
             plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
-            return $"Image://{path}";
+            return new Image(path);
         }
 
         private static string GetTempImagePath()
