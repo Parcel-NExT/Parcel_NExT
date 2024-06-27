@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Parcel.Types
 {
-    #region Alternative Data Grid Construct
     public class DataColumn
     {
         #region Construction
@@ -668,5 +667,4 @@ namespace Parcel.Types
             => GetEnumerator();
         #endregion
     }
-    #endregion
 }

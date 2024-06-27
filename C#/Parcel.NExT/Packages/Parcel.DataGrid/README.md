@@ -1,6 +1,6 @@
 # Parcel.DataGrid
 
-Provides Parcel NExT abstraction for DataGrid. This library is completely self-contained and has zero dependencies.
+Provides Parcel NExT abstraction for DataGrid; DataGrid is an end-user facing data structure with intuitive APIs and largely data-type agonostic handling. It also natively treats everything kind of like a CSV. This library is completely self-contained and has zero dependencies.
 
 ## Design Philosophy
 
