@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Data;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Text;
 
@@ -315,6 +316,8 @@ namespace Parcel.Types
                 return $"\"{name.Trim()}\"";
             }
         }
+        public void WriteCSV(string outputPath)
+            => File.WriteAllText(outputPath, ToCSV());
         public DataColumn? GetDataColumn(string headerOrIndex)
         {
             if (int.TryParse(headerOrIndex, out int index))

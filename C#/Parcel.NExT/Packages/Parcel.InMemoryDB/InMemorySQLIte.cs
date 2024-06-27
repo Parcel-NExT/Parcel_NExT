@@ -67,7 +67,7 @@ namespace Parcel.Database
                 if (sqlQuery.ToLower().Trim().StartsWith("select"))
                 {
                     DataTable table = new();
-                    table.Load(new SqliteCommand(formattedQuery, InstanceConnection).ExecuteReader());
+                    table.Load(new SqliteCommand(formattedQuery, InstanceConnection).ExecuteReader()); // TODO: Currently DataTable/Reader has issue dealing with null values in number columns, which SQLite handles it totally fine.
                     return table;
                 }
                 // Non-select queries have no returns
@@ -109,7 +109,7 @@ namespace Parcel.Database
                 string csv = dataTable.ToCSV();
 
                 // Import as csv
-                ImportAsTable(CSVHelper.ParseCSV(csv, out string[]? headers, true), headers, tableName, out _); // TODO: Remark-cz: Why can't we directly import from DataGrid?
+                ImportAsTable(CSVHelper.ParseCSV(csv, out string[]? headers, true), headers, tableName, out _); // TODO: Remark-cz: Why can't we directly import from DataTable?
             }
         }
         /// <summary>

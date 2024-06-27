@@ -19,7 +19,7 @@
             }
         }
 
-        public static IEnumerable<string[]> ParseCSV(string text, out string[]? headers, bool containsHeader = true)
+        public static IEnumerable<string[]> ParseCSV(this string text, out string[]? headers, bool containsHeader = true)
         {
             string[] lines = text.SplitLines(true);
             if (containsHeader)

@@ -312,11 +312,16 @@
         .then(response => response.text())
         .then((response) => {
           const csv = response.trimEnd();
+          // TODO: Fix issue when there is only a single line
           if (csv)  // Populate table
           {
             // Update loading indicator
             document.getElementById('loadingIndicator').hidden = true;
-            processDataAsObj(csv);
+
+            if (csv.includes('\n'))
+              processDataAsObj(csv);
+            else
+              processData(csv);
           }
 
           // Update performance
