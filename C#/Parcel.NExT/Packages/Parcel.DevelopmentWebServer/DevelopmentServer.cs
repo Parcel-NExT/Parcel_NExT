@@ -110,7 +110,8 @@ namespace Parcel.Infrastructure
             server.Start();
 
             Port = port;
-            ServerAddress = $"http://localhost:{port}";
+            string[] addresses = [..GetLocalIPAddresses(), .. Dns.Resolve("localhost").AddressList.Select(addr => addr.MapToIPv4().ToString())];
+            ServerAddress = $"{string.Join(";", addresses.Distinct().Select(addr => $"http://{addr}:{port}"))};http://localhost:{port}"; // TODO: Show actual IP address
 
             // Main server loop
             while (true) // TODO: Remark: At the moment we are handling in disconnected mode
@@ -287,6 +288,13 @@ namespace Parcel.Infrastructure
             int port = ((IPEndPoint)listener.LocalEndpoint).Port;
             listener.Stop();
             return port;
+        }
+        public static IEnumerable<string> GetLocalIPAddresses()
+        {
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    yield return ip.ToString();
         }
         #endregion
     }

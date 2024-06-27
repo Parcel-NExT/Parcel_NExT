@@ -58,7 +58,7 @@ namespace Parcel.Database.InMemoryDB
                 string websiteServerAddress = websiteService.Start();
                 builder.AppendLine($"Website (HTTP)/REST API server: {websiteServerAddress}");
 
-                ProcessHelper.OpenFileWithDefaultProgramInterpreted(websiteServerAddress);
+                ProcessHelper.OpenFileWithDefaultProgramInterpreted(websiteServerAddress.Split(';').Last());
             }
 
             return builder.ToString().TrimEnd();
