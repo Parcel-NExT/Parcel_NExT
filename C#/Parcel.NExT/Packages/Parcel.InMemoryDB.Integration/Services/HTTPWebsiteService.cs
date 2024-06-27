@@ -22,6 +22,8 @@ namespace Parcel.Database.InMemoryDB.Services
             new(EndpointDefinition.POSTMethod, "/Query", HandleCommands),
             
             new(EndpointDefinition.GETMethod, "/Tables", GetTables),
+            new(EndpointDefinition.GETMethod, "/Download", GetDownload),
+            new(EndpointDefinition.GETMethod, "/Performance", GetPerformanceMeasure)
         ];
         #endregion
 

@@ -75,6 +75,7 @@
       font-family: arial, sans-serif;
       border-collapse: collapse;
       width: 95%;
+      margin-top: 1em;
       margin-left: auto;
       margin-right: auto;
     }
@@ -232,55 +233,19 @@
         <h3>Query</h3>
         <textarea id="queryTextArea" style="flex-grow: 1;" placeholder="Quick Reference&#10;1. CREATE Table&#10;CREATE TABLE [IF NOT EXISTS] [schema_name].table_name (&#10;	column_1 data_type PRIMARY KEY,&#10;   	column_2 data_type NOT NULL,&#10;	column_3 data_type DEFAULT 0,&#10;	table_constraints&#10;) [WITHOUT ROWID];&#10;&#10;2. SELECT Columns&#10;SELECT column_list&#10;FROM table;&#10;&#10;3. INSERT Values&#10;INSERT INTO table (column1,column2 ,..)&#10;VALUES( value1,	value2 ,...);&#10;&#10;4. UPDATE Table&#10;SET column_1 = new_value_1,&#10;    column_2 = new_value_2&#10;WHERE&#10;    search_condition &#10;ORDER column_or_expression&#10;LIMIT row_count OFFSET offset;"></textarea>
         <div>
-          <button type="button" onclick="submitQuery()" style="float: right;" disabled>Stop</button>
+          <!-- TODO: Implement stop button -->
+          <button id="stopButton" type="button" onclick="submitQuery()" style="float: right;" disabled hidden>Stop</button>
           <button type="button" onclick="submitQuery()" style="float: right;">Submit</button>
         </div>
       </div>
   
       <div style="background-color: rgb(217, 213, 213); flex-grow: 1; display: flex; flex-direction: column; border-style: solid; border-width: 1px; border-color: rgb(84, 81, 81);">
         <h3>Result</h3>
-        <p style="padding: 1em;">Welcome! This is the database access front-end. Enter some query to get started</p>
         <div id="resultArea" style="flex-grow: 1; ">
-          <table>
-            <tr>
-              <th>Company</th>
-              <th>Contact</th>
-              <th>Country</th>
-            </tr>
-            <tr>
-              <td>Alfreds Futterkiste</td>
-              <td>Maria Anders</td>
-              <td>Germany</td>
-            </tr>
-            <tr>
-              <td>Centro comercial Moctezuma</td>
-              <td>Francisco Chang</td>
-              <td>Mexico</td>
-            </tr>
-            <tr>
-              <td>Ernst Handel</td>
-              <td>Roland Mendel</td>
-              <td>Austria</td>
-            </tr>
-            <tr>
-              <td>Island Trading</td>
-              <td>Helen Bennett</td>
-              <td>UK</td>
-            </tr>
-            <tr>
-              <td>Laughing Bacchus Winecellars</td>
-              <td>Yoshi Tannamuri</td>
-              <td>Canada</td>
-            </tr>
-            <tr>
-              <td>Magazzini Alimentari Riuniti</td>
-              <td>Giovanni Rovelli</td>
-              <td>Italy</td>
-            </tr>
-          </table>
+          <p style="padding: 1em;">Welcome! This is the database access front-end. Enter some query to get started.</p>
         </div>
         <div>
-          <button type="button">Download CSV</button>
+          <button id="downloadCSVButton" type="button" onclick="download()" disabled>Download CSV</button>
         </div>
       </div>
     </div>
@@ -296,8 +261,14 @@
 
   <!-- Script -->
    <script>
+    // Button behaviors
     async function submitQuery() {
       const text = document.getElementById("queryTextArea").value;
+
+      // Update download CSV button
+      document.getElementById('downloadCSVButton').disabled = true;
+      // Update stop button
+      document.getElementById('stopButton').disabled = false;
       
       // Update query result
       fetch("/Query", {
@@ -310,7 +281,34 @@
         .then(response => response.text())
         .then((response) => {
           const csv = response.trimEnd();
-          processDataAsObj(csv);
+          if (csv)  // Populate table
+            processDataAsObj(csv);
+          else  // Hide table
+            document.getElementById("resultArea").innerHTML = "";
+
+          // Update performance
+          fetch("/Performance", {
+            method: "GET",
+          })
+            .then(response => response.text())
+            .then((response) => {
+              const text = response.trimEnd();
+
+              // Auxiliary GUI updates
+              // Update performance stats
+              const paragraph = document.createElement('paragraph');
+              paragraph.style.fontSize = "small";
+              paragraph.style.margin = "1em";
+              paragraph.style.padding = "0.4em";
+              paragraph.appendChild(document.createTextNode(text));
+              document.getElementById('resultArea').appendChild(paragraph);
+
+              // Update download CSV button
+              document.getElementById('downloadCSVButton').disabled = false;
+
+              // Update stop button
+              document.getElementById('stopButton').disabled = true;
+            });
         });
 
       // Update tables list
@@ -321,6 +319,17 @@
         .then((response) => {
           const csv = response.trimEnd();
           document.getElementById('tempList').innerHTML = csv;
+        });
+    }
+    async function download() {
+      // Try to download csv
+      fetch("/Download", {
+        method: "GET",
+      })
+        .then(response => response.blob())
+        .then((blob) => {
+          var file = window.URL.createObjectURL(blob);
+          window.location.assign(file);
         });
     }
    </script>
@@ -336,7 +345,7 @@
     }
 
     function drawOutput(lines){
-      //Clear previous data
+      // Clear previous data
       document.getElementById("resultArea").innerHTML = "";
       var table = document.createElement("table");
       for (var i = 0; i < lines.length; i++) {

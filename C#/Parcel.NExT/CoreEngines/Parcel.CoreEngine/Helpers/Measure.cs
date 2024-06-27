@@ -2,19 +2,20 @@
 
 namespace Parcel.CoreEngine.Helpers
 {
-    public class Measure : IDisposable
+    public sealed class Measure : IDisposable
     {
         private readonly Stopwatch Timer;
-        public Measure()
+        private readonly Action<TimeSpan>? MeasureFinishCallback;
+        public Measure(Action<TimeSpan>? callback)
         {
             Timer = new Stopwatch();
             Timer.Start();
+            MeasureFinishCallback = callback;
         }
         public void Dispose()
         {
             Timer.Stop();
-            TimeSpan timeTaken = Timer.Elapsed;
-            Console.WriteLine("Time taken: " + timeTaken.ToString(@"m\:ss\.fff"));
+            MeasureFinishCallback?.Invoke(Timer.Elapsed);
         }
     }
 }
