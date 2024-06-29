@@ -7,6 +7,9 @@ namespace Parcel.Types
         public byte Red {  get; set; }
         public byte Green {  get; set; }
         public byte Blue {  get; set; }
+        /// <summary>
+        /// Opacity (Transparency), higher value means more opaque.
+        /// </summary>
         public byte Alpha {  get; set; }
 
         public Pixel(){ }
@@ -33,7 +36,7 @@ namespace Parcel.Types
         /// <remarks>
         /// Row-major, aka. Pixels[Row][Col] or Pixels[Height][Width]
         /// </remarks>
-        private Pixel[][]? Pixels { get; set; }
+        public Pixel[][]? Pixels { get; private set; }
         /// <summary>
         /// Use this to save having to load the file into memory.
         /// </summary>
@@ -47,12 +50,12 @@ namespace Parcel.Types
         #region Constructors
         public Image()
             => Pixels = AllocatePixles(0, 0);
-        public Image(string pngFile, bool doNotLoad = true)
+        public Image(string pngFile, bool doNotLoad = false) // Should be true
         {
             if (doNotLoad)
                 FileReference = pngFile;
             else
-                Pixels = LoadFile(pngFile);
+                Load(pngFile);
         }
         public Image(int width, int height)
             => Pixels = AllocatePixles(width, height);
@@ -69,9 +72,27 @@ namespace Parcel.Types
 
         #region Methods
         public void Load(string path)
-            => throw new NotImplementedException();
+        {
+            Pixels = LoadFile(path, out int width, out int height);
+            Width = width;
+            Height = height;
+        }
+        public static Image LoadFrom(string path)
+        {
+            return new Image(path, false);
+        }
         public void Save(string path)
-            => throw new NotImplementedException();
+        {
+            if (ShouldLoadFileDirectly)
+                File.Copy(FileReference!, path);
+            else
+            {
+                PngBuilder builder = ConvertToBigGustave(Pixels, Width, Height);
+                FileStream fileStream = File.Create(path);
+                builder.Save(fileStream);
+                fileStream.Close();
+            }
+        }
         #endregion
 
         #region Helpers
@@ -97,13 +118,40 @@ namespace Parcel.Types
             }
             return pixels;
         }
-        private static Pixel[][] LoadFile(string pngFile)
+        private static Pixel[][] LoadFile(string pngFile, out int width, out int height)
         {
             using FileStream stream = File.OpenRead(pngFile);
             Png image = Png.Open(stream);
 
-            int width = image.Width;
-            int height = image.Height;
+            return ConvertFromBigGustavePng(out width, out height, image);
+        }
+        private static PngBuilder ConvertToBigGustave(Pixel[][] pixels, int width, int height)
+        {
+            PngBuilder builder = PngBuilder.Create(width, height, true);
+
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    Pixel original = pixels[row][col];
+                    BigGustave.Pixel pixel = new(original.Red, original.Green, original.Blue, original.Alpha, false);
+                    builder.SetPixel(pixel, col, row);
+                }
+            }
+            return builder;
+        }
+        private static Png ConvertToBigGustavePng(Pixel[][] pixels, int width, int height)
+        {
+            PngBuilder builder = ConvertToBigGustave(pixels, width, height);
+
+            using MemoryStream memory = new();
+            builder.Save(memory);
+            return Png.Open(memory);
+        }
+        private static Pixel[][] ConvertFromBigGustavePng(out int width, out int height, Png image)
+        {
+            width = image.Width;
+            height = image.Height;
             Pixel[][] pixels = AllocatePixles(width, height);
 
             for (int row = 0; row < height; row++)
