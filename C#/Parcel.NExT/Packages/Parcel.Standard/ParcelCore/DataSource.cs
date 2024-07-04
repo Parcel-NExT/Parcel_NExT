@@ -1,6 +1,6 @@
 ﻿using Parcel.CoreEngine.Primitives;
 
-namespace StandardLibrary.ParcelCore
+namespace Parcel.Standard.ParcelCore
 {
     public static class DataSource
     {

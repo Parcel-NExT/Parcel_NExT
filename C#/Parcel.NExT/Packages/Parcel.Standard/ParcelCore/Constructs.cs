@@ -1,7 +1,7 @@
 ﻿using Parcel.CoreEngine.Primitives;
 using Parcel.NExT.Interpreter.Scripting;
 
-namespace StandardLibrary.ParcelCore
+namespace Parcel.Standard.ParcelCore
 {
     public static class Constructs
     {

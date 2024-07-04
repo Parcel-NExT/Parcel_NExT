@@ -1,4 +1,4 @@
-﻿namespace StandardLibrary.DependencyFree
+﻿namespace Parcel.Standard.DependencyFree
 {
     /// <summary>
     /// A demo InMemoryDB/python Pandas like construct - through a sequence of graph node connections, we can add and process data.

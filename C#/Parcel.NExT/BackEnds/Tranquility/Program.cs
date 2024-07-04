@@ -21,7 +21,7 @@ namespace Tranquility
         /// <summary>
         /// Backend specific runtime initialization behavior
         /// </summary>
-        public string[] StandardAssemblies { get; set; } = [nameof(StandardLibrary)];
+        public string[] StandardAssemblies { get; set; } = ["Parcel.Standard"];
         #endregion
     }
 

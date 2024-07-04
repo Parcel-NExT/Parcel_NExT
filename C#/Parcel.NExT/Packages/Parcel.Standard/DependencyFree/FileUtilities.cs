@@ -1,4 +1,4 @@
-﻿namespace StandardLibrary.DependencyFree
+﻿namespace Parcel.Standard.DependencyFree
 {
     public static class FileUtilities
     {

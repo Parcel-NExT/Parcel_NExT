@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BasicModules\StandardLibrary\StandardLibrary.csproj" />
     <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine.Service\Parcel.CoreEngine.Service.csproj" />
     <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\..\Packages\Parcel.Standard\Parcel.Standard.csproj" />
   </ItemGroup>
 
 </Project>

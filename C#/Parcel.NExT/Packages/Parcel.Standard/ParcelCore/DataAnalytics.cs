@@ -1,7 +1,7 @@
 ﻿using Parcel.CoreEngine.Document;
 using Parcel.CoreEngine.Primitives;
 
-namespace StandardLibrary.ParcelCore
+namespace Parcel.Standard.ParcelCore
 {
     /// <summary>
     /// A very basic module that exports some very basic operations

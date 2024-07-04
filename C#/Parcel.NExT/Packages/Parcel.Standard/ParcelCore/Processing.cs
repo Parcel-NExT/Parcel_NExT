@@ -3,7 +3,7 @@ using Parcel.CoreEngine.Primitives;
 using Parcel.NExT.Interpreter.Scripting;
 using System.Text;
 
-namespace StandardLibrary.ParcelCore
+namespace Parcel.Standard.ParcelCore
 {
     public static class Processing
     {
