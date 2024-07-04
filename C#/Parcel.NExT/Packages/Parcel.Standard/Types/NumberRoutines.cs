@@ -1,13 +1,13 @@
-﻿namespace Parcel.Standard.DependencyFree
+﻿namespace Parcel.Standard.Types
 {
     /// <summary>
-    /// Exposes double point numerical math.
+    /// Exposes double-point value type, provides all functions related to scalar numerical math.
     /// Includes basic C# operations plus everything from System.Math
     /// </summary>
     /// <remarks>
     /// For culture reasons, we are not simply naming arguments as a, b, or number1, number 2, etc.
     /// </remarks>
-    public static class BasicMath
+    public static class NumberRoutines
     {
         #region Basic Operations
         public static double Add(double summand1, double summand2)

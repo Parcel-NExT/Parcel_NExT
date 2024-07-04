@@ -170,7 +170,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.FileSystem", "Packag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Standard", "Packages\Parcel.Standard\Parcel.Standard.csproj", "{3E3C621A-0D90-4908-94B0-D4F32E607DC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Markdown", "Packages\Parcel.Markdown\Parcel.Markdown.csproj", "{5BECE628-FC0E-4FF5-AF9D-AAABB2D627BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Markdown", "Packages\Parcel.Markdown\Parcel.Markdown.csproj", "{5BECE628-FC0E-4FF5-AF9D-AAABB2D627BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.YahooFinance", "Packages\Parcel.YahooFinance\Parcel.YahooFinance.csproj", "{B3149EAF-4532-48E3-A3AD-8BE4BDD357C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -454,6 +456,10 @@ Global
 		{5BECE628-FC0E-4FF5-AF9D-AAABB2D627BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BECE628-FC0E-4FF5-AF9D-AAABB2D627BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BECE628-FC0E-4FF5-AF9D-AAABB2D627BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3149EAF-4532-48E3-A3AD-8BE4BDD357C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3149EAF-4532-48E3-A3AD-8BE4BDD357C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3149EAF-4532-48E3-A3AD-8BE4BDD357C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3149EAF-4532-48E3-A3AD-8BE4BDD357C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -535,6 +541,7 @@ Global
 		{85706013-042C-48DD-992A-4E1A07306CAF} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{3E3C621A-0D90-4908-94B0-D4F32E607DC5} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{5BECE628-FC0E-4FF5-AF9D-AAABB2D627BC} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{B3149EAF-4532-48E3-A3AD-8BE4BDD357C1} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}
