@@ -1,7 +1,11 @@
 # Parcel Standard Libraries
 
+Tags: POS
+
 > Everything is a Node!
 > Everything is functional (and likely pure)!
+
+(Do we want to put this as part of POS proper?)
 
 <!-- (Remark) This is function library - it doesn't concern with Parcel constructions, both in terms of front-end and backend; We may however expose certain constructs through PSL (e.g. we could expose the Number type here) -->
 <!-- Consider moving this as part of Parcel Open Standard Proper, and enumerate only the libraries in Wiki, not the intention/specifications. -->
