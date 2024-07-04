@@ -9,7 +9,7 @@ namespace Parcel.Neo.Base.Toolboxes.FileSystem
         {
             if (string.IsNullOrWhiteSpace(inputFolder))
                 throw new ArgumentException("Input folder is empty.");
-            if (Directory.Exists(inputFolder))
+            if (!Directory.Exists(inputFolder))
                 throw new ArgumentException("Input folder doesn't exist.");
 
             string[] files = Directory.GetFiles(inputFolder);

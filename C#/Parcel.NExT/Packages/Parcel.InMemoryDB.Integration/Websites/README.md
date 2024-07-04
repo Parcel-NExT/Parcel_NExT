@@ -18,6 +18,8 @@ Make sure no matter how simple it is, it looks complete, and professional and tr
 - [ ] Avoid any obvious "incompleteness/novice" problems: 1) Weird color, 2) Unreadable fonts, 3) Lack of proper margin and spacing, 4) No responsive contexts when executing operations. 5) No spending at least 48 hours just on drsign, styling, and making it looking good.
 - [x] Query execution time measurement and reporting
 - [ ] Fix .SVG issue
+- [ ] Add Readonly mode option (can be implemented as command restrictions with custom parsing - just don't allow any command other than SELECT)
+    - [ ] Provide mode indication on the GUI
 
 Won't do:
 
