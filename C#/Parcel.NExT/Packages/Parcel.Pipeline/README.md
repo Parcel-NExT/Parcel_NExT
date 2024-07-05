@@ -1,13 +1,34 @@
 # Parcel.Pipeline
 
-Notice this package must be AOT.
-Provide streamlined process management, specifically for CLI usage. Run CLI commands perl style. Streamlines running command and gets output as string. A cool feature is the chaining operator `|` that provides Elixir like data transformation syntax.
+Provide streamlined process management, specifically for CLI usage. Run CLI commands perl style. Streamlines running command and gets output as string. A cool feature (for API use) is the chaining operator `|` that provides Elixir like data transformation syntax. Notice this package must be AOT. A nice thing about this package is that it's very easy to embed (besides being AOT and depends on no fancy .Net language features other than basic operating system IO and process management) - compared to the much more bulky PowerShell language.
+
+## Usages
+
+### API Usage
 
 Provides:
 
 * `string Run(string, string)`
 * `string Run(string, string[])`
 * `string Run(string, Dictionary<string, string>)`
+
+## Shell Usage ($PSL)
+
+PENDING DOC.
+
+### Pseudo-Linux commands
+
+Provided for portability.
+
+### Pseudo-PowerShell commands
+
+Counterparts for Pseudo-Linux commands.
+
+* Set-Location
+
+### Limits
+
+* Variable interpolation in the middle of argument is not supported yet.
 
 ## TODO
 

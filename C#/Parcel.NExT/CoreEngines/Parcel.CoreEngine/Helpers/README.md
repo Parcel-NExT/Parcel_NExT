@@ -1,0 +1,3 @@
+# Helpers
+
+Because those codes are used so much and we want to avoid dependency on Parcel.CoreEngine, we could consider exposing this as share code library - with one pitfall that all libraries that refer to this shared library will have an exact copy of the same code, which is even worse than just depending on Parcel.CoreEngine. So don't; Just let whoever needs CSV etc. helpers depend on Parcel.CoreEngine directly.

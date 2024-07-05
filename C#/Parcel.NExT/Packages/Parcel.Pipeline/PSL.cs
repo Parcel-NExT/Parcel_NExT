@@ -44,13 +44,23 @@ namespace Parcel.Processing.Utilities
             input = input.Trim();
             if (input.StartsWith('#')) return;
 
+            // Handle variable creation
+            string[] arguments = input.SplitCommandLine().ToArray();
+            if (arguments.Length == 3 && arguments.First().Equals("set", StringComparison.CurrentCultureIgnoreCase))
+                Variables[arguments[1]] = arguments[2];
+            if (arguments.Length == 3 && arguments[0].StartsWith('$') && arguments[1].Equals("=", StringComparison.CurrentCultureIgnoreCase))
+                Variables[arguments[0].TrimStart('$')] = arguments[2];
+            // Handle variable printing
+            if (arguments.Length == 1 && arguments[0].StartsWith('$'))
+                Console.WriteLine(Variables.TryGetValue(arguments[0].TrimStart('$'), out string? value) ? value : string.Empty);
+
             // Handle commands
-            HandleCommand(input.SplitCommandLine().Select(ParseVariable).ToArray());
+            HandleCommand(arguments.Select(ParseVariable).ToArray(), input);
         }
         #endregion
 
         #region Routines
-        private void HandleCommand(string[] arguments)
+        private void HandleCommand(string[] arguments, in string original)
         {
             if (arguments.Length == 0) return;
             string command = arguments.First();
@@ -61,7 +71,32 @@ namespace Parcel.Processing.Utilities
                 case "exit":
                     IsFinished = true;
                     break;
+                case "cd":
+                    CurrentWorkingDirectory = arguments.Skip(1).FirstOrDefault() ?? CurrentWorkingDirectory;
+                    break;
+                case "ls":
+                    int maxWidth = Directory.EnumerateFileSystemEntries(CurrentWorkingDirectory).Max(f => Path.GetFileName(f).Length);
+                    string[] entries = [.. Directory.EnumerateDirectories(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f)), .. Directory.EnumerateFiles(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f))];
+                    foreach (string entry in entries)
+                        Console.WriteLine($"{Path.GetFileName(entry).PadRight(maxWidth)} {(Directory.Exists(entry) ? $"Folder (x{Directory.EnumerateFileSystemEntries(entry).Count()})" : $"{new FileInfo(entry).Length:N2} bytes")}");
+                    break;
+                case "cat":
+                    string? file = arguments.Skip(1).FirstOrDefault();
+                    if (File.Exists(file))
+                    {
+                        string extension = Path.GetExtension(file).ToLower().Trim();
+                        if (new FileInfo(file).Length > 10 * 1024 * 1024) // Limit 10Mb
+                            Console.WriteLine("File size exceeds 10Mb");
+                        else if (new string[] { ".exe", ".dll", ".mp3", ".avi", ".mkv", ".wav", ".jpg", ".png", ".gif", ".obj", ".fbx" }.Contains(extension))
+                            Console.WriteLine("Cannot view binary file.");
+                        else Console.WriteLine(File.ReadAllText(file));
+                    }
+                    break;
+                case "echo":
+                    Console.WriteLine(arguments.Skip(1).FirstOrDefault() ?? string.Empty);
+                    break;
                 default:
+                    Console.WriteLine($"Unrecognized command: {command} (In {original})");
                     break;
             }
 
