@@ -32,6 +32,7 @@ namespace Parcel.CoreEngine.Helpers
         }
         /// <summary>
         /// Works both on command line arguments and csv lines (without line escaping support)
+        /// TODO: Is this functionally equivalent to <seealso cref="SplitCommandLine(string, char)"/>? If so, we should merge the two.
         /// </summary>
         /// <remarks>
         /// In some codes I authored before, this is also called "SplitArgumentsLikeCsv"
@@ -67,7 +68,7 @@ namespace Parcel.CoreEngine.Helpers
             }
             if (current.Length != 0)
                 parameters.Add(current.ToString());
-            return parameters.ToArray();
+            return [.. parameters];
         }
         public static string Camelize(this string original)
         {

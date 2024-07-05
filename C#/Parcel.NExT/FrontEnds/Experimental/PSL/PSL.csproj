@@ -7,6 +7,14 @@
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <RootNamespace>ProcessScriptingLanguage</RootNamespace>
+    <AssemblyName>PSL</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\..\..\Packages\Parcel.Pipeline\Parcel.Pipeline.csproj" />
+    <ProjectReference Include="..\..\..\Packages\Parcel.Standard\Parcel.Standard.csproj" />
+  </ItemGroup>
 
 </Project>

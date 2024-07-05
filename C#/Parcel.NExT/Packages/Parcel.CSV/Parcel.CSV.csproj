@@ -9,4 +9,8 @@
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+  </ItemGroup>
+
 </Project>

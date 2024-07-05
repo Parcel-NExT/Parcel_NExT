@@ -1,5 +1,6 @@
 # Parcel.Pipeline
 
+Notice this package must be AOT.
 Provide streamlined process management, specifically for CLI usage. Run CLI commands perl style. Streamlines running command and gets output as string. A cool feature is the chaining operator `|` that provides Elixir like data transformation syntax.
 
 Provides:
@@ -16,7 +17,7 @@ Provides:
 
 Versions:
 
-* v0.0.1/v0.1.0: (Pure) Pre-Alpha
+* v0.0.1/v0.1.0: (Pure) Pre-Alpha.
 * v0.2.0: (Pure) Support standard input redirect from string; Implement Pipeline Fluent API.
 * v0.3.0: (Pure) Implement chaining/pipeline operator `|`; Add doc.
-* v0.4.0: (Parcel NExT)
+* v0.4.0: (Parcel NExT) $PSL support.

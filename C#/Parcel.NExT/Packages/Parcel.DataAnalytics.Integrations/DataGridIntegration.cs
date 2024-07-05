@@ -1,4 +1,4 @@
-﻿using Parcel.CoreEngine.Helpers;
+﻿using Parcel.FileFormats;
 using Parcel.Types;
 
 namespace Parcel.Integration
@@ -10,7 +10,7 @@ namespace Parcel.Integration
     {
         #region Construction
         public static DataGrid InitializeDataGridFromCsvText(string tableName, string csvText)
-            => new(tableName, csvText.ParseCSV(out string[]? headers, true), headers);
+            => new(tableName, CSV.Parse(csvText, out string[]? headers, true), headers);
         #endregion
     }
 }
