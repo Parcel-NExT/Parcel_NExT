@@ -21,7 +21,7 @@ namespace ProcessScriptingLanguage
             while (true)
             {
                 PrintPromptSymbol();
-                string? input = ReadLineOrEsc(history);
+                string? input = Console.ReadLine(); // TODO: Enable command history by replacing Console.ReadLine() with ReadLineOrEsc(). At the moment ReadLineOrEsc() is not ready to be used due to lack of proper left/right arrow and improper buffer handling.
 
                 // Process
                 context.Feed(input);

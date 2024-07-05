@@ -11,7 +11,15 @@ namespace Parcel.Processing.Utilities
     {
         #region Properties
         private const char VariableSymbol = '$';
-        public string CurrentWorkingDirectory { get; private set; }
+        private string _currentWorkingDirectory;
+        public string CurrentWorkingDirectory { 
+            get => _currentWorkingDirectory; 
+            private set
+            {
+                _currentWorkingDirectory = value;
+                Directory.SetCurrentDirectory(value);
+            }
+        }
         public Dictionary<string, string> Variables { get; }
         #endregion
 
@@ -79,16 +87,23 @@ namespace Parcel.Processing.Utilities
             {
                 case "exit":
                     IsFinished = true;
-                    break;
+                    return;
                 case "cd":
-                    CurrentWorkingDirectory = arguments.Skip(1).FirstOrDefault() ?? CurrentWorkingDirectory;
-                    break;
+                    string newFolder = Path.GetFullPath(arguments.Skip(1).FirstOrDefault() ?? CurrentWorkingDirectory); // This way we support ../ and ./
+                    if (Directory.Exists(newFolder))
+                        CurrentWorkingDirectory = newFolder;
+                    else
+                        Console.WriteLine($"Folder {newFolder} doesn't exist.");
+                    return;
+                case "pwd":
+                    Console.WriteLine(CurrentWorkingDirectory);
+                    return;
                 case "ls":
                     int maxWidth = Directory.EnumerateFileSystemEntries(CurrentWorkingDirectory).Max(f => Path.GetFileName(f).Length);
                     string[] entries = [.. Directory.EnumerateDirectories(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f)), .. Directory.EnumerateFiles(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f))];
                     foreach (string entry in entries)
                         Console.WriteLine($"{Path.GetFileName(entry).PadRight(maxWidth)} {(Directory.Exists(entry) ? $"Folder (x{Directory.EnumerateFileSystemEntries(entry).Count()})" : $"{new FileInfo(entry).Length:N2} bytes")}");
-                    break;
+                    return;
                 case "cat":
                     string? file = arguments.Skip(1).FirstOrDefault();
                     if (File.Exists(file))
@@ -100,10 +115,10 @@ namespace Parcel.Processing.Utilities
                             Console.WriteLine("Cannot view binary file.");
                         else Console.WriteLine(File.ReadAllText(file));
                     }
-                    break;
+                    return;
                 case "echo":
                     Console.WriteLine(arguments.Skip(1).FirstOrDefault() ?? string.Empty);
-                    break;
+                    return;
                 default:
                     break;
             }
