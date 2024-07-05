@@ -11,11 +11,11 @@ namespace Parcel.Processing.Utilities
         /// <summary>
         /// Return result from previous invokation
         /// </summary>
-        public string Content { get; set; }
+        public string? Content { get; set; }
         /// <summary>
         /// Construct a new pipeline with content at this step
         /// </summary>
-        public Pipeline(string content = null)
+        public Pipeline(string? content = null)
         {
             Content = content;
         }

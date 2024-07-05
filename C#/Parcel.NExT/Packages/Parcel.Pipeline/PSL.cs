@@ -44,23 +44,32 @@ namespace Parcel.Processing.Utilities
             input = input.Trim();
             if (input.StartsWith('#')) return;
 
-            // Handle variable creation
             string[] arguments = input.SplitCommandLine().ToArray();
+            // Handle variable creation
             if (arguments.Length == 3 && arguments.First().Equals("set", StringComparison.CurrentCultureIgnoreCase))
+            {
                 Variables[arguments[1]] = arguments[2];
+                return;
+            }
             if (arguments.Length == 3 && arguments[0].StartsWith('$') && arguments[1].Equals("=", StringComparison.CurrentCultureIgnoreCase))
+            {
                 Variables[arguments[0].TrimStart('$')] = arguments[2];
+                return;
+            }
             // Handle variable printing
             if (arguments.Length == 1 && arguments[0].StartsWith('$'))
+            {
                 Console.WriteLine(Variables.TryGetValue(arguments[0].TrimStart('$'), out string? value) ? value : string.Empty);
+                return;
+            }
 
             // Handle commands
-            HandleCommand(arguments.Select(ParseVariable).ToArray(), input);
+            HandleCommand(arguments.Select(ParseVariable).ToArray());
         }
         #endregion
 
         #region Routines
-        private void HandleCommand(string[] arguments, in string original)
+        private void HandleCommand(string[] arguments)
         {
             if (arguments.Length == 0) return;
             string command = arguments.First();
@@ -96,12 +105,24 @@ namespace Parcel.Processing.Utilities
                     Console.WriteLine(arguments.Skip(1).FirstOrDefault() ?? string.Empty);
                     break;
                 default:
-                    Console.WriteLine($"Unrecognized command: {command} (In {original})");
                     break;
             }
 
-            // Handle as program
-            // TODO: ....
+            // Handle as ordinary program
+            string output = string.Empty;
+            try
+            {
+                if (arguments.Length == 1)
+                    output = PipelineUtilities.Run(command);
+                else
+                    output = PipelineUtilities.Run(command, arguments.Skip(1).ToArray()); // TODO: Handle REPL cases
+                if (!string.IsNullOrEmpty(output))
+                    Console.WriteLine(output);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
         private string ParseVariable(string statement)
         {

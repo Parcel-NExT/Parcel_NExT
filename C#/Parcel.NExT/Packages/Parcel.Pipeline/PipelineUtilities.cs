@@ -1,32 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Parcel.CoreEngine.Helpers;
+using System.Diagnostics;
 
 namespace Parcel.Processing.Utilities
 {
-    /// <summary>
-    /// Helpers in identifying executable location
-    /// </summary>
-    public static class PathHelper
-    {
-        /// <summary>
-        /// Find disk location of program
-        /// </summary>
-        public static string FindProgram(string program)
-        {
-            if (File.Exists(Path.GetFullPath(program))) return Path.GetFullPath(program);
-
-            string[] paths = Environment.GetEnvironmentVariable("PATH").Split(';');
-            return paths
-                .SelectMany(folder =>
-                {
-                    if (program.ToLower().EndsWith(".exe"))
-                        return new[] { Path.Combine(folder, program) };
-                    else
-                        return new[] { Path.Combine(folder, program), Path.Combine(folder, program + ".exe") };
-                })
-                .FirstOrDefault(File.Exists);
-        }
-    }
-
     /// <summary>
     /// Library main exposed interface
     /// </summary>
@@ -38,7 +14,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static string Run(string program)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string? programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -63,7 +39,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static string Run(string program, string arguments)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -89,7 +65,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static string Run(string program, params string[] arguments)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -115,7 +91,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static string Run(string program, Dictionary<string, string> arguments)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -144,7 +120,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static string Feed(string program, string arguments, string standardInput)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -178,7 +154,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static Pipeline Pipe(string program)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -203,7 +179,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static Pipeline Pipe(string program, string arguments)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -229,7 +205,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static Pipeline Pipe(string program, params string[] arguments)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 
@@ -255,7 +231,7 @@ namespace Parcel.Processing.Utilities
         /// </summary>
         public static Pipeline Pipe(string program, Dictionary<string, string> arguments)
         {
-            string programPath = PathHelper.FindProgram(program);
+            string programPath = EnvironmentVariableHelper.FindProgram(program);
             if (programPath == null)
                 throw new ArgumentException($"Cannot find program {program}.");
 

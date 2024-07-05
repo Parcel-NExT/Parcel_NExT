@@ -2,8 +2,14 @@
 
 namespace Parcel.CoreEngine.Helpers
 {
+    /// <summary>
+    /// Deals with environment variables;
+    /// Includes helpers in identifying executable location related to PATH env var
+    /// </summary>
     public static class EnvironmentVariableHelper
     {
+
+
         #region Helpers
         /// <summary>
         /// Find disk location of program
