@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Data;
-using System.Diagnostics;
+using System.Data.Common;
 using System.Dynamic;
 using System.Text;
 
@@ -266,8 +266,13 @@ namespace Parcel.Types
         public DataColumn OptionalRowHeaderColumn { get; set; }
         #endregion
 
+        #region Operators
+        public DataColumn? this[string columnName] => Columns.FirstOrDefault(c => c.Header == columnName);
+        #endregion
+
         #region Accessors
         public int ColumnCount => Columns.Count;
+        public IEnumerable<string> ColumnHeaders => Columns.Select(c => c.Header);
         public int RowCount => Columns.First().Length;
         /// <remarks>
         /// When used in a foreach statement, can retrieve directly as IDictionary<string, object> instead of dynamic

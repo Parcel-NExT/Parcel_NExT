@@ -7,6 +7,18 @@
     <RootNamespace>Parcel.Integration</RootNamespace>
     <Version>0.0.1</Version>
     <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.7.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\Parcel.DataGrid\Parcel.DataGrid.csproj" />
+  </ItemGroup>
 
 </Project>
