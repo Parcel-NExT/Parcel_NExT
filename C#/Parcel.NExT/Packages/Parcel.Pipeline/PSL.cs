@@ -72,7 +72,14 @@ namespace Parcel.Processing.Utilities
             }
 
             // Handle commands
-            HandleCommand(arguments.Select(ParseVariable).ToArray());
+            try
+            {
+                HandleCommand(arguments.Select(ParseVariable).ToArray());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}");
+            }
         }
         #endregion
 
@@ -86,38 +93,25 @@ namespace Parcel.Processing.Utilities
             switch (command.ToLower())
             {
                 case "exit":
-                    IsFinished = true;
+                    Exit();
                     return;
                 case "cd":
-                    string newFolder = Path.GetFullPath(arguments.Skip(1).FirstOrDefault() ?? CurrentWorkingDirectory); // This way we support ../ and ./
-                    if (Directory.Exists(newFolder))
-                        CurrentWorkingDirectory = newFolder;
-                    else
-                        Console.WriteLine($"Folder {newFolder} doesn't exist.");
+                    Cd(arguments);
                     return;
                 case "pwd":
-                    Console.WriteLine(CurrentWorkingDirectory);
+                    Pwd();
                     return;
                 case "ls":
-                    int maxWidth = Directory.EnumerateFileSystemEntries(CurrentWorkingDirectory).Max(f => Path.GetFileName(f).Length);
-                    string[] entries = [.. Directory.EnumerateDirectories(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f)), .. Directory.EnumerateFiles(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f))];
-                    foreach (string entry in entries)
-                        Console.WriteLine($"{Path.GetFileName(entry).PadRight(maxWidth)} {(Directory.Exists(entry) ? $"Folder (x{Directory.EnumerateFileSystemEntries(entry).Count()})" : $"{new FileInfo(entry).Length:N2} bytes")}");
+                    Ls();
                     return;
                 case "cat":
-                    string? file = arguments.Skip(1).FirstOrDefault();
-                    if (File.Exists(file))
-                    {
-                        string extension = Path.GetExtension(file).ToLower().Trim();
-                        if (new FileInfo(file).Length > 10 * 1024 * 1024) // Limit 10Mb
-                            Console.WriteLine("File size exceeds 10Mb");
-                        else if (new string[] { ".exe", ".dll", ".mp3", ".avi", ".mkv", ".wav", ".jpg", ".png", ".gif", ".obj", ".fbx" }.Contains(extension))
-                            Console.WriteLine("Cannot view binary file.");
-                        else Console.WriteLine(File.ReadAllText(file));
-                    }
+                    Cat(arguments);
+                    return;
+                case "touch":
+                    Touch(arguments);
                     return;
                 case "echo":
-                    Console.WriteLine(arguments.Skip(1).FirstOrDefault() ?? string.Empty);
+                    Echo(arguments);
                     return;
                 default:
                     break;
@@ -125,19 +119,12 @@ namespace Parcel.Processing.Utilities
 
             // Handle as ordinary program
             string output = string.Empty;
-            try
-            {
-                if (arguments.Length == 1)
-                    output = PipelineUtilities.Run(command);
-                else
-                    output = PipelineUtilities.Run(command, arguments.Skip(1).ToArray()); // TODO: Handle REPL cases
-                if (!string.IsNullOrEmpty(output))
-                    Console.WriteLine(output);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"{e.Message}");
-            }
+            if (arguments.Length == 1)
+                output = PipelineUtilities.Run(command);
+            else
+                output = PipelineUtilities.Run(command, arguments.Skip(1).ToArray()); // TODO: Handle REPL cases
+            if (!string.IsNullOrEmpty(output))
+                Console.WriteLine(output);
         }
         private string ParseVariable(string statement)
         {
@@ -150,6 +137,62 @@ namespace Parcel.Processing.Utilities
                 return value;
             else
                 return string.Empty; // Invalid variables just return empty string as result
+        }
+        #endregion
+
+        #region Built-in Commands
+        private static void Cat(string[] arguments)
+        {
+            string? file = arguments.Skip(1).FirstOrDefault();
+            if (File.Exists(file))
+            {
+                string extension = Path.GetExtension(file).ToLower().Trim();
+                if (new FileInfo(file).Length > 10 * 1024 * 1024) // Limit 10Mb
+                    Console.WriteLine("File size exceeds 10Mb");
+                else if (new string[] { ".exe", ".dll", ".mp3", ".avi", ".mkv", ".wav", ".jpg", ".png", ".gif", ".obj", ".fbx" }.Contains(extension))
+                    Console.WriteLine("Cannot view binary file.");
+                else Console.WriteLine(File.ReadAllText(file));
+            }
+        }
+        private void Cd(string[] arguments)
+        {
+            string newFolder = Path.GetFullPath(arguments.Skip(1).FirstOrDefault() ?? CurrentWorkingDirectory); // This way we support ../ and ./
+            if (Directory.Exists(newFolder))
+                CurrentWorkingDirectory = newFolder;
+            else
+                Console.WriteLine($"Folder {newFolder} doesn't exist.");
+        }
+        private static void Echo(string[] arguments)
+        {
+            Console.WriteLine(arguments.Skip(1).FirstOrDefault() ?? string.Empty);
+        }
+        private void Exit()
+        {
+            IsFinished = true;
+        }
+        private void Ls()
+        {
+            int maxWidth = Directory.EnumerateFileSystemEntries(CurrentWorkingDirectory).Max(f => Path.GetFileName(f).Length);
+            string[] entries = [.. Directory.EnumerateDirectories(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f)), .. Directory.EnumerateFiles(CurrentWorkingDirectory).OrderBy(f => Path.GetFileName(f))];
+            foreach (string entry in entries)
+                Console.WriteLine($"{Path.GetFileName(entry).PadRight(maxWidth)} {(Directory.Exists(entry) ? $"Folder (x{Directory.EnumerateFileSystemEntries(entry).Count()})" : $"{new FileInfo(entry).Length:N2} bytes")}");
+        }
+        private void Pwd()
+        {
+            Console.WriteLine(CurrentWorkingDirectory);
+        }
+        private static void Touch(string[] arguments)
+        {
+            string? file = arguments.Skip(1).FirstOrDefault();
+            if (file != null)
+                file = Path.GetFullPath(file);
+            else
+                return;
+            if (!File.Exists(file))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+                File.Create(file!);
+            }
         }
         #endregion
 
