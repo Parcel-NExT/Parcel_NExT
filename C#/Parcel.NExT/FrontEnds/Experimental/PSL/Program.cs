@@ -7,11 +7,18 @@ namespace ProcessScriptingLanguage
         #region Entry
         static void Main(string[] args)
         {
-            CLIMode();
+            if (args.Length == 1 && File.Exists(args.Single()))
+                ScriptMode(args.Single());
+            else
+                CLIMode();
         }
         #endregion
 
         #region Sub-entries
+        private static void ScriptMode(string scriptFile)
+        {
+            PSL.Process(scriptFile);
+        }
         private static void CLIMode()
         {
             Console.WriteLine("$PSL - Process Scripting Language");
