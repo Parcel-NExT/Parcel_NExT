@@ -222,7 +222,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the specified FileAttributes of the file or directory associated with fileHandle.
         /// </summary>
-        public static void SetAttributes(SafeFileHandle, FileAttributes) => File.SetAttributes(SafeFileHandle, FileAttributes);
+        public static void SetAttributes(SafeFileHandle fileHandle, FileAttributes) => File.SetAttributes(SafeFileHandle fileHandle, FileAttributes);
         /// <summary>
         /// Sets the specified FileAttributes of the file on the specified path.
         /// </summary>
@@ -230,7 +230,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the date and time the file or directory was created.
         /// </summary>
-        public static void SetCreationTime(SafeFileHandle, DateTime) => File.SetCreationTime(SafeFileHandle, DateTime);
+        public static void SetCreationTime(SafeFileHandle fileHandle, DateTime) => File.SetCreationTime(SafeFileHandle fileHandle, DateTime);
         /// <summary>
         /// Sets the date and time the file was created.
         /// </summary>
@@ -238,7 +238,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the date and time, in Coordinated Universal Time (UTC), that the file or directory was created.
         /// </summary>
-        public static void SetCreationTimeUtc(SafeFileHandle, DateTime) => File.SetCreationTimeUtc(SafeFileHandle, DateTime);
+        public static void SetCreationTimeUtc(SafeFileHandle fileHandle, DateTime) => File.SetCreationTimeUtc(SafeFileHandle fileHandle, DateTime);
         /// <summary>
         /// Sets the date and time, in Coordinated Universal Time (UTC), that the file was created.
         /// </summary>
@@ -246,7 +246,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the date and time the specified file or directory was last accessed.
         /// </summary>
-        public static void SetLastAccessTime(SafeFileHandle, DateTime) => File.SetLastAccessTime(SafeFileHandle, DateTime);
+        public static void SetLastAccessTime(SafeFileHandle fileHandle, DateTime) => File.SetLastAccessTime(SafeFileHandle fileHandle, DateTime);
         /// <summary>
         /// Sets the date and time the specified file was last accessed.
         /// </summary>
@@ -254,7 +254,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the date and time, in Coordinated Universal Time (UTC), that the specified file or directory was last accessed.
         /// </summary>
-        public static void SetLastAccessTimeUtc(SafeFileHandle, DateTime) => File.SetLastAccessTimeUtc(SafeFileHandle, DateTime);
+        public static void SetLastAccessTimeUtc(SafeFileHandle fileHandle, DateTime) => File.SetLastAccessTimeUtc(SafeFileHandle fileHandle, DateTime);
         /// <summary>
         /// Sets the date and time, in Coordinated Universal Time (UTC), that the specified file was last accessed.
         /// </summary>
@@ -262,7 +262,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the date and time that the specified file or directory was last written to.
         /// </summary>
-        public static void SetLastWriteTime(SafeFileHandle, DateTime) => File.SetLastWriteTime(SafeFileHandle, DateTime);
+        public static void SetLastWriteTime(SafeFileHandle fileHandle, DateTime) => File.SetLastWriteTime(fileHandle, DateTime);
         /// <summary>
         /// Sets the date and time that the specified file was last written to.
         /// </summary>
@@ -270,7 +270,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the date and time, in Coordinated Universal Time (UTC), that the specified file or directory was last written to.
         /// </summary>
-        public static void SetLastWriteTimeUtc(SafeFileHandle, DateTime) => File.SetLastWriteTimeUtc(SafeFileHandle, DateTime);
+        public static void SetLastWriteTimeUtc(SafeFileHandle fileHandle, DateTime) => File.SetLastWriteTimeUtc(SafeFileHandle fileHandle, DateTime);
         /// <summary>
         /// Sets the date and time, in Coordinated Universal Time (UTC), that the specified file was last written to.
         /// </summary>
@@ -278,7 +278,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Sets the specified UnixFileMode of the specified file handle.
         /// </summary>
-        public static void SetUnixFileMode(SafeFileHandle, UnixFileMode) => File.SetUnixFileMode(SafeFileHandle, UnixFileMode);
+        public static void SetUnixFileMode(SafeFileHandle fileHandle, UnixFileMode) => File.SetUnixFileMode(SafeFileHandle fileHandle, UnixFileMode);
         /// <summary>
         /// Sets the specified UnixFileMode of the file on the specified path.
         /// </summary>
