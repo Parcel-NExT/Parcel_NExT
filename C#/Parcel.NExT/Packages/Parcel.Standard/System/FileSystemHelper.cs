@@ -2,6 +2,9 @@
 
 namespace Parcel.Neo.Base.Toolboxes.FileSystem
 {
+    /// <summary>
+    /// Additional useful functions that may not be counted as PSL yet
+    /// </summary>
     public static class FileSystemHelper
     {
         #region Queries
