@@ -60,7 +60,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Creates a file symbolic link identified by path that points to pathToTarget.
         /// </summary>
-        public static FileSystemInfo CreateSymbolicLink(string path, string pathToTarget) => File.CreateSymbolicLink(path, pathToTarget);
+        public static FileSystemInfo CreateFileSymbolicLink(string path, string pathToTarget) => File.CreateSymbolicLink(path, pathToTarget);
         /// <summary>
         /// Creates or opens a file for writing UTF-8 encoded text. If the file already exists, its contents are replaced.
         /// </summary>
@@ -72,7 +72,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Deletes the specified file.
         /// </summary>
-        public static void Delete(string path) => File.Delete(path);
+        public static void DeleteFile(string path) => File.Delete(path);
         /// <summary>
         /// Encrypts a file with specific key; To decrypt, use the same key.
         /// </summary>
@@ -80,7 +80,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Determines whether the specified file exists.
         /// </summary>
-        public static void Exists(string path) => File.Exists(path);
+        public static void FileExists(string path) => File.Exists(path);
         /// <summary>
         /// Gets the FileAttributes of the file on the path.
         /// </summary>
@@ -112,11 +112,11 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Moves a specified file to a new location, providing the option to specify a new file name.
         /// </summary>
-        public static void Move(string sourceFileName, string destFileName) => File.Move(sourceFileName, destFileName);
+        public static void MoveFile(string sourceFileName, string destFileName) => File.Move(sourceFileName, destFileName);
         /// <summary>
         /// Moves a specified file to a new location, providing the options to specify a new file name and to replace the destination file if it already exists.
         /// </summary>
-        public static void Move(string sourceFileName, string destFileName, bool overwrite) => File.Move(sourceFileName, destFileName, overwrite);
+        public static void MoveFile(string sourceFileName, string destFileName, bool overwrite) => File.Move(sourceFileName, destFileName, overwrite);
         /// <summary>
         /// Opens a FileStream on the specified path with read/write access with no sharing. (Sharing is a feature only available on Windows with SafeHandle)
         /// </summary>
@@ -184,7 +184,7 @@ namespace Parcel.Standard.System
         /// <summary>
         /// Gets the target of the specified file link.
         /// </summary>
-        public static void ResolveLinkTarget(string path, bool returnFinalTarget) => File.ResolveLinkTarget(path, returnFinalTarget);
+        public static void ResolveFileLinkTarget(string path, bool returnFinalTarget) => File.ResolveLinkTarget(path, returnFinalTarget);
         /// <summary>
         /// Sets the specified FileAttributes of the file on the specified path.
         /// </summary>
@@ -244,7 +244,201 @@ namespace Parcel.Standard.System
         #endregion
 
         #region Directory
+        /// <summary>
+        /// Retrieves the parent directory of the specified path, including both absolute and relative paths.
+        /// </summary>
+        public static DirectoryInfo GetParent(string path) => Directory.GetParent(path);
+        /// <summary>
+        /// Creates all directories and subdirectories in the specified path unless they already exist.
+        /// </summary>
+        public static DirectoryInfo CreateDirectory(string path) => Directory.CreateDirectory(path);
+        /// <summary>
+        /// Creates all directories and subdirectories in the specified path with the specified permissions unless they already exist.
+        /// </summary>
+        public static DirectoryInfo CreateDirectory(string path, UnixFileMode unixCreateMode) => Directory.CreateDirectory(path, unixCreateMode);
+        /// <summary>
+        /// Creates a uniquely named, empty directory in the current user's temporary directory.
+        /// </summary>
+        public static DirectoryInfo CreateTempSubdirectory(string prefix) => Directory.CreateTempSubdirectory(prefix);
+        /// <summary>
+        /// Determines whether the given path refers to an existing directory on disk.
+        /// </summary>
+        public static bool DirectoryExists(string path) => Directory.Exists(path);
+        /// <summary>
+        /// Returns the names of files (including their paths) in the specified directory.
+        /// </summary>
+        public static string[] GetFiles(string path) => Directory.GetFiles(path);
+        /// <summary>
+        /// Returns the names of files (including their paths) that match the specified search pattern in the specified directory.
+        /// </summary>
+        public static string[] GetFiles(string path, string searchPattern) => Directory.GetFiles(path, searchPattern);
+        /// <summary>
+        /// Returns the names of files (including their paths) that match the specified search pattern in the specified directory, using a value to determine whether to search subdirectories.
+        /// </summary>
+        public static string[] GetFiles(string path, string searchPattern, SearchOption searchOption) => Directory.GetFiles(path, searchPattern, searchOption);
+        /// <summary>
+        /// Returns the names of files (including their paths) that match the specified search pattern and enumeration options in the specified directory.
+        /// </summary>
+        public static string[] GetFiles(string path, string searchPattern, EnumerationOptions enumerationOptions) => Directory.GetFiles(path, searchPattern, enumerationOptions);
+        /// <summary>
+        /// Returns the names of subdirectories (including their paths) in the specified directory.
+        /// </summary>
+        public static string[] GetDirectories(string path) => Directory.GetDirectories(path);
+        /// <summary>
+        /// Returns the names of subdirectories (including their paths) that match the specified search pattern in the specified directory.
+        /// </summary>
+        public static string[] GetDirectories(string path, string searchPattern) => Directory.GetDirectories(path, searchPattern);
+        /// <summary>
+        /// Returns the names of the subdirectories (including their paths) that match the specified search pattern in the specified directory, and optionally searches subdirectories.
+        /// </summary>
+        public static string[] GetDirectories(string path, string searchPattern, SearchOption searchOption) => Directory.GetDirectories(path, searchPattern, searchOption);
+        /// <summary>
+        /// Returns the names of subdirectories (including their paths) that match the specified search pattern and enumeration options in the specified directory.
+        /// </summary>
+        public static string[] GetDirectories(string path, string searchPattern, EnumerationOptions enumerationOptions) => Directory.GetDirectories(path, searchPattern, enumerationOptions);
+        /// <summary>
+        /// Returns the names of all files and subdirectories in a specified path.
+        /// </summary>
+        public static string[] GetFileSystemEntries(string path) => Directory.GetFileSystemEntries(path);
+        /// <summary>
+        /// Returns an array of file names and directory names that match a search pattern in a specified path.
+        /// </summary>
+        public static string[] GetFileSystemEntries(string path, string searchPattern) => Directory.GetFileSystemEntries(path, searchPattern);
+        /// <summary>
+        /// Returns an array of all the file names and directory names that match a search pattern in a specified path, and optionally searches subdirectories.
+        /// </summary>
+        public static string[] GetFileSystemEntries(string path, string searchPattern, SearchOption searchOption) => Directory.GetFileSystemEntries(path, searchPattern, searchOption);
+        /// <summary>
+        /// Returns an array of file names and directory names that match a search pattern and enumeration options in a specified path.
+        /// </summary>
+        public static string[] GetFileSystemEntries(string path, string searchPattern, EnumerationOptions enumerationOptions) => Directory.GetFileSystemEntries(path, searchPattern, enumerationOptions);
+        /// <summary>
+        /// Returns an enumerable collection of directory full names in a specified path.
+        /// </summary>
+        public static IEnumerable<string> EnumerateDirectories(string path) => Directory.EnumerateDirectories(path);
+        /// <summary>
+        /// Returns an enumerable collection of directory full names that match a search pattern in a specified path.
+        /// </summary>
+        public static IEnumerable<string> EnumerateDirectories(string path, string searchPattern) => Directory.EnumerateDirectories(path, searchPattern);
+        /// <summary>
+        /// Returns an enumerable collection of directory full names that match a search pattern in a specified path, and optionally searches subdirectories.
+        /// </summary>
+        public static IEnumerable<string> EnumerateDirectories(string path, string searchPattern, SearchOption searchOption) => Directory.EnumerateDirectories(path, searchPattern, searchOption);
+        /// <summary>
+        /// Returns an enumerable collection of the directory full names that match a search pattern in a specified path, and optionally searches subdirectories.
+        /// </summary>
+        public static IEnumerable<string> EnumerateDirectories(string path, string searchPattern, EnumerationOptions enumerationOptions) => Directory.EnumerateDirectories(path, searchPattern, enumerationOptions);
+        /// <summary>
+        /// Returns an enumerable collection of full file names in a specified path.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFiles(string path) => Directory.EnumerateFiles(path);
+        /// <summary>
+        /// Returns an enumerable collection of full file names that match a search pattern in a specified path.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFiles(string path, string searchPattern) => Directory.EnumerateFiles(path, searchPattern);
+        /// <summary>
+        /// Returns an enumerable collection of full file names that match a search pattern in a specified path, and optionally searches subdirectories.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOption) => Directory.EnumerateFiles(path, searchPattern, searchOption);
+        /// <summary>
+        /// Returns an enumerable collection of full file names that match a search pattern and enumeration options in a specified path, and optionally searches subdirectories.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFiles(string path, string searchPattern, EnumerationOptions enumerationOptions) => Directory.EnumerateFiles(path, searchPattern, enumerationOptions);
+        /// <summary>
+        /// Returns an enumerable collection of file names and directory names in a specified path.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFileSystemEntries(string path) => Directory.EnumerateFileSystemEntries(path);
+        /// <summary>
+        /// Returns an enumerable collection of file names and directory names that match a search pattern in a specified path.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern) => Directory.EnumerateFileSystemEntries(path, searchPattern);
+        /// <summary>
+        /// Returns an enumerable collection of file names and directory names that match a search pattern in a specified path, and optionally searches subdirectories.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern, SearchOption searchOption) => Directory.EnumerateFileSystemEntries(path, searchPattern, searchOption);
+        /// <summary>
+        /// Returns an enumerable collection of file names and directory names that match a search pattern and enumeration options in a specified path.
+        /// </summary>
+        public static IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern, EnumerationOptions enumerationOptions) => Directory.EnumerateFileSystemEntries(path, searchPattern, enumerationOptions);
+        /// <summary>
+        /// Returns the volume information, root information, or both for the specified path.
+        /// </summary>
+        public static string GetDirectoryRoot(string path) => Directory.GetDirectoryRoot(path);
+        /// <summary>
+        /// Gets the current working directory of the application.
+        /// </summary>
+        public static string GetCurrentDirectory() => Directory.GetCurrentDirectory();
+        /// <summary>
+        /// Sets the application's current working directory to the specified directory.
+        /// </summary>
+        public static void SetCurrentDirectory(string path) => Directory.SetCurrentDirectory(path);
+        /// <summary>
+        /// Moves a file or a directory and its contents to a new location.
+        /// </summary>
+        public static void MoveDirectory(string sourceDirName, string destDirName) => Directory.Move(sourceDirName, destDirName);
+        /// <summary>
+        /// Deletes an empty directory from a specified path.
+        /// </summary>
+        public static void DeleteDirectory(string path) => Directory.Delete(path);
+        /// <summary>
+        /// Deletes the specified directory and, if indicated, any subdirectories and files in the directory.
+        /// </summary>
+        public static void DeleteDirectory(string path, bool recursive) => Directory.Delete(path, recursive);
+        /// <summary>
+        /// Retrieves the names of the logical drives on this computer in the form "<drive letter>:\".
+        /// </summary>
+        public static string[] GetLogicalDrives() => Directory.GetLogicalDrives();
+        /// <summary>
+        /// Creates a directory symbolic link identified byÿpathÿthat points toÿpathToTarget.
+        /// </summary>
+        public static FileSystemInfo CreateDirectorySymbolicLink(string path, string pathToTarget) => Directory.CreateSymbolicLink(path, pathToTarget);
+        /// <summary>
+        /// Gets the target of the specified directory link.
+        /// </summary>
+        public static FileSystemInfo ResolveDirectoryLinkTarget(string linkPath, bool returnFinalTarget) => Directory.ResolveLinkTarget(linkPath, returnFinalTarget);
+        #endregion
 
+        #region Combined File and Directory
+        /// <summary>
+        /// Move file or directory to new path
+        /// </summary>
+        public static void Move(string path, string newPath)
+        {
+            if (File.Exists(path))
+                File.Move(path, newPath);
+            else
+                Directory.Move(path, newPath);
+        }
+        /// <summary>
+        /// Delete file or directory
+        /// </summary>
+        public static void Delete(string path)
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+            else
+                Directory.Delete(path);
+        }
+        /// <summary>
+        /// Create symbolic link to file or directory
+        /// </summary>
+        public static void CreateSymbolicLink(string path, string newPath)
+        {
+            if (File.Exists(path))
+                File.CreateSymbolicLink(path, newPath);
+            else
+                Directory.CreateSymbolicLink(path, newPath);
+        }
+        /// <summary>
+        /// Resolve symbolic link to file or directory
+        /// </summary>
+        public static void ResolveLinkTarget(string path, bool returnFinalTarget)
+        {
+            if (File.Exists(path))
+                File.ResolveLinkTarget(path, returnFinalTarget);
+            else
+                Directory.ResolveLinkTarget(path, returnFinalTarget);
+        }
         #endregion
 
         #region Path
