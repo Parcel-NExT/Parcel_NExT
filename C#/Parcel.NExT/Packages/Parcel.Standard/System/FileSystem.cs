@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace Parcel.Standard.System
 {
@@ -9,6 +7,8 @@ namespace Parcel.Standard.System
     /// This is a very thin layer (almost duplicate) built on top of standard .Net as part of PSL for interoperability purposes.
     /// TODO: Need to expose functions on FileStream, StreamWriter and FileAttributes in order to make the API complete.
     /// TODO: Pending trimming and pick which ones to keep and which functions to improve/merge.
+    /// TODO: Fix naming.
+    /// TODO: Consider whether it's necessary to put under specific File/Directory namespace/type like .Net did.
     /// </summary>
     public static class FileSystem
     {
@@ -234,28 +234,20 @@ namespace Parcel.Standard.System
         /// </summary>
         public static void WriteAllLines(string path, string[] lines, Encoding encoding) => File.WriteAllLines(path, lines, encoding);
         /// <summary>
-        /// Creates a new file, writes the specified string to the file, and then closes the file. If the target file already exists, it is truncated and overwritten.
+        /// Creates a new file, writes the specified string to the file, and then closes the file, optionally using the specified Encoding encoding. If the target file already exists, it is truncated and overwritten.
         /// </summary>
-        public static void WriteAllText(string path, string text) => File.WriteAllText(path, text);
-        /// <summary>
-        /// Creates a new file, writes the specified string to the file using the specified Encoding encoding, and then closes the file. If the target file already exists, it is truncated and overwritten.
-        /// </summary>
-        public static void WriteAllText(string path, string text, Encoding encoding) => File.WriteAllText(path, text, encoding);
+        public static void WriteTextToFile(string path, string text, Encoding? encoding) => File.WriteAllText(path, text, encoding ?? Encoding.UTF8);
         #endregion
 
         #region Directory
         /// <summary>
         /// Retrieves the parent directory of the specified path, including both absolute and relative paths.
         /// </summary>
-        public static DirectoryInfo GetParent(string path) => Directory.GetParent(path);
+        public static DirectoryInfo? GetParent(string path) => Directory.GetParent(path);
         /// <summary>
         /// Creates all directories and subdirectories in the specified path unless they already exist.
         /// </summary>
         public static DirectoryInfo CreateDirectory(string path) => Directory.CreateDirectory(path);
-        /// <summary>
-        /// Creates all directories and subdirectories in the specified path with the specified permissions unless they already exist.
-        /// </summary>
-        public static DirectoryInfo CreateDirectory(string path, UnixFileMode unixCreateMode) => Directory.CreateDirectory(path, unixCreateMode);
         /// <summary>
         /// Creates a uniquely named, empty directory in the current user's temporary directory.
         /// </summary>
