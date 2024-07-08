@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<RootNamespace>Parcel.Scripting.Utilities</RootNamespace>
+	<Version>0.0.1</Version>
+	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RestSharp" Version="111.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine.Service\Parcel.CoreEngine.Service.csproj" />
+  </ItemGroup>
+
+</Project>
