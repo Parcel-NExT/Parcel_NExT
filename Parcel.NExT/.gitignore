@@ -366,3 +366,7 @@ FodyWeavers.xsd
 
 # Launch Settings
 launchSettings.json
+
+# Custom
+!Packages
+!Packages/*
