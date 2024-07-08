@@ -1,0 +1,68 @@
+﻿<local:BaseWindow x:Class="Parcel.Neo.PropertyWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:local="clr-namespace:Parcel.Neo"
+                  xmlns:converters="clr-namespace:Parcel.Neo.Converters"
+                  xmlns:framework="clr-namespace:Parcel.Neo.Base.Framework;assembly=Parcel.Neo.Base"
+                  mc:Ignorable="d"
+                  Title="{Binding Processor, Converter={StaticResource ProcessorNodeToNodeFullNameConverter}}" 
+                  MinHeight="100" MinWidth="300" SizeToContent="WidthAndHeight"
+                  DataContext="{Binding RelativeSource={RelativeSource self}}"
+                  Closed="PropertyWindow_OnClosed">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="DarkSlateGray"></Setter>
+        </Style>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top" DataContext="{Binding Processor}">
+            <DockPanel LastChildFill="True">
+                <Label Content="Name"></Label>
+                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            </DockPanel>
+            <Separator HorizontalAlignment="Stretch"/>
+        </StackPanel>
+        <TextBox DockPanel.Dock="Top" Text="{Binding PrimitivePreviewText, Mode=OneWay}" 
+                 Padding="2" BorderThickness="0" IsReadOnly="True" Visibility="{Binding PrimitivePreviewTextBlockVisibility, Mode=OneWay}"
+                 TextWrapping="Wrap" Background="Transparent"/>
+        <StackPanel DockPanel.Dock="Bottom">
+            <ItemsControl ItemsSource="{Binding Editors}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type framework:PropertyEditor}">
+                        <DockPanel LastChildFill="True">
+                            <TextBlock Text="{Binding Name}" Margin="0,5,0,0"></TextBlock>
+                            <avalonEdit:TextEditor
+                                xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                                SyntaxHighlighting="{Binding SQLSyntaxHighlighting, 
+                                                    RelativeSource={RelativeSource AncestorType={x:Type local:PropertyWindow},Mode=FindAncestor}}" FontSize="10pt"
+                                FontFamily="Consolas" MinHeight="250" Margin="5"
+                                Initialized="AvalonEditor_OnInitialized" TextChanged="AvalonEditor_OnTextChanged"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <DockPanel Visibility="{Binding DataGridVisibility}"
+                   LastChildFill="True"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid>
+                <DataGrid x:Name="WpfDataGrid" IsReadOnly="False"
+                          AutoGenerateColumns="False" ItemsSource="{Binding DataGridData}"
+                          VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Margin="4,0,0,2" Background="LightGray">
+                    <TextBlock Text="{Binding DataGridDataColumns.Length}"/>
+                    <TextBlock Text=" Columns; "/>
+                    <TextBlock Text="{Binding DataGridData.Count}"/>
+                    <TextBlock Text=" Data Rows"/>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
+</local:BaseWindow>

@@ -1,0 +1,11 @@
+.vs/
+.idea
+*.user
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+Parcel.SetupTest.DataSourceTest001/APIKey.cs
+Publish
+launchSettings.json
