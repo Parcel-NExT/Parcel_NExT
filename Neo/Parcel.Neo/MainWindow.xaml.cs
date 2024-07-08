@@ -15,6 +15,7 @@ using Parcel.Neo.Base.Toolboxes.Basic.Nodes;
 using Parcel.Neo.PopupWindows;
 using BaseConnection = Parcel.Neo.Base.Framework.ViewModels.BaseConnection;
 using Parcel.Neo.Base.DataTypes;
+using Parcel.CoreEngine.Helpers;
 
 namespace Parcel.Neo
 {
@@ -305,11 +306,13 @@ namespace Parcel.Neo
 
             if (folderDialog.ShowDialog() == true)
             {
-                string folderName = folderDialog.FolderName;
-                string mainScriptFilename = $"{System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath)}.cs";
-                AlgorithmHelper.GenerateGraphScripts(folderName, mainScriptFilename, Canvas);
+                string folderPath = folderDialog.FolderName;
+                string currentFilename = System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath);
+                string mainScriptFilename = $"{(string.IsNullOrEmpty(currentFilename) ? "Main" : currentFilename)}.cs";
+                AlgorithmHelper.GenerateGraphScripts(folderPath, mainScriptFilename, Canvas);
 
-                // TODO: Open output folder in file explorer after done
+                // Open output folder in file explorer (default program) after done
+                ProcessHelper.OpenFileWithDefaultProgram(folderPath);
             }
         }
         private void ExportPythonScriptsMenuItem_Click(object sender, RoutedEventArgs e)
