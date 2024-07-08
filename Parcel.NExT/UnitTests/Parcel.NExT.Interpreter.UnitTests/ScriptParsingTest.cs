@@ -1,7 +1,6 @@
-using Parcel.NExT.Interpreter;
 using Parcel.NExT.Interpreter.Scripting;
 
-namespace CoreTest
+namespace Parcel.NExT.Interpreter.UnitTests
 {
     public class ScriptParsingTest
     {
@@ -137,7 +136,7 @@ namespace CoreTest
                 """;
             var segments = Interpreter.SplitScripts(script);
 
-            Interpreter interpreter = new (null, null, null, null, null);
+            Interpreter interpreter = new(null, null, null, null, null);
             interpreter.Start();
 
             foreach (var a in segments)

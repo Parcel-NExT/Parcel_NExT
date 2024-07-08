@@ -1,6 +1,4 @@
-﻿using Parcel.NExT.Interpreter;
-
-namespace CoreTest
+﻿namespace Parcel.NExT.Interpreter.UnitTests
 {
     public class IncludeTest
     {
@@ -17,7 +15,7 @@ namespace CoreTest
                 File.WriteAllText(@"{outputFile}", "Hello World");
                 """);
 
-            new Interpreter(null, tempFile, null, new[] { 
+            new Interpreter(null, tempFile, null, new[] {
                 """
                 Include(Library.cs)
                 """}, null).Start();

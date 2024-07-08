@@ -1,6 +1,4 @@
-﻿using Parcel.NExT.Interpreter;
-
-namespace CoreTest
+﻿namespace Parcel.NExT.Interpreter.UnitTests
 {
     public class ImportTest
     {
