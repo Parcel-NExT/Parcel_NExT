@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO.Compression;
+using System.Text;
 
 namespace Parcel.Standard.System
 {
@@ -434,7 +435,18 @@ namespace Parcel.Standard.System
         #endregion
 
         #region Path
-
+        public static string GetTempFilePath()
+            => Path.GetTempFileName();
+        public static string GetTempImagePath()
+            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
         #endregion
+    }
+
+    public static class ZipArchive
+    {
+        public static void UnzipFile(string file, string outputFolder, bool eliminateDuplicateRoot = true)
+        {
+            ZipFile.ExtractToDirectory(file, outputFolder, true);
+        }
     }
 }

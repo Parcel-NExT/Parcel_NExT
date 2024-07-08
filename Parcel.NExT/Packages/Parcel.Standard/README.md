@@ -4,6 +4,10 @@ This module provides standard libraries for Parcel. This is a placeholder assemb
 
 PSL is a suite of functionalities but I don't see any point in splitting into multiple assemblies and thus cause management burden - so at the moment it's implemented in a single assembly. This is adapted from what's originally a Demo module: A demo-use module that also informs design of Parcel core engine. This C#-only module contains methods and implementations that both uses only native C# types (plain standard C# code with zero dependancy), and ones that also implements parcel specific constructs (well-conformed Parcel nodes for types and methods), and also ones that interfaces with meta-programming capabilities of parcel (payload interfacing).
 
+## TODO
+
+- [ ] Remove dependency on Parcel.NExT.Interpreter
+
 ## Contents
 
 <!-- Put contents here instead of on the wiki for key reference -->

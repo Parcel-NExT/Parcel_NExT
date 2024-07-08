@@ -187,11 +187,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{F3
 		Services\README.md = Services\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.CLI", "Packages\Parcel.CLI\Parcel.CLI.csproj", "{BC9B3F90-3B67-4163-9052-ECD1B39939D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.CLI", "Packages\Parcel.CLI\Parcel.CLI.csproj", "{BC9B3F90-3B67-4163-9052-ECD1B39939D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.CentralSnippets", "Packages\Parcel.CentralSnippets\Parcel.CentralSnippets.csproj", "{DC9FE7F4-8D12-463A-B7FA-005B149CD199}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.CentralSnippets", "Packages\Parcel.CentralSnippets\Parcel.CentralSnippets.csproj", "{DC9FE7F4-8D12-463A-B7FA-005B149CD199}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Genesis", "Utilities\Genesis\Genesis.csproj", "{53EBF47D-4C5E-448D-9A8F-09C616BCCD6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.VideoEditing", "Packages\Parcel.VideoEditing\Parcel.VideoEditing.csproj", "{4C896E36-6EFC-45A5-9CF3-2A4B2E75EF25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -503,6 +505,10 @@ Global
 		{53EBF47D-4C5E-448D-9A8F-09C616BCCD6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53EBF47D-4C5E-448D-9A8F-09C616BCCD6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53EBF47D-4C5E-448D-9A8F-09C616BCCD6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C896E36-6EFC-45A5-9CF3-2A4B2E75EF25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C896E36-6EFC-45A5-9CF3-2A4B2E75EF25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C896E36-6EFC-45A5-9CF3-2A4B2E75EF25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C896E36-6EFC-45A5-9CF3-2A4B2E75EF25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -592,6 +598,7 @@ Global
 		{BC9B3F90-3B67-4163-9052-ECD1B39939D7} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{DC9FE7F4-8D12-463A-B7FA-005B149CD199} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{53EBF47D-4C5E-448D-9A8F-09C616BCCD6B} = {8F783FD6-FDF6-4CB1-84EC-410B5C82DA74}
+		{4C896E36-6EFC-45A5-9CF3-2A4B2E75EF25} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}
