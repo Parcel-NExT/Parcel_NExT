@@ -2,9 +2,9 @@
 using Parcel.NExT.Interpreter.Scripting;
 using RestSharp;
 
-namespace CentralSnippets
+namespace Parcel.Scripting.Utilities
 {
-    public static class Main
+    public static class CentralSnippets
     {
         /// <summary>
         /// When using HTTP, will fetch using GET; When specifying local disk, will read file
@@ -20,7 +20,7 @@ namespace CentralSnippets
         {
             string content = GetContent(SnippetsHostSite, SnippetsRootFolder, snippetIdentifier, disableSSL);
             // Remark-cz: We need to split script first to allow handling of specific Pure constructs (e.g. Import)
-            foreach(var segment in Interpreter.SplitScripts(content))
+            foreach (var segment in Interpreter.SplitScripts(content))
                 Construct.Parse(segment);
         }
         public static void Preview(string snippetIdentifier, bool disableSSL = false)
@@ -83,7 +83,7 @@ namespace CentralSnippets
                 if (disableSSL)
                     options.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
                 var client = new RestClient(options);   // Remark-cz: Notice we can't automatically and easily append ".cs" to the file name, so for network snippets, full names are required
-                RestRequest request = string.IsNullOrEmpty(rootFolder) ? new (secondaryPath) : new($"{rootFolder}/{secondaryPath}");
+                RestRequest request = string.IsNullOrEmpty(rootFolder) ? new(secondaryPath) : new($"{rootFolder}/{secondaryPath}");
                 string response = client.Get(request).Content;
                 return response;
             }

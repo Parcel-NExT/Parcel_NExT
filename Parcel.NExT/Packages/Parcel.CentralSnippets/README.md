@@ -1,6 +1,6 @@
-﻿# Central Snippets
+﻿# Parcel.CentralSnippets
 
-Allow pulling snippets or definitions directly from https://centralsnippets.pure.totalimagine.com, hosted on [Github](https://github.com/Pure-the-Language/CentralSnippets).
+Allow pulling snippets or definitions directly from https://centralsnippets.pure.totalimagine.com, hosted on [Github](https://github.com/Pure-the-Language/CentralSnippets). Mostly used in Pure.
 
 For users inside enterprise network and have issues with SSL, it's necessary to setup proxies, on Windows using PowerShell, it can be done as below:
 

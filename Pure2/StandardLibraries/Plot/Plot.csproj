@@ -18,6 +18,5 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Parcel.NExT\CoreEngines\Parcel.NExT.Interpreter\Parcel.NExT.Interpreter.csproj" />
-		<ProjectReference Include="..\CLI\CLI.csproj" />
 	</ItemGroup>
 </Project>

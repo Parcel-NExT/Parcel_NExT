@@ -1,9 +1,9 @@
 ﻿using Humanizer;
 using System.ComponentModel;
 
-namespace CLI
+namespace Parcel.Scripting.Utilities
 {
-    public static class Main
+    public static class CLI
     {
         #region Main Methods
         /// <summary>
@@ -114,7 +114,7 @@ namespace CLI
                 }
                 else
                     map[key].Add(arguments[i]);
-            }    
+            }
             return map.ToDictionary(m => m.Key, m => m.Value.ToArray());
         }
         #endregion

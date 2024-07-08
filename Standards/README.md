@@ -644,8 +644,9 @@ This suite is collectively known as **Parcel.NExT**, including following notable
 * Escort (Parcel, Parcel-cli): Standalone executioner and service runner, logger.
 * Tranquility (C#): WebSocket based stated full-feature C# backend.
 * Flux: Standalone package manager program. (Might also provide Forge: standalone packager or uploader to Arcanum)
-* Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
+* Genesis/Arcanum: Package index/sharing platform. (Don't call it "marketplace"!)
 * Catalyst: Gospel based cloud processing platform. Repository sharing platform, plain text only + dlls. Icon: Open box, Pandora style, stars.
+* Paragon: Pending use.
 <!-- Use Medalian and myth names -->
 * Tangram: Experimental configuration web serving framework. Tangram on its own is a highly configurable standalone web application. Through adjusting data-driven configurations, one can "deploy" a parcel node graph as a website. This is in contract to a Parcel-native implementation where we might embed the entire Parcel Engine inside the web framework itself (Actually we might do that with Tangram as well).
 * SBF Inference Engine: Slow-but-functional. The thing is it just works, without tedious GPU setup.
