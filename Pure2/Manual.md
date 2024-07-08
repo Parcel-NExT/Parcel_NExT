@@ -1,4 +1,4 @@
-# C# Programming in Pure <!--Originally: Pure The Scripting Platform-->
+# C# Scripting in Pure 2 <!--Originally: Pure The Scripting Platform-->
 
 Author: Charles Zhang
 Year: 2024
@@ -202,3 +202,7 @@ This creates a minimum 2-file template for any single file script. Syntax of cer
 ## Conclusion
 
 Pure is magical for those who already knew programming, and it's also so for those new to programming.
+
+### Going Beyond
+
+Pure is good, but it's still too many hops for really basic one-shot stuff. For instance, when using ChatGPT interface one might forget which arguments are available. A good upgrade from Pure is Parcel, the graphical programming platform that Pure is part of.

@@ -1,14 +1,5 @@
----
 Type: Feature
 Title: Excel-Complete (for Common Functions)
-Request Date: 2022-05-16
-Update Date: 2022-05-16
-ID: 000010
-Status: New
-Priority: U+I
-
-Tags: "#PENDING, #Prototype-V1"
----
 
 # Overview
 
@@ -33,7 +24,3 @@ We will optionally also do:
 # Destination
 
 * Parcel V1 implementation.
-
-# Progress
-
-* 20220516: Formalize feature.

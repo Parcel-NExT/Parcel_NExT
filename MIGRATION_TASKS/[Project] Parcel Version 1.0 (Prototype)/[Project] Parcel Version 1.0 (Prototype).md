@@ -1,3 +1,5 @@
+Can be made into goal of PV1 Neo per Sep internal test release. (Draft a release design document in Methodox, "Test Build Plan/Test Plan")
+
 ---
 Type: Project
 Title: Parcel Version 1.0 (Prototype)

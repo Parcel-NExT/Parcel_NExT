@@ -1,6 +1,7 @@
 ﻿using Parcel.CoreEngine.Helpers;
 using Parcel.NExT.Interpreter;
 using Parcel.NExT.Interpreter.Helpers;
+using System.Collections.Generic;
 
 namespace Pure
 {
@@ -32,7 +33,7 @@ namespace Pure
                 var interpreter = new Interpreter($"""
                     Pure 2 Interactive Interpreter (REPL) (Core Version: {Interpreter.DistributionVersion})
                     Powered by Parcel.NExT, a visual programming platform.
-                    Type Help() or use --help to view help.
+                    Type Help() or use --help to view help.{AdditionalWelcome()}
                     """, null, null, null, null);
                 interpreter.Start();
                 EnterInteractiveMode(interpreter);
@@ -66,6 +67,18 @@ namespace Pure
                 interpreter.Start();
                 if(interactiveMode)
                     EnterInteractiveMode(interpreter);
+            }
+
+            // Just for fun
+            static string AdditionalWelcome()
+            {
+                string quote = string.Empty;
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
+                    quote = "Friday is a good day!";
+                else quote = QuotesHelper.GetInspiringQuotes((int)(DateTime.Now - DateTime.MinValue).TotalDays);
+                if (quote != string.Empty)
+                    return $"\n{quote}";
+                else return quote;
             }
         }
 
