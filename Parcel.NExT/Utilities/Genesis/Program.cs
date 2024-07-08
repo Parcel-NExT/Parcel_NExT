@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace PackageManager
 {
-    public static class GenesisConfigurations
+    public static class GenesisServerConfigurations
     {
         #region Server Ports
         public const int ControlPort = 7775;
@@ -30,16 +30,22 @@ namespace PackageManager
 
         private static void StartClient()
         {
-            throw new NotImplementedException();
+            string file = Console.ReadLine();
+            int size = (int)new FileInfo(file).Length;
+            ParcelPackageManagerClient.SendMessage("127.0.0.1", GenesisServerConfigurations.ControlPort, size.ToString());
+            ParcelPackageManagerClient.TransferFile("127.0.0.1", GenesisServerConfigurations.DataPort, file);
         }
 
         private static void StartServer()
         {
-            throw new NotImplementedException();
+            int size = int.Parse(ParcelPackageManagerServer.AcceptMessage(IPAddress.Any, GenesisServerConfigurations.ControlPort)!);
+            string temp = Path.GetTempFileName();
+            ParcelPackageManagerServer.AcceptFile(IPAddress.Any, GenesisServerConfigurations.DataPort, size, temp);
+            Console.WriteLine(temp);
         }
     }
 
-    public class ParcelpackageManagerServer
+    public class ParcelPackageManagerServer
     {
         #region Control
         public static string? AcceptMessage(IPAddress address, int port)
@@ -76,19 +82,20 @@ namespace PackageManager
         public static void SendMessage(string address, int port, string message)
         {
             TcpClient client = new(address, port);
-            StreamWriter sw = new(client.GetStream());
-            sw.WriteLine(message);
-            sw.Flush();
+            StreamWriter streamWriter = new(client.GetStream());
+            streamWriter.WriteLine(message);
+            streamWriter.Flush();
         }
         #endregion
 
         #region Data
         public static void TransferFile(string address, int port, string path)
         {
-            TcpClient client = new TcpClient(address, port);
+            TcpClient client = new(address, port);
             Stream stream = client.GetStream();
             byte[] bytes = File.ReadAllBytes(path);
             stream.Write(bytes, 0, bytes.Length);
+            stream.Close();
             client.Close();
         }
         #endregion
