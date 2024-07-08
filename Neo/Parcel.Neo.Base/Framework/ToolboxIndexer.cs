@@ -44,7 +44,6 @@ namespace Parcel.Neo.Base.Framework
             RegisterToolbox(toolboxAssemblies, "In-Memory Database", Assembly.Load("Parcel.InMemoryDB"));
             RegisterToolbox(toolboxAssemblies, "Database Service", Assembly.Load("Parcel.InMemoryDB.Integration"));
             RegisterToolbox(toolboxAssemblies, "Database Application", Assembly.Load("Parcel.InMemoryDB.WebSurveys"));
-            RegisterToolbox(toolboxAssemblies, "File System", Assembly.Load("Parcel.FileSystem"));
             RegisterToolbox(toolboxAssemblies, "Yahoo Finance", Assembly.Load("Parcel.YahooFinance"));
             
             // Index specific nodes
@@ -60,6 +59,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "String Processing", typeof(Standard.Types.StringRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.BooleanRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.LogicRoutines));
+            RegisterType(toolboxes, "File System", typeof(Standard.System.FileSystem));
             // Register specific types - directly borrow from libraries
             RegisterType(toolboxes, "Collections", typeof(Enumerable));
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Statistics)); // TODO: Might provide selective set of functions instead of everything; Alternative, figure out how to do in-app documentation

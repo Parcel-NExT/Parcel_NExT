@@ -10,21 +10,22 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Calculator\Parcel.Calculator.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.DataAnalytics\Parcel.DataAnalytics.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.DataGrid\Parcel.DataGrid.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.FileSystem\Parcel.FileSystem.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Generators\Parcel.Generators.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.InMemoryDB.Integration\Parcel.InMemoryDB.Integration.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.LLM\Parcel.LLM.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Plots\Parcel.Plots.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.REST\Parcel.REST.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Standard\Parcel.Standard.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Vector\Parcel.Vector.csproj" />
-      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.YahooFinance\Parcel.YahooFinance.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Calculator\Parcel.Calculator.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataAnalytics\Parcel.DataAnalytics.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataGrid\Parcel.DataGrid.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Generators\Parcel.Generators.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Image\Parcel.Image.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB.Integration\Parcel.InMemoryDB.Integration.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB.WebSurveys\Parcel.InMemoryDB.WebSurveys.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.LLM\Parcel.LLM.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Plots\Parcel.Plots.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.REST\Parcel.REST.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Standard\Parcel.Standard.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Vector\Parcel.Vector.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.YahooFinance\Parcel.YahooFinance.csproj" />
     </ItemGroup>
 
 </Project>
