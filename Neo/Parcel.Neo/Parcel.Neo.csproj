@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+
+    <StartupObject>Parcel.Neo.Program</StartupObject>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+    <AssemblyName>Neo</AssemblyName>
+
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <Version>0.1.0</Version>
+    
+    <Title>Parcel PV1 Neo</Title>
+    <Authors>Charles Zhang</Authors>
+    <Company>Methodox.io</Company>
+    <Product>PV1 Neo</Product>
+    <Description>A Parcel NExT front-end.</Description>
+    <PackageProjectUrl>https://methodox.io/PV1_Neo</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Charles-Zhang-Parcel/PV1_Neo</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon.png" />
+    <Resource Include="Images\MagnifyingGlass.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+    <PackageReference Include="Nodify" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Image\Parcel.Image.csproj" />
+    <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.InMemoryDB.WebSurveys\Parcel.InMemoryDB.WebSurveys.csproj" />
+    <ProjectReference Include="..\Parcel.Neo.Base\Parcel.Neo.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="PreviewWindows\sql.xshd.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+</Project>

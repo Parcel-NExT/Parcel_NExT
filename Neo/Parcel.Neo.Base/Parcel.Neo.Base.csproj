@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Calculator\Parcel.Calculator.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.DataAnalytics\Parcel.DataAnalytics.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.DataGrid\Parcel.DataGrid.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.FileSystem\Parcel.FileSystem.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Generators\Parcel.Generators.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.InMemoryDB.Integration\Parcel.InMemoryDB.Integration.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.LLM\Parcel.LLM.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Plots\Parcel.Plots.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.REST\Parcel.REST.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Standard\Parcel.Standard.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.Vector\Parcel.Vector.csproj" />
+      <ProjectReference Include="..\..\..\Parcel_NExT\C#\Parcel.NExT\Packages\Parcel.YahooFinance\Parcel.YahooFinance.csproj" />
+    </ItemGroup>
+
+</Project>

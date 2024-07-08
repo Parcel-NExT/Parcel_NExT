@@ -1,0 +1,79 @@
+﻿<Window x:Class="Parcel.Neo.PopupWindows.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="About This Software" SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="LightGray"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="LightGray"/>
+        </Style>
+    </Window.Resources>
+    <Grid Background="#1E1E1E">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="8">
+            <DockPanel HorizontalAlignment="Center">
+                <Image DockPanel.Dock="Left" Source="/Icon.png" Width="64" Margin="12"/>
+                <Label DockPanel.Dock="Top" Content="PV1 Neo" FontSize="22" HorizontalAlignment="Center" Margin="0" Padding="0"/>
+                <Label DockPanel.Dock="Top" Content="Version: 0.1.0 Build v2024-06-24" HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
+                <Label DockPanel.Dock="Top" Content="by Methodox, Inc." HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
+                <Label DockPanel.Dock="Top" Content="A Parcel NExT Front-end (Graph Editor)." HorizontalAlignment="Center" Margin="0" Padding="0"  FontSize="8"/>
+                <TextBlock DockPanel.Dock="Top" TextWrapping="WrapWithOverflow"  MaxWidth="320" HorizontalAlignment="Center" TextAlignment="Center">
+                    This program is designed to make programming accessible. 
+                    <LineBreak/>
+                    You are free to use, modify, and share this software, including commercial use.
+                </TextBlock>
+                    
+                <Label DockPanel.Dock="Top" Content="Contacts" HorizontalAlignment="Center" Margin="0" Padding="0,4,0,0" FontSize="8" FontStyle="Italic" FontWeight="Bold"/>
+                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" TextAlignment="Center" FontSize="8">
+                    General Inquiries: 
+                    <Hyperlink NavigateUri="mailto:contact@methodox.io" RequestNavigate="Hyperlink_RequestNavigate">
+                        contact@methodox.io
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" TextAlignment="Center" FontSize="8">
+                    Bugs, Feature Requests &amp; Suggestions: 
+                    <Hyperlink NavigateUri="mailto:feedback@methodox.io" RequestNavigate="Hyperlink_RequestNavigate">
+                        feedback@methodox.io
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" TextAlignment="Center" FontSize="8">
+                    Business opportunities:
+                    <Hyperlink NavigateUri="mailto:sales@methodox.io" RequestNavigate="Hyperlink_RequestNavigate">
+                        sales@methodox.io
+                    </Hyperlink>
+                </TextBlock>
+            </DockPanel>
+            <StackPanel Orientation="Vertical" Margin="0, 4">
+                <TextBlock Foreground="LightBlue" HorizontalAlignment="Center">
+                    Website: 
+                    <Hyperlink NavigateUri="https://methodox.io/neo" RequestNavigate="Hyperlink_RequestNavigate">
+                        Official Methodox Page
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Foreground="LightBlue" HorizontalAlignment="Center">
+                    Packages Registry: 
+                    <Hyperlink NavigateUri="https://packmon.io" RequestNavigate="Hyperlink_RequestNavigate">
+                        Packmon
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Foreground="LightBlue" HorizontalAlignment="Center">
+                    Source Code: 
+                    <Hyperlink NavigateUri="https://github.com/Charles-Zhang-Parcel/PV1_Neo" RequestNavigate="Hyperlink_RequestNavigate">
+                        Github Repository
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Foreground="LightBlue" HorizontalAlignment="Center">
+                    License: 
+                    <Hyperlink NavigateUri="https://github.com/Charles-Zhang-Parcel/PV1_Neo/blob/main/LICENSE" RequestNavigate="Hyperlink_RequestNavigate">
+                        MIT License
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
