@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
+using System.Xml.Linq;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
@@ -82,6 +84,7 @@ namespace Parcel.Neo.Base.Algorithms
             graph.InitializeGraph(processors);
 
             // Gather essential information
+            List<AutomaticProcessorNode> automaticProcessors = [];
             // TOOD: Special handle math nodes that have corresponding C# operators: +-*/
             List<string> variableDeclarations = [];
             StringBuilder scriptSection = new();
@@ -92,7 +95,8 @@ namespace Parcel.Neo.Base.Algorithms
                 // Deal with package functions
                 if (processorNode is AutomaticProcessorNode autoNode)
                 {
-                    scriptSection.AppendLine($"{autoNode.Descriptor.NodeName}({string.Join(", ", autoNode.Input.Select(i => i.Title))})");
+                    automaticProcessors.Add(autoNode);
+                    scriptSection.AppendLine($"{autoNode.Descriptor.NodeName}({string.Join(", ", autoNode.Input.Select(i => i.Title))});");
                 }
                 // Deal with front-end implemented nodes
                 else
@@ -102,16 +106,32 @@ namespace Parcel.Neo.Base.Algorithms
                         variableDeclarations.Add($"var {processorNode.Title} = {processorNode.MainOutput};"); // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
                 }
             }
+
+            // Gather unique dependent assemblies
+            System.Reflection.Assembly[] uniqueAssemblies = automaticProcessors.Select(p => p.Descriptor.Method.DeclaringType.Assembly).Distinct().ToArray();
+            string[] uniqueNamespaces = automaticProcessors.Select(p => p.Descriptor.Method.DeclaringType.Namespace).Distinct().ToArray();
+            string[] standardPackageImports = uniqueAssemblies.Select(a => a.CodeBase)
+                .Select(codeBase => Uri.UnescapeDataString(new UriBuilder(codeBase).Path))
+                .Where(File.Exists)
+                .Select(FindStandardPackageFriendlyName)
+                .ToArray();
+
+            // Pre-build scripts
             StringBuilder[] scriptSections = [scriptSection];
 
-            // Create output folder if not exist
-            Directory.CreateDirectory(folderPath);
-
-            // Generate code files
+            // Generate script contents
             StringBuilder mainScriptBuilder = new();
+            // Import package references
+            foreach (string import in standardPackageImports)
+                mainScriptBuilder.AppendLine($"Import({import})");
+            mainScriptBuilder.AppendLine();
+            // Make necessary namespace usage and static usage
+            foreach (string uniqueNamespace in uniqueNamespaces)
+                mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
+            mainScriptBuilder.AppendLine();
             // Do variable declarations first
             foreach (string declaration in variableDeclarations)
-                mainScriptBuilder.Append(declaration);
+                mainScriptBuilder.AppendLine(declaration);
             // Append script sections
             foreach (StringBuilder section in scriptSections)
             {
@@ -119,11 +139,38 @@ namespace Parcel.Neo.Base.Algorithms
                 mainScriptBuilder.AppendLine();
             }
 
+            // Create output folder if not exist
+            Directory.CreateDirectory(folderPath);
+
             // Save main script
-            string mainScript = mainScriptBuilder.ToString().TrimEnd();
-            File.WriteAllText(mainScriptFilename, mainScript);
+            string mainScript = $"{GetPureScriptGeneratedHeader()}\n{mainScriptBuilder.ToString().TrimEnd()}";
+            File.WriteAllText(Path.Combine(folderPath, mainScriptFilename), mainScript);
 
             // TODO: Implement generating other script files
+            // ...
+
+            static string GetPureScriptGeneratedHeader()
+            {
+                return """
+                    /* Generated Script File Header
+                    This file is generated with Parcel NExT CodeGen for Pure 2.
+                    You should have Pure installed in order to execute this script; 
+                    You can downoad Pure at https://methodox.io/Pure. Notice to run the script you must make sure all `Import()`
+                    packages are available under your environment `PATH` variable.
+
+                    Alternatively, if you are using PV1 Neo you can export a .csproj C# project to be used in Visual Studio,
+                    or if you graph doesn't involve advanced features like reflection, 
+                    you can export a native executable file directly from the GUI.
+                    */
+                    """;
+            }
+            static string FindStandardPackageFriendlyName(string filePath)
+            {
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+                if (fileNameWithoutExtension.StartsWith("Parcel."))
+                    return fileNameWithoutExtension;
+                else return filePath;
+            }
         }
         #endregion
     }
