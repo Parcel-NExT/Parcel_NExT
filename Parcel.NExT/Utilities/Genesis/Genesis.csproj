@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
+	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	<PublishAot>true</PublishAot>
+	<PublishReadyToRun>true</PublishReadyToRun>
     <AssemblyName>Gen</AssemblyName>
   </PropertyGroup>
 
