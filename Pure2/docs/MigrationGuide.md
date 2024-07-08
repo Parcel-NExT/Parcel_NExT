@@ -1,4 +1,6 @@
-# Migration Guide
+# Migration Guide (.Net 7 to .Net 8)
+
+Tags: Note, Record, Technical Note, Reference
 
 > In general, this upgrade brings no breaking changes in terms of API or Pure language core construct behaviors. (The only known change is Notebook's executable path)
 
