@@ -25,7 +25,7 @@ def _setup_clr():
 def _setup_parcel_next():
     from Core import Interpreter
 
-if __name__ == '__main__':
+def _init(): # Remark-cz: Important to call this in order to make sure parcel next packages can be found properly and python import statement works
     # Add environment paths
     _setup_environment_paths()
 
@@ -34,6 +34,7 @@ if __name__ == '__main__':
     _setup_pythonnet()
     _setup_clr()
     _setup_parcel_next()
+_init()
 
 # Exposed routine
 def LoadPackage(package_name):
