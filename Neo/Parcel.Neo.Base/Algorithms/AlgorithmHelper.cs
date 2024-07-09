@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Parcel.Neo.Base.Framework.ViewModels;
@@ -83,26 +84,31 @@ namespace Parcel.Neo.Base.Algorithms
             graph.InitializeGraph(processors);
 
             // Gather essential information
-            GatherScriptDependencies(graph, out Dictionary<string, string> variableDeclarations, out List<string> mainScriptSection, out (string Package, string Namespace)[] uniqueNamespaces, out Dictionary<string, string> standardPackageImports);
+            ScriptDependencySummary summary = GatherScriptDependencies(graph);
 
             // Pre-build scripts
             StringBuilder mainSection = new();
-            foreach (var line in mainScriptSection)
+            foreach (string line in summary.ScriptSectionStatements)
                 mainSection.AppendLine($"{line};");
             StringBuilder[] scriptSections = [mainSection];
 
             // Generate script contents
             StringBuilder mainScriptBuilder = new();
             // Import package references
-            foreach ((string importName, string nickName) in standardPackageImports)
+            foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
             // Make necessary namespace usage and static usage
-            foreach (string uniqueNamespace in uniqueNamespaces.Select(n => n.Namespace).Distinct())
-                mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
+            // Style preference: if the script is very short, use static, otherwise, use type name based addressing.
+            if (summary.UniqueTypes.Count() < 10)
+                foreach (Type type in summary.InvolvedStaticTypes)
+                    mainScriptBuilder.AppendLine($"using static {type.FullName};");
+            else
+                foreach (string uniqueNamespace in summary.UniqueNamespaces.Select(n => n.Namespace).Distinct())
+                    mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
             mainScriptBuilder.AppendLine();
             // Do variable declarations first
-            foreach ((string key, string value) in variableDeclarations)
+            foreach ((string key, string value) in summary.VariableDeclarations)
                 mainScriptBuilder.AppendLine($"var {key} = {value};");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
@@ -138,7 +144,7 @@ namespace Parcel.Neo.Base.Algorithms
             }
         }
         public static void GenerateGraphPythonScripts(string folderPath, string mainScriptFilename, NodesCanvas canvas)
-        {
+        { 
             const string defaultIndentation = "    "; // Python default indentation is 4 spaces
 
             // Filter executable nodes
@@ -150,11 +156,11 @@ namespace Parcel.Neo.Base.Algorithms
             ExecutionQueue graph = new();
             graph.InitializeGraph(processors);
             // Gather essential information
-            GatherScriptDependencies(graph, out Dictionary<string, string> variableDeclarations, out List<string> mainScriptSection, out (string Package, string Namespace)[] uniqueNamespaces, out Dictionary<string, string> standardPackageImports);
+            ScriptDependencySummary summary = GatherScriptDependencies(graph);
 
             // Pre-build scripts
             StringBuilder mainSection = new();
-            foreach(var line in mainScriptSection)
+            foreach(var line in summary.ScriptSectionStatements)
                 mainSection.AppendLine(line);
             StringBuilder[] scriptSections = [mainSection];
 
@@ -168,24 +174,21 @@ namespace Parcel.Neo.Base.Algorithms
                 """);
             // Import package references
             mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
-            foreach ((string importName, string nickName) in standardPackageImports)
+            foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"LoadPackage('{importName}')");
             mainScriptBuilder.AppendLine();
-            // Make necessary namespace usage and static usage
+            // Import static types from corresponding namespaces; Notice Pythonnet doesn't support using static methods at the top level
             mainScriptBuilder.AppendLine("# Import submodules");
-            foreach ((string Package, string Namespace) in uniqueNamespaces)
-                mainScriptBuilder.AppendLine($"from {Namespace} import *");
+            foreach (Type type in summary.InvolvedStaticTypes)
+                mainScriptBuilder.AppendLine($"from {type.Namespace} import {type.Name}");
             mainScriptBuilder.AppendLine();
-            // Import static types
-            // TODO: Import static types from used nodes
-            mainScriptBuilder.AppendLine();
-            mainScriptBuilder.AppendLine("# Main script content");
             // Entry point
+            mainScriptBuilder.AppendLine("# Main script content");
             mainScriptBuilder.AppendLine("""
                 if __name__ == '__main__':
                 """);
             // Do variable declarations first
-            foreach ((string key, string value) in variableDeclarations)
+            foreach ((string key, string value) in summary.VariableDeclarations)
                 mainScriptBuilder.AppendLine($"{defaultIndentation}{key} = {value}");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
@@ -222,51 +225,85 @@ namespace Parcel.Neo.Base.Algorithms
             }
         }
 
-        private static void GatherScriptDependencies(ExecutionQueue graph, out Dictionary<string, string> variableDeclarations, out List<string> scriptSection, out (string Package, string Namespace)[] uniqueNamespaces, out Dictionary<string, string> standardPackageImports)
+        // TODO: Do not handle statement generation inside this class; Handle it in a dedicated place instead
+        public sealed class ScriptDependencySummary
         {
-            List<AutomaticProcessorNode> automaticProcessors = [];
-            // TOOD: Special handle math nodes that have corresponding C# operators: +-*/
-            variableDeclarations = [];
-            scriptSection = new();
-            foreach (ProcessorNode processorNode in graph.Queue)
+            #region Construction
+            public ScriptDependencySummary(string subGraphID, ExecutionQueue graph)
             {
-                // Remark-cz: notice as of PV1 Neo we no longer have c#-lambda impelemented nodes; Everything is eitehr completely front-end implemented as ProcessorNode or it's C# defined in packages
-
-                // Deal with package functions
-                if (processorNode is AutomaticProcessorNode autoNode)
-                {
-                    automaticProcessors.Add(autoNode);
-                    string[] parameters = autoNode.Input.Select(i => i.Title).ToArray();
-                    
-                    // Save outputs
-                    if (autoNode.Output.Any())
-                        scriptSection.Add($"{autoNode.MainOutput.Title} = {autoNode.Descriptor.NodeName}({string.Join(", ", parameters)})");
-                    // Plain call
-                    else 
-                        scriptSection.Add($"{autoNode.Descriptor.NodeName}({string.Join(", ", parameters)})");
-
-                    // Deal with missing parameters
-                    foreach (string parameter in parameters)
-                        variableDeclarations.TryAdd(parameter, "\"\"");
-                }
-                // Deal with front-end implemented nodes
-                else
-                {
-                    // Primitives are processed as variable definition
-                    if (processorNode is PrimitiveNode primitive)
-                        variableDeclarations[processorNode.Title] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
-                }
+                SubgraphID = subGraphID;
+                GatherScriptDependencies(graph);
             }
+            #endregion
 
-            // Gather unique dependent assemblies
-            System.Reflection.Assembly[] uniqueAssemblies = automaticProcessors.Select(p => p.Descriptor.Method.DeclaringType.Assembly).Distinct().ToArray();
-            uniqueNamespaces = automaticProcessors.Select(p => p.Descriptor.Method.DeclaringType).GroupBy(t => new ValueTuple<string, string>(t.Assembly.GetName().Name, t.Namespace)).Select(g => g.Key).ToArray();
-            standardPackageImports = uniqueAssemblies.Select(a => a.CodeBase)
-                .Select(codeBase => Uri.UnescapeDataString(new UriBuilder(codeBase).Path))
-                .Where(File.Exists)
-                .Select(FindStandardPackageFriendlyName)
-                .ToDictionary(n => n, n => n.Split('.').Last());
+            #region Properties
+            public string SubgraphID { get; }
+            public Dictionary<string, string> VariableDeclarations { get; } = [];
+            public string[] ScriptSectionStatements { get; private set; } = [];
+            public (string PackageID, string Namespace)[] UniqueNamespaces { get; private set; }
+            public Dictionary<string, string> StandardPackageImports { get; private set; }
+            public Assembly[] UniqueAssemblies { get; private set; }
+            public Type[] UniqueTypes { get; private set; }
+            public Type[] InvolvedStaticTypes => UniqueTypes.Where(t => t.IsAbstract && t.IsSealed).ToArray();
+            #endregion
+
+            #region Method
+            private void GatherScriptDependencies(in ExecutionQueue graph)
+            {
+                List<AutomaticProcessorNode> automaticProcessors = [];
+                // TOOD: Special handle math nodes that have corresponding C# operators: +-*/
+                List<string> statements = [];
+                foreach (ProcessorNode processorNode in graph.Queue)
+                {
+                    // Remark-cz: notice as of PV1 Neo we no longer have c#-lambda impelemented nodes; Everything is eitehr completely front-end implemented as ProcessorNode or it's C# defined in packages
+
+                    // Deal with package functions
+                    if (processorNode is AutomaticProcessorNode autoNode)
+                    {
+                        automaticProcessors.Add(autoNode);
+                        string[] parameters = autoNode.Input.Select(i => i.Title).ToArray();
+                        string methodCallName = $"{(autoNode.Descriptor.Method.IsStatic ? autoNode.Descriptor.Method.DeclaringType.Name + ".": string.Empty)}{autoNode.Descriptor.NodeName}"; // TODO: We do not need to address full type name if we are using static (that's why we should not handle statement generation directly here and just parse essential information and let the actual code generation for specific target languages (pure vs c# vs python) handle it
+
+                        // Save outputs
+                        if (autoNode.Output.Any())
+                            statements.Add($"{autoNode.MainOutput.Title} = {methodCallName}({string.Join(", ", parameters)})");
+                        // Plain call
+                        else
+                            statements.Add($"{methodCallName}({string.Join(", ", parameters)})");
+
+                        // Deal with missing parameters
+                        foreach (string parameter in parameters)
+                            VariableDeclarations.TryAdd(parameter, "\"\"");
+                    }
+                    // Deal with front-end implemented nodes
+                    else
+                    {
+                        // Primitives are processed as variable definition
+                        if (processorNode is PrimitiveNode primitive)
+                            VariableDeclarations[processorNode.Title] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
+                    }
+                }
+
+                // Gather unique dependent assemblies
+                UniqueTypes = automaticProcessors.Select(p => p.Descriptor.Method.DeclaringType).Distinct().ToArray(); // TODO: Not sure whether type comparison in Disctin() works as expected
+                UniqueAssemblies = automaticProcessors.Select(p => p.Descriptor.Method.DeclaringType.Assembly).Distinct().ToArray();
+                UniqueNamespaces = automaticProcessors.Select(p => p.Descriptor.Method.DeclaringType)
+                    .GroupBy(t => new ValueTuple<string, string>(t.Assembly.GetName().Name, t.Namespace))
+                    .Select(g => g.Key)
+                    .ToArray();
+                StandardPackageImports = UniqueAssemblies.Select(a => a.CodeBase)
+                    .Select(codeBase => Uri.UnescapeDataString(new UriBuilder(codeBase).Path))
+                    .Where(File.Exists)
+                    .Select(FindStandardPackageFriendlyName)
+                    .ToDictionary(n => n, n => n.Split('.').Last());
+
+                // Final assignments
+                ScriptSectionStatements = statements.ToArray();
+            }
+            #endregion
         }
+        private static ScriptDependencySummary GatherScriptDependencies(in ExecutionQueue graph)
+            => new ScriptDependencySummary("Main Script", graph);
         #endregion
 
         #region Helpers
