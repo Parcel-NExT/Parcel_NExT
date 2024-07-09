@@ -650,6 +650,7 @@ This suite is collectively known as **Parcel.NExT**, including following notable
 <!-- Use Medalian and myth names -->
 * Tangram: Experimental configuration web serving framework. Tangram on its own is a highly configurable standalone web application. Through adjusting data-driven configurations, one can "deploy" a parcel node graph as a website. This is in contract to a Parcel-native implementation where we might embed the entire Parcel Engine inside the web framework itself (Actually we might do that with Tangram as well).
 * SBF Inference Engine: Slow-but-functional. The thing is it just works, without tedious GPU setup.
+* 鸣人/Ming/鸣惊远:君子厚积薄发，不鸣则已，一鸣惊人。
 
 Additional (experimental) Front-ends:
 
