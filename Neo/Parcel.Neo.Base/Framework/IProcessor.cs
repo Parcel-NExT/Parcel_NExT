@@ -99,7 +99,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Helper
-        private static void SeperateMethodParametersForNode(MethodInfo method, out (Type, string, object?)[] nodeInputTypes, out (Type, string)[] nodeOutputTypes)
+        private static void SeperateMethodParametersForNode(MethodInfo method, out (Type, string, object?)[] nodeInputTypes, out (Type ValueType, string ValueName)[] nodeOutputTypes)
         {
             ParameterInfo[] methodParameters = method.GetParameters();
 
@@ -120,7 +120,7 @@ namespace Parcel.Neo.Base.Framework
             if (!method.IsStatic)
             {
                 nodeInputTypesList.Add((method.DeclaringType!, method.DeclaringType!.Name, null));
-                nodeOutputTypesList.Add((method.DeclaringType!, method.DeclaringType!.Name));
+                nodeOutputTypesList.Add((method.DeclaringType!, FormalizeUnnammedPin(method.DeclaringType!))); // TODO: Pending POS standardization how should we name the return value pin by default
             }
 
             // Input order: (Instance), remaining (non-out) parameters
@@ -129,13 +129,21 @@ namespace Parcel.Neo.Base.Framework
 
             // Output order: (Instance), (method return), any out parameters
             if (method.ReturnType != typeof(void))
-                nodeOutputTypesList.Add((method.ReturnType, method.ReturnType!.Name));
+                nodeOutputTypesList.Add((method.ReturnType, FormalizeUnnammedPin(method.ReturnType!)));
             foreach (ParameterInfo parameter in methodParameters.Where(p => (p.IsOut && p.ParameterType.IsByRef)))
                 nodeOutputTypesList.Add((parameter.ParameterType, parameter.Name!));
 
             // Return
             nodeInputTypes = [.. nodeInputTypesList];
             nodeOutputTypes = [.. nodeOutputTypesList];
+
+            static string FormalizeUnnammedPin(Type type)
+            {
+                string defaultName = type.Name;
+                if (type.IsArray)
+                    return $"{FormalizeUnnammedPin(type.GetElementType())} Array";
+                else return defaultName;
+            }
         }
         #endregion
     }

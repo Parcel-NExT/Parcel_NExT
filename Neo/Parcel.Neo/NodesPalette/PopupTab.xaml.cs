@@ -74,7 +74,7 @@ namespace Parcel.Neo
             // Button item
             else
             {
-                MenuItem item = new() { Header = $"{node.Name}({node.ArgumentsList})", Tag = node, ToolTip = node.Tooltip };
+                MenuItem item = new() { Header = $"{node.Name}{(node.ArgumentsList.Any() ? $"({node.ArgumentsList})": string.Empty)}", Tag = node, ToolTip = node.Tooltip };
                 item.Click += NodeMenuItemOnClick;
                 toolboxMenu.Items.Add(item);
                 
@@ -88,7 +88,7 @@ namespace Parcel.Neo
                 .Where(n => n.Key.Name.Contains(searchText, StringComparison.CurrentCultureIgnoreCase))
                 .Select(node =>
                 {
-                    string key = $"{node.Value} -> {node.Key.Name} ({node.Key.ArgumentsList})";
+                    string key = $"{node.Value} / {node.Key.Name}{(node.Key.ArgumentsList.Any() ? $" ({node.Key.ArgumentsList})" : string.Empty)}{(node.Key.HasReturnValue ? " -> " + string.Join(", ", node.Key.ReturnsList): string.Empty)}";
                     SearchResult result = new(key, node.Key.Tooltip);
                     _searchResultLookup[result] = node.Key;
                     return result;
