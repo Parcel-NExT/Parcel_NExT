@@ -40,7 +40,9 @@ namespace Parcel.Neo.Base.Algorithms
         #region Routines
         private void UpdateNodePosition(ProcessorNode last, ProcessorNode node)
         {
-            if(!node.Input.Any(i => i.IsConnected))
+            // TODO: According to our experience in Codename Wayhome, this algorithm has issue with double-counting (multiple counting actually) root nodes mutliple times during iterations
+            // See https://github.com/ProjectWayhome/ProjectWayhome/commit/591263631c337ac6aca50289b89d321c605870fc#diff-faee592e8286a1f1bf608d479b6983b74ed891663a706d48068ba51bd402b148
+            if (!node.Input.Any(i => i.IsConnected))
                 Queue.Insert(0, node);
             else
             {

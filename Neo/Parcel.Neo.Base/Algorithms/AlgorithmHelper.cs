@@ -175,12 +175,12 @@ namespace Parcel.Neo.Base.Algorithms
             // Import package references
             mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
-                mainScriptBuilder.AppendLine($"LoadPackage('{importName}')");
+                mainScriptBuilder.AppendLine($"LoadPackage('{importName}')"); // TODO: Add brief summary of package description if available
             mainScriptBuilder.AppendLine();
             // Import static types from corresponding namespaces; Notice Pythonnet doesn't support using static methods at the top level
             mainScriptBuilder.AppendLine("# Import submodules");
             foreach (Type type in summary.InvolvedStaticTypes)
-                mainScriptBuilder.AppendLine($"from {type.Namespace} import {type.Name}");
+                mainScriptBuilder.AppendLine($"from {type.Namespace} import {type.Name}"); // TODO: Add brief summary of class description if available
             mainScriptBuilder.AppendLine();
             // Entry point
             mainScriptBuilder.AppendLine("# Main script content");
@@ -272,8 +272,11 @@ namespace Parcel.Neo.Base.Algorithms
                             statements.Add($"{methodCallName}({string.Join(", ", parameters)})");
 
                         // Deal with missing parameters
-                        foreach (string parameter in parameters)
-                            VariableDeclarations.TryAdd(parameter, "\"\"");
+                        for (int i = 0; i < parameters.Length; i++)
+                        {
+                            string parameter = parameters[i];
+                            VariableDeclarations.TryAdd(parameter, autoNode.Descriptor.DefaultInputValues[i].ToString());
+                        }
                     }
                     // Deal with front-end implemented nodes
                     else
