@@ -328,8 +328,13 @@ namespace Parcel.Neo
 
             if (folderDialog.ShowDialog() == true)
             {
-                string folderName = folderDialog.FolderName;
-                // Do something with the result
+                string folderPath = folderDialog.FolderName;
+                string currentFilename = System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath);
+                string mainScriptFilename = $"{(string.IsNullOrEmpty(currentFilename) ? "main" : currentFilename)}.py";
+                AlgorithmHelper.GenerateGraphPythonScripts(folderPath, mainScriptFilename, Canvas);
+
+                // Open output folder in file explorer (default program) after done
+                ProcessHelper.OpenFileWithDefaultProgram(folderPath);
             }
         }
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
