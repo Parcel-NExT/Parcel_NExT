@@ -270,6 +270,17 @@ namespace Parcel.Neo.Base.Algorithms
                         string[] parameters = autoNode.Input.Select(i => i.Title).ToArray();
                         string methodCallName = $"{(autoNode.Descriptor.Method.IsStatic ? autoNode.Descriptor.Method.DeclaringType.Name + ".": string.Empty)}{autoNode.Descriptor.NodeName}"; // TODO: We do not need to address full type name if we are using static (that's why we should not handle statement generation directly here and just parse essential information and let the actual code generation for specific target languages (pure vs c# vs python) handle it
 
+                        // Translate parameters
+                        string[] parameterDefaultValues = Enumerable.Range(0, parameters.Length).Select(i => autoNode.Descriptor.DefaultInputValues[i].ToString()).ToArray();
+                        for (int i = 0; i < parameters.Length; i++)
+                        {
+                            string parameter = parameters[i];
+                            if (VariableDeclarations.TryGetValue(parameter, out string value))
+                                parameters[i] = value;
+                            else
+                                parameters[i] = parameterDefaultValues[i];
+                        }
+
                         // Save outputs
                         if (autoNode.Output.Any())
                         {
@@ -281,15 +292,8 @@ namespace Parcel.Neo.Base.Algorithms
                         else
                             statements.Add($"{methodCallName}({string.Join(", ", parameters)})");
 
-                        // Deal with missing parameter values (declarae as variables)
-                        for (int i = 0; i < parameters.Length; i++)
-                        {
-                            string parameter = parameters[i];
-                            VariableDeclarations.TryAdd(parameter, autoNode.Descriptor.DefaultInputValues[i].ToString()); // TryAdd only adds when not already exist
-                            ScopedVariables.Add(parameter);
-                        }
-
-                        handledNodes[processorNode] = new();
+                        // Book keep node
+                        handledNodes[processorNode] = new(); // TODO: Add exposed variables
                     }
                     // Deal with front-end implemented nodes
                     else
@@ -297,7 +301,7 @@ namespace Parcel.Neo.Base.Algorithms
                         // Primitives are processed as variable definition
                         if (processorNode is PrimitiveNode primitive)
                         {
-                            string variableName = processorNode.Title;
+                            string variableName = processorNode.Title.Camelize();
                             VariableDeclarations[variableName] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
                             ScopedVariables.Add(variableName);
                             handledNodes[processorNode] = new(true, variableName);
