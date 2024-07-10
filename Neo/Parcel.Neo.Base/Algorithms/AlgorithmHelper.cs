@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -200,9 +201,9 @@ namespace Parcel.Neo.Base.Algorithms
 
                 """);
             // Main function
-            string[] programInputs = [.. summary.GraphInputs];
+            (string Name, bool RepresentsNumber)[] programInputs = [.. summary.GraphInputs];
             mainScriptBuilder.AppendLine("# Main script content");
-            mainScriptBuilder.AppendLine($"def Main({string.Join(", ", programInputs)}):{(summary.GraphOutputs.Count > 0 ? $" # With {summary.GraphOutputs.Count} {(summary.GraphOutputs.Count > 1 ? "outputs" : "output")}: {string.Join(", ", summary.GraphOutputs)}" : string.Empty)}");
+            mainScriptBuilder.AppendLine($"def Main({string.Join(", ", programInputs.Select(p => p.Name))}):{(summary.GraphOutputs.Count > 0 ? $" # With {summary.GraphOutputs.Count} {(summary.GraphOutputs.Count > 1 ? "outputs" : "output")}: {string.Join(", ", summary.GraphOutputs)}" : string.Empty)}");
             StringBuilder bodyBuilder = new();
             // Do variable declarations first
             foreach ((string key, string value) in summary.VariableDeclarations)
@@ -244,8 +245,8 @@ namespace Parcel.Neo.Base.Algorithms
                             if len(sys.argv) != 1 + {programInputs.Length}:
                                 Console.Print("Missing required arguments.")
                             else:
-                                {string.Join("\n            ", programInputs.Select((v, i) => $"{v} = sys.argv[{1 + i}]"))}
-                                Main({string.Join(", ", programInputs)}){(summary.GraphOutputs.Count > 0 ? " # The program generates outputs; Somehow make use of outputs..." : string.Empty)}
+                                {string.Join("\n            ", programInputs.Select((v, i) => $"{v.Name} = {(v.RepresentsNumber ? $"float(sys.argv[{1 + i}])" : $"sys.argv[{1 + i}]")}"))}
+                                Main({string.Join(", ", programInputs.Select(p => p.Name))}){(summary.GraphOutputs.Count > 0 ? " # The program generates outputs; Somehow make use of outputs..." : string.Empty)}
                     """);
 
             // Create output folder if not exist
@@ -291,7 +292,7 @@ namespace Parcel.Neo.Base.Algorithms
 
             #region Properties
             public string SubgraphID { get; }
-            public HashSet<string> GraphInputs { get; } = [];
+            public HashSet<(string Name, bool RepresentsNumber)> GraphInputs { get; } = [];
             public HashSet<string> GraphOutputs { get; } = [];
             public Dictionary<string, string> VariableDeclarations { get; } = [];
             public HashSet<string> ScopedVariables { get; } = [];
@@ -386,7 +387,7 @@ namespace Parcel.Neo.Base.Algorithms
                             foreach (OutputConnector output in graphInput.Output)
                             {
                                 string inputVariableName = output.Title.Camelize();
-                                GraphInputs.Add(inputVariableName);
+                                GraphInputs.Add((inputVariableName, TypeDescriptor.GetConverter(output.DataType).CanConvertFrom(typeof(double))));
                                 ScopedVariables.Add(inputVariableName);
                             }
                             handledNodes[processorNode] = new(true, graphInput.Output.ToDictionary(o => o.Title, o => o.Title.Camelize()));
