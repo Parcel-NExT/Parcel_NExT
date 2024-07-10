@@ -55,7 +55,7 @@ namespace Parcel.Neo.Base.Algorithms
                     else
                         Queue.Insert(Queue.IndexOf(iterationLast), currentNode);
                 }
-                else if (iterationLast != null) // Swap
+                else if (iterationLast != null && Queue.IndexOf(iterationLast) < Queue.IndexOf(currentNode)) // Swap
                 {
                     Queue.Remove(currentNode);
                     Queue.Insert(Queue.IndexOf(iterationLast), currentNode);
