@@ -15,7 +15,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
         #endregion
 
         #region Node Interface
-        protected readonly OutputConnector ValueOutput = new OutputConnector(typeof(string))
+        protected readonly OutputConnector ValueOutput = new(typeof(string))
         {
             Title = "Value"
         };

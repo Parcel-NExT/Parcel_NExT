@@ -22,7 +22,8 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Cached Attributes
-        public string ArgumentsList { get; }
+        public string ArgumentsListFull { get; }
+        public string ArgumentsListSimple{ get; }
         public string ReturnsList { get; }
         public bool HasReturnValue { get; }
         public AutomaticNodeDescriptor Descriptor { get; }
@@ -42,7 +43,8 @@ namespace Parcel.Neo.Base.Framework
             ImplementationType = NodeImplementationType.MethodInfo;
 
             // Precomputed for access efficiency
-            ArgumentsList = GetArgumentsList();
+            ArgumentsListFull = GetArgumentsListFull();
+            ArgumentsListSimple = GetArgumentsListSimple();
             ReturnsList = GetReturnsList();
             HasReturnValue = GetHasReturnValue();
             Descriptor = new AutomaticNodeDescriptor(Name, Method);
@@ -54,7 +56,8 @@ namespace Parcel.Neo.Base.Framework
             ImplementationType = NodeImplementationType.PV1NativeFrontendImplementedGraphNode;
 
             // Precomputed for access efficiency
-            ArgumentsList = GetArgumentsList();
+            ArgumentsListFull = GetArgumentsListFull();
+            ArgumentsListSimple = GetArgumentsListSimple();
             ReturnsList = GetReturnsList();
             HasReturnValue = GetHasReturnValue();
         }
@@ -77,17 +80,32 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Accessor
-        private string GetArgumentsList()
+        private string GetArgumentsListSimple()
         {
             switch (ImplementationType)
             {
                 case NodeImplementationType.PV1NativeFrontendImplementedGraphNode:
                     var baseNode = (BaseNode)Activator.CreateInstance(ProcessorNodeType);
                     if (baseNode is ProcessorNode processor)
-                        return string.Join(", ", processor.Input.Select(i => i.Title));
+                        return string.Join(", ", processor.Input.Where(i => !i.IsHidden).Select(i => i.Title));
                     else return string.Empty;
                 case NodeImplementationType.MethodInfo:
                     return string.Join(", ", Method.GetParameters().Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}?" : p.Name)));
+                default:
+                    throw new ArgumentOutOfRangeException($"Unrecognized implementation type: {ImplementationType}");
+            }
+        }
+        private string GetArgumentsListFull()
+        {
+            switch (ImplementationType)
+            {
+                case NodeImplementationType.PV1NativeFrontendImplementedGraphNode:
+                    var baseNode = (BaseNode)Activator.CreateInstance(ProcessorNodeType);
+                    if (baseNode is ProcessorNode processor)
+                        return string.Join(", ", processor.Input.Where(i => !i.IsHidden).Select(i => i.Title));
+                    else return string.Empty;
+                case NodeImplementationType.MethodInfo:
+                    return string.Join(", ", Method.GetParameters().Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}:{p.ParameterType.Name}?" : $"{p.Name}:{p.ParameterType.Name}")));
                 default:
                     throw new ArgumentOutOfRangeException($"Unrecognized implementation type: {ImplementationType}");
             }
@@ -99,7 +117,7 @@ namespace Parcel.Neo.Base.Framework
                 case NodeImplementationType.PV1NativeFrontendImplementedGraphNode:
                     var baseNode = (BaseNode)Activator.CreateInstance(ProcessorNodeType);
                     if (baseNode is ProcessorNode processor)
-                        return string.Join(", ", processor.Output.Select(i => i.Title));
+                        return string.Join(", ", processor.Output.Where(o => !o.IsHidden).Select(i => i.Title));
                     else return string.Empty;
                 case NodeImplementationType.MethodInfo:
                     return Method.ReturnType == typeof(void) ? string.Empty : Method.ReturnType.Name; // TODO: This is NOT complete return values; Implement handling of out parameters
