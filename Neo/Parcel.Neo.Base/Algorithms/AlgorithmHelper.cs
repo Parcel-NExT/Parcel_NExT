@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
+using Humanizer;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
@@ -239,6 +241,7 @@ namespace Parcel.Neo.Base.Algorithms
             #region Properties
             public string SubgraphID { get; }
             public Dictionary<string, string> VariableDeclarations { get; } = [];
+            public HashSet<string> ScopedVariables { get; } = [];
             public string[] ScriptSectionStatements { get; private set; } = [];
             public (string PackageID, string Namespace)[] UniqueNamespaces { get; private set; }
             public Dictionary<string, string> StandardPackageImports { get; private set; }
@@ -247,13 +250,16 @@ namespace Parcel.Neo.Base.Algorithms
             public Type[] InvolvedStaticTypes => UniqueTypes.Where(t => t.IsAbstract && t.IsSealed).ToArray();
             #endregion
 
+            public record NodeHandlingResult(bool IsVariable = false, string? VariableName = null);
+
             #region Method
             private void GatherScriptDependencies(in ExecutionQueue graph)
             {
                 List<AutomaticProcessorNode> automaticProcessors = [];
                 // TOOD: Special handle math nodes that have corresponding C# operators: +-*/
                 List<string> statements = [];
-                foreach (ProcessorNode processorNode in graph.Queue)
+                Dictionary<ProcessorNode, NodeHandlingResult> handledNodes = [];
+                foreach (ProcessorNode processorNode in graph.Queue) // Enumerate in the execution order
                 {
                     // Remark-cz: notice as of PV1 Neo we no longer have c#-lambda impelemented nodes; Everything is eitehr completely front-end implemented as ProcessorNode or it's C# defined in packages
 
@@ -266,24 +272,36 @@ namespace Parcel.Neo.Base.Algorithms
 
                         // Save outputs
                         if (autoNode.Output.Any())
-                            statements.Add($"{autoNode.MainOutput.Title} = {methodCallName}({string.Join(", ", parameters)})");
+                        {
+                            string outputVariableName = autoNode.MainOutput.Title.Camelize();
+                            statements.Add($"{outputVariableName} = {methodCallName}({string.Join(", ", parameters)})");
+                            ScopedVariables.Add(outputVariableName);
+                        }
                         // Plain call
                         else
                             statements.Add($"{methodCallName}({string.Join(", ", parameters)})");
 
-                        // Deal with missing parameters
+                        // Deal with missing parameter values (declarae as variables)
                         for (int i = 0; i < parameters.Length; i++)
                         {
                             string parameter = parameters[i];
-                            VariableDeclarations.TryAdd(parameter, autoNode.Descriptor.DefaultInputValues[i].ToString());
+                            VariableDeclarations.TryAdd(parameter, autoNode.Descriptor.DefaultInputValues[i].ToString()); // TryAdd only adds when not already exist
+                            ScopedVariables.Add(parameter);
                         }
+
+                        handledNodes[processorNode] = new();
                     }
                     // Deal with front-end implemented nodes
                     else
                     {
                         // Primitives are processed as variable definition
                         if (processorNode is PrimitiveNode primitive)
-                            VariableDeclarations[processorNode.Title] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
+                        {
+                            string variableName = processorNode.Title;
+                            VariableDeclarations[variableName] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
+                            ScopedVariables.Add(variableName);
+                            handledNodes[processorNode] = new(true, variableName);
+                        }
                     }
                 }
 
