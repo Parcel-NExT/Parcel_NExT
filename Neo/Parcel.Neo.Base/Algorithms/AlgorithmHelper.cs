@@ -72,7 +72,7 @@ namespace Parcel.Neo.Base.Algorithms
 
             // Copy compiled result to destination path
         }
-        public static void GenerateGraphScripts(string folderPath, string mainScriptFilename, NodesCanvas canvas)
+        public static void GenerateGraphPureScripts(string folderPath, string mainScriptFilename, NodesCanvas canvas)
         {
             // Generate scripts (a script contains functions and other information, a function contains sections and other information)
 
@@ -178,26 +178,56 @@ namespace Parcel.Neo.Base.Algorithms
             mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"LoadPackage('{importName}')"); // TODO: Add brief summary of package description if available
+            if (!summary.StandardPackageImports.ContainsKey("Parcel.Standard")) // Import console print
+                mainScriptBuilder.AppendLine("LoadPackage('Parcel.Standard')");
             mainScriptBuilder.AppendLine();
             // Import static types from corresponding namespaces; Notice Pythonnet doesn't support using static methods at the top level
             mainScriptBuilder.AppendLine("# Import submodules");
             foreach (Type type in summary.InvolvedStaticTypes)
                 mainScriptBuilder.AppendLine($"from {type.Namespace} import {type.Name}"); // TODO: Add brief summary of class description if available
+            if (!summary.StandardPackageImports.ContainsKey("Parcel.Standard")) // Import console print
+                mainScriptBuilder.AppendLine("from Parcel.Standard.System import Console");
             mainScriptBuilder.AppendLine();
-            // Entry point
-            mainScriptBuilder.AppendLine("# Main script content");
+            // Additional imports
             mainScriptBuilder.AppendLine("""
-                if __name__ == '__main__':
+                # Additional system imports
+                import sys
+                import textwrap
+
                 """);
+            // Main function
+            mainScriptBuilder.AppendLine("# Main script content");
+            mainScriptBuilder.AppendLine("def Main():");
+            StringBuilder bodyBuilder = new();
             // Do variable declarations first
             foreach ((string key, string value) in summary.VariableDeclarations)
-                mainScriptBuilder.AppendLine($"{defaultIndentation}{key} = {value}");
+                bodyBuilder.AppendLine($"{defaultIndentation}{key} = {value}");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
             {
-                mainScriptBuilder.Append(Regex.Replace(section.ToString().TrimEnd(), @"^", defaultIndentation, RegexOptions.Multiline)); // Apply line indentation
-                mainScriptBuilder.AppendLine();
+                bodyBuilder.Append(Regex.Replace(section.ToString().TrimEnd(), @"^", defaultIndentation, RegexOptions.Multiline)); // Apply line indentation
+                bodyBuilder.AppendLine();
             }
+            string functionBody = bodyBuilder.ToString().Trim();
+            mainScriptBuilder.AppendLine(string.IsNullOrWhiteSpace(functionBody) ? $"{defaultIndentation}return" : functionBody);
+            // Help Function
+            mainScriptBuilder.AppendLine(""""
+                def PrintHelp():
+                    helpMessage = """
+                        PENDING (Fetch from graph document metadata and generated from graph inputs usages)
+                        """
+                    Console.Print(textwrap.dedent(helpMessage).strip())
+                """");
+            mainScriptBuilder.AppendLine();
+            // Entry point
+            mainScriptBuilder.AppendLine("# Program entry");
+            mainScriptBuilder.AppendLine("""
+                if __name__ == '__main__':
+                    if len(sys.argv) > 1 and sys.argv[1] == "--help":
+                        PrintHelp()
+                    else:
+                        Main()
+                """);
 
             // Create output folder if not exist
             Directory.CreateDirectory(folderPath);
