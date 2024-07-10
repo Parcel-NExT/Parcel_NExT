@@ -309,7 +309,7 @@ namespace Parcel.Neo
                 string folderPath = folderDialog.FolderName;
                 string currentFilename = System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath);
                 string mainScriptFilename = $"{(string.IsNullOrEmpty(currentFilename) ? "Main" : currentFilename)}.cs";
-                AlgorithmHelper.GenerateGraphScripts(folderPath, mainScriptFilename, Canvas);
+                AlgorithmHelper.GenerateGraphPureScripts(folderPath, mainScriptFilename, Canvas);
 
                 // Open output folder in file explorer (default program) after done
                 ProcessHelper.OpenFileWithDefaultProgram(folderPath);
