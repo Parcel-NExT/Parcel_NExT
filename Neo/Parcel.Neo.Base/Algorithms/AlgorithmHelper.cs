@@ -275,8 +275,15 @@ namespace Parcel.Neo.Base.Algorithms
                         for (int i = 0; i < parameters.Length; i++)
                         {
                             string parameter = parameters[i];
-                            if (VariableDeclarations.TryGetValue(parameter, out string value))
-                                parameters[i] = value;
+                            if (autoNode.Input[i].Connections.Any())
+                            {
+                                ProcessorNode source = autoNode.Input[i].Connections.Single().Input.Node as ProcessorNode;
+                                if (!handledNodes.ContainsKey(source))
+                                    throw new ApplicationException("Source should have already been handled.");
+                                if (!handledNodes[source].IsVariable)
+                                    throw new ApplicationException("Source should have generated some outputs.");
+                                parameters[i] = handledNodes[source].VariableName;
+                            }
                             else
                                 parameters[i] = parameterDefaultValues[i];
                         }
