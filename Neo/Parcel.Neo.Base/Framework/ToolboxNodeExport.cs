@@ -1,5 +1,6 @@
 ﻿using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -64,6 +65,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Method
+        Dictionary<(string, MethodInfo), AutomaticNodeDescriptor> DescriptorsCache = [];
         public BaseNode InstantiateNode()
         {
             switch (ImplementationType)
@@ -72,7 +74,10 @@ namespace Parcel.Neo.Base.Framework
                     // TODO: We can use automatic node to invoke constructors for types that have constructor
                     return (BaseNode)Activator.CreateInstance(ProcessorNodeType);
                 case NodeImplementationType.MethodInfo:
-                    return new AutomaticProcessorNode();
+                    (string Name, MethodInfo Method) key = (Name, Method);
+                    if (!DescriptorsCache.ContainsKey(key))
+                        DescriptorsCache[key] = new AutomaticNodeDescriptor(Name, Method);
+                    return new AutomaticProcessorNode(DescriptorsCache[key]);
                 default:
                     throw new ApplicationException("Invalid implementation type.");
             }
