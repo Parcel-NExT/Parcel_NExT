@@ -439,8 +439,8 @@ namespace Parcel.Neo
 
             PopupTab popupTab = new(this)
             {
-                Left = cursor.X,
-                Top = cursor.Y,
+                Left = cursor.X - 20, // Remark-cz: The (-20, -10) is a hack to make it slightly harder to mis-mouse-leave and close the popup
+                Top = cursor.Y - 10,
                 Topmost = true
             };
             void CreateNodeFromSelectedSearchItem(ToolboxNodeExport? toolboxNodeExport)
