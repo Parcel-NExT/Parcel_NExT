@@ -169,7 +169,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Main import
             mainScriptBuilder.AppendLine("""
                 # Import Root Parcel NExT Module
-                from parcel_next import LoadPackage
+                from ParcelNExT import LoadPackage
 
                 """);
             // Import package references
@@ -306,7 +306,7 @@ namespace Parcel.Neo.Base.Algorithms
             #endregion
         }
         private static ScriptDependencySummary GatherScriptDependencies(in ExecutionQueue graph)
-            => new ScriptDependencySummary("Main Script", graph);
+            => new("Main Script", graph);
         #endregion
 
         #region Helpers
