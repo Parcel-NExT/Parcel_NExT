@@ -294,13 +294,16 @@ namespace Parcel.Neo.Base.Algorithms
                             string outputVariableName = autoNode.MainOutput.Title.Camelize();
                             statements.Add($"{outputVariableName} = {methodCallName}({string.Join(", ", parameters)})");
                             ScopedVariables.Add(outputVariableName);
+
+                            // Book keep node outputs
+                            handledNodes[processorNode] = new(true, outputVariableName);
                         }
                         // Plain call
                         else
+                        {
                             statements.Add($"{methodCallName}({string.Join(", ", parameters)})");
-
-                        // Book keep node
-                        handledNodes[processorNode] = new(); // TODO: Add exposed variables
+                            handledNodes[processorNode] = new();
+                        }
                     }
                     // Deal with front-end implemented nodes
                     else
