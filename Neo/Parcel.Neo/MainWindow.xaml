@@ -374,7 +374,7 @@
                     <MenuItem Header="Executable..." Click="ExportExecutableMenuItem_Click"/>
                     <MenuItem Header="C# Project..." Visibility="Collapsed"/>
                     <MenuItem Header="Pure Script(s) (Pure 2)..." Click="ExportPureScriptsMenuItem_Click"/>
-                    <MenuItem Header="Python Script(s)..." Visibility="Collapsed"/>
+                    <MenuItem Header="Python Script(s)..." Click="ExportPythonScriptsMenuItem_Click"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Close"/>

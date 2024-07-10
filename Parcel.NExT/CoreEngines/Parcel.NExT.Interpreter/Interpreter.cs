@@ -2,7 +2,6 @@
 using System.Text;
 using System.Reflection;
 using Parcel.NExT.Interpreter.Scripting;
-using Parcel.NExT.Interpreter.Helpers;
 
 namespace Parcel.NExT.Interpreter
 {
@@ -228,12 +227,21 @@ namespace Parcel.NExT.Interpreter
 
     public static class AssemblyHelper
     {
+        public static string ParcelNExTDistributionRuntimeDirectory => ExecutingAssemblyDirectory;
+        public static string CallingAssemblyDirectory
+        {
+            get
+            {
+                string assemblyPath = new UriBuilder(Assembly.GetCallingAssembly().CodeBase).Path; // Use Codebase instead of Location for more reasonable path format
+                return Path.GetDirectoryName(assemblyPath);
+            }
+        }
         public static string ExecutingAssemblyDirectory
         {
             get
             {
-                string codeBase = Assembly.GetExecutingAssembly().Location;
-                return Path.GetDirectoryName(codeBase);
+                string assemblyPath = new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path; // Use Codebase instead of Location for more reasonable path format
+                return Path.GetDirectoryName(assemblyPath);
             }
         }
     }

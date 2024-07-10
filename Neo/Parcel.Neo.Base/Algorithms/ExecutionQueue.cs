@@ -38,26 +38,31 @@ namespace Parcel.Neo.Base.Algorithms
         #endregion
 
         #region Routines
-        private void UpdateNodePosition(ProcessorNode last, ProcessorNode node)
+        private void UpdateNodePosition(ProcessorNode iterationLast, ProcessorNode currentNode)
         {
-            if(!node.Input.Any(i => i.IsConnected))
-                Queue.Insert(0, node);
+            if (!currentNode.Input.Any(i => i.IsConnected)) // This is one of the "root" nodes
+            {
+                if (Queue.Contains(currentNode)) // Remove existing node in queue then re-add it
+                    Queue.Remove(currentNode);
+                Queue.Insert(0, currentNode);
+            }
             else
             {
-                if (!Queue.Contains(node))
+                if (!Queue.Contains(currentNode))
                 {
-                    if (last == null)
-                        Queue.Add(node);
+                    if (iterationLast == null)
+                        Queue.Add(currentNode);
                     else
-                        Queue.Insert(Queue.IndexOf(last), node);
+                        Queue.Insert(Queue.IndexOf(iterationLast), currentNode);
                 }
-                else if (last != null)
+                else if (iterationLast != null && Queue.IndexOf(iterationLast) < Queue.IndexOf(currentNode)) // Swap
                 {
-                    Queue.Remove(node);
-                    Queue.Insert(Queue.IndexOf(last), node);
+                    Queue.Remove(currentNode);
+                    Queue.Insert(Queue.IndexOf(iterationLast), currentNode);
                 }
                 
-                foreach (BaseNode iter in node.Input.Where(i => i.IsConnected)
+                // Go through the entire chain and update node positions on the chain
+                foreach (BaseNode iter in currentNode.Input.Where(i => i.IsConnected)
                     .Select(i => i.Connections.Single())
                     .Select(c => c.Input.Node))
                 {
@@ -67,7 +72,7 @@ namespace Parcel.Neo.Base.Algorithms
                         input = knot.Previous;
 
                     if(input is ProcessorNode processor)
-                        UpdateNodePosition(node, processor);
+                        UpdateNodePosition(currentNode, processor);
                 }
             }
         }

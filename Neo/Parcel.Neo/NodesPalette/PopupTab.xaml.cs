@@ -74,7 +74,7 @@ namespace Parcel.Neo
             // Button item
             else
             {
-                MenuItem item = new() { Header = $"{node.Name}({node.ArgumentsList})", Tag = node, ToolTip = node.Tooltip };
+                MenuItem item = new() { Header = $"{node.Name}{(node.ArgumentsListSimple.Any() ? $"({node.ArgumentsListSimple})": string.Empty)}", Tag = node, ToolTip = node.Tooltip };
                 item.Click += NodeMenuItemOnClick;
                 toolboxMenu.Items.Add(item);
                 
@@ -88,7 +88,7 @@ namespace Parcel.Neo
                 .Where(n => n.Key.Name.Contains(searchText, StringComparison.CurrentCultureIgnoreCase))
                 .Select(node =>
                 {
-                    string key = $"{node.Value} -> {node.Key.Name} ({node.Key.ArgumentsList})";
+                    string key = $"[{node.Value}] {node.Key.Name}{(node.Key.ArgumentsListFull.Any() ? $"({node.Key.ArgumentsListFull})" : string.Empty)}{(node.Key.HasReturnValue ? " -> " + string.Join(", ", node.Key.ReturnsList): string.Empty)}";
                     SearchResult result = new(key, node.Key.Tooltip);
                     _searchResultLookup[result] = node.Key;
                     return result;
@@ -187,6 +187,7 @@ namespace Parcel.Neo
         }
         private void NodesWindow_MouseLeave(object sender, MouseEventArgs e)
         {
+            // Remark: There is good reason why we use MouseLeave to close the popup. 1) We have to close it somehow, 2) We cannot use Deactivated or LostFocus because LostFocus just never triggers and calling Close()/Hide() in deactivated deactivates parent window as well (making Neo lose focus)
             Close();
         }
         #endregion

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Warning (Experimental Feature)" SizeToContent="WidthAndHeight"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize">
     <Window.Resources>
         <Style TargetType="Label">
             <Setter Property="Foreground" Value="LightGray"/>
@@ -22,8 +22,9 @@
         </Style>
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="DarkSlateGray"/>
-            <Setter Property="Width" Value="75"/>
+            <Setter Property="MinWidth" Value="75"/>
             <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="5, 0"/>
         </Style>
     </Window.Resources>
     <Grid Background="#1E1E1E">
@@ -32,14 +33,33 @@
                 <Label DockPanel.Dock="Left" Content="!" Width="64" Margin="12" FontSize="75" FontFamily="Times New Roman" HorizontalContentAlignment="Center" Foreground="DarkRed" VerticalAlignment="Center"/>
                 <Label DockPanel.Dock="Top" Content="CodeGen is an experimental feature" FontSize="22" HorizontalAlignment="Center" Margin="0" Padding="0"/>
                 <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Stretch" TextAlignment="Left">
-                    You are using an experimental feature. Those demonstrates new features but may not be complete. Its behaviors are also likely to change in the future. Please expect bugs and be aware of potentially incorrect outputs.<LineBreak/><LineBreak/>
+                    You are using an experimental feature that is not production ready. This feature demonstrates new capabilities but may not be complete or fully functional. Its behaviors are also likely to change in the future. Please expect bugs and be aware of potentially incorrect outputs.<LineBreak/><LineBreak/>
                     
                     Instructions:<LineBreak/>
                     1. To export executable, you need to install .Net 8 SDK.
                     You can download from <Hyperlink NavigateUri="https://dotnet.microsoft.com/en-us/download/dotnet/8.0">official website</Hyperlink>.
                     <LineBreak/>
                     2. For executing generated Python scripts, you would need Python 3.10+, you can get Python from <Hyperlink NavigateUri="https://www.python.org/downloads/">official website</Hyperlink>.
+                    <LineBreak/>
+                    3. You need to also make sure Parcel NExT is installed in a permanent location on your local and path to its contents is available under environment PATH.
                 </TextBlock>
+                <Border x:Name="EnvPathNotSetNotification" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Visibility="Collapsed" MaxWidth="360" BorderBrush="SlateGray" BorderThickness="1" Margin="6">
+                    <TextBlock TextAlignment="Center">
+                        The System has detected you do not have proper development environment setup. Would you like the application to automatically setup proper environment paths for you?
+                        <Button Background="IndianRed" Foreground="AntiqueWhite" HorizontalAlignment="Center" Click="AutomaticSetEnvironmentPathsButton_Click">Setup Environment Paths for Me</Button>
+                    </TextBlock>
+                </Border>
+
+                <Border x:Name="AllGoodNotification" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Visibility="Visible" MaxWidth="360" BorderBrush="SlateGray" BorderThickness="1" Margin="6">
+                    <TextBlock TextAlignment="Center">
+                        You have all the essential environment paths set.
+                        <LineBreak/>
+                        Parcel Package Assmeblies Folder: <Run x:Name="ParcelPackageAssembliesFolderRun"/>
+                        <LineBreak/>
+                        Python Module Folder: <Run x:Name="PythonModuleFolderRun"/>
+                        <LineBreak/>
+                    </TextBlock>
+                </Border>
             </DockPanel>
             <StackPanel Orientation="Horizontal" Margin="0, 4" HorizontalAlignment="Center">
                 <Button Content="Continue" Background="DarkKhaki" Click="ContinueButton_Click"/>

@@ -309,7 +309,7 @@ namespace Parcel.Neo
                 string folderPath = folderDialog.FolderName;
                 string currentFilename = System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath);
                 string mainScriptFilename = $"{(string.IsNullOrEmpty(currentFilename) ? "Main" : currentFilename)}.cs";
-                AlgorithmHelper.GenerateGraphScripts(folderPath, mainScriptFilename, Canvas);
+                AlgorithmHelper.GenerateGraphPureScripts(folderPath, mainScriptFilename, Canvas);
 
                 // Open output folder in file explorer (default program) after done
                 ProcessHelper.OpenFileWithDefaultProgram(folderPath);
@@ -328,8 +328,13 @@ namespace Parcel.Neo
 
             if (folderDialog.ShowDialog() == true)
             {
-                string folderName = folderDialog.FolderName;
-                // Do something with the result
+                string folderPath = folderDialog.FolderName;
+                string currentFilename = System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath);
+                string mainScriptFilename = $"{(string.IsNullOrEmpty(currentFilename) ? "main" : currentFilename)}.py";
+                AlgorithmHelper.GenerateGraphPythonScripts(folderPath, mainScriptFilename, Canvas);
+
+                // Open output folder in file explorer (default program) after done
+                ProcessHelper.OpenFileWithDefaultProgram(folderPath);
             }
         }
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
@@ -434,8 +439,8 @@ namespace Parcel.Neo
 
             PopupTab popupTab = new(this)
             {
-                Left = cursor.X,
-                Top = cursor.Y,
+                Left = cursor.X - 20, // Remark-cz: The (-20, -10) is a hack to make it slightly harder to mis-mouse-leave and close the popup
+                Top = cursor.Y - 10,
                 Topmost = true
             };
             void CreateNodeFromSelectedSearchItem(ToolboxNodeExport? toolboxNodeExport)

@@ -56,7 +56,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
         #endregion
 
         #region View Binding/Internal Node Properties
-        private ObservableCollection<GraphInputOutputDefinition> _definitions = new ObservableCollection<GraphInputOutputDefinition>();
+        private ObservableCollection<GraphInputOutputDefinition> _definitions = [];
         public ObservableCollection<GraphInputOutputDefinition> Definitions { get => _definitions; private set => SetField(ref _definitions, value); }
         public IProcessorNodeCommand AddEntryCommand { get; }
         public IProcessorNodeCommand RemoveEntryCommand { get; }
@@ -70,7 +70,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
         private void AddEntry()
         {
             string name = $"{NewEntryPrefix} {Definitions.Count + 1}";
-            GraphInputOutputDefinition def = new GraphInputOutputDefinition() {Name = name};
+            GraphInputOutputDefinition def = new() { Name = name };
             def.PropertyChanged += (sender, args) => DefinitionChanged(sender as GraphInputOutputDefinition);
             
             Definitions.Add(def);

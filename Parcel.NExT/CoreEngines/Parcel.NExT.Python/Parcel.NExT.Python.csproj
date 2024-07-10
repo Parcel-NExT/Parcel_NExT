@@ -15,4 +15,10 @@
     <ProjectReference Include="..\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ParcelNExT.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
