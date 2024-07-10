@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using Humanizer;
+using Parcel.CoreEngine.Versioning;
 using Parcel.Neo.Base.Framework.Advanced;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
@@ -197,8 +198,9 @@ namespace Parcel.Neo.Base.Algorithms
 
                 """);
             // Main function
+            string[] programInputs = [.. summary.GraphInputs];
             mainScriptBuilder.AppendLine("# Main script content");
-            mainScriptBuilder.AppendLine("def Main():");
+            mainScriptBuilder.AppendLine($"def Main({string.Join(", ", programInputs)}):");
             StringBuilder bodyBuilder = new();
             // Do variable declarations first
             foreach ((string key, string value) in summary.VariableDeclarations)
@@ -223,13 +225,26 @@ namespace Parcel.Neo.Base.Algorithms
             mainScriptBuilder.AppendLine();
             // Entry point
             mainScriptBuilder.AppendLine("# Program entry");
-            mainScriptBuilder.AppendLine("""
-                if __name__ == '__main__':
-                    if len(sys.argv) > 1 and sys.argv[1] == "--help":
-                        PrintHelp()
-                    else:
-                        Main()
-                """);
+            if (programInputs.Length == 0)
+                mainScriptBuilder.AppendLine("""
+                    if __name__ == '__main__':
+                        if len(sys.argv) > 1 and sys.argv[1] == "--help":
+                            PrintHelp()
+                        else:
+                            Main()
+                    """);
+            else
+                mainScriptBuilder.AppendLine($"""
+                    if __name__ == '__main__':
+                        if len(sys.argv) > 1 and sys.argv[1] == "--help":
+                            PrintHelp()
+                        else:
+                            if len(sys.argv) != 1 + {programInputs.Length}:
+                                Console.Print("Missing required arguments.")
+                            else:
+                                {string.Join("\n            ", programInputs.Select((v, i) => $"{v} = sys.argv[{1 + i}]"))}
+                                Main({string.Join(", ", programInputs)})
+                    """);
 
             // Create output folder if not exist
             Directory.CreateDirectory(folderPath);
@@ -243,16 +258,18 @@ namespace Parcel.Neo.Base.Algorithms
 
             static string GetPureScriptGeneratedHeader()
             {
-                return """"
+                return $""""
                     """
-                    Parcel NExT Executable Workflow
-                    This python script is generated with Parcel NExT CodeGen.
+                    Parcel NExT Executable Workflow (Version {EngineVersion.Version})
+                    This python script is generated with Parcel NExT CodeGen feature.
+
                     You should have Python installed in order to execute this script; 
                     You can downoad Python at https://www.python.org/downloads/. We recommend latest version.
                     Notice to run the script you must make sure all essential dependencies are available under PYTHONPATH.
 
                     Use `pip install pythonnet` to install essential dependency.
-                    Requires .NET Core to be installed or the dotnet CLI tool to be on the PATH.
+                    Requires .NET Core to be installed or the `dotnet` CLI tool available on PATH.
+                    You can download .Net 8 SDK at https://dotnet.microsoft.com/en-us/download/dotnet/8.0.
                     """
 
                     """"; // TODO: Publish Parcel NExT as a standalone python package
@@ -272,7 +289,7 @@ namespace Parcel.Neo.Base.Algorithms
 
             #region Properties
             public string SubgraphID { get; }
-            public HashSet<string> GraphInputs { get; }
+            public HashSet<string> GraphInputs { get; } = [];
             public HashSet<string> GraphOutputs { get; }
             public Dictionary<string, string> VariableDeclarations { get; } = [];
             public HashSet<string> ScopedVariables { get; } = [];
@@ -353,12 +370,13 @@ namespace Parcel.Neo.Base.Algorithms
                         }
                         else if (processorNode is GraphInput graphInput)
                         {
-                            foreach (GraphInputOutputDefinition definition in graphInput.Definitions)
+                            foreach (OutputConnector output in graphInput.Output)
                             {
-                                GraphInputs.Add(definition.Name);
-                                ScopedVariables.Add(definition.Name);
+                                string inputVariableName = output.Title.Camelize();
+                                GraphInputs.Add(inputVariableName);
+                                ScopedVariables.Add(inputVariableName);
                             }
-                            handledNodes[processorNode] = new(true, graphInput.Output.ToDictionary(o => o.Title, o => o.Title));
+                            handledNodes[processorNode] = new(true, graphInput.Output.ToDictionary(o => o.Title, o => o.Title.Camelize()));
                         }
                         else if (processorNode is GraphOutput graphOutput)
                         {
