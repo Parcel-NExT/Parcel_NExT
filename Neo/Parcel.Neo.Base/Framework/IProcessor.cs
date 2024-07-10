@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using MathNet.Numerics.LinearAlgebra.Factorization;
@@ -70,7 +71,11 @@ namespace Parcel.Neo.Base.Framework
                     }
                     else
                     {
-                        methodExpectedParameterValuesArray[i] = nonOutMethodParameterValues[current];
+                        // Automatic conversion of number values
+                        if (nonOutMethodParameterValues[current].GetType() != item.ParameterType && TypeDescriptor.GetConverter(nonOutMethodParameterValues[current].GetType()).CanConvertTo(item.ParameterType)) // Requires IConvertible
+                            methodExpectedParameterValuesArray[i] = Convert.ChangeType(nonOutMethodParameterValues[current], item.ParameterType);
+                        else
+                            methodExpectedParameterValuesArray[i] = nonOutMethodParameterValues[current];
                         current++;
                     }
                 }
