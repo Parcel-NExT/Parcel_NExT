@@ -1,1 +1,0 @@
-This could become an ADO delivery plan (preferrably not managed on ADO but internally in Methodox due to migration concerns and ease of management).
