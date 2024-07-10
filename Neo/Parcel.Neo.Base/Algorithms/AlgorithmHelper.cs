@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using Humanizer;
+using Parcel.Neo.Base.Framework.Advanced;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
@@ -208,8 +209,9 @@ namespace Parcel.Neo.Base.Algorithms
                 bodyBuilder.Append(Regex.Replace(section.ToString().TrimEnd(), @"^", defaultIndentation, RegexOptions.Multiline)); // Apply line indentation
                 bodyBuilder.AppendLine();
             }
-            string functionBody = bodyBuilder.ToString().Trim();
+            string functionBody = bodyBuilder.ToString().TrimEnd();
             mainScriptBuilder.AppendLine(string.IsNullOrWhiteSpace(functionBody) ? $"{defaultIndentation}return" : functionBody);
+            mainScriptBuilder.AppendLine();
             // Help Function
             mainScriptBuilder.AppendLine(""""
                 def PrintHelp():
@@ -270,6 +272,8 @@ namespace Parcel.Neo.Base.Algorithms
 
             #region Properties
             public string SubgraphID { get; }
+            public HashSet<string> GraphInputs { get; }
+            public HashSet<string> GraphOutputs { get; }
             public Dictionary<string, string> VariableDeclarations { get; } = [];
             public HashSet<string> ScopedVariables { get; } = [];
             public string[] ScriptSectionStatements { get; private set; } = [];
@@ -280,7 +284,7 @@ namespace Parcel.Neo.Base.Algorithms
             public Type[] InvolvedStaticTypes => UniqueTypes.Where(t => t.IsAbstract && t.IsSealed).ToArray();
             #endregion
 
-            public record NodeHandlingResult(bool IsVariable = false, string? VariableName = null);
+            public record NodeHandlingResult(bool IsVariable = false, Dictionary<string, string>? Variables = null /*From attribute to final scoped variable name*/);
 
             #region Method
             private void GatherScriptDependencies(in ExecutionQueue graph)
@@ -307,12 +311,13 @@ namespace Parcel.Neo.Base.Algorithms
                             string parameter = parameters[i];
                             if (autoNode.Input[i].Connections.Any())
                             {
-                                ProcessorNode source = autoNode.Input[i].Connections.Single().Input.Node as ProcessorNode;
-                                if (!handledNodes.ContainsKey(source))
+                                BaseConnector connection = autoNode.Input[i].Connections.Single().Input;
+                                ProcessorNode source = (connection.Node as ProcessorNode)!;
+                                if (!handledNodes.TryGetValue(source, out NodeHandlingResult? connectedNodeResult))
                                     throw new ApplicationException("Source should have already been handled.");
-                                if (!handledNodes[source].IsVariable)
+                                if (!connectedNodeResult.IsVariable)
                                     throw new ApplicationException("Source should have generated some outputs.");
-                                parameters[i] = handledNodes[source].VariableName;
+                                parameters[i] = connectedNodeResult.Variables[connection.Title];
                             }
                             else
                                 parameters[i] = parameterDefaultValues[i];
@@ -326,7 +331,7 @@ namespace Parcel.Neo.Base.Algorithms
                             ScopedVariables.Add(outputVariableName);
 
                             // Book keep node outputs
-                            handledNodes[processorNode] = new(true, outputVariableName);
+                            handledNodes[processorNode] = new(true, new Dictionary<string, string> { { autoNode.MainOutput.Title, outputVariableName } });
                         }
                         // Plain call
                         else
@@ -344,7 +349,20 @@ namespace Parcel.Neo.Base.Algorithms
                             string variableName = processorNode.Title.Camelize();
                             VariableDeclarations[variableName] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
                             ScopedVariables.Add(variableName);
-                            handledNodes[processorNode] = new(true, variableName);
+                            handledNodes[processorNode] = new(true, new Dictionary<string, string> { { primitive.MainOutput.Title, variableName } });
+                        }
+                        else if (processorNode is GraphInput graphInput)
+                        {
+                            foreach (GraphInputOutputDefinition definition in graphInput.Definitions)
+                            {
+                                GraphInputs.Add(definition.Name);
+                                ScopedVariables.Add(definition.Name);
+                            }
+                            handledNodes[processorNode] = new(true, graphInput.Output.ToDictionary(o => o.Title, o => o.Title));
+                        }
+                        else if (processorNode is GraphOutput graphOutput)
+                        {
+                            throw new NotImplementedException();
                         }
                     }
                 }
