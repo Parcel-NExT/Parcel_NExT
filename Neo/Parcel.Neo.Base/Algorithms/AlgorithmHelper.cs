@@ -151,6 +151,8 @@ namespace Parcel.Neo.Base.Algorithms
         { 
             const string defaultIndentation = "    "; // Python default indentation is 4 spaces
 
+            // TODO: Below code definitely is worth some refactoring
+
             // Filter executable nodes
             IEnumerable<ProcessorNode> processors = canvas.Nodes
                 .Where(n => n is ProcessorNode node)
@@ -200,7 +202,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Main function
             string[] programInputs = [.. summary.GraphInputs];
             mainScriptBuilder.AppendLine("# Main script content");
-            mainScriptBuilder.AppendLine($"def Main({string.Join(", ", programInputs)}):");
+            mainScriptBuilder.AppendLine($"def Main({string.Join(", ", programInputs)}):{(summary.GraphOutputs.Count > 0 ? $" # With {summary.GraphOutputs.Count} {(summary.GraphOutputs.Count > 1 ? "outputs" : "output")}: {string.Join(", ", summary.GraphOutputs)}" : string.Empty)}");
             StringBuilder bodyBuilder = new();
             // Do variable declarations first
             foreach ((string key, string value) in summary.VariableDeclarations)
@@ -243,7 +245,7 @@ namespace Parcel.Neo.Base.Algorithms
                                 Console.Print("Missing required arguments.")
                             else:
                                 {string.Join("\n            ", programInputs.Select((v, i) => $"{v} = sys.argv[{1 + i}]"))}
-                                Main({string.Join(", ", programInputs)})
+                                Main({string.Join(", ", programInputs)}){(summary.GraphOutputs.Count > 0 ? " # The program generates outputs; Somehow make use of outputs..." : string.Empty)}
                     """);
 
             // Create output folder if not exist
@@ -290,7 +292,7 @@ namespace Parcel.Neo.Base.Algorithms
             #region Properties
             public string SubgraphID { get; }
             public HashSet<string> GraphInputs { get; } = [];
-            public HashSet<string> GraphOutputs { get; }
+            public HashSet<string> GraphOutputs { get; } = [];
             public Dictionary<string, string> VariableDeclarations { get; } = [];
             public HashSet<string> ScopedVariables { get; } = [];
             public string[] ScriptSectionStatements { get; private set; } = [];
@@ -306,6 +308,8 @@ namespace Parcel.Neo.Base.Algorithms
             #region Method
             private void GatherScriptDependencies(in ExecutionQueue graph)
             {
+                // TODO: This code definitely is worth some refactoring
+
                 List<AutomaticProcessorNode> automaticProcessors = [];
                 // TOOD: Special handle math nodes that have corresponding C# operators: +-*/
                 List<string> statements = [];
@@ -380,7 +384,33 @@ namespace Parcel.Neo.Base.Algorithms
                         }
                         else if (processorNode is GraphOutput graphOutput)
                         {
-                            throw new NotImplementedException();
+                            List<string> outputVariables = [];
+                            foreach (InputConnector input in graphOutput.Input)
+                            {
+                                string outputVariableName = input.Title.Camelize();
+                                GraphOutputs.Add(outputVariableName);
+
+                                // Resolve value
+                                string outputVariableValue = ""; // TODO: Fetch default value
+                                if (input.Connections.Any())
+                                {
+                                    BaseConnector connection = input.Connections.Single().Input;
+                                    ProcessorNode source = (connection.Node as ProcessorNode)!;
+                                    if (!handledNodes.TryGetValue(source, out NodeHandlingResult? connectedNodeResult))
+                                        throw new ApplicationException("Source should have already been handled.");
+                                    if (!connectedNodeResult.IsVariable)
+                                        throw new ApplicationException("Source should have generated some outputs.");
+                                    outputVariableValue = connectedNodeResult.Variables[connection.Title];
+                                }
+                                // Generate statement
+                                statements.Add($"{outputVariableName} = {outputVariableValue}");
+                                outputVariables.Add(outputVariableName);
+                            }
+
+                            // Final return statement
+                            statements.Add($"return {string.Join(", ", outputVariables)}");
+
+                            handledNodes[processorNode] = new();
                         }
                     }
                 }

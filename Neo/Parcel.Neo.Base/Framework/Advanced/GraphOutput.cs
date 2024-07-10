@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Parcel.Neo.Base.Framework.ViewModels;
 
 namespace Parcel.Neo.Base.Framework.Advanced
