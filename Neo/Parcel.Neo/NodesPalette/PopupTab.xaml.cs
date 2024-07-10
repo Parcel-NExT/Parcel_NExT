@@ -187,6 +187,7 @@ namespace Parcel.Neo
         }
         private void NodesWindow_MouseLeave(object sender, MouseEventArgs e)
         {
+            // Remark: There is good reason why we use MouseLeave to close the popup. 1) We have to close it somehow, 2) We cannot use Deactivated or LostFocus because LostFocus just never triggers and calling Close()/Hide() in deactivated deactivates parent window as well (making Neo lose focus)
             Close();
         }
         #endregion
