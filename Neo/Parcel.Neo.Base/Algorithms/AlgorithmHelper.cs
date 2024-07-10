@@ -314,7 +314,8 @@ namespace Parcel.Neo.Base.Algorithms
                 // TOOD: Special handle math nodes that have corresponding C# operators: +-*/
                 List<string> statements = [];
                 Dictionary<ProcessorNode, NodeHandlingResult> handledNodes = [];
-                foreach (ProcessorNode processorNode in graph.Queue) // Enumerate in the execution order
+                var enumeration = graph.Queue.Where(n => n is not GraphOutput).Concat(graph.Queue.Where(n => n is GraphOutput));
+                foreach (ProcessorNode processorNode in enumeration) // Enumerate in the execution order, keeping GraphOuts at the end
                 {
                     // Remark-cz: notice as of PV1 Neo we no longer have c#-lambda impelemented nodes; Everything is eitehr completely front-end implemented as ProcessorNode or it's C# defined in packages
 
@@ -326,7 +327,15 @@ namespace Parcel.Neo.Base.Algorithms
                         string methodCallName = $"{(autoNode.Descriptor.Method.IsStatic ? autoNode.Descriptor.Method.DeclaringType.Name + ".": string.Empty)}{autoNode.Descriptor.NodeName}"; // TODO: We do not need to address full type name if we are using static (that's why we should not handle statement generation directly here and just parse essential information and let the actual code generation for specific target languages (pure vs c# vs python) handle it
 
                         // Translate parameters
-                        string[] parameterDefaultValues = Enumerable.Range(0, parameters.Length).Select(i => autoNode.Descriptor.DefaultInputValues[i].ToString()).ToArray();
+                        string[] parameterLiteralValues = Enumerable.Range(0, parameters.Length)
+                            .Select(i =>
+                            {
+                                var connector = autoNode.Input[i];
+                                if (connector is PrimitiveInputConnector primitive)
+                                    return primitive.Value.ToString();
+                                else return autoNode.Descriptor.DefaultInputValues[i].ToString();
+                            })
+                            .ToArray(); // Get actual input values instead of assigned default values from function signature, because user may have changed it on the node surface (e.g. primitive number inputs connectors)
                         for (int i = 0; i < parameters.Length; i++)
                         {
                             string parameter = parameters[i];
@@ -341,7 +350,7 @@ namespace Parcel.Neo.Base.Algorithms
                                 parameters[i] = connectedNodeResult.Variables[connection.Title];
                             }
                             else
-                                parameters[i] = parameterDefaultValues[i];
+                                parameters[i] = parameterLiteralValues[i];
                         }
 
                         // Save outputs
