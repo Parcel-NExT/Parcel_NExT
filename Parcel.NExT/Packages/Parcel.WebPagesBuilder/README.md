@@ -7,3 +7,7 @@ Part of the CodeGen initiative.
 ## TODO
 
 - [ ] Live Update
+
+## References
+
+* Template design: https://github.com/h5bp/html5-boilerplate
