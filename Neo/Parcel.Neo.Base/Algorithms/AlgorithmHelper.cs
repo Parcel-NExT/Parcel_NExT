@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using Parcel.CoreEngine.Helpers;
@@ -11,6 +10,7 @@ using Parcel.CoreEngine.Versioning;
 using Parcel.Neo.Base.Framework.Advanced;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+using Parcel.NExT.Interpreter;
 using static Parcel.Neo.Base.Algorithms.AlgorithmHelper.ScriptDependencySummary;
 
 namespace Parcel.Neo.Base.Algorithms
@@ -500,6 +500,8 @@ namespace Parcel.Neo.Base.Algorithms
         {
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
             if (fileNameWithoutExtension.StartsWith("Parcel."))
+                return fileNameWithoutExtension;
+            else if (Path.GetDirectoryName(filePath) == AssemblyHelper.ParcelNExTDistributionRuntimeDirectory) // Check whether the referenced assembly if from parcel distribution runtime folder
                 return fileNameWithoutExtension;
             else return filePath;
         }
