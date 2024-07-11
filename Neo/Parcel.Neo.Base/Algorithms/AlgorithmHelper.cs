@@ -331,9 +331,13 @@ namespace Parcel.Neo.Base.Algorithms
                             .Select(i =>
                             {
                                 var connector = autoNode.Input[i];
+                                object? value = null;
                                 if (connector is PrimitiveInputConnector primitive)
-                                    return primitive.Value.ToString();
-                                else return autoNode.Descriptor.DefaultInputValues[i].ToString();
+                                    value = primitive.Value;
+                                else value = autoNode.Descriptor.DefaultInputValues[i];
+                                if (TypeHelper.IsNumericalType(value.GetType()))
+                                    return value.ToString();
+                                return $"\"{value}\"";
                             })
                             .ToArray(); // Get actual input values instead of assigned default values from function signature, because user may have changed it on the node surface (e.g. primitive number inputs connectors)
                         for (int i = 0; i < parameters.Length; i++)
@@ -391,7 +395,7 @@ namespace Parcel.Neo.Base.Algorithms
                         {
                             string variableName = GetNewVariableName(ScopedVariables, processorNode.Title.Camelize());
                             TypedVariable newVariable = new(variableName, processorNode.MainOutput.DataType);
-                            VariableDeclarations[newVariable] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
+                            VariableDeclarations[newVariable] = newVariable.IsStringLiteral ? $"\"{primitive.Value}\"" : primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
                             ScopedVariables.Add(newVariable);
                             handledNodes[processorNode] = new(true, new Dictionary<string, TypedVariable> { { primitive.MainOutput.Title, newVariable } });
                         }
@@ -498,6 +502,7 @@ namespace Parcel.Neo.Base.Algorithms
     public record struct TypedVariable(string Name, Type Type)
     {
         public bool RepresentsNumber = TypeHelper.IsNumericalType(Type);
+        public bool IsStringLiteral = Type == typeof(string);
     }
     public interface ISyntaxHandler
     {

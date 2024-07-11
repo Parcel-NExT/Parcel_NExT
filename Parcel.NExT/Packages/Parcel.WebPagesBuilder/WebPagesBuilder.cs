@@ -36,26 +36,26 @@ namespace Parcel.Framework.WebPages
         #endregion
 
         #region Content Generation
-        public static HeaderBlock Header1(string header)
+        public static HeaderBlock Header1(string header = "Header 1")
             => new(header, 1);
-        public static HeaderBlock Header2(string header)
+        public static HeaderBlock Header2(string header = "Header 2")
             => new(header, 2);
-        public static HeaderBlock Header3(string header)
+        public static HeaderBlock Header3(string header = "Header 3")
             => new(header, 3);
-        public static HeaderBlock Header4(string header)
+        public static HeaderBlock Header4(string header = "Header 4")
             => new(header, 4);
-        public static HeaderBlock Header5(string header)
+        public static HeaderBlock Header5(string header = "Header 5")
             => new(header, 5);
-        public static HeaderBlock Header6(string header)
+        public static HeaderBlock Header6(string header = "Header 6")
             => new(header, 6);
-        public static HeaderBlock Header7(string header)
+        public static HeaderBlock Header7(string header = "Header 7")
             => new(header, 7);
         public static ParagraphBlock Paragraph(string text)
             => new(text);
         #endregion
 
         #region Template Generation
-        public static WebsiteConfiguration MakeSimpleHeaderPlusContent(string siteName, string header, string content)
+        public static WebsiteConfiguration MakeSimpleHeaderPlusContent(string siteName = "My Site", string header = "Site Header", string content = "Welcome!")
         {
             return new WebsiteConfiguration(
                 siteName,
