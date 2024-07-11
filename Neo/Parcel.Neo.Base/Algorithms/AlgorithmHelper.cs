@@ -88,7 +88,7 @@ namespace Parcel.Neo.Base.Algorithms
             graph.InitializeGraph(processors);
 
             // Gather essential information
-            ScriptDependencySummary summary = GatherScriptDependencies(graph);
+            ScriptDependencySummary summary = GatherScriptDependencies(graph, new PureSyntaxHandler());
 
             // Pre-build scripts
             StringBuilder mainSection = new();
@@ -162,7 +162,7 @@ namespace Parcel.Neo.Base.Algorithms
             ExecutionQueue graph = new();
             graph.InitializeGraph(processors);
             // Gather essential information
-            ScriptDependencySummary summary = GatherScriptDependencies(graph);
+            ScriptDependencySummary summary = GatherScriptDependencies(graph, new PythonSyntaxHandler());
 
             // Pre-build scripts
             StringBuilder mainSection = new();
@@ -282,10 +282,10 @@ namespace Parcel.Neo.Base.Algorithms
         public sealed class ScriptDependencySummary
         {
             #region Construction
-            public ScriptDependencySummary(string subGraphID, ExecutionQueue graph)
+            public ScriptDependencySummary(string subGraphID, ExecutionQueue graph, ISyntaxHandler syntaxHandler)
             {
                 SubgraphID = subGraphID;
-                GatherScriptDependencies(graph);
+                GatherScriptDependencies(graph, syntaxHandler);
             }
             #endregion
 
@@ -306,7 +306,7 @@ namespace Parcel.Neo.Base.Algorithms
             public record NodeHandlingResult(bool IsVariable = false, Dictionary<string, string>? Variables = null /*From attribute to final scoped variable name*/);
 
             #region Method
-            private void GatherScriptDependencies(in ExecutionQueue graph)
+            private void GatherScriptDependencies(in ExecutionQueue graph, ISyntaxHandler syntaxHandler)
             {
                 // TODO: This code definitely is worth some refactoring
 
@@ -339,15 +339,25 @@ namespace Parcel.Neo.Base.Algorithms
                         for (int i = 0; i < parameters.Length; i++)
                         {
                             string parameter = parameters[i];
-                            if (autoNode.Input[i].Connections.Any())
+                            NotifyObservableCollection<BaseConnection> connections = autoNode.Input[i].Connections;
+                            if (connections.Any())
                             {
-                                BaseConnector connection = autoNode.Input[i].Connections.Single().Input;
-                                ProcessorNode source = (connection.Node as ProcessorNode)!;
-                                if (!handledNodes.TryGetValue(source, out NodeHandlingResult? connectedNodeResult))
-                                    throw new ApplicationException("Source should have already been handled.");
-                                if (!connectedNodeResult.IsVariable)
-                                    throw new ApplicationException("Source should have generated some outputs.");
-                                parameters[i] = connectedNodeResult.Variables[connection.Title];
+                                // Typical singular argument
+                                if (connections.Count == 1)
+                                {
+                                    BaseConnector connection = connections.Single().Input;
+                                    string variableReference = GetVariableReference(handledNodes, connection);
+                                    parameters[i] = variableReference;
+                                }
+                                // Array coercion handling
+                                else
+                                {
+                                    string[] variableReferences = connections.Select(con => GetVariableReference(handledNodes, con.Input)).ToArray();
+                                    string arrayVariableName = parameters[i]; // TODO: Refine naming
+                                    statements.Add(syntaxHandler.CreateArrayVariable(arrayVariableName, variableReferences));
+                                    ScopedVariables.Add(arrayVariableName);
+                                    parameters[i] = arrayVariableName;
+                                }
                             }
                             else
                                 parameters[i] = parameterLiteralValues[i];
@@ -357,7 +367,7 @@ namespace Parcel.Neo.Base.Algorithms
                         if (autoNode.Output.Any())
                         {
                             string outputVariableName = autoNode.MainOutput.Title.Camelize();
-                            statements.Add($"{outputVariableName} = {methodCallName}({string.Join(", ", parameters)})");
+                            statements.Add(syntaxHandler.CreateVariable(outputVariableName, syntaxHandler.CallFunction(methodCallName, null, parameters)));
                             ScopedVariables.Add(outputVariableName);
 
                             // Book keep node outputs
@@ -366,7 +376,7 @@ namespace Parcel.Neo.Base.Algorithms
                         // Plain call
                         else
                         {
-                            statements.Add($"{methodCallName}({string.Join(", ", parameters)})");
+                            statements.Add(syntaxHandler.CallFunction(methodCallName, null, parameters));
                             handledNodes[processorNode] = new();
                         }
                     }
@@ -412,12 +422,12 @@ namespace Parcel.Neo.Base.Algorithms
                                     outputVariableValue = connectedNodeResult.Variables[connection.Title];
                                 }
                                 // Generate statement
-                                statements.Add($"{outputVariableName} = {outputVariableValue}");
+                                statements.Add(syntaxHandler.CreateVariable(outputVariableName, outputVariableValue));
                                 outputVariables.Add(outputVariableName);
                             }
 
                             // Final return statement
-                            statements.Add($"return {string.Join(", ", outputVariables)}");
+                            statements.Add(syntaxHandler.ReturnResults([.. outputVariables]));
 
                             handledNodes[processorNode] = new();
                         }
@@ -440,10 +450,20 @@ namespace Parcel.Neo.Base.Algorithms
                 // Final assignments
                 ScriptSectionStatements = statements.ToArray();
             }
+            private static string GetVariableReference(Dictionary<ProcessorNode, NodeHandlingResult> handledNodes, BaseConnector connection)
+            {
+                ProcessorNode source = (connection.Node as ProcessorNode)!;
+                if (!handledNodes.TryGetValue(source, out NodeHandlingResult? connectedNodeResult))
+                    throw new ApplicationException("Source should have already been handled.");
+                if (!connectedNodeResult.IsVariable)
+                    throw new ApplicationException("Source should have generated some outputs.");
+                var variableReference = connectedNodeResult.Variables[connection.Title];
+                return variableReference;
+            }
             #endregion
         }
-        private static ScriptDependencySummary GatherScriptDependencies(in ExecutionQueue graph)
-            => new("Main Script", graph);
+        private static ScriptDependencySummary GatherScriptDependencies(in ExecutionQueue graph, ISyntaxHandler syntaxHandler)
+            => new("Main Script", graph, syntaxHandler);
         #endregion
 
         #region Helpers
@@ -455,5 +475,40 @@ namespace Parcel.Neo.Base.Algorithms
             else return filePath;
         }
         #endregion
+    }
+
+    public interface ISyntaxHandler
+    {
+        public string CreateVariable(string variableName, string value);
+        public string AssignVariable(string variableName, string value);
+        public string CreateArrayVariable(string variableName, string[] elementVariableNames);
+        public string CallFunction(string functionName, string[] parameterNames, string[] parameterValues);
+        public string ReturnResults(string[] returns);
+    }
+    public sealed class PythonSyntaxHandler : ISyntaxHandler
+    {
+        public string CreateVariable(string variableName, string value)
+            => $"{variableName} = {value}";
+        public string AssignVariable(string variablename, string value)
+            => $"{variablename} = {value}";
+        public string CreateArrayVariable(string variableName, string[] elementVariableNames)
+            => $"{variableName} = [{string.Join(", ", elementVariableNames)}]";
+        public string CallFunction(string functionName, string[] parameterNames, string[] parameterValues)
+            => $"{functionName}({string.Join(", ", parameterValues)})";
+        public string ReturnResults(string[] returns)
+            => returns.Any() ? $"return {string.Join(", ", returns)}" : "return";
+    }
+    public sealed class PureSyntaxHandler : ISyntaxHandler
+    {
+        public string CreateVariable(string variableName, string value)
+            => $"var {variableName} = {value};";
+        public string AssignVariable(string variablename, string value)
+            => $"{variablename} = {value};";
+        public string CreateArrayVariable(string variableName, string[] elementVariableNames)
+            => $"var {variableName} = [{string.Join(", ", elementVariableNames)}];";
+        public string CallFunction(string functionName, string[] parameterNames, string[] parameterValues)
+            => $"{functionName}({string.Join(", ", parameterValues)});";
+        public string ReturnResults(string[] returns)
+            => returns.Any() ? $"return {(returns.Length == 1 ? returns.Single() : $"({string.Join(", ", returns)})")};" : "return;";
     }
 }
