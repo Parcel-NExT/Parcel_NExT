@@ -74,7 +74,14 @@ namespace Parcel.CoreEngine.Helpers
         {
             return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(original);
         }
-
+        public static string Pascalize(this string original)
+        {
+            if (original.Length == 0)
+                return original;
+            
+            string camel = Camelize(original);
+            return new string([char.ToUpper(camel[0]), .. camel.Skip(1)]);
+        }
         public static string JoinAsArguments(this string[] args)
         {
             if (args == null || args.Length == 0)

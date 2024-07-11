@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Humanizer;
+using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Versioning;
 using Parcel.Neo.Base.Framework.Advanced;
 using Parcel.Neo.Base.Framework.ViewModels;
@@ -398,7 +397,7 @@ namespace Parcel.Neo.Base.Algorithms
                             foreach (OutputConnector output in graphInput.Output)
                             {
                                 string inputVariableName = GetNewVariableName(ScopedVariables, output.Title.Camelize());
-                                GraphInputs.Add((inputVariableName, TypeDescriptor.GetConverter(output.DataType).CanConvertFrom(typeof(double))));
+                                GraphInputs.Add((inputVariableName, TypeHelper.IsNumericalType(output.DataType)));
                                 ScopedVariables.Add(inputVariableName);
                             }
                             handledNodes[processorNode] = new(true, graphInput.Output.ToDictionary(o => o.Title, o => o.Title.Camelize()));
