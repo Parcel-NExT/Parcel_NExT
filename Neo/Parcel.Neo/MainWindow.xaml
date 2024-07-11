@@ -27,17 +27,13 @@
         <converters:NodeMessageTypeToVisibilityConverter x:Key="NodeMessageTypeToVisibilityConverter" />
         <converters:NodeMessageTypeToBrushColorConverter x:Key="NodeMessageTypeToBrushColorConverter" />
         <converters:NodeLocationConverter x:Key="NodeLocationConverter" />
+        <converters:GraphInputOutputComboDataTypeNameToTypeConverter x:Key="GraphInputOutputComboDataTypeNameToTypeConverter"/>
         <ObjectDataProvider x:Key="DictionaryEntryTypeEntriesFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="dataTypes:DictionaryEntryType"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <ObjectDataProvider x:Key="CacheDataTypeEntriesFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="dataTypes:CacheDataType"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        
+
         <!--Grid Background Brushes-->
         <DrawingBrush x:Key="SmallGridLinesDrawingBrush"
                       TileMode="Tile"
@@ -538,8 +534,16 @@
                                                 <DataTemplate DataType="{x:Type advanced:GraphInputOutputDefinition}">
                                                     <DockPanel LastChildFill="True" MinWidth="150">
                                                         <TextBox Text="{Binding Name}" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride"></TextBox>
-                                                        <ComboBox ItemsSource="{Binding Source={StaticResource CacheDataTypeEntriesFromEnum}}"
-                                                          SelectedItem="{Binding Type}"></ComboBox>
+                                                        <ComboBox SelectedItem="{Binding ValueType, Converter={StaticResource GraphInputOutputComboDataTypeNameToTypeConverter}, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="1">
+                                                            <!-- Primitive -->
+                                                            <ComboBoxItem Content="Boolean"/>
+                                                            <ComboBoxItem Content="Number"/>
+                                                            <ComboBoxItem Content="String"/>
+                                                            <ComboBoxItem Content="DateTime"/>
+                                                            <!-- Basic (Internal) Types -->
+                                                            <ComboBoxItem Content="DataGrid"/>
+                                                            <ComboBoxItem Content="Vector"/>
+                                                        </ComboBox>
                                                     </DockPanel>
                                                 </DataTemplate>
                                             </ListView.ItemTemplate>

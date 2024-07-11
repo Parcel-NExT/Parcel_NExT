@@ -228,6 +228,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Entry point
             mainScriptBuilder.AppendLine("# Program entry");
             if (programInputs.Length == 0)
+                // Zero arguments
                 mainScriptBuilder.AppendLine("""
                     if __name__ == '__main__':
                         if len(sys.argv) > 1 and sys.argv[1] == "--help":
@@ -236,6 +237,7 @@ namespace Parcel.Neo.Base.Algorithms
                             Main()
                     """);
             else
+                // Handle command line arguments
                 mainScriptBuilder.AppendLine($"""
                     if __name__ == '__main__':
                         if len(sys.argv) > 1 and sys.argv[1] == "--help":

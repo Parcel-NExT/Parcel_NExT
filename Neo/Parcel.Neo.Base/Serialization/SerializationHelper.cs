@@ -8,10 +8,6 @@ namespace Parcel.Neo.Base.Serialization
     public static class SerializationHelper
     {
         #region Serialization
-        public static byte[] Serialize(CacheDataType value)
-        {
-            return BitConverter.GetBytes((int)value);
-        }
         public static byte[] Serialize(string value)
         {
             return Encoding.UTF8.GetBytes(value);
@@ -38,15 +34,6 @@ namespace Parcel.Neo.Base.Serialization
 
             return result;
         }
-
-        public static byte[] Serialize(CacheDataType[] value)
-        {
-            byte[] buffer = new byte[sizeof(int) + value.Length * sizeof(int)];
-            Buffer.BlockCopy(BitConverter.GetBytes(value.Length), 0, buffer, 0, sizeof(int));
-            for (int i = 0; i < value.Length; i++)
-                Buffer.BlockCopy(BitConverter.GetBytes((int)value[i]), 0, buffer, sizeof(int) + sizeof(int) * i, sizeof(int));
-            return buffer;
-        }
         public static byte[] Serialize(string[] value)
         {
             byte[][] buffers = value.Select(v => Encoding.UTF8.GetBytes(v)).ToArray();
@@ -64,10 +51,6 @@ namespace Parcel.Neo.Base.Serialization
         #endregion
 
         #region Deserialization
-        public static CacheDataType GetCacheDataType(byte[] bytes)
-        {
-            return (CacheDataType)BitConverter.ToInt32(bytes);
-        }
         public static string GetString(byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
@@ -87,15 +70,6 @@ namespace Parcel.Neo.Base.Serialization
         public static Vector2D GetVector2D(byte[] bytes)
         {
             return new Vector2D(BitConverter.ToDouble(bytes, 0), BitConverter.ToDouble(bytes, bytes.Length / 2));
-        }
-
-        public static CacheDataType[] GetCacheDataTypes(byte[] bytes)
-        {
-            int count = BitConverter.ToInt32(bytes, 0);
-            CacheDataType[] types = new CacheDataType[count];
-            for (int i = 0; i < count; i++)
-                types[i] = (CacheDataType)BitConverter.ToInt32(bytes, sizeof(int) + sizeof(int) * i);
-            return types;
         }
         public static string[] GetStrings(byte[] bytes)
         {

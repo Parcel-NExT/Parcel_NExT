@@ -5,7 +5,6 @@ using Parcel.Types;
 using Parcel.Neo.Base.Serialization;
 using Parcel.Neo.Base.DataTypes;
 using System.Diagnostics;
-using System.IO;
 
 namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 {
