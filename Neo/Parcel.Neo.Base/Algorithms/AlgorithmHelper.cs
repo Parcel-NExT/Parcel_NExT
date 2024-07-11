@@ -533,11 +533,30 @@ namespace Parcel.Neo.Base.Algorithms
                 TypedVariable expectedType = parameterNames[i];
                 FunctionCallParameter parameter = parameters[i];
                 if (expectedType.Type != (parameter.IsVariableReference ? parameter.ReferencedVariableType : parameter.OriginalType))
-                    return $"({expectedType.Type.Name}){parameter.FinalEvaluatedValue}"; // Add a cast
+                {
+                    string castedTypeName = CastPrimitiveType(expectedType.Type);
+                    if (string.IsNullOrEmpty(castedTypeName))
+                        return parameter.FinalEvaluatedValue;
+                    else return $"{castedTypeName}({parameter.FinalEvaluatedValue})"; // Add a cast
+                }
                 return parameter.FinalEvaluatedValue;
             }))})";
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {string.Join(", ", returns)}" : "return";
+
+        #region Helpers
+        private static string CastPrimitiveType(Type type)
+        {
+            string dotnetName = type.Name;
+            return dotnetName switch
+            {
+                nameof(Int32) => "int",
+                nameof(Double) => "double",
+                nameof(String) => "string",
+                _ => string.Empty // Can't handle; Leave python interpreter to throw runtime error
+            };
+        }
+        #endregion
     }
     public sealed class PureSyntaxHandler : ISyntaxHandler
     {
