@@ -7,7 +7,17 @@
         /// </summary>
         public static DevelopmentServer ServeHTML(string html, string endPoint = "/")
         {
-            throw new NotImplementedException();
+            EndpointResponse MainPage(Dictionary<string, string> parameters, string body)
+            {
+                return html;
+            }
+
+            EndpointDefinition[] ServerEndpoints = [
+                new(EndpointDefinition.GETMethod, "/", MainPage)
+            ];
+
+            DevelopmentServer server = DevelopmentServer.StartServerInNewThread(ServerEndpoints);
+            return server;
         }
         /// <summary>
         /// Serve loose texts

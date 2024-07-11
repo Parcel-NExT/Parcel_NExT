@@ -26,6 +26,7 @@
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.REST\Parcel.REST.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Standard\Parcel.Standard.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Vector\Parcel.Vector.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.WebPagesBuilder\Parcel.WebPagesBuilder.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.YahooFinance\Parcel.YahooFinance.csproj" />
     </ItemGroup>
 

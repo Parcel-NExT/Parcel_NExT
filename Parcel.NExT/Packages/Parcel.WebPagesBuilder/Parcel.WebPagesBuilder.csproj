@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<RootNamespace>Parcel.Framework.WebPages</RootNamespace>
+	<Version>0.0.1</Version>
+	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Templates\Default.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Default.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\Parcel.DevelopmentWebServer\Parcel.DevelopmentWebServer.csproj" />
+  </ItemGroup>
+
+</Project>
