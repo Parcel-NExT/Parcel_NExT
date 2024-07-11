@@ -232,7 +232,7 @@ namespace Parcel.NExT.Interpreter
         {
             get
             {
-                string assemblyPath = new UriBuilder(Assembly.GetCallingAssembly().CodeBase).Path; // Use Codebase instead of Location for more reasonable path format
+                string assemblyPath = Uri.UnescapeDataString(new UriBuilder(Assembly.GetCallingAssembly().CodeBase).Path); // Use Codebase instead of Location for more reasonable path format
                 return Path.GetDirectoryName(assemblyPath);
             }
         }
@@ -240,7 +240,7 @@ namespace Parcel.NExT.Interpreter
         {
             get
             {
-                string assemblyPath = new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path; // Use Codebase instead of Location for more reasonable path format
+                string assemblyPath = Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path); // Use Codebase instead of Location for more reasonable path format
                 return Path.GetDirectoryName(assemblyPath);
             }
         }
