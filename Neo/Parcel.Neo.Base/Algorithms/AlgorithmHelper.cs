@@ -353,10 +353,10 @@ namespace Parcel.Neo.Base.Algorithms
                                 else
                                 {
                                     string[] variableReferences = connections.Select(con => GetVariableReference(handledNodes, con.Input)).ToArray();
-                                    string arrayVariableName = parameters[i]; // TODO: Refine naming
+                                    string arrayVariableName = GetNewVariableName(ScopedVariables, parameters[i]);
                                     statements.Add(syntaxHandler.CreateArrayVariable(arrayVariableName, variableReferences));
-                                    ScopedVariables.Add(arrayVariableName);
                                     parameters[i] = arrayVariableName;
+                                    ScopedVariables.Add(arrayVariableName);
                                 }
                             }
                             else
@@ -366,7 +366,7 @@ namespace Parcel.Neo.Base.Algorithms
                         // Save outputs
                         if (autoNode.Output.Any())
                         {
-                            string outputVariableName = autoNode.MainOutput.Title.Camelize();
+                            string outputVariableName = GetNewVariableName(ScopedVariables, autoNode.MainOutput.Title.Camelize());
                             statements.Add(syntaxHandler.CreateVariable(outputVariableName, syntaxHandler.CallFunction(methodCallName, null, parameters)));
                             ScopedVariables.Add(outputVariableName);
 
@@ -386,7 +386,7 @@ namespace Parcel.Neo.Base.Algorithms
                         // Primitives are processed as variable definition
                         if (processorNode is PrimitiveNode primitive)
                         {
-                            string variableName = processorNode.Title.Camelize();
+                            string variableName = GetNewVariableName(ScopedVariables, processorNode.Title.Camelize());
                             VariableDeclarations[variableName] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
                             ScopedVariables.Add(variableName);
                             handledNodes[processorNode] = new(true, new Dictionary<string, string> { { primitive.MainOutput.Title, variableName } });
@@ -395,7 +395,7 @@ namespace Parcel.Neo.Base.Algorithms
                         {
                             foreach (OutputConnector output in graphInput.Output)
                             {
-                                string inputVariableName = output.Title.Camelize();
+                                string inputVariableName = GetNewVariableName(ScopedVariables, output.Title.Camelize());
                                 GraphInputs.Add((inputVariableName, TypeDescriptor.GetConverter(output.DataType).CanConvertFrom(typeof(double))));
                                 ScopedVariables.Add(inputVariableName);
                             }
@@ -424,6 +424,7 @@ namespace Parcel.Neo.Base.Algorithms
                                 // Generate statement
                                 statements.Add(syntaxHandler.CreateVariable(outputVariableName, outputVariableValue));
                                 outputVariables.Add(outputVariableName);
+                                // No need to add this to ScopedVariables
                             }
 
                             // Final return statement
@@ -448,7 +449,19 @@ namespace Parcel.Neo.Base.Algorithms
                     .ToDictionary(n => n, n => n.Split('.').Last());
 
                 // Final assignments
-                ScriptSectionStatements = statements.ToArray();
+                ScriptSectionStatements = [.. statements];
+            }
+            private static string GetNewVariableName(HashSet<string> scope, string preferredName)
+            {
+                int counter = 0;
+                while (true)
+                {
+                    string finalName = counter == 0 ? preferredName : $"{preferredName}{counter}";
+                    if (scope.Contains(finalName))
+                        counter++;
+                    else
+                        return finalName;
+                }
             }
             private static string GetVariableReference(Dictionary<ProcessorNode, NodeHandlingResult> handledNodes, BaseConnector connection)
             {
