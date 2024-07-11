@@ -63,7 +63,7 @@ namespace Parcel.Neo.Base.Algorithms
                 
                 // Go through the entire chain and update node positions on the chain
                 foreach (BaseNode iter in currentNode.Input.Where(i => i.IsConnected)
-                    .Select(i => i.Connections.Single())
+                    .SelectMany(i => i.Connections)
                     .Select(c => c.Input.Node))
                 {
                     BaseNode input = iter;

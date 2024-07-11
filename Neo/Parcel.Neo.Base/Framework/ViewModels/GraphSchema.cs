@@ -10,7 +10,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         #region Add Connection
         public bool CanAddConnection(BaseConnector source, object target)
         {
-            if (target is BaseConnector con)
+            if (target is BaseConnector con) // Remark-cz 2024: Looks like this is mostly just for handling KnotNode, which is a very unfortunate construct in Nodify
             {
                 return source != con
                     && source.Node != con.Node
@@ -21,7 +21,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels
                     && (source.FlowType != con.FlowType || con.Node is KnotNode)
                     && !source.IsConnectedTo(con);
             }
-            else if (source.AllowsNewConnections() && target is ProcessorNode node)
+            else if (source.AllowsNewConnections() && target is ProcessorNode node) // Remark-cz 2024: Looks like this is handling connecting an entire node to a single connector?
             {
                 IEnumerable<BaseConnector> allConnectors = source.FlowType == ConnectorFlowType.Input ? node.Output.Cast<BaseConnector>() : node.Input;
                 return allConnectors.Any(c => c.AllowsNewConnections());

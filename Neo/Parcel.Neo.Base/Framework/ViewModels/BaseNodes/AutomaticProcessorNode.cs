@@ -93,16 +93,21 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 
             void CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
             {
-                if (inputType == typeof(bool))
-                    Input.Add(new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool" });
-                else if (inputType == typeof(string))
-                    Input.Add(new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String" });
-                else if (IsNumericalType(inputType))
-                    Input.Add(new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number" });
-                else if (inputType == typeof(DateTime))
-                    Input.Add(new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date" });
+                bool supportsCoercion = inputType.IsArray;
+                Type elementType = inputType;
+                if (inputType.IsArray)
+                    elementType = inputType.GetElementType();
+
+                if (elementType == typeof(bool))
+                    Input.Add(new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion });
+                else if (elementType == typeof(string))
+                    Input.Add(new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String", AllowsArrayCoercion = supportsCoercion });
+                else if (IsNumericalType(elementType))
+                    Input.Add(new PrimitiveNumberInputConnector(elementType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion });
+                else if (elementType == typeof(DateTime))
+                    Input.Add(new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion });
                 else
-                    Input.Add(new InputConnector(inputType) { Title = preferredTitle ?? "Input" });
+                    Input.Add(new InputConnector(elementType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion });
             }
             static string? GetPreferredTitle(Type type)
             {
@@ -166,7 +171,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 Stopwatch timer = new();
                 timer.Start();
                 Func<object[], object[]> marshal = RetrieveCallMarshal();
-                object[] outputs = marshal.Invoke(Input.Select(i => i.FetchInputValue<object>()).ToArray());
+                object[] outputs = marshal.Invoke(Input.Select((input, index) => input.AllowsArrayCoercion ? input.FetchArrayInputValues(InputTypes[index].GetElementType()) : input.FetchInputValue<object>()).ToArray());
                 for (int index = 0; index < outputs.Length; index++)
                 {
                     object output = outputs[index];
