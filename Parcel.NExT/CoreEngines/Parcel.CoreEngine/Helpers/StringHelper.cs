@@ -72,7 +72,8 @@ namespace Parcel.CoreEngine.Helpers
         }
         public static string Camelize(this string original)
         {
-            return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(original);
+            string stripSpaces = original.Replace(" ", string.Empty);
+            return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(stripSpaces); // Notice JSON CamelCase conversion doesn't strip spaces by default
         }
         public static string Pascalize(this string original)
         {
