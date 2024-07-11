@@ -7,7 +7,11 @@ namespace Parcel.Framework.WebPages
         #region Build
         public static string Test(WebsiteConfiguration configurations, string? addressPort)
         {
-            throw new NotImplementedException();
+            string html = new HTMLGenerator(configurations).HTML;
+            DevelopmentServer webServer = QuickServe.ServeHTML(html);
+
+            Thread.Sleep(1000); // Wait for socket to bind
+            return webServer.ServerAddress;
         }
         public static string Test(WebsiteBlock block)
         {
@@ -48,6 +52,18 @@ namespace Parcel.Framework.WebPages
             => new(header, 7);
         public static ParagraphBlock Paragraph(string text)
             => new(text);
+        #endregion
+
+        #region Template Generation
+        public static WebsiteConfiguration MakeSimpleHeaderPlusContent(string siteName, string header, string content)
+        {
+            return new WebsiteConfiguration(
+                siteName,
+                HTMLGenerator.DefaultTemplateName, [
+                new HeaderBlock(header),
+                new ParagraphBlock(content)
+            ]);
+        }
         #endregion
     }
 }

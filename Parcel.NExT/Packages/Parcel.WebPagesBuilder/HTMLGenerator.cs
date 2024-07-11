@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Parcel.CoreEngine.Helpers;
+using System.Text;
 
 namespace Parcel.Framework.WebPages
 {
@@ -6,48 +7,35 @@ namespace Parcel.Framework.WebPages
     {
         #region Constructor
         public HTMLGenerator(WebsiteBlock block)
-        {
-            HTMLBuilder.AppendLine($"""
-                <!DOCTYPE html>
-                <html lang="en">
-                    <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                    <title>HTML 5 Boilerplate</title>
-                    </head>
-                    <body>
-                    {block.ToHTML("\t")}
-                    </body>
-                </html>
-                """);
-        }
-
+            : this(DefaultTemplateName, [block]) { }
         public HTMLGenerator(WebsiteBlock[] blocks)
+            : this(DefaultTemplateName, blocks) { }
+        public HTMLGenerator(WebsiteConfiguration configuration)
+            : this(configuration.TemplateName, configuration.Blocks) { }
+        #endregion
+        
+        #region Master Constructor
+        public HTMLGenerator(string template, WebsiteBlock[] blocks)
         {
-            HTMLBuilder.AppendLine($"""
-                <!DOCTYPE html>
-                <html lang="en">
-                    <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                    <title>HTML 5 Boilerplate</title>
-                    </head>
-                    <body>
-                """);
+            StringBuilder body = new();
             const string indentation = "\t";
             foreach (WebsiteBlock block in blocks)
-                HTMLBuilder.AppendLine(block.ToHTML(indentation));
-            HTMLBuilder.AppendLine($"""
-                    </body>
-                </html>
-                """);
+                body.AppendLine(block.ToHTML(indentation));
+
+            string templatedHTML = UseTemplate(DefaultTemplate, body);
+            HTMLBuilder.AppendLine(templatedHTML);
         }
-        public HTMLGenerator(WebsiteConfiguration configuration)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
+
+        #region Templates
+        public const string DefaultTemplateName = "Default";
+        private static string GetTemplate(string templateName)
+            => templateName switch
+            {
+                DefaultTemplateName => DefaultTemplate,
+                _ => throw new ArgumentOutOfRangeException($"Unknown template: {templateName}")
+            };
+        private static string DefaultTemplate => EmbeddedResourceHelper.ReadTextResource("Parcel.Framework.WebPages.Templates.Default.html");
         #endregion
 
         #region Properties
@@ -55,5 +43,11 @@ namespace Parcel.Framework.WebPages
         public string HTML => HTMLBuilder.ToString().TrimEnd();
         #endregion
 
+        #region Helpers
+        private static string UseTemplate(string template, StringBuilder bodyBuilder)
+            => template.Replace("@Body", bodyBuilder.ToString().TrimEnd());
+        private static string UseTemplate(string template, string body)
+            => template.Replace("@Body", body);
+        #endregion
     }
 }
