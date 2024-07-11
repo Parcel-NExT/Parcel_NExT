@@ -46,13 +46,13 @@ namespace Parcel.Neo.Base.Framework
         public AutomaticNodeDescriptor(string nodeName, MethodInfo method)
         {
             // Parse definitions
-            SeperateMethodParametersForNode(method, out (Type, string, object?)[] nodeInputTypes, out (Type, string)[] nodeOutputTypes);
+            SeperateMethodParametersForNode(method, out (Type Type, string ParameterName, object? DefaultValue)[] nodeInputTypes, out (Type Type, string ParameterName)[] nodeOutputTypes);
 
             // Set properties
             NodeName = nodeName;
             Method = method;
-            InputTypes = [.. nodeInputTypes.Select(p => p.Item1)];
-            OutputTypes = [.. nodeOutputTypes.Select(p => p.Item1)];
+            InputTypes = [.. nodeInputTypes.Select(p => p.Type)];
+            OutputTypes = [.. nodeOutputTypes.Select(p => p.Type)];
             CallMarshal = nodeInputValues =>
             {
                 object[] nonOutMethodParameterValues = nodeInputValues.Skip(Method.IsStatic ? 0 : 1).ToArray();
@@ -97,9 +97,9 @@ namespace Parcel.Neo.Base.Framework
                         return [instance, returnValue, .. outParameterIndices.Select(i => methodExpectedParameterValuesArray[i])];
                 }
             };
-            InputNames = [.. nodeInputTypes.Select(t => t.Item2)];
-            OutputNames = [.. nodeOutputTypes.Select(t => t.Item2)];
-            DefaultInputValues = [.. nodeInputTypes.Select(t => t.Item3)];
+            InputNames = [.. nodeInputTypes.Select(t => t.ParameterName)];
+            OutputNames = [.. nodeOutputTypes.Select(t => t.ParameterName)];
+            DefaultInputValues = [.. nodeInputTypes.Select(t => t.DefaultValue)];
         }
         #endregion
 

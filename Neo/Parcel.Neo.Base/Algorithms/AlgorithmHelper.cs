@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using Parcel.CoreEngine.Helpers;
@@ -10,6 +11,7 @@ using Parcel.CoreEngine.Versioning;
 using Parcel.Neo.Base.Framework.Advanced;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+using static Parcel.Neo.Base.Algorithms.AlgorithmHelper.ScriptDependencySummary;
 
 namespace Parcel.Neo.Base.Algorithms
 {
@@ -112,7 +114,7 @@ namespace Parcel.Neo.Base.Algorithms
             mainScriptBuilder.AppendLine();
             // Do variable declarations first
             foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
-                mainScriptBuilder.AppendLine($"{key.Type.Name} {key} = {value};");
+                mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
             {
@@ -205,7 +207,7 @@ namespace Parcel.Neo.Base.Algorithms
             StringBuilder bodyBuilder = new();
             // Do variable declarations first
             foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
-                bodyBuilder.AppendLine($"{defaultIndentation}{key} = {value}");
+                bodyBuilder.AppendLine($"{defaultIndentation}{key.Name} = {value}");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
             {
@@ -304,6 +306,7 @@ namespace Parcel.Neo.Base.Algorithms
             #endregion
 
             public record NodeHandlingResult(bool IsVariable = false, Dictionary<string, TypedVariable>? Variables = null /*From attribute to final scoped variable name*/);
+            public record FunctionCallParameter(string OriginalName, Type OriginalType, string FinalEvaluatedValue, bool IsVariableReference, Type? ReferencedVariableType);
 
             #region Method
             private void GatherScriptDependencies(in ExecutionQueue graph, ISyntaxHandler syntaxHandler)
@@ -323,7 +326,8 @@ namespace Parcel.Neo.Base.Algorithms
                     if (processorNode is AutomaticProcessorNode autoNode)
                     {
                         automaticProcessors.Add(autoNode);
-                        string[] parameters = autoNode.Input.Select(i => i.Title).ToArray();
+                        Type[] parameterTypes = autoNode.Descriptor.InputTypes;
+                        FunctionCallParameter[] parameters = Enumerable.Range(0, autoNode.Input.Count).Select(i => new FunctionCallParameter(autoNode.Input[i].Title, parameterTypes[i], autoNode.Input[i].Title, false, null)).ToArray();
                         string methodCallName = $"{(autoNode.Descriptor.Method.IsStatic ? autoNode.Descriptor.Method.DeclaringType.Name + ".": string.Empty)}{autoNode.Descriptor.NodeName}"; // TODO: We do not need to address full type name if we are using static (that's why we should not handle statement generation directly here and just parse essential information and let the actual code generation for specific target languages (pure vs c# vs python) handle it
 
                         // Translate parameters
@@ -342,7 +346,7 @@ namespace Parcel.Neo.Base.Algorithms
                             .ToArray(); // Get actual input values instead of assigned default values from function signature, because user may have changed it on the node surface (e.g. primitive number inputs connectors)
                         for (int i = 0; i < parameters.Length; i++)
                         {
-                            string parameter = parameters[i];
+                            FunctionCallParameter parameter = parameters[i];
                             NotifyObservableCollection<BaseConnection> connections = autoNode.Input[i].Connections;
                             if (connections.Any())
                             {
@@ -351,30 +355,33 @@ namespace Parcel.Neo.Base.Algorithms
                                 {
                                     BaseConnector connection = connections.Single().Input;
                                     TypedVariable variableReference = GetVariableReference(handledNodes, connection);
-                                    parameters[i] = variableReference.Name;
+                                    parameters[i] = new FunctionCallParameter(parameters[i].OriginalName, parameters[i].OriginalType, variableReference.Name, true, variableReference.Type);
                                 }
                                 // Array coercion handling
                                 else
                                 {
                                     TypedVariable[] variableReferences = connections.Select(con => GetVariableReference(handledNodes, con.Input)).ToArray();
-                                    string arrayVariableName = GetNewVariableName(ScopedVariables, parameters[i]);
+                                    string arrayVariableName = GetNewVariableName(ScopedVariables, parameters[i].OriginalName);
                                     TypedVariable newVariable = new(arrayVariableName, autoNode.Input[i].DataType);
                                     statements.Add(syntaxHandler.CreateArrayVariable(newVariable, variableReferences.Select(v => v.Name).ToArray()));
-                                    parameters[i] = arrayVariableName;
+                                    parameters[i] = new FunctionCallParameter(parameters[i].OriginalName, parameters[i].OriginalType, newVariable.Name, true, newVariable.Type);
                                     ScopedVariables.Add(newVariable);
                                 }
                             }
                             else
-                                parameters[i] = parameterLiteralValues[i];
+                                // Use literal value from the pin
+                                parameters[i] = new FunctionCallParameter(parameters[i].OriginalName, parameters[i].OriginalType, parameterLiteralValues[i], false, null);
                         }
 
                         // Save outputs
+                        string[] parameterNames = autoNode.Descriptor.InputNames;
+                        TypedVariable[] functionCallArguments = Enumerable.Range(0, autoNode.Descriptor.InputTypes.Length).Select(i => new TypedVariable(parameterNames[i], parameterTypes[i])).ToArray();
                         if (autoNode.Output.Any())
                         {
                             // TODO: Deal with multiple outputs
                             string outputVariableName = GetNewVariableName(ScopedVariables, autoNode.MainOutput.Title.Camelize());
                             TypedVariable newVariable = new(outputVariableName, autoNode.MainOutput.DataType);
-                            statements.Add(syntaxHandler.CreateVariable(newVariable, syntaxHandler.CallFunction(methodCallName, null, parameters)));
+                            statements.Add(syntaxHandler.CreateVariable(newVariable, syntaxHandler.CallFunction(methodCallName, functionCallArguments, parameters)));
                             ScopedVariables.Add(newVariable);
 
                             // Book keep node outputs
@@ -383,7 +390,7 @@ namespace Parcel.Neo.Base.Algorithms
                         // Plain call
                         else
                         {
-                            statements.Add(syntaxHandler.CallFunction(methodCallName, null, parameters));
+                            statements.Add(syntaxHandler.CallFunction(methodCallName, functionCallArguments, parameters));
                             handledNodes[processorNode] = new();
                         }
                     }
@@ -509,7 +516,7 @@ namespace Parcel.Neo.Base.Algorithms
         public string CreateVariable(TypedVariable variable, string value);
         public string AssignVariable(TypedVariable variable, string value);
         public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames);
-        public string CallFunction(string functionName, TypedVariable[] parameterNames, string[] parameterValues);
+        public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters);
         public string ReturnResults(string[] returns);
     }
     public sealed class PythonSyntaxHandler : ISyntaxHandler
@@ -520,8 +527,15 @@ namespace Parcel.Neo.Base.Algorithms
             => $"{variable.Name} = {value}";
         public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames)
             => $"{variable.Name} = [{string.Join(", ", elementVariableNames)}]";
-        public string CallFunction(string functionName, TypedVariable[] parameterNames, string[] parameterValues)
-            => $"{functionName}({string.Join(", ", parameterValues)})";
+        public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters)
+            => $"{functionName}({string.Join(", ", Enumerable.Range(0, parameters.Length).Select(i =>
+            {
+                TypedVariable expectedType = parameterNames[i];
+                FunctionCallParameter parameter = parameters[i];
+                if (expectedType.Type != (parameter.IsVariableReference ? parameter.ReferencedVariableType : parameter.OriginalType))
+                    return $"({expectedType.Type.Name}){parameter.FinalEvaluatedValue}"; // Add a cast
+                return parameter.FinalEvaluatedValue;
+            }))})";
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {string.Join(", ", returns)}" : "return";
     }
@@ -533,8 +547,8 @@ namespace Parcel.Neo.Base.Algorithms
             => $"{variable.Name} = {value};";
         public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames)
             => $"{variable.Type.Name} {variable.Name}{variable.Name} = [{string.Join(", ", elementVariableNames)}];";
-        public string CallFunction(string functionName, TypedVariable[] parameterNames, string[] parameterValues)
-            => $"{functionName}({string.Join(", ", parameterValues)});";
+        public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters)
+            => $"{functionName}({string.Join(", ", parameters.Select(p => p.FinalEvaluatedValue))});";
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {(returns.Length == 1 ? returns.Single() : $"({string.Join(", ", returns)})")};" : "return;";
     }
