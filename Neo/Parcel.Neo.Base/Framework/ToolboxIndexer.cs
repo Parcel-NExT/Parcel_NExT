@@ -66,6 +66,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Correlation));
             RegisterType(toolboxes, "String Processing", typeof(InflectorExtensions));
             RegisterType(toolboxes, "Console", typeof(Standard.System.Console));
+            RegisterType(toolboxes, "Website Builder", typeof(Parcel.Framework.WebPages.WebPagesBuilder));
             // Remark: Notice that boolean algebra and String are available in PSL - Pending deciding whether we need dedicated exposure
 
             return toolboxes;
