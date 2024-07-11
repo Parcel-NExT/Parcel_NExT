@@ -59,7 +59,7 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
                     if (!unique.ContainsKey(definition.Name))
                     {
                         unique[definition.Name] = definition;
-                        Input.Add(new InputConnector(definition.ObjectType) { Title = definition.Name });
+                        Input.Add(new InputConnector(definition.ValueType) { Title = definition.Name });
                         InputDefinitions.Add(definition);
                     }
                 }
@@ -73,7 +73,7 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
                     if (!unique.ContainsKey(definition.Name))
                     {
                         unique[definition.Name] = definition;
-                        Output.Add(new OutputConnector(definition.ObjectType) { Title = definition.Name });
+                        Output.Add(new OutputConnector(definition.ValueType) { Title = definition.Name });
                         OutputDefinitions.Add(definition);
                     }
                 }
@@ -83,7 +83,7 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
             }
         }
         private static Type GetInputNodeType(GraphInputOutputDefinition definition)
-            => definition.ObjectType;
+            => definition.ValueType;
         #endregion
 
         #region Private States

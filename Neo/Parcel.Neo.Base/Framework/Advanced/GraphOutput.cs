@@ -13,7 +13,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
             {
                 InputConnector input = Input[Definitions.IndexOf(definition)];
                 input.Title = definition.Name;
-                input.DataType = definition.ObjectType;
+                input.DataType = definition.ValueType;
                 input.UpdateConnectorShape();
             };
         }
@@ -24,7 +24,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
         protected override Action<GraphInputOutputDefinition> DefinitionChanged { get; }
         protected sealed override void PostAddEntry(GraphInputOutputDefinition definition)
         {
-            Input.Add(new InputConnector(definition.ObjectType)
+            Input.Add(new InputConnector(definition.ValueType)
             {
                 Title = definition.Name
             });
@@ -54,7 +54,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
         protected override void DeserializeFinalize()
         {
             foreach (GraphInputOutputDefinition definition in Definitions)
-                Input.Add(new InputConnector(definition.ObjectType)
+                Input.Add(new InputConnector(definition.ValueType)
                 {
                     Title = definition.Name
                 });

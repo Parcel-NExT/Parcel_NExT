@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
-using Humanizer;
+using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Versioning;
 using Parcel.Neo.Base.Framework.Advanced;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+using Parcel.NExT.Interpreter;
+using static Parcel.Neo.Base.Algorithms.AlgorithmHelper.ScriptDependencySummary;
 
 namespace Parcel.Neo.Base.Algorithms
 {
@@ -88,7 +89,7 @@ namespace Parcel.Neo.Base.Algorithms
             graph.InitializeGraph(processors);
 
             // Gather essential information
-            ScriptDependencySummary summary = GatherScriptDependencies(graph);
+            ScriptDependencySummary summary = GatherScriptDependencies(graph, new PureSyntaxHandler());
 
             // Pre-build scripts
             StringBuilder mainSection = new();
@@ -112,8 +113,8 @@ namespace Parcel.Neo.Base.Algorithms
                     mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
             mainScriptBuilder.AppendLine();
             // Do variable declarations first
-            foreach ((string key, string value) in summary.VariableDeclarations)
-                mainScriptBuilder.AppendLine($"var {key} = {value};");
+            foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
+                mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
             {
@@ -162,7 +163,7 @@ namespace Parcel.Neo.Base.Algorithms
             ExecutionQueue graph = new();
             graph.InitializeGraph(processors);
             // Gather essential information
-            ScriptDependencySummary summary = GatherScriptDependencies(graph);
+            ScriptDependencySummary summary = GatherScriptDependencies(graph, new PythonSyntaxHandler());
 
             // Pre-build scripts
             StringBuilder mainSection = new();
@@ -200,13 +201,13 @@ namespace Parcel.Neo.Base.Algorithms
 
                 """);
             // Main function
-            string[] programInputs = [.. summary.GraphInputs];
+            TypedVariable[] programInputs = [.. summary.GraphInputs];
             mainScriptBuilder.AppendLine("# Main script content");
-            mainScriptBuilder.AppendLine($"def Main({string.Join(", ", programInputs)}):{(summary.GraphOutputs.Count > 0 ? $" # With {summary.GraphOutputs.Count} {(summary.GraphOutputs.Count > 1 ? "outputs" : "output")}: {string.Join(", ", summary.GraphOutputs)}" : string.Empty)}");
+            mainScriptBuilder.AppendLine($"def Main({string.Join(", ", programInputs.Select(p => p.Name))}):{(summary.GraphOutputs.Count > 0 ? $" # With {summary.GraphOutputs.Count} {(summary.GraphOutputs.Count > 1 ? "outputs" : "output")}: {string.Join(", ", summary.GraphOutputs)}" : string.Empty)}");
             StringBuilder bodyBuilder = new();
             // Do variable declarations first
-            foreach ((string key, string value) in summary.VariableDeclarations)
-                bodyBuilder.AppendLine($"{defaultIndentation}{key} = {value}");
+            foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
+                bodyBuilder.AppendLine($"{defaultIndentation}{key.Name} = {value}");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
             {
@@ -228,6 +229,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Entry point
             mainScriptBuilder.AppendLine("# Program entry");
             if (programInputs.Length == 0)
+                // Zero arguments
                 mainScriptBuilder.AppendLine("""
                     if __name__ == '__main__':
                         if len(sys.argv) > 1 and sys.argv[1] == "--help":
@@ -236,6 +238,7 @@ namespace Parcel.Neo.Base.Algorithms
                             Main()
                     """);
             else
+                // Handle command line arguments
                 mainScriptBuilder.AppendLine($"""
                     if __name__ == '__main__':
                         if len(sys.argv) > 1 and sys.argv[1] == "--help":
@@ -244,8 +247,8 @@ namespace Parcel.Neo.Base.Algorithms
                             if len(sys.argv) != 1 + {programInputs.Length}:
                                 Console.Print("Missing required arguments.")
                             else:
-                                {string.Join("\n            ", programInputs.Select((v, i) => $"{v} = sys.argv[{1 + i}]"))}
-                                Main({string.Join(", ", programInputs)}){(summary.GraphOutputs.Count > 0 ? " # The program generates outputs; Somehow make use of outputs..." : string.Empty)}
+                                {string.Join("\n            ", programInputs.Select((v, i) => $"{v.Name} = {(v.RepresentsNumber ? $"float(sys.argv[{1 + i}])" : $"sys.argv[{1 + i}]")}"))}
+                                Main({string.Join(", ", programInputs.Select(p => p.Name))}){(summary.GraphOutputs.Count > 0 ? " # The program generates outputs; Somehow make use of outputs..." : string.Empty)}
                     """);
 
             // Create output folder if not exist
@@ -277,24 +280,23 @@ namespace Parcel.Neo.Base.Algorithms
                     """"; // TODO: Publish Parcel NExT as a standalone python package
             }
         }
-
         // TODO: Do not handle statement generation inside this class; Handle it in a dedicated place instead
         public sealed class ScriptDependencySummary
         {
             #region Construction
-            public ScriptDependencySummary(string subGraphID, ExecutionQueue graph)
+            public ScriptDependencySummary(string subGraphID, ExecutionQueue graph, ISyntaxHandler syntaxHandler)
             {
                 SubgraphID = subGraphID;
-                GatherScriptDependencies(graph);
+                GatherScriptDependencies(graph, syntaxHandler);
             }
             #endregion
 
             #region Properties
             public string SubgraphID { get; }
-            public HashSet<string> GraphInputs { get; } = [];
+            public HashSet<TypedVariable> GraphInputs { get; } = [];
             public HashSet<string> GraphOutputs { get; } = [];
-            public Dictionary<string, string> VariableDeclarations { get; } = [];
-            public HashSet<string> ScopedVariables { get; } = [];
+            public Dictionary<TypedVariable, string> VariableDeclarations { get; } = [];
+            public HashSet<TypedVariable> ScopedVariables { get; } = [];
             public string[] ScriptSectionStatements { get; private set; } = [];
             public (string PackageID, string Namespace)[] UniqueNamespaces { get; private set; }
             public Dictionary<string, string> StandardPackageImports { get; private set; }
@@ -303,10 +305,11 @@ namespace Parcel.Neo.Base.Algorithms
             public Type[] InvolvedStaticTypes => UniqueTypes.Where(t => t.IsAbstract && t.IsSealed).ToArray();
             #endregion
 
-            public record NodeHandlingResult(bool IsVariable = false, Dictionary<string, string>? Variables = null /*From attribute to final scoped variable name*/);
+            public record NodeHandlingResult(bool IsVariable = false, Dictionary<string, TypedVariable>? Variables = null /*From attribute to final scoped variable name*/);
+            public record FunctionCallParameter(string OriginalName, Type OriginalType, string FinalEvaluatedValue, bool IsVariableReference, Type? ReferencedVariableType);
 
             #region Method
-            private void GatherScriptDependencies(in ExecutionQueue graph)
+            private void GatherScriptDependencies(in ExecutionQueue graph, ISyntaxHandler syntaxHandler)
             {
                 // TODO: This code definitely is worth some refactoring
 
@@ -323,7 +326,8 @@ namespace Parcel.Neo.Base.Algorithms
                     if (processorNode is AutomaticProcessorNode autoNode)
                     {
                         automaticProcessors.Add(autoNode);
-                        string[] parameters = autoNode.Input.Select(i => i.Title).ToArray();
+                        Type[] parameterTypes = autoNode.Descriptor.InputTypes;
+                        FunctionCallParameter[] parameters = Enumerable.Range(0, autoNode.Input.Count).Select(i => new FunctionCallParameter(autoNode.Input[i].Title, parameterTypes[i], autoNode.Input[i].Title, false, null)).ToArray();
                         string methodCallName = $"{(autoNode.Descriptor.Method.IsStatic ? autoNode.Descriptor.Method.DeclaringType.Name + ".": string.Empty)}{autoNode.Descriptor.NodeName}"; // TODO: We do not need to address full type name if we are using static (that's why we should not handle statement generation directly here and just parse essential information and let the actual code generation for specific target languages (pure vs c# vs python) handle it
 
                         // Translate parameters
@@ -331,42 +335,62 @@ namespace Parcel.Neo.Base.Algorithms
                             .Select(i =>
                             {
                                 var connector = autoNode.Input[i];
+                                object? value = null;
                                 if (connector is PrimitiveInputConnector primitive)
-                                    return primitive.Value.ToString();
-                                else return autoNode.Descriptor.DefaultInputValues[i].ToString();
+                                    value = primitive.Value;
+                                else value = autoNode.Descriptor.DefaultInputValues[i];
+                                if (TypeHelper.IsNumericalType(value.GetType()))
+                                    return value.ToString();
+                                return $"\"{value}\"";
                             })
                             .ToArray(); // Get actual input values instead of assigned default values from function signature, because user may have changed it on the node surface (e.g. primitive number inputs connectors)
                         for (int i = 0; i < parameters.Length; i++)
                         {
-                            string parameter = parameters[i];
-                            if (autoNode.Input[i].Connections.Any())
+                            FunctionCallParameter parameter = parameters[i];
+                            NotifyObservableCollection<BaseConnection> connections = autoNode.Input[i].Connections;
+                            if (connections.Any())
                             {
-                                BaseConnector connection = autoNode.Input[i].Connections.Single().Input;
-                                ProcessorNode source = (connection.Node as ProcessorNode)!;
-                                if (!handledNodes.TryGetValue(source, out NodeHandlingResult? connectedNodeResult))
-                                    throw new ApplicationException("Source should have already been handled.");
-                                if (!connectedNodeResult.IsVariable)
-                                    throw new ApplicationException("Source should have generated some outputs.");
-                                parameters[i] = connectedNodeResult.Variables[connection.Title];
+                                // Typical singular argument
+                                if (connections.Count == 1)
+                                {
+                                    BaseConnector connection = connections.Single().Input;
+                                    TypedVariable variableReference = GetVariableReference(handledNodes, connection);
+                                    parameters[i] = new FunctionCallParameter(parameters[i].OriginalName, parameters[i].OriginalType, variableReference.Name, true, variableReference.Type);
+                                }
+                                // Array coercion handling
+                                else
+                                {
+                                    TypedVariable[] variableReferences = connections.Select(con => GetVariableReference(handledNodes, con.Input)).ToArray();
+                                    string arrayVariableName = GetNewVariableName(ScopedVariables, parameters[i].OriginalName);
+                                    TypedVariable newVariable = new(arrayVariableName, autoNode.Input[i].DataType);
+                                    statements.Add(syntaxHandler.CreateArrayVariable(newVariable, variableReferences.Select(v => v.Name).ToArray()));
+                                    parameters[i] = new FunctionCallParameter(parameters[i].OriginalName, parameters[i].OriginalType, newVariable.Name, true, newVariable.Type);
+                                    ScopedVariables.Add(newVariable);
+                                }
                             }
                             else
-                                parameters[i] = parameterLiteralValues[i];
+                                // Use literal value from the pin
+                                parameters[i] = new FunctionCallParameter(parameters[i].OriginalName, parameters[i].OriginalType, parameterLiteralValues[i], false, null);
                         }
 
                         // Save outputs
+                        string[] parameterNames = autoNode.Descriptor.InputNames;
+                        TypedVariable[] functionCallArguments = Enumerable.Range(0, autoNode.Descriptor.InputTypes.Length).Select(i => new TypedVariable(parameterNames[i], parameterTypes[i])).ToArray();
                         if (autoNode.Output.Any())
                         {
-                            string outputVariableName = autoNode.MainOutput.Title.Camelize();
-                            statements.Add($"{outputVariableName} = {methodCallName}({string.Join(", ", parameters)})");
-                            ScopedVariables.Add(outputVariableName);
+                            // TODO: Deal with multiple outputs
+                            string outputVariableName = GetNewVariableName(ScopedVariables, autoNode.MainOutput.Title.Camelize());
+                            TypedVariable newVariable = new(outputVariableName, autoNode.MainOutput.DataType);
+                            statements.Add(syntaxHandler.CreateVariable(newVariable, syntaxHandler.CallFunction(methodCallName, functionCallArguments, parameters)));
+                            ScopedVariables.Add(newVariable);
 
                             // Book keep node outputs
-                            handledNodes[processorNode] = new(true, new Dictionary<string, string> { { autoNode.MainOutput.Title, outputVariableName } });
+                            handledNodes[processorNode] = new(true, new Dictionary<string, TypedVariable> { { autoNode.MainOutput.Title, newVariable } });
                         }
                         // Plain call
                         else
                         {
-                            statements.Add($"{methodCallName}({string.Join(", ", parameters)})");
+                            statements.Add(syntaxHandler.CallFunction(methodCallName, functionCallArguments, parameters));
                             handledNodes[processorNode] = new();
                         }
                     }
@@ -376,20 +400,22 @@ namespace Parcel.Neo.Base.Algorithms
                         // Primitives are processed as variable definition
                         if (processorNode is PrimitiveNode primitive)
                         {
-                            string variableName = processorNode.Title.Camelize();
-                            VariableDeclarations[variableName] = primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
-                            ScopedVariables.Add(variableName);
-                            handledNodes[processorNode] = new(true, new Dictionary<string, string> { { primitive.MainOutput.Title, variableName } });
+                            string variableName = GetNewVariableName(ScopedVariables, processorNode.Title.Camelize());
+                            TypedVariable newVariable = new(variableName, processorNode.MainOutput.DataType);
+                            VariableDeclarations[newVariable] = newVariable.IsStringLiteral ? $"\"{primitive.Value}\"" : primitive.Value; // TODO: Instead of using MainOutput which depdends on cache which requires us to execute the graph, we should fetch directly its stored values.
+                            ScopedVariables.Add(newVariable);
+                            handledNodes[processorNode] = new(true, new Dictionary<string, TypedVariable> { { primitive.MainOutput.Title, newVariable } });
                         }
                         else if (processorNode is GraphInput graphInput)
                         {
                             foreach (OutputConnector output in graphInput.Output)
                             {
-                                string inputVariableName = output.Title.Camelize();
-                                GraphInputs.Add(inputVariableName);
-                                ScopedVariables.Add(inputVariableName);
+                                string inputVariableName = GetNewVariableName(ScopedVariables, output.Title.Camelize());
+                                TypedVariable newVariable = new(inputVariableName, output.DataType);
+                                GraphInputs.Add(newVariable);
+                                ScopedVariables.Add(newVariable);
                             }
-                            handledNodes[processorNode] = new(true, graphInput.Output.ToDictionary(o => o.Title, o => o.Title.Camelize()));
+                            handledNodes[processorNode] = new(true, graphInput.Output.ToDictionary(o => o.Title, o => new TypedVariable(o.Title.Camelize(), o.DataType)));
                         }
                         else if (processorNode is GraphOutput graphOutput)
                         {
@@ -409,15 +435,16 @@ namespace Parcel.Neo.Base.Algorithms
                                         throw new ApplicationException("Source should have already been handled.");
                                     if (!connectedNodeResult.IsVariable)
                                         throw new ApplicationException("Source should have generated some outputs.");
-                                    outputVariableValue = connectedNodeResult.Variables[connection.Title];
+                                    outputVariableValue = connectedNodeResult.Variables[connection.Title].Name;
                                 }
                                 // Generate statement
-                                statements.Add($"{outputVariableName} = {outputVariableValue}");
+                                statements.Add(syntaxHandler.CreateVariable(new TypedVariable(outputVariableName, input.DataType), outputVariableValue));
                                 outputVariables.Add(outputVariableName);
+                                // No need to add this to ScopedVariables
                             }
 
                             // Final return statement
-                            statements.Add($"return {string.Join(", ", outputVariables)}");
+                            statements.Add(syntaxHandler.ReturnResults([.. outputVariables]));
 
                             handledNodes[processorNode] = new();
                         }
@@ -438,12 +465,34 @@ namespace Parcel.Neo.Base.Algorithms
                     .ToDictionary(n => n, n => n.Split('.').Last());
 
                 // Final assignments
-                ScriptSectionStatements = statements.ToArray();
+                ScriptSectionStatements = [.. statements];
+            }
+            private static string GetNewVariableName(HashSet<TypedVariable> scope, string preferredName)
+            {
+                int counter = 0;
+                while (true)
+                {
+                    string finalName = counter == 0 ? preferredName : $"{preferredName}{counter}";
+                    if (scope.Any(s => s.Name == finalName))
+                        counter++;
+                    else
+                        return finalName;
+                }
+            }
+            private static TypedVariable GetVariableReference(Dictionary<ProcessorNode, NodeHandlingResult> handledNodes, BaseConnector connection)
+            {
+                ProcessorNode source = (connection.Node as ProcessorNode)!;
+                if (!handledNodes.TryGetValue(source, out NodeHandlingResult? connectedNodeResult))
+                    throw new ApplicationException("Source should have already been handled.");
+                if (!connectedNodeResult.IsVariable)
+                    throw new ApplicationException("Source should have generated some outputs.");
+                TypedVariable variableReference = connectedNodeResult.Variables[connection.Title];
+                return variableReference;
             }
             #endregion
         }
-        private static ScriptDependencySummary GatherScriptDependencies(in ExecutionQueue graph)
-            => new("Main Script", graph);
+        private static ScriptDependencySummary GatherScriptDependencies(in ExecutionQueue graph, ISyntaxHandler syntaxHandler)
+            => new("Main Script", graph, syntaxHandler);
         #endregion
 
         #region Helpers
@@ -452,8 +501,76 @@ namespace Parcel.Neo.Base.Algorithms
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
             if (fileNameWithoutExtension.StartsWith("Parcel."))
                 return fileNameWithoutExtension;
+            else if (Path.GetDirectoryName(filePath) == AssemblyHelper.ParcelNExTDistributionRuntimeDirectory) // Check whether the referenced assembly if from parcel distribution runtime folder
+                return fileNameWithoutExtension;
             else return filePath;
         }
         #endregion
+    }
+
+    public record struct TypedVariable(string Name, Type Type)
+    {
+        public bool RepresentsNumber = TypeHelper.IsNumericalType(Type);
+        public bool IsStringLiteral = Type == typeof(string);
+    }
+    public interface ISyntaxHandler
+    {
+        public string CreateVariable(TypedVariable variable, string value);
+        public string AssignVariable(TypedVariable variable, string value);
+        public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames);
+        public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters);
+        public string ReturnResults(string[] returns);
+    }
+    public sealed class PythonSyntaxHandler : ISyntaxHandler
+    {
+        public string CreateVariable(TypedVariable variable, string value)
+            => $"{variable.Name} = {value}";
+        public string AssignVariable(TypedVariable variable, string value)
+            => $"{variable.Name} = {value}";
+        public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames)
+            => $"{variable.Name} = [{string.Join(", ", elementVariableNames)}]";
+        public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters)
+            => $"{functionName}({string.Join(", ", Enumerable.Range(0, parameters.Length).Select(i =>
+            {
+                TypedVariable expectedType = parameterNames[i];
+                FunctionCallParameter parameter = parameters[i];
+                if (expectedType.Type != (parameter.IsVariableReference ? parameter.ReferencedVariableType : parameter.OriginalType))
+                {
+                    string castedTypeName = CastPrimitiveType(expectedType.Type);
+                    if (string.IsNullOrEmpty(castedTypeName))
+                        return parameter.FinalEvaluatedValue;
+                    else return $"{castedTypeName}({parameter.FinalEvaluatedValue})"; // Add a cast
+                }
+                return parameter.FinalEvaluatedValue;
+            }))})";
+        public string ReturnResults(string[] returns)
+            => returns.Any() ? $"return {string.Join(", ", returns)}" : "return";
+
+        #region Helpers
+        private static string CastPrimitiveType(Type type)
+        {
+            string dotnetName = type.Name;
+            return dotnetName switch
+            {
+                nameof(Int32) => "int",
+                nameof(Double) => "double",
+                nameof(String) => "string",
+                _ => string.Empty // Can't handle; Leave python interpreter to throw runtime error
+            };
+        }
+        #endregion
+    }
+    public sealed class PureSyntaxHandler : ISyntaxHandler
+    {
+        public string CreateVariable(TypedVariable variable, string value)
+            => $"{variable.Type.Name} {variable.Name} = {value};";
+        public string AssignVariable(TypedVariable variable, string value)
+            => $"{variable.Name} = {value};";
+        public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames)
+            => $"{variable.Type.Name} {variable.Name}{variable.Name} = [{string.Join(", ", elementVariableNames)}];";
+        public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters)
+            => $"{functionName}({string.Join(", ", parameters.Select(p => p.FinalEvaluatedValue))});";
+        public string ReturnResults(string[] returns)
+            => returns.Any() ? $"return {(returns.Length == 1 ? returns.Single() : $"({string.Join(", ", returns)})")};" : "return;";
     }
 }

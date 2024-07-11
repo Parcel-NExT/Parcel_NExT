@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Parcel.Neo.Base.DataTypes;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
@@ -18,20 +17,16 @@ namespace Parcel.Neo.Base.Framework.Advanced
             get => _name;
             set => SetField(ref _name, value);
         }
-        private CacheDataType _type = CacheDataType.Number;
-        public CacheDataType Type
+        private Type _valueType;
+        public Type ValueType
         {
-            get => _type;
-            set => SetField(ref _type, value);
+            get => _valueType;
+            set => SetField(ref _valueType, value);
         }
         #endregion
 
         #region Payload
         public object Payload { get; set; }
-        #endregion
-
-        #region Accessor
-        public Type ObjectType => typeof(object); // Remark: Do we actually need anything more specific than that (object type)?
         #endregion
     }
 
@@ -70,7 +65,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
         private void AddEntry()
         {
             string name = $"{NewEntryPrefix} {Definitions.Count + 1}";
-            GraphInputOutputDefinition def = new() { Name = name };
+            GraphInputOutputDefinition def = new() { Name = name, ValueType = typeof(double) };
             def.PropertyChanged += (sender, args) => DefinitionChanged(sender as GraphInputOutputDefinition);
             
             Definitions.Add(def);
@@ -101,7 +96,8 @@ namespace Parcel.Neo.Base.Framework.Advanced
         #region Routiens
         private byte[] SerializeEntries()
         {
-            List<Tuple<string, int>> data = Definitions.Select(def => new Tuple<string, int>(def.Name, (int)def.Type))
+            List<(string, string)> data = Definitions
+                .Select(def => (def.Name, def.ValueType.FullName)) // TODO: Implement proper type referencing naming
                 .ToList();
 
             var stream = new MemoryStream();
@@ -119,14 +115,14 @@ namespace Parcel.Neo.Base.Framework.Advanced
             var stream = new MemoryStream(entryData);
             var reader = new BinaryReader(stream);
             int count = reader.ReadInt32();
-            List<Tuple<string, int>> source = [];
+            List<(string Name, string ValueType)> source = [];
             for (int i = 0; i < count; i++)
-                source.Add(new Tuple<string, int>(reader.ReadString(), reader.ReadInt32()));
+                source.Add((reader.ReadString(), reader.ReadString()));
 
             Definitions.AddRange(source.Select(tuple => new GraphInputOutputDefinition()
             {
-                Name = tuple.Item1,
-                Type = (CacheDataType) tuple.Item2
+                Name = tuple.Name,
+                ValueType = typeof(object) // TODO: Impelement proper de-referencing for ValueType
             }));
             DeserializeFinalize();
         }

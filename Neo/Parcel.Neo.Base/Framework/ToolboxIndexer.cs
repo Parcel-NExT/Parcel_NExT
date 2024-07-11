@@ -4,7 +4,6 @@ using System.Reflection;
 using System;
 using System.Linq;
 using System.IO;
-using Humanizer;
 using Parcel.CoreEngine.Helpers;
 
 namespace Parcel.Neo.Base.Framework
@@ -64,7 +63,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Collections", typeof(Enumerable));
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Statistics)); // TODO: Might provide selective set of functions instead of everything; Alternative, figure out how to do in-app documentation
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Correlation));
-            RegisterType(toolboxes, "String Processing", typeof(InflectorExtensions));
+            // RegisterType(toolboxes, "String Processing", typeof(InflectorExtensions)); // TODO: Provide Humanizer equivalent functions in PSL string processing
             RegisterType(toolboxes, "Console", typeof(Standard.System.Console));
             RegisterType(toolboxes, "Website Builder", typeof(Parcel.Framework.WebPages.WebPagesBuilder));
             // Remark: Notice that boolean algebra and String are available in PSL - Pending deciding whether we need dedicated exposure

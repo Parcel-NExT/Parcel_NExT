@@ -1,5 +1,10 @@
 # Web Pages Builder
 
+Tags: Application Framework, Code Generator, CodeGen, End User Application, Framework, Generator, HTML
+Version: 0.0.1
+Author: Charles Zhang
+Status: Experimental
+
 Fully adaptive, static web pages builder. No hosting is provided (test server will be provided).
 
 Part of the CodeGen initiative.
@@ -11,6 +16,7 @@ Part of the CodeGen initiative.
 ## References
 
 * Template design: https://github.com/h5bp/html5-boilerplate
+* Template design: https://wordpress.com/learn/courses/getting-started/templates-explained/
 
 CC Tempalte Resource:
 * https://html5up.net/

@@ -5,6 +5,7 @@ using Parcel.Types;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Base.DataTypes;
 using System.ComponentModel;
+using System.Xml.Linq;
 
 namespace Parcel.Neo.Base.Framework.ViewModels
 {
@@ -133,6 +134,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         #region Other Properties
         public ConnectorFlowType FlowType { get; protected set; }
         public int MaxConnections { get; set; } = int.MaxValue;
+        public bool AllowsArrayCoercion { get; set; } = false;
         public NotifyObservableCollection<BaseConnection> Connections { get; } = [];
         
         public Type DataType { get; set; }
@@ -184,8 +186,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         public bool IsConnectedTo(BaseConnector connector)
             => Connections.Any(c => c.Input == connector || c.Output == connector);
         public virtual bool AllowsNewConnections()
-            => (FlowType != ConnectorFlowType.Input && Connections.Count < MaxConnections)
-                || (FlowType == ConnectorFlowType.Input && Connections.Count == 0);
+            => (FlowType != ConnectorFlowType.Input && Connections.Count < MaxConnections) // Output pins and knot pins allows infinite amount of connections
+                || (FlowType == ConnectorFlowType.Input && (Connections.Count == 0 || AllowsArrayCoercion)); // Input pins accepts connections based on some limits
         public void Disconnect()
             => Node.Graph.Schema.DisconnectConnector(this);
         public void UpdateConnectorShape()
@@ -193,45 +195,33 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         #endregion
 
         #region Interface
-        public T FetchInputValue<T>()
+        public TReturn FetchInputValue<TReturn>()
         {
             if (FlowType != ConnectorFlowType.Input)
                 throw new InvalidOperationException("Can't fetch value for output connector.");
             if (Connections.Count > 1)
                 throw new InvalidOperationException("Input connector has more than 1 connection.");
 
+            // Typical case, single value per parameter
             BaseConnection? connection = Connections.SingleOrDefault();
-            if (typeof(T) == DataType || typeof(T).IsAssignableFrom(DataType))
+            return ExtractSingleValue<TReturn>(connection);
+        }
+        public object FetchArrayInputValues(Type elementType)
+        {
+            // Coercion for array or params input
+            if (AllowsArrayCoercion)
             {
-                if (connection != null)
+                Array array = Array.CreateInstance(elementType, Connections.Count);
+                for (int i = 0; i < Connections.Count; i++)
                 {
-                    if (connection.Input.Node is KnotNode search)
-                    {
-                        BaseNode prev = search;
-                    
-                        while (prev is KnotNode knot)
-                            prev = knot.Previous;
-
-                        if (prev is ProcessorNode processor)
-                            return (T)processor[connection.Input as OutputConnector].DataObject;
-
-                        throw new InvalidOperationException("Knot nodes connect to empty source.");
-                    }
-                    else if (connection.Input.Node is ProcessorNode processor)
-                    {
-                        return (T) processor[connection.Input as OutputConnector].DataObject;
-                    }
-                    else throw new InvalidOperationException("Invalid node type.");
+                    BaseConnection con = Connections[i];
+                    object value = ExtractSingleValue(con, elementType);
+                    array.SetValue(value, i);
                 }
-                else
-                {
-                    if (this is OutputConnector _outputConnector && Node is ProcessorNode processor && processor.HasCache(_outputConnector))
-                        return (T) processor[_outputConnector].DataObject;
-                    else
-                        return DefaultDataStorage != null ? (T) DefaultDataStorage : default(T);
-                }
+                return array;
             }
-            else throw new ArgumentException("Wrong type.");
+            else
+                throw new ApplicationException("Unexpected case");
         }
         #endregion
 
@@ -251,6 +241,86 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             if (_mappings.TryGetValue(dataType, out ConnectorShape value))
                 return value;
             return ConnectorShape.Circle;
+        }
+        #endregion
+
+        #region Helpers
+        private T ExtractSingleValue<T>(BaseConnection? connection)
+        {
+            if (typeof(T) == DataType || typeof(T).IsAssignableFrom(DataType))
+            {
+                if (connection != null)
+                {
+                    if (connection.Input.Node is KnotNode search)
+                    {
+                        BaseNode prev = search;
+
+                        while (prev is KnotNode knot)
+                            prev = knot.Previous;
+
+                        if (prev is ProcessorNode processor)
+                            return (T)processor[connection.Input as OutputConnector].DataObject;
+
+                        throw new InvalidOperationException("Knot nodes connect to empty source.");
+                    }
+                    else if (connection.Input.Node is ProcessorNode processor)
+                    {
+                        return (T)processor[connection.Input as OutputConnector].DataObject;
+                    }
+                    else throw new InvalidOperationException("Invalid node type.");
+                }
+                else
+                {
+                    if (this is OutputConnector _outputConnector && Node is ProcessorNode processor && processor.HasCache(_outputConnector))
+                        return (T)processor[_outputConnector].DataObject;
+                    else
+                        return DefaultDataStorage != null ? (T)DefaultDataStorage : default(T);
+                }
+            }
+            else throw new ArgumentException("Wrong type.");
+        }
+        private object ExtractSingleValue(BaseConnection? connection, Type valueType) // Runtime version of the generic version
+        {
+            if (valueType == DataType || valueType.IsAssignableFrom(DataType))
+            {
+                if (connection != null)
+                {
+                    if (connection.Input.Node is KnotNode search)
+                    {
+                        BaseNode prev = search;
+
+                        while (prev is KnotNode knot)
+                            prev = knot.Previous;
+
+                        if (prev is ProcessorNode processor)
+                            return processor[connection.Input as OutputConnector].DataObject;
+
+                        throw new InvalidOperationException("Knot nodes connect to empty source.");
+                    }
+                    else if (connection.Input.Node is ProcessorNode processor)
+                    {
+                        return processor[connection.Input as OutputConnector].DataObject;
+                    }
+                    else throw new InvalidOperationException("Invalid node type.");
+                }
+                else
+                {
+                    if (this is OutputConnector _outputConnector && Node is ProcessorNode processor && processor.HasCache(_outputConnector))
+                        return processor[_outputConnector].DataObject;
+                    else
+                        return DefaultDataStorage != null ? DefaultDataStorage : GetDefault(valueType);
+                }
+            }
+            else throw new ArgumentException("Wrong type.");
+
+            static object GetDefault(Type type)
+            {
+                if (type.IsValueType)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                return null;
+            }
         }
         #endregion
     }

@@ -72,9 +72,17 @@ namespace Parcel.CoreEngine.Helpers
         }
         public static string Camelize(this string original)
         {
-            return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(original);
+            string stripSpaces = original.Replace(" ", string.Empty);
+            return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(stripSpaces); // Notice JSON CamelCase conversion doesn't strip spaces by default
         }
-
+        public static string Pascalize(this string original)
+        {
+            if (original.Length == 0)
+                return original;
+            
+            string camel = Camelize(original);
+            return new string([char.ToUpper(camel[0]), .. camel.Skip(1)]);
+        }
         public static string JoinAsArguments(this string[] args)
         {
             if (args == null || args.Length == 0)
