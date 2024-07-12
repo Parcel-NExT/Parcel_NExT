@@ -2,6 +2,7 @@
 using System.Linq;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Base.DataTypes;
+using System;
 
 namespace Parcel.Neo.Base.Framework.ViewModels
 {
@@ -16,16 +17,16 @@ namespace Parcel.Neo.Base.Framework.ViewModels
                     && source.Node != con.Node
                     && source.Node.Graph == con.Node.Graph
                     && source.Shape == con.Shape
-                    && source.AllowsNewConnections()
-                    && con.AllowsNewConnections()
+                    && source.AllowsNewConnections(con)
+                    && con.AllowsNewConnections(source)
                     && (source.FlowType != con.FlowType || con.Node is KnotNode)
                     && !source.IsConnectedTo(con);
             }
-            else if (source.AllowsNewConnections() && target is ProcessorNode node) // Remark-cz 2024: Looks like this is handling connecting an entire node to a single connector?
+            else /*if (source.AllowsNewConnections() && target is ProcessorNode node) // Remark-cz 2024: Looks like this is handling connecting an entire node to a single connector?
             {
                 IEnumerable<BaseConnector> allConnectors = source.FlowType == ConnectorFlowType.Input ? node.Output.Cast<BaseConnector>() : node.Input;
                 return allConnectors.Any(c => c.AllowsNewConnections());
-            }
+            }*/ throw new ApplicationException("Unexpected.");
 
             return false;
         }
@@ -63,8 +64,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels
 
         private void AddConnection(BaseConnector connector1, ProcessorNode target)
         {
-            var allConnectors = connector1.FlowType == ConnectorFlowType.Input ? target.Output.Cast<BaseConnector>() : target.Input;
-            var connector = allConnectors.First(c => c.AllowsNewConnections());
+            IEnumerable<BaseConnector> allConnectors = connector1.FlowType == ConnectorFlowType.Input ? target.Output.Cast<BaseConnector>() : target.Input;
+            BaseConnector connector = allConnectors.First(c => c.AllowsNewConnections(connector1));
 
             AddConnection(connector1, connector);
         }

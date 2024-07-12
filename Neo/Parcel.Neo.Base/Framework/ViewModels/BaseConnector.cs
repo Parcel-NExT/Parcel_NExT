@@ -185,9 +185,25 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         }
         public bool IsConnectedTo(BaseConnector connector)
             => Connections.Any(c => c.Input == connector || c.Output == connector);
-        public virtual bool AllowsNewConnections()
-            => (FlowType != ConnectorFlowType.Input && Connections.Count < MaxConnections) // Output pins and knot pins allows infinite amount of connections
-                || (FlowType == ConnectorFlowType.Input && (Connections.Count == 0 || AllowsArrayCoercion)); // Input pins accepts connections based on some limits
+        public virtual bool AllowsNewConnections(BaseConnector other)
+        {
+            if (FlowType != ConnectorFlowType.Input)
+                // Output pins and knot pins allows infinite amount of connections
+                return Connections.Count < MaxConnections; 
+            else
+            {
+                // Input pins accepts either a single connection, or if it supports array type, we accept more than one connection only if all existing connections are of element type
+                if (Connections.Count == 0) return true;
+                else if (AllowsArrayCoercion)
+                {
+                    if (Connections.First().Input.DataType == DataType) // Already connected to an input with corresponding array type
+                        return false;
+                    else
+                        return other.DataType != DataType;
+                }
+                else return false;
+            }
+        }
         public void Disconnect()
             => Node.Graph.Schema.DisconnectConnector(this);
         public void UpdateConnectorShape()
@@ -281,37 +297,33 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         }
         private object ExtractSingleValue(BaseConnection? connection, Type valueType) // Runtime version of the generic version
         {
-            if (valueType == DataType || valueType.IsAssignableFrom(DataType))
+            if (connection != null)
             {
-                if (connection != null)
+                if (connection.Input.Node is KnotNode search)
                 {
-                    if (connection.Input.Node is KnotNode search)
-                    {
-                        BaseNode prev = search;
+                    BaseNode prev = search;
 
-                        while (prev is KnotNode knot)
-                            prev = knot.Previous;
+                    while (prev is KnotNode knot)
+                        prev = knot.Previous;
 
-                        if (prev is ProcessorNode processor)
-                            return processor[connection.Input as OutputConnector].DataObject;
-
-                        throw new InvalidOperationException("Knot nodes connect to empty source.");
-                    }
-                    else if (connection.Input.Node is ProcessorNode processor)
-                    {
+                    if (prev is ProcessorNode processor)
                         return processor[connection.Input as OutputConnector].DataObject;
-                    }
-                    else throw new InvalidOperationException("Invalid node type.");
+
+                    throw new InvalidOperationException("Knot nodes connect to empty source.");
                 }
-                else
+                else if (connection.Input.Node is ProcessorNode processor)
                 {
-                    if (this is OutputConnector _outputConnector && Node is ProcessorNode processor && processor.HasCache(_outputConnector))
-                        return processor[_outputConnector].DataObject;
-                    else
-                        return DefaultDataStorage != null ? DefaultDataStorage : GetDefault(valueType);
+                    return processor[connection.Input as OutputConnector].DataObject;
                 }
+                else throw new InvalidOperationException("Invalid node type.");
             }
-            else throw new ArgumentException("Wrong type.");
+            else
+            {
+                if (this is OutputConnector _outputConnector && Node is ProcessorNode processor && processor.HasCache(_outputConnector))
+                    return processor[_outputConnector].DataObject;
+                else
+                    return DefaultDataStorage != null ? DefaultDataStorage : GetDefault(valueType);
+            }
 
             static object GetDefault(Type type)
             {
