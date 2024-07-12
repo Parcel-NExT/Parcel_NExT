@@ -269,6 +269,24 @@ namespace Parcel.Neo
                 _consoleIsOpen = true;
             }
         }
+        private void ExportCleanChartMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFolderDialog folderDialog = new()
+            {
+                Title = "Choose Folder to Save Exported HTML"
+            };
+
+            if (folderDialog.ShowDialog() == true)
+            {
+                string folderPath = folderDialog.FolderName;
+                string currentFilename = System.IO.Path.GetFileNameWithoutExtension(CurrentFilePath);
+                string indexFileName = $"index.html";
+                ExportHelper.ExportCleanChartHTML(folderPath, indexFileName, Canvas);
+
+                // Open output folder in file explorer (default program) after done
+                ProcessHelper.OpenFileWithDefaultProgram(folderPath);
+            }
+        }
         private void ExportExecutableMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ExperimentalFeatureWarningWindow warning = new() { Owner = this };

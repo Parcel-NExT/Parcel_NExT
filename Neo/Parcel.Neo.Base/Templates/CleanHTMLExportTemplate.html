@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exported</title>
+
+  <style>
+    .connector {
+      width: 5px;
+      height: 5px;
+      border-radius: 5px;
+      background: red;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Graph</h1>
+  
+  <!-- Graph Area -->
+  <div>
+    <!-- Node A -->
+    <div style="position: absolute; top: 80px; left: 10px; width: 200px; height: 100px; background-color: aliceblue;">
+      <div>Number</div>
+      <div>
+        <div></div>
+        <div>15</div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Node B -->
+    <div style="position: absolute; top: 80px; left: 400px; width: 200px; height: 100px; background-color: aqua;">
+      <div>Output</div>
+      <div>
+        <div><div class="connector"></div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connections -->
+  <svg style="width: 100%; height: 100%">
+    <g>
+      <path class="connector" d="
+        M710,810 
+        L770,810 
+        Q790,810 790,830 
+        L790,090
+        Q790,110 810,110
+        L870,110
+    " fill="none" stroke-width="2" stroke="#424763"></path><path class="port" d="M4710,4810,4712,4810" fill="none" stroke-width="8" stroke="#424763"></path>
+    </g>
+  </svg>
+  
+  <script>
+
+  </script>
+</body>
+
+</html>
+
+<!--Notes
+Executive nodes:
+* No readily available library that's lightweight, clean, distraction free, zero-bullshit, and vanilla; Learning existing frameworks is tedious and doesn't work well; Very easy to implement for high customizability especially just for the purpose of displaying; Good to learn; Will implement on our own.
+
+Technical implementation:
+* Nodes are boxes in div
+* Connections are SVG paths
+* No canvas or low-level GL is used
+
+References: (Specific tips)
+* https://stackoverflow.com/questions/19382872/how-to-connect-html-divs-with-lines
+* https://stackoverflow.com/questions/6278152/draw-a-connecting-line-between-two-elements/35493737#35493737
+
+Libraries: (Not suitable)
+* https://reactflow.dev/ Looks nice. Piece of shit requires NodeJS and TypeScript.
+* https://github.com/jerosoler/Drawflow Piece of shit requires TypeScript.
+* https://github.com/emilwidlund/nodl Looks nice. Piece of shit requires NodeJS.
+-->
