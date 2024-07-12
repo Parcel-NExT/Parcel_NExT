@@ -33,6 +33,10 @@ flowchart TD
     id030 --> id040
 ```
 
+## TODO
+
+- [ ] Document/Image save from Preview Window.
+
 ## Setup
 
 All key components are implemented inside `Parcel.Neo.Base` assembly, the front end is implemented in `Parcel.Neo`, and all functional components are implemented in various **Toolboxes** (will soon be completely replaced by Parcel packages).
