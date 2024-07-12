@@ -19,7 +19,7 @@
             <DockPanel HorizontalAlignment="Center">
                 <Image DockPanel.Dock="Left" Source="/Icon.png" Width="64" Margin="12"/>
                 <Label DockPanel.Dock="Top" Content="PV1 Neo" FontSize="22" HorizontalAlignment="Center" Margin="0" Padding="0"/>
-                <Label DockPanel.Dock="Top" Content="Version: 0.1.0 Build v2024-06-24" HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
+                <Label DockPanel.Dock="Top" Content="Version: 0.1.0 Build v2024-07-12" HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
                 <Label DockPanel.Dock="Top" Content="by Methodox, Inc." HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
                 <Label DockPanel.Dock="Top" Content="A Parcel NExT Front-end (Graph Editor)." HorizontalAlignment="Center" Margin="0" Padding="0"  FontSize="8"/>
                 <TextBlock DockPanel.Dock="Top" TextWrapping="WrapWithOverflow"  MaxWidth="320" HorizontalAlignment="Center" TextAlignment="Center">

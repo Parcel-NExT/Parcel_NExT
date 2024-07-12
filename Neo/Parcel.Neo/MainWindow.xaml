@@ -368,7 +368,7 @@
                     <MenuItem Header="PDF" Visibility="Collapsed"/>
                     <MenuItem Header="Markdown" Visibility="Collapsed"/>
                     <MenuItem Header="PNG" Visibility="Collapsed"/>
-                    <MenuItem Header="Executable..." Click="ExportExecutableMenuItem_Click"/>
+                    <MenuItem Header="Executable..." Click="ExportExecutableMenuItem_Click" Visibility="Collapsed"/>
                     <MenuItem Header="C# Project..." Visibility="Collapsed"/>
                     <MenuItem Header="Pure Script(s) (Pure 2)..." Click="ExportPureScriptsMenuItem_Click"/>
                     <MenuItem Header="Python Script(s)..." Click="ExportPythonScriptsMenuItem_Click"/>
