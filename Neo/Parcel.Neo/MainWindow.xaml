@@ -364,6 +364,7 @@
                 <Separator Visibility="Collapsed"/>
                 <MenuItem Header="Import..." ToolTip="Import and insert a document into current graph." Visibility="Collapsed"/>
                 <MenuItem Header="Export" ToolTip="Export graph into various formats.">
+                    <MenuItem Header="Clean Chart (HTML)" Click="ExportCleanChartMenuItem_Click" Visibility="Collapsed"/>
                     <MenuItem Header="PDF" Visibility="Collapsed"/>
                     <MenuItem Header="Markdown" Visibility="Collapsed"/>
                     <MenuItem Header="PNG" Visibility="Collapsed"/>
