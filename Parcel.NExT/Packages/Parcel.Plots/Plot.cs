@@ -1,106 +1,109 @@
-﻿using Parcel.Types;
+﻿using Parcel.Graphing.PlotConfigurations;
+using Parcel.Types;
 
 namespace Parcel.Graphing
 {
     public static class Plot
     {
-        public static Image Scatter(double[] x, double[] y, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", string legend = "")
+        public static Image ScatterPLot(double[] x, double[] y, ScatterPlotConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
             var s = plot.Add.Scatter(x, y);
-            if (!string.IsNullOrEmpty(legend))
+            if (!string.IsNullOrEmpty(configurations.Legend))
             {
                 plot.Legend.IsVisible = true;
-                s.LegendText = legend;
+                s.LegendText = configurations.Legend;
             }
 
-            if (!string.IsNullOrEmpty(title))
-                plot.Title(title);
-            if (!string.IsNullOrEmpty(xAxis))
-                plot.Axes.Left.Label.Text = xAxis;
-            if (!string.IsNullOrEmpty(yAxis))
-                plot.Axes.Bottom.Label.Text = yAxis;
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Left.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Bottom.Label.Text = configurations.YAxis;
 
             string path = GetTempImagePath();
-            plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image ScatterTwoAxes(double[] x, double[] y1, double[]y2, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis1 = "", string yAxis2 = "", string legend1 = "", string legend2 = "")
+        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[]y2, ScatterPlotTwoAxesConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
             var sig1 = plot.Add.Scatter(x, y1);
             var sig2 = plot.Add.Scatter(x, y2);
-            if (!string.IsNullOrEmpty(legend1))
+            if (!string.IsNullOrEmpty(configurations.Legend1))
             {
                 plot.Legend.IsVisible = true;
-                sig1.LegendText = legend1;
+                sig1.LegendText = configurations.Legend1;
             }
-            if (!string.IsNullOrEmpty(legend2))
+            if (!string.IsNullOrEmpty(configurations.Legend2))
             {
                 plot.Legend.IsVisible = true;
-                sig2.LegendText = legend2;
+                sig2.LegendText = configurations.Legend2;
             }
 
-            if (!string.IsNullOrEmpty(title))
-                plot.Title(title);
-            if (!string.IsNullOrEmpty(xAxis))
-                plot.Axes.Bottom.Label.Text = xAxis;
-            if (!string.IsNullOrEmpty(yAxis1))
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis1))
             {
                 sig1.Axes.YAxis = plot.Axes.Left;
-                plot.Axes.Right.Label.Text = yAxis1;
+                plot.Axes.Right.Label.Text = configurations.YAxis1;
             }
-            if (!string.IsNullOrEmpty(yAxis2))
+            if (!string.IsNullOrEmpty(configurations.YAxis2))
             {
                 sig2.Axes.YAxis = plot.Axes.Right;
-                plot.Axes.Left.Label.Text = yAxis2;
+                plot.Axes.Left.Label.Text = configurations.YAxis2;
             }
 
             string path = GetTempImagePath();
-            plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image Line(double[] x, double[] y, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", string legend = "")
+        public static Image LinePlot(double[] x, double[] y, LinePlotConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
-            if (!string.IsNullOrEmpty(legend))
+            if (!string.IsNullOrEmpty(configurations.Legend))
             {
                 var s = plot.Add.Scatter(x, y);
-                s.LegendText = legend;
+                s.LegendText = configurations.Legend;
             }
 
-            if (!string.IsNullOrEmpty(title))
-                plot.Title(title);
-            if (!string.IsNullOrEmpty(xAxis))
-                plot.Axes.Bottom.Label.Text = xAxis;
-            if (!string.IsNullOrEmpty(yAxis))
-                plot.Axes.Left.Label.Text = yAxis;
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = GetTempImagePath();
-            plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image Histogram(double[] v, int imageWidth = 600, int imageHeight = 400, string title = "", string xAxis = "", string yAxis = "", int histogramBars = 400)
+        public static Image Histogram(double[] v, HisogramConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
             
-            ScottPlot.Statistics.Histogram hist = new(min: v.Min(), max: v.Max(), binCount: histogramBars);
+            ScottPlot.Statistics.Histogram hist = new(min: v.Min(), max: v.Max(), binCount: configurations.HisogramBars);
             hist.AddRange(v);
             plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
 
-            if (!string.IsNullOrEmpty(title))
-                plot.Title(title);
-            if (!string.IsNullOrEmpty(xAxis))
-                plot.Axes.Bottom.Label.Text = xAxis;
-            if (!string.IsNullOrEmpty(yAxis))
-                plot.Axes.Left.Label.Text = yAxis;
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = GetTempImagePath();
-            plot.SavePng(path, imageWidth == 0 ? 400 : imageWidth, imageHeight == 0 ? 300 : imageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
 
+        #region Helpers
         private static string GetTempImagePath()
             => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+        #endregion
     }
 }
