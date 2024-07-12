@@ -6,6 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Templates\CleanHTMLExportTemplate.html" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.NExT.Python\Parcel.NExT.Python.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Calculator\Parcel.Calculator.csproj" />
