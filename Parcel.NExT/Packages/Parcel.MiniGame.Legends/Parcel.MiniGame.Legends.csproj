@@ -12,9 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Action\" />
     <Folder Include="Assets\" />
-    <Folder Include="Query\" />
   </ItemGroup>
 
 </Project>
