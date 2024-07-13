@@ -23,6 +23,7 @@
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB.WebSurveys\Parcel.InMemoryDB.WebSurveys.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.LLM\Parcel.LLM.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.MiniGame.Legends\Parcel.MiniGame.Legends.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Plots\Parcel.Plots.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.REST\Parcel.REST.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Standard\Parcel.Standard.csproj" />
