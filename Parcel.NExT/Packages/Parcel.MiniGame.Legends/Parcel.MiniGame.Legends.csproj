@@ -15,4 +15,10 @@
     <Folder Include="Assets\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Parcel.ImageProcessing\Parcel.ImageProcessing.csproj" />
+    <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
+    <ProjectReference Include="..\Parcel.Plots\Parcel.Plots.csproj" />
+  </ItemGroup>
+
 </Project>

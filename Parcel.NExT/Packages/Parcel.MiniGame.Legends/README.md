@@ -11,6 +11,8 @@ To play:
 * Use `Action` to perform actions
 * Use `CompleteTurn()` to complete turn
 
+The game automatically saves. If you are purchased from Steam, you have access to Steam cloud saves and achoevements.
+
 ## TODO
 
 Repo organization:
