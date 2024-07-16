@@ -6,19 +6,22 @@
             xmlns:local="clr-namespace:Parcel.Neo"
             mc:Ignorable="d" MouseDown="PreviewWindow_OnMouseDown"
             Title="{Binding Node, Converter={StaticResource ProcessorNodeToNodeFullNameConverter}}" 
-            Height="200" MinWidth="420" SizeToContent="Width"
+            Height="200" MinWidth="420" SizeToContent="Width" WindowStartupLocation="CenterOwner"
             DataContext="{Binding RelativeSource={RelativeSource self}}">
     <Grid>
+        <!-- Image Preview -->
         <Grid Visibility="{Binding PreviewImageVisibility}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Image x:Name="PreviewImageControl"/>
         </Grid>
-        
+
+        <!-- String Preview -->
         <Grid Visibility="{Binding StringDisplayVisibility}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <ScrollViewer>
                 <TextBox Text="{Binding TestLabel}" TextWrapping="WrapWithOverflow" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True"/>
             </ScrollViewer>
         </Grid>
-        
+
+        <!-- Data Grid/Table Preview -->
         <DockPanel Visibility="{Binding DataGridVisibility}"
                    LastChildFill="True"
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -34,7 +37,8 @@
                 </StackPanel>
             </Grid>
         </DockPanel>
-        
+
+        <!-- What's This For? -->
         <Grid x:Name="WindowGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></Grid>
     </Grid>
 </local:BaseWindow>
