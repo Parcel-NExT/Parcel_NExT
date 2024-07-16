@@ -6,7 +6,7 @@ namespace Parcel.MiniGame
 {
     public static class ChinesePoemReading
     {
-        private record PoemEntry(string Title, string Author, string Abstract, string Poem);
+        private record PoemEntry(string Title, string Author, string Content);
         private static readonly PoemEntry[] Poems = LoadPoems();
         public static string ChinesePoem()
         {
@@ -15,8 +15,8 @@ namespace Parcel.MiniGame
             PoemEntry poem = Poems[draw];
             return $"""
                 {poem.Title} {poem.Author}
-                {poem.Abstract}
-                {poem.Poem}
+
+                {poem.Content}
                 """;
         }
 
@@ -45,20 +45,17 @@ namespace Parcel.MiniGame
                     content = new();
                 }
                 else
-                    content.Append(line + '\n'); // Standardize line ending
+                    content.AppendLine(line);
             }
             if (content.Length != 0) // Trailing entry
                 AddEntry(poems, content, title, author);
 
             return [.. poems];
 
-            static void AddEntry(List<PoemEntry> poems, StringBuilder content, string? title, string? author)
+            static void AddEntry(List<PoemEntry> poems, StringBuilder builder, string? title, string? author)
             {
-                string entry = content.ToString().Trim();
-                int splitter = entry.IndexOf("\n\n");
-                string @abstract = splitter > 0 ? entry[..splitter] : string.Empty;
-                string poem = splitter > 0 ? entry[splitter..] : entry; // Notice we are not trimming poem, eventually this formats nicely
-                poems.Add(new PoemEntry(title!, author!, @abstract, poem));
+                string content = builder.ToString().Trim();
+                poems.Add(new PoemEntry(title!, author!, content));
             }
         }
     }
