@@ -16,3 +16,9 @@ Pure reading (no interaction, just public-domain reading):
 * Novel excerpts
 * Poem
 * 古诗
+
+## Sources
+
+### 唐诗三百首
+
+English: https://28utscprojects.wordpress.com/tang320/ https://creativecommons.org/licenses/by-nc-sa/3.0/ Combined with Chinese version. (Need to double check the license)

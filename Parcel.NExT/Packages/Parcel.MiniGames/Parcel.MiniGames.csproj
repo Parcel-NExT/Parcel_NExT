@@ -11,4 +11,16 @@
 	<PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="唐诗三百首.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="唐诗三百首.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+  </ItemGroup>
+
 </Project>
