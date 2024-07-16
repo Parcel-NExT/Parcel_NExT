@@ -72,7 +72,7 @@ namespace Parcel.Neo.Base.Framework
                     else
                     {
                         // Automatic conversion of number values
-                        if (nonOutMethodParameterValues[current].GetType() != item.ParameterType && TypeDescriptor.GetConverter(nonOutMethodParameterValues[current].GetType()).CanConvertTo(item.ParameterType)) // Requires IConvertible
+                        if (nonOutMethodParameterValues[current] != null && nonOutMethodParameterValues[current].GetType() != item.ParameterType && TypeDescriptor.GetConverter(nonOutMethodParameterValues[current].GetType()).CanConvertTo(item.ParameterType)) // Requires IConvertible
                             methodExpectedParameterValuesArray[i] = Convert.ChangeType(nonOutMethodParameterValues[current], item.ParameterType);
                         else
                             methodExpectedParameterValuesArray[i] = nonOutMethodParameterValues[current];

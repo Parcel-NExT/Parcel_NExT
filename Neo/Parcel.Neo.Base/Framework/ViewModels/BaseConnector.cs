@@ -22,9 +22,9 @@ namespace Parcel.Neo.Base.Framework.ViewModels
     public sealed class PrimitiveColorInputConnector : PrimitiveInputConnector
     {
         public PrimitiveColorInputConnector(Color? defaultValue = null) : base(typeof(Color))
-            => Value = defaultValue ?? new Color();
+            => Value = defaultValue; // Can be null
 
-        public override object Value
+        public override object? Value
         {
             get => _defaultDataStorage;
             set => SetField(ref _defaultDataStorage, value is string s ? Color.Parse(s) : (Color)value);
