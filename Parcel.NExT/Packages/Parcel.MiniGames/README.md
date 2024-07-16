@@ -2,9 +2,8 @@
 
 Version: 0.0.1
 
-Leisure; Demonstrates flexibility of Parcel GUI environment; Tests scalability.
-
-All single node/single-class. General format: `Puzzle(Answer):Reply`.
+Leisure; Demonstrates flexibility of Parcel GUI environment; Tests scalability. All single node/single-class. General format: `Puzzle(Answer):Reply`.
+Consider this an easter egg.
 
 ## TODO
 
