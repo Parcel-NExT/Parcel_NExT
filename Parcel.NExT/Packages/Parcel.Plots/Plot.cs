@@ -3,12 +3,29 @@ using Parcel.Types;
 
 namespace Parcel.Graphing
 {
+    internal class CustomPalette : ScottPlot.IPalette
+    {
+        public string Name { get; } = "A Custom Palette";
+        public string Description { get; } = "Used when customizing plot colors.";
+
+        public ScottPlot.Color[] Colors { get; set; } = new ScottPlot.Palettes.Category10().Colors; // Default
+
+        public ScottPlot.Color GetColor(int index)
+            => Colors[index % Colors.Length];
+    }
+
     public static class Plot
     {
-        public static Image ScatterPLot(double[] x, double[] y, ScatterPlotConfiguration configurations)
+        public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
-            var s = plot.Add.Scatter(x, y);
+            if (configurations.Color != null)
+                plot.Add.Palette = new CustomPalette()
+                {
+                    Colors = [Convert(configurations.Color)]
+                };
+
+            ScottPlot.Plottables.Scatter s = plot.Add.Scatter(x, y);
             if (!string.IsNullOrEmpty(configurations.Legend))
             {
                 plot.Legend.IsVisible = true;
@@ -104,6 +121,8 @@ namespace Parcel.Graphing
         #region Helpers
         private static string GetTempImagePath()
             => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+        private static ScottPlot.Color Convert(Parcel.Types.Color color)
+            => ScottPlot.Color.FromHex(color.ToString());
         #endregion
     }
 }

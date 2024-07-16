@@ -103,6 +103,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                     Input.Add(new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion });
                 else if (inputType == typeof(DateTime))
                     Input.Add(new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion });
+                else if (inputType == typeof(Color))
+                    Input.Add(new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion });
                 else
                     Input.Add(new InputConnector(inputType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion });
             }

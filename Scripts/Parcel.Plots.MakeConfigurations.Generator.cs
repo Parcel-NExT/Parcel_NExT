@@ -6,6 +6,7 @@ To use this, make Parcel.Graphing.MakeConfigurations empty, build the dll, then 
 Import(Parcel.Plots)
 Import(Humanizer.Core as Humanizer)
 using System.Reflection;
+using System.Text;
 
 var assembly = Assembly.GetAssembly(typeof(Parcel.Graphing.Plot));
 Type baseType = typeof(Parcel.Graphing.PlotConfigurations.BasicConfiguration);
@@ -25,20 +26,31 @@ foreach(Type configurationType in configurationTypes)
     object defaultValueInstance = Activator.CreateInstance(configurationType);
     
     WriteLine($$"""
-    /// <summary>
-    /// Create a configuration for {{plotTypeName}}
-    /// </summary>
-    public static {{typeName}} Configure{{plotTypeName}}({{string.Join(", ", properties.Select(p => FormArgumentDeclaration(p, defaultValueInstance)))}})
-    {
-        return new {{typeName}}()
+        /// <summary>
+        /// Create a configuration for {{plotTypeName}}
+        /// </summary>
+        public static {{typeName}} Configure{{plotTypeName}}({{string.Join(", ", properties.Select(p => FormArgumentDeclaration(p, defaultValueInstance)))}})
         {
-            {{string.Join(",\n\t", properties.Select(p => $"{p.Name} = {p.Name.Camelize()}"))}}
-        };
-    }
-    """);
+            {{InitializeDefaultColors(properties.Where(p => p.PropertyType == typeof(Parcel.Types.Color)), defaultValueInstance)}}return new {{typeName}}()
+            {
+                {{string.Join(",\n        ", properties.Select(p => $"{p.Name} = {p.Name.Camelize()}"))}}
+            };
+        }
+        """);
 }
 
 // Helpers
+private static string InitializeDefaultColors(IEnumerable<PropertyInfo> properties, object sampleInstance)
+{
+    StringBuilder builder = new();
+    foreach(var property in properties)
+    {
+        object defaultValue = property.GetValue(sampleInstance);
+        string defaultValueString = defaultValue?.ToString() ?? "null";    
+        builder.AppendLine($"{property.Name.Camelize()} ??= Parcel.Types.Color.Parse(\"{defaultValueString}\");\n    ");
+    }
+    return $"{builder.ToString().Trim()}\n    ";
+}
 private static string GetPlotTypeName(string typeName)
 {
     return typeName.Replace("Configuration", string.Empty);
@@ -46,15 +58,22 @@ private static string GetPlotTypeName(string typeName)
 private static string FormArgumentDeclaration(PropertyInfo property, object sampleInstance)
 {
     object defaultValue = property.GetValue(sampleInstance);
-    string defaultValueString = defaultValue.ToString();
+    string defaultValueString = defaultValue?.ToString() ?? "null";
+    string friendlyTypeName = GetFriendlyTypeName(property.PropertyType, defaultValue == null);
     if (property.PropertyType == typeof(string))
         defaultValueString = $"\"{defaultValue}\"";
+    if (property.PropertyType == typeof(Parcel.Types.Color))
+    {
+        defaultValueString = "null";
+        friendlyTypeName = $"{friendlyTypeName}?";
+    }
     
-    return $"{GetFriendlyTypeName(property.PropertyType.Name)} {property.Name.Camelize()} = {defaultValueString}";
+    return $"{friendlyTypeName} {property.Name.Camelize()} = {defaultValueString}";
 }
-private static string GetFriendlyTypeName(string name)
+private static string GetFriendlyTypeName(Type type, bool nullableReference)
 {
-    return name switch
+    string name = Nullable.GetUnderlyingType(type) != null ? Nullable.GetUnderlyingType(type).Name : type.Name; // Nullable only tests primitives and value types (structs); For nullable reference, it's not reflected on the type itself
+    string friendlyName = name switch
     {  
         "Bool" => "bool",
         "Int32" => "int",
@@ -72,4 +91,5 @@ private static string GetFriendlyTypeName(string name)
         "String" => "string",
         _ => name
     };
+    return (Nullable.GetUnderlyingType(type) != null || nullableReference) ? $"{friendlyName}?" : friendlyName;
 }

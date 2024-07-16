@@ -1,10 +1,18 @@
 ﻿/*Try avoiding complex inheritance hierarchy; Keep it single-level*/
 
+using Parcel.Types;
+
 namespace Parcel.Graphing.PlotConfigurations
 {
     /// <summary>
     /// Provides most common configurations for most if not all plot types
     /// </summary>
+    /// <remarks>
+    /// Notice all those values will be provided on the GUI, likely as primitive inputs, so they cannot be null.
+    /// </remarks>
+    /// <references>
+    /// Default colors: https://scottplot.net/cookbook/4.1/colors/
+    /// </references>
     public class BasicConfiguration
     {
         public int ImageWidth { get; set; } = 600;
@@ -17,6 +25,7 @@ namespace Parcel.Graphing.PlotConfigurations
         public string XAxis { get; set; } = string.Empty;
         public string YAxis { get; set; } = string.Empty;
         public string Legend { get; set; } = string.Empty;
+        public Color Color { get; set; } = Color.Parse("#1F77B4FF");
     }
     public sealed class LinePlotConfiguration : BasicConfiguration
     {
