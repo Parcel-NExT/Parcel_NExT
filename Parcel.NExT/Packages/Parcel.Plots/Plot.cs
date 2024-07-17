@@ -16,6 +16,7 @@ namespace Parcel.Graphing
 
     public static class Plot
     {
+        #region Standard Plots
         public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
@@ -43,7 +44,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[]y2, ScatterPlotTwoAxesConfiguration configurations)
+        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[] y2, ScatterPlotTwoAxesConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
             var sig1 = plot.Add.Scatter(x, y1);
@@ -101,7 +102,7 @@ namespace Parcel.Graphing
         public static Image Histogram(double[] v, HisogramConfiguration configurations)
         {
             ScottPlot.Plot plot = new();
-            
+
             ScottPlot.Statistics.Histogram hist = new(min: v.Min(), max: v.Max(), binCount: configurations.HisogramBars);
             hist.AddRange(v);
             plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
@@ -117,6 +118,18 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
+        #endregion
+
+        #region Standard Charts
+
+        #endregion
+
+        #region Node Graphs
+        public static Image NodeGraph()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
 
         #region Helpers
         private static string GetTempImagePath()

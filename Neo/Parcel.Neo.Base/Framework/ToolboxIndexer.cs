@@ -36,7 +36,6 @@ namespace Parcel.Neo.Base.Framework
                 catch (Exception) { continue; }
             }
             // Register entire (referenced) assemblies
-            RegisterToolbox(toolboxAssemblies, "Plot", Assembly.Load("Parcel.Plots"));
             RegisterToolbox(toolboxAssemblies, "Generator", Assembly.Load("Parcel.Generators"));
             RegisterToolbox(toolboxAssemblies, "Vector", Assembly.Load("Parcel.Vector"));
             RegisterToolbox(toolboxAssemblies, "Large Language Model", Assembly.Load("Parcel.LLM"));
@@ -50,6 +49,9 @@ namespace Parcel.Neo.Base.Framework
             // Register front-end specific toolboxes (In general we try to eliminate those, or to say the least standardization effort is needed to make sure those are understood across implementations
             AddToolbox(toolboxes, "Basic", new BasicToolbox());
             // Register specific types - Parcel Standard
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.DrawHelper));
             RegisterType(toolboxes, "Data Grid", typeof(Types.DataGrid));
             RegisterType(toolboxes, "Data Grid", typeof(Types.DataGridOperationsHelper));
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataGridIntegration));

@@ -16,6 +16,7 @@
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataAnalytics\Parcel.DataAnalytics.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataGrid\Parcel.DataGrid.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Drawing\Parcel.Drawing.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Generators\Parcel.Generators.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Image\Parcel.Image.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB.Integration\Parcel.InMemoryDB.Integration.csproj" />
