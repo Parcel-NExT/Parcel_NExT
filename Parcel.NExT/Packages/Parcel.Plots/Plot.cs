@@ -129,7 +129,70 @@ namespace Parcel.Graphing
         #endregion
 
         #region Standard Charts
+        /// <alias>Age Population Chart</alias>
+        /// <remarks>Notice a population pyramid devides humans into male and female and might not be a gender neural way to represent diversity within population</remarks>
+        public static Image PopulationPyramid(string[] ageGroups, double[] maleData, double[] femaleData, PopulationPyramidConfiguration? configurations)
+        {
+            // TODO: Move age group outside of drawing frame and well aligned on the left side of the drawing area; Might need to use custom text labels for this
 
+            if (ageGroups == null || maleData == null || femaleData == null)
+                throw new ArgumentNullException();
+            if (ageGroups.Length != maleData.Length || ageGroups.Length != femaleData.Length)
+                throw new ArgumentException("Unmatching data length.");
+            if (maleData.Any(d => d < 0))
+                throw new ArgumentException("Male data contains negative value.");
+            if (femaleData.Any(d => d < 0))
+                throw new ArgumentException("Male data contains negative value.");
+            configurations ??= new();
+
+            // Reverse order
+            ageGroups = ageGroups.Reverse().ToArray();
+            maleData = maleData.Reverse().ToArray();
+            femaleData = femaleData.Reverse().ToArray();
+
+            ScottPlot.Plot plot = new();
+            // Male group bar data
+            CreateDataBars(ageGroups, maleData, plot, true, configurations);
+            // Female group bar data
+            CreateDataBars(ageGroups, femaleData, plot, false, configurations);
+
+            // Set display range
+            int margin = ageGroups.Select(s => s.Length).Max() * 2;
+            plot.Axes.SetLimitsX(-maleData.Max() - margin, +femaleData.Max() + margin); // Include extra margin to account for label
+            // plot.Axes.Remove(ScottPlot.Edge.Left); // TODO: Remove default Y axis, at the moment this cannot be done; See https://github.com/ScottPlot/ScottPlot/issues/4078
+            if (configurations.Frameless)
+                plot.Layout.Frameless();
+            // Draw division line
+            plot.Add.VerticalLine(0, 1, ScottPlot.Colors.Black);
+
+            // Save result
+            string path = GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth, configurations.ImageHeight);
+            return new Image(path);
+
+            // Helper
+            static void CreateDataBars(string[] ageGroups, double[] data, ScottPlot.Plot plot, bool male, PopulationPyramidConfiguration configuration)
+            {
+                ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(male ? data.Select(d => -d).ToArray() : data);
+                int index = 0;
+                // Set position and width
+                foreach (ScottPlot.Bar bar in barPlot.Bars)
+                {
+                    bar.Size = configuration.BarSize;
+                }
+                // Set label
+                foreach (ScottPlot.Bar bar in barPlot.Bars)
+                {
+                    bar.Label = male ? $"{ageGroups[index]} {Math.Abs(bar.Value)}" : bar.Value.ToString();
+                    index++;
+                }
+                // Customize label style
+                barPlot.ValueLabelStyle.Bold = true;
+                barPlot.ValueLabelStyle.FontSize = 18;
+                barPlot.Horizontal = true;
+                barPlot.LegendText = male ? "Male" : "Female";
+            }
+        }
         #endregion
 
         #region Node Graphs

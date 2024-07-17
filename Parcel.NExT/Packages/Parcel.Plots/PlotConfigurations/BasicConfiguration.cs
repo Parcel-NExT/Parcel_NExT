@@ -50,4 +50,10 @@ namespace Parcel.Graphing.PlotConfigurations
         public string YAxis { get; set; } = string.Empty;
         public int HisogramBars { get; set; } = 400;
     }
+    public sealed class PopulationPyramidConfiguration : BasicConfiguration
+    {
+        public double BarSize { get; set; } = 0.8;
+        public Color[]? AgeGroupColors { get; set; } = null;
+        public bool Frameless { get; set; } = false;
+    }
 }
