@@ -412,7 +412,7 @@
         <Grid DockPanel.Dock="Bottom">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="NodesPaletteColumn" Width="2.2*"/>
+                    <ColumnDefinition x:Name="NodesPaletteColumn" Width="2.8*"/>
                     <ColumnDefinition x:Name="NodesPaletteSplitterColumn" Width="3"/>
                     <ColumnDefinition Width="8*"/>
                 </Grid.ColumnDefinitions>
@@ -420,7 +420,8 @@
                 <DockPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="True" Visibility="Visible">
                     <Border DockPanel.Dock="Top" BorderBrush="DarkSlateGray" BorderThickness="2" Background="#25394b">
                         <DockPanel LastChildFill="True">
-                            <Label DockPanel.Dock="Left" Content="Nodes Palette" FontSize="18" Foreground="#468cc9" Margin="0" Padding="4, 2"/>
+                            <Label DockPanel.Dock="Left" Content="Nodes Palette" FontSize="18" Foreground="#468cc9" Margin="0" Padding="4, 2, 0, 2"/>
+                            <Label Content="{Binding PaletteToolboxes.Count}" Foreground="DarkGoldenrod" Margin="0" Padding="0"/>
                         </DockPanel>
                     </Border>
                     <Border DockPanel.Dock="Bottom" BorderBrush="DarkSlateGray" BorderThickness="1">
@@ -429,15 +430,17 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type viewModel:NodesPaletteToolboxViewModel}">
                                         <DockPanel LastChildFill="True" MinWidth="150">
-                                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" MouseDown="NodePaletteCategoryHeaderLabelStackPanel_MouseDown">
+                                            <!--Category Header-->
+                                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" MouseDown="NodePaletteCategoryHeaderLabelStackPanel_MouseDown" HorizontalAlignment="Stretch" Background="Transparent">
                                                 <Label Content="▼" Visibility="{Binding Collapsed, Converter={converters:BooleanToVisibilityConverter Negate=True}}" Foreground="White" FontSize="18" Margin="0,0,2,0" Padding="0" VerticalAlignment="Center"/>
-                                                <Label Content="►" Visibility="{Binding Collapsed, Converter={converters:BooleanToVisibilityConverter}}" Foreground="White" FontSize="18" Margin="0,0,2,0" Padding="0" VerticalAlignment="Center"/>
+                                                <Label Content="⊿" Visibility="{Binding Collapsed, Converter={converters:BooleanToVisibilityConverter}}" Foreground="White" FontSize="18" Margin="0,0,2,0" Padding="0" VerticalAlignment="Center"/>
                                                 <Label Content="{Binding ToolboxName}" Foreground="White" FontSize="18"/>
                                             </StackPanel>
+                                            <!--Toolbox Nodes-->
                                             <ItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding Items}" Visibility="{Binding Collapsed, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate DataType="{x:Type viewModel:NodesPaletteToolboxNodeItemViewModel}">
-                                                        <Border BorderThickness="1" BorderBrush="DarkSlateGray" Margin="2" Padding="2" MouseDown="NodePaletteNodeItemBorder_MouseDown">
+                                                        <Border BorderThickness="1" BorderBrush="DarkSlateGray" Margin="2" Padding="2" MouseDown="NodePaletteNodeItemBorder_MouseDown" ToolTip="{Binding Definition.Tooltip}">
                                                             <Border.Style>
                                                                 <Style>
                                                                     <Style.Triggers>
@@ -449,9 +452,41 @@
                                                             </Border.Style>
                                                             <StackPanel Orientation="Vertical">
                                                                 <!--Preview-->
-                                                                <Image Source="{Binding PreviewImage}" MaxWidth="128" MaxHeight="128" Visibility="Visible"/>
+                                                                <Image Source="{Binding PreviewImage}" MaxWidth="128" MaxHeight="128" Visibility="{Binding PreviewImage, Converter={converters:BooleanToVisibilityConverter}}"/>
+                                                                <!--Generated Preview-->
+                                                                <!--(Remark) At the moment this is causing significant loading speed downgrade (and gigantic memory cost), though it's a one-time cost.-->
+                                                                <Border Margin="6" Padding="2" Background="#416788" BorderBrush="#3073ad" BorderThickness="3" CornerRadius="2" Visibility="{Binding PreviewImage, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
+                                                                    <StackPanel>
+                                                                        <Label Content="{Binding DisplayName}" Foreground="#adb4ba" Margin="1" Padding="0" FontWeight="Bold"/>
+                                                                        <Separator Margin="1" HorizontalAlignment="Stretch" Foreground="LightGray" Height="2"/>
+                                                                        <Border Margin="1" Padding="0">
+                                                                            <DockPanel LastChildFill="True">
+                                                                                <ItemsControl ItemsSource="{Binding Definition.Descriptor.InputNames}">
+                                                                                    <ItemsControl.ItemTemplate>
+                                                                                        <DataTemplate DataType="{x:Type System:String}">
+                                                                                            <StackPanel Orientation="Horizontal">
+                                                                                                <Label Content="○" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center" FontSize="12"/>
+                                                                                                <Label Content="{Binding}" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center"/>
+                                                                                            </StackPanel>
+                                                                                        </DataTemplate>
+                                                                                    </ItemsControl.ItemTemplate>
+                                                                                </ItemsControl>
+                                                                                <ItemsControl ItemsSource="{Binding Definition.Descriptor.OutputNames}" HorizontalAlignment="Right">
+                                                                                    <ItemsControl.ItemTemplate>
+                                                                                        <DataTemplate DataType="{x:Type System:String}">
+                                                                                            <StackPanel Orientation="Horizontal">
+                                                                                                <Label Content="{Binding}" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center"/>
+                                                                                                <Label Content="○" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center" FontSize="12"/>
+                                                                                            </StackPanel>
+                                                                                        </DataTemplate>
+                                                                                    </ItemsControl.ItemTemplate>
+                                                                                </ItemsControl>
+                                                                            </DockPanel>
+                                                                        </Border>
+                                                                    </StackPanel>
+                                                                </Border>
                                                                 <!--Label-->
-                                                                <Label Content="{Binding DisplayName}" Foreground="LightGoldenrodYellow" HorizontalAlignment="Center"/>
+                                                                <Label Content="{Binding DisplayName}" Foreground="LightGoldenrodYellow" HorizontalAlignment="Center" Visibility="{Binding PreviewImage, Converter={converters:BooleanToVisibilityConverter}}"/>
                                                             </StackPanel>
                                                         </Border>
                                                     </DataTemplate>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using MathNet.Numerics.LinearAlgebra.Factorization;
 using Parcel.Neo.Base.Framework.ViewModels;
 
 namespace Parcel.Neo.Base.Framework

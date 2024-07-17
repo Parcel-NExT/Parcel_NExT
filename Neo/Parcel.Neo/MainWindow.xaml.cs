@@ -372,7 +372,7 @@ namespace Parcel.Neo
         private void ShowNodesPaletteMenuItem_Checked(object sender, RoutedEventArgs e)
         {
             if (NodesPaletteColumn == null) return; // Can happen during window initialization
-            NodesPaletteColumn.Width = new GridLength(200);
+            NodesPaletteColumn.Width = new GridLength(300);
             NodesPaletteSplitterColumn.Width = new GridLength(3);
             e.Handled = true;
         }
@@ -446,7 +446,8 @@ namespace Parcel.Neo
                 NodesPaletteToolboxViewModel category = new()
                 {
                     ToolboxName = ToolboxName,
-                    Items = new ObservableCollection<NodesPaletteToolboxNodeItemViewModel>(nodes)
+                    Items = new ObservableCollection<NodesPaletteToolboxNodeItemViewModel>(nodes),
+                    Collapsed = true
                 };
                 PaletteToolboxes.Add(category);
             }
