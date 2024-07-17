@@ -185,24 +185,6 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
         #endregion
 
         #region Auto-Connect Interface
-        public override Tuple<ToolboxNodeExport, Vector2D, InputConnector>[] AutoPopulatedConnectionNodes
-        {
-            get
-            {
-                List<Tuple<ToolboxNodeExport, Vector2D, InputConnector>> auto = [];
-                for (int i = 0; i < Input.Count; i++)
-                {
-                    if(!InputConnectorShouldRequireAutoConnection(Input[i])) continue;
-
-                    // TODO: Review and examine this part of logic and see whether we can improve it
-                    Type nodeType = InputTypes[i];
-                    ToolboxNodeExport toolDef = new(Input[i].Title, nodeType);
-                    auto.Add(new Tuple<ToolboxNodeExport, Vector2D, InputConnector>(toolDef, new Vector2D(-100, -50 + (i - 1) * 50), Input[i]));
-                }
-                return [.. auto];
-            }
-        }
-
         public override bool ShouldHaveAutoConnection => Input.Count > 0 && Input.Any(InputConnectorShouldRequireAutoConnection);
         #endregion
     }

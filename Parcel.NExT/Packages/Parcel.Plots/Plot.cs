@@ -17,8 +17,10 @@ namespace Parcel.Graphing
     public static class Plot
     {
         #region Standard Plots
-        public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration configurations)
+        public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration? configurations)
         {
+            configurations ??= new();
+
             ScottPlot.Plot plot = new();
             if (configurations.Color != null)
                 plot.Add.Palette = new CustomPalette()
@@ -44,8 +46,10 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[] y2, ScatterPlotTwoAxesConfiguration configurations)
+        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[] y2, ScatterPlotTwoAxesConfiguration? configurations)
         {
+            configurations ??= new();
+
             ScottPlot.Plot plot = new();
             var sig1 = plot.Add.Scatter(x, y1);
             var sig2 = plot.Add.Scatter(x, y2);
@@ -79,8 +83,10 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image LinePlot(double[] x, double[] y, LinePlotConfiguration configurations)
+        public static Image LinePlot(double[] x, double[] y, LinePlotConfiguration? configurations)
         {
+            configurations ??= new();
+
             ScottPlot.Plot plot = new();
             if (!string.IsNullOrEmpty(configurations.Legend))
             {
@@ -99,8 +105,10 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image Histogram(double[] v, HisogramConfiguration configurations)
+        public static Image Histogram(double[] v, HisogramConfiguration? configurations)
         {
+            configurations ??= new();
+
             ScottPlot.Plot plot = new();
 
             ScottPlot.Statistics.Histogram hist = new(min: v.Min(), max: v.Max(), binCount: configurations.HisogramBars);
