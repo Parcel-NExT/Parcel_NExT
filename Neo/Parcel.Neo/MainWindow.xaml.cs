@@ -390,6 +390,11 @@ namespace Parcel.Neo
                 Owner = this
             }.ShowDialog();
         }
+        private void NodePaletteCategoryHeaderLabelStackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NodesPaletteToolboxViewModel? categoryItem = (sender as StackPanel).DataContext as NodesPaletteToolboxViewModel;
+            categoryItem.Collapsed = !categoryItem.Collapsed;
+        }
         private void NodePaletteNodeItemBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             NodesPaletteToolboxNodeItemViewModel? item = (sender as Border).DataContext as NodesPaletteToolboxNodeItemViewModel;

@@ -84,10 +84,7 @@
                     </DrawingBrush>
                 </Rectangle.Fill>
             </Rectangle>
-            <Rectangle x:Key="RemoveKeyIcon"
-           x:Shared="False"
-           Width="16"
-           Height="16">
+            <Rectangle x:Key="RemoveKeyIcon" x:Shared="False" Width="16" Height="16">
                 <Rectangle.Fill>
                     <DrawingBrush>
                         <DrawingBrush.Drawing>
@@ -219,11 +216,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Margin="{TemplateBinding Margin}"
-                        Padding="{TemplateBinding Padding}"
-                        VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
@@ -419,47 +412,57 @@
         <Grid DockPanel.Dock="Bottom">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="NodesPaletteColumn" Width="2*"/>
+                    <ColumnDefinition x:Name="NodesPaletteColumn" Width="2.2*"/>
                     <ColumnDefinition x:Name="NodesPaletteSplitterColumn" Width="3"/>
                     <ColumnDefinition Width="8*"/>
                 </Grid.ColumnDefinitions>
                 <!-- Nodes Palette -->
                 <DockPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" LastChildFill="True" Visibility="Visible">
-                    <Label DockPanel.Dock="Top" Content="Nodes Palette" FontSize="18" Background="#25394b" Foreground="#468cc9" Margin="0" Padding="4, 2"/>
-                    <ScrollViewer DockPanel.Dock="Bottom">
-                        <ItemsControl ItemsSource="{Binding PaletteToolboxes}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type viewModel:NodesPaletteToolboxViewModel}">
-                                    <DockPanel LastChildFill="True" MinWidth="150">
-                                        <Label DockPanel.Dock="Top" Content="{Binding ToolboxName}" Foreground="White" FontSize="18"/>
-                                        <ItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding Items}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type viewModel:NodesPaletteToolboxNodeItemViewModel}">
-                                                    <Border BorderThickness="1" BorderBrush="DarkSlateGray" Margin="2" Padding="2" MouseDown="NodePaletteNodeItemBorder_MouseDown">
-                                                        <Border.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Border.IsMouseOver" Value="True">
-                                                                        <Setter Property="Border.Background" Value="#2A20B2AA" />
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                        <StackPanel Orientation="Vertical">
-                                                            <!--Preview-->
-                                                            <Image Source="{Binding PreviewImage}" MaxWidth="128" MaxHeight="128" Visibility="Visible"/>
-                                                            <!--Label-->
-                                                            <Label Content="{Binding DisplayName}" Foreground="LightGoldenrodYellow" HorizontalAlignment="Center"/>
-                                                        </StackPanel>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                    <Border DockPanel.Dock="Top" BorderBrush="DarkSlateGray" BorderThickness="2" Background="#25394b">
+                        <DockPanel LastChildFill="True">
+                            <Label DockPanel.Dock="Left" Content="Nodes Palette" FontSize="18" Foreground="#468cc9" Margin="0" Padding="4, 2"/>
+                        </DockPanel>
+                    </Border>
+                    <Border DockPanel.Dock="Bottom" BorderBrush="DarkSlateGray" BorderThickness="1">
+                        <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="4,0,0,0" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding PaletteToolboxes}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type viewModel:NodesPaletteToolboxViewModel}">
+                                        <DockPanel LastChildFill="True" MinWidth="150">
+                                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" MouseDown="NodePaletteCategoryHeaderLabelStackPanel_MouseDown">
+                                                <Label Content="▼" Visibility="{Binding Collapsed, Converter={converters:BooleanToVisibilityConverter Negate=True}}" Foreground="White" FontSize="18" Margin="0,0,2,0" Padding="0" VerticalAlignment="Center"/>
+                                                <Label Content="►" Visibility="{Binding Collapsed, Converter={converters:BooleanToVisibilityConverter}}" Foreground="White" FontSize="18" Margin="0,0,2,0" Padding="0" VerticalAlignment="Center"/>
+                                                <Label Content="{Binding ToolboxName}" Foreground="White" FontSize="18"/>
+                                            </StackPanel>
+                                            <ItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding Items}" Visibility="{Binding Collapsed, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type viewModel:NodesPaletteToolboxNodeItemViewModel}">
+                                                        <Border BorderThickness="1" BorderBrush="DarkSlateGray" Margin="2" Padding="2" MouseDown="NodePaletteNodeItemBorder_MouseDown">
+                                                            <Border.Style>
+                                                                <Style>
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="Border.IsMouseOver" Value="True">
+                                                                            <Setter Property="Border.Background" Value="#2A20B2AA" />
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <StackPanel Orientation="Vertical">
+                                                                <!--Preview-->
+                                                                <Image Source="{Binding PreviewImage}" MaxWidth="128" MaxHeight="128" Visibility="Visible"/>
+                                                                <!--Label-->
+                                                                <Label Content="{Binding DisplayName}" Foreground="LightGoldenrodYellow" HorizontalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
                 </DockPanel>
                 <!-- Horizontal Splitter -->
                 <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Stretch" Visibility="Visible" Background="SlateGray"/>
@@ -737,10 +740,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                             </Style>
                                                         </Border.Resources>
                                                     </Border>
-                                                    <Button Content="Preview" 
-                         Click="ProcessorNodePreviewButton_Click"
-                         Tag="{Binding Path=DataContext, 
-                             RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
+                                                    <Button Content="Preview" Click="ProcessorNodePreviewButton_Click" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
                                                         <Button.Resources>
                                                             <!--Custom Styling-->
                                                             <Style TargetType="{x:Type Button}">
@@ -754,11 +754,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                                 <Setter Property="Template">
                                                                     <Setter.Value>
                                                                         <ControlTemplate TargetType="{x:Type Button}">
-                                                                            <Border Background="{TemplateBinding Background}"
-                                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                                 Margin="{TemplateBinding Margin}"
-                                                 Padding="{TemplateBinding Padding}"
-                                                 VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
                                                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                             </Border>
                                                                         </ControlTemplate>
@@ -776,9 +772,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                         </Button.Resources>
                                                     </Button>
                                                 </StackPanel>
-                                                <Label Content="{Binding }" 
-                    Foreground="White" Margin="0" Padding="0"
-                    VerticalAlignment="Center"/>
+                                                <Label Content="{Binding }" Foreground="White" Margin="0" Padding="0" VerticalAlignment="Center"/>
                                             </DockPanel>
                                         </DataTemplate>
                                     </nodify:Node.HeaderTemplate>

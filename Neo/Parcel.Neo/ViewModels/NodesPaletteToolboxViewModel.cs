@@ -28,6 +28,13 @@ namespace Parcel.Neo.ViewModels
     public class NodesPaletteToolboxViewModel: ObservableObject
     {
         #region View Components
+        private bool _collapsed = false;
+        public bool Collapsed
+        {
+            get => _collapsed;
+            set => SetField(ref _collapsed, value);
+        }
+
         private string _ToolboxName = string.Empty;
         public string ToolboxName
         {
