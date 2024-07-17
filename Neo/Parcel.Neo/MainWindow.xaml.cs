@@ -16,6 +16,8 @@ using Parcel.Neo.PopupWindows;
 using BaseConnection = Parcel.Neo.Base.Framework.ViewModels.BaseConnection;
 using Parcel.Neo.Base.DataTypes;
 using Parcel.CoreEngine.Helpers;
+using System.Collections.ObjectModel;
+using Parcel.Neo.ViewModels;
 
 namespace Parcel.Neo
 {
@@ -40,6 +42,8 @@ namespace Parcel.Neo
             EventManager.RegisterClassHandler(typeof(Nodify.BaseConnection), MouseLeftButtonDownEvent, new MouseButtonEventHandler(OnConnectionInteraction));
             EventManager.RegisterClassHandler(typeof(Nodify.Node), MouseLeftButtonDownEvent, new MouseButtonEventHandler(NodeDoubleclick_OpenProperties));
             EventManager.RegisterClassHandler(typeof(Nodify.GroupingNode), MouseLeftButtonDownEvent, new MouseButtonEventHandler(NodeDoubleclick_OpenProperties));
+
+            UpdatePaletteToolboxes();
         }
         public NodesCanvas Canvas { get; set; } = new NodesCanvas();
         #endregion
@@ -75,6 +79,12 @@ namespace Parcel.Neo
             }
         }
 
+        private ObservableCollection<NodesPaletteToolboxViewModel> _paletteToolboxes = [];
+        public ObservableCollection<NodesPaletteToolboxViewModel> PaletteToolboxes
+        {
+            get => _paletteToolboxes;
+            set => SetField(ref _paletteToolboxes, value);
+        }
         #endregion
 
         #region Advanced Node Graph Behaviors
@@ -355,6 +365,20 @@ namespace Parcel.Neo
                 ProcessHelper.OpenFileWithDefaultProgram(folderPath);
             }
         }
+        private void ShowNodesPaletteMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            if (NodesPaletteColumn == null) return; // Can happen during window initialization
+            NodesPaletteColumn.Width = new GridLength(200);
+            NodesPaletteSplitterColumn.Width = new GridLength(3);
+            e.Handled = true;
+        }
+        private void ShowNodesPaletteMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (NodesPaletteColumn == null) return; // Can happen during window initialization
+            NodesPaletteColumn.Width = new GridLength(0);
+            NodesPaletteSplitterColumn.Width = new GridLength(0);
+            e.Handled = true;
+        }
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             new AboutWindow()
@@ -365,6 +389,24 @@ namespace Parcel.Neo
         #endregion
 
         #region Routine
+        private void UpdatePaletteToolboxes()
+        {
+            Dictionary<string, ToolboxNodeExport[]> toolboxes = ToolboxIndexer.Toolboxes;
+            PaletteToolboxes.Clear();
+            foreach (var toolbox in toolboxes)
+            {
+                PaletteToolboxes.Add(new NodesPaletteToolboxViewModel()
+                {
+                    ToolboxName = "Test",
+                    Items = [
+                        new NodesPaletteToolboxNodeItemViewModel()
+                        {
+                            NodeName = "Test"
+                        }
+                    ]
+                });
+            }
+        }
         private BaseNode SpawnNode(ToolboxNodeExport tool, Vector2D spawnLocation)
         {
             BaseNode node = tool.InstantiateNode();
@@ -528,10 +570,8 @@ namespace Parcel.Neo
         #endregion
 
         #region State
-        private readonly Dictionary<ProcessorNode, PreviewWindow> _previewWindows =
-            new Dictionary<ProcessorNode, PreviewWindow>();
-        private readonly Dictionary<GraphReferenceNode, MainWindow> _graphPreviewWindows =
-            new Dictionary<GraphReferenceNode, MainWindow>();
+        private readonly Dictionary<ProcessorNode, PreviewWindow> _previewWindows = [];
+        private readonly Dictionary<GraphReferenceNode, MainWindow> _graphPreviewWindows = [];
         #endregion
 
         #region Interop

@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+using Parcel.Neo.Helpers;
 using Parcel.Types;
 
 namespace Parcel.Neo
@@ -122,10 +123,10 @@ namespace Parcel.Neo
                 {
                     Types.Image image = (cache.DataObject as Types.Image)!;
                     string? address = image.FileReference;
-                    if (address != null && System.IO.File.Exists(address))
+                    if (address != null && File.Exists(address))
                         PreviewImage(new BitmapImage(new Uri(address)));
                     else
-                        PreviewImage(ConvertToBitmapImage(image));
+                        PreviewImage(ImageSourceHelper.ConvertToBitmapImage(image));
                 }
                 else if (cache.DataType == typeof(DataColumn))
                     PreviewColumnData(cache.DataObject as Parcel.Types.DataColumn);
@@ -214,15 +215,6 @@ namespace Parcel.Neo
             // Bind object
             dataGridData = objects;
         }
-        private static ImageSource ConvertToBitmapImage(Types.Image image)
-        {
-            // Remark-cz: This is slightly hacky because at the moment we cannot find a reliable way to conver Bitmap directly into WPF recognizable ImageSource and honestly it's API is very sick and I don't want to bother.
-            string tempPath = GetTempImagePath();
-            image.ConvertParcelImageToBitmap().Save(tempPath);
-            return new BitmapImage(new Uri(tempPath));
-        }
-        private static string GetTempImagePath()
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
         #endregion
     }
 
