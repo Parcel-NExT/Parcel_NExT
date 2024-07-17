@@ -1,4 +1,5 @@
-﻿using Parcel.Neo.Base.Framework.ViewModels;
+﻿using Parcel.Neo.Base.Framework;
+using Parcel.Neo.Base.Framework.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 
@@ -7,19 +8,20 @@ namespace Parcel.Neo.ViewModels
     public class NodesPaletteToolboxNodeItemViewModel : ObservableObject
     {
         #region View Components
-        private ImageSource? _imageSource;
-        public ImageSource? ImageSource
+        private ImageSource? _previewImage;
+        public ImageSource? PreviewImage
         {
-            get => _imageSource;
-            set => SetField(ref _imageSource, value);
+            get => _previewImage;
+            set => SetField(ref _previewImage, value);
         }
 
-        private string? _nodeName;
-        public string? NodeName
+        private string? _displayName;
+        public string? DisplayName
         {
-            get => _nodeName;
-            set => SetField(ref _nodeName, value);
+            get => _displayName;
+            set => SetField(ref _displayName, value);
         }
+        public ToolboxNodeExport Definition { get; set; }
         #endregion
     }
 

@@ -18,6 +18,10 @@ using Parcel.Neo.Base.DataTypes;
 using Parcel.CoreEngine.Helpers;
 using System.Collections.ObjectModel;
 using Parcel.Neo.ViewModels;
+using System.Linq;
+using System.Windows.Media;
+using Nodify;
+using System.Xml.Linq;
 
 namespace Parcel.Neo
 {
@@ -386,6 +390,37 @@ namespace Parcel.Neo
                 Owner = this
             }.ShowDialog();
         }
+        private void NodePaletteNodeItemBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NodesPaletteToolboxNodeItemViewModel? item = (sender as Border).DataContext as NodesPaletteToolboxNodeItemViewModel;
+
+            // Start dragging
+            DataObject data = new();
+            data.SetData(DataFormats.StringFormat, item.DisplayName);
+            data.SetData("Object", item);
+
+            // Initiate the drag-and-drop operation.
+            DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
+
+            // Remark: Notice any visual effects including text message or preview image needs application-specific implementation
+        }
+        private void Editor_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.StringFormat) && e.Data.GetDataPresent("Object"))
+            {
+                string dataString = (string)e.Data.GetData(DataFormats.StringFormat); // Not used
+                NodesPaletteToolboxNodeItemViewModel nodeItem = (NodesPaletteToolboxNodeItemViewModel)e.Data.GetData("Object");
+                ToolboxNodeExport nodeDef = nodeItem.Definition;
+
+                // Spawn node
+                Point position = e.GetPosition(sender as NodifyEditor);
+                BaseNode node = SpawnNode(nodeDef, new Vector2D(position.X, position.Y));
+
+                // Automatically select node
+                Editor.SelectedItem = node;
+            }
+            e.Handled = true;
+        }
         #endregion
 
         #region Routine
@@ -393,18 +428,22 @@ namespace Parcel.Neo
         {
             Dictionary<string, ToolboxNodeExport[]> toolboxes = ToolboxIndexer.Toolboxes;
             PaletteToolboxes.Clear();
-            foreach (var toolbox in toolboxes)
+            foreach ((string ToolboxName, ToolboxNodeExport[] Toolbox) in toolboxes)
             {
-                PaletteToolboxes.Add(new NodesPaletteToolboxViewModel()
+                NodesPaletteToolboxNodeItemViewModel[] nodes = Toolbox
+                    .Where(n => n != null)
+                    .Select(n => new NodesPaletteToolboxNodeItemViewModel()
                 {
-                    ToolboxName = "Test",
-                    Items = [
-                        new NodesPaletteToolboxNodeItemViewModel()
-                        {
-                            NodeName = "Test"
-                        }
-                    ]
-                });
+                    DisplayName = n.Name,
+                    Definition = n,
+                    PreviewImage = null
+                }).ToArray();
+                NodesPaletteToolboxViewModel category = new()
+                {
+                    ToolboxName = ToolboxName,
+                    Items = new ObservableCollection<NodesPaletteToolboxNodeItemViewModel>(nodes)
+                };
+                PaletteToolboxes.Add(category);
             }
         }
         private BaseNode SpawnNode(ToolboxNodeExport tool, Vector2D spawnLocation)
@@ -508,7 +547,9 @@ namespace Parcel.Neo
                 if (toolboxNodeExport != null)
                 {
                     LastTool = toolboxNodeExport;
-                    SpawnNode(LastTool, new Vector2D(spawnLocation.X, spawnLocation.Y));
+                    var node = SpawnNode(LastTool, new Vector2D(spawnLocation.X, spawnLocation.Y));
+                    // Automatically select node
+                    Editor.SelectedItem = node;
                 }
             }
             popupTab.ItemSelectedAdditionalCallback += CreateNodeFromSelectedSearchItem;

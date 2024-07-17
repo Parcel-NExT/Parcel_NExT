@@ -435,10 +435,23 @@
                                         <ItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding Items}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type viewModel:NodesPaletteToolboxNodeItemViewModel}">
-                                                    <StackPanel Orientation="Vertical">
-                                                        <Label Content="{Binding NodeName}" Foreground="LightGoldenrodYellow" HorizontalAlignment="Center"/>
-                                                        <Image Source="{Binding ImageSource}" MaxWidth="128" MaxHeight="128" Visibility="Visible"/>
-                                                    </StackPanel>
+                                                    <Border BorderThickness="1" BorderBrush="DarkSlateGray" Margin="2" Padding="2" MouseDown="NodePaletteNodeItemBorder_MouseDown">
+                                                        <Border.Style>
+                                                            <Style>
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="Border.IsMouseOver" Value="True">
+                                                                        <Setter Property="Border.Background" Value="#2A20B2AA" />
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <StackPanel Orientation="Vertical">
+                                                            <!--Preview-->
+                                                            <Image Source="{Binding PreviewImage}" MaxWidth="128" MaxHeight="128" Visibility="Visible"/>
+                                                            <!--Label-->
+                                                            <Label Content="{Binding DisplayName}" Foreground="LightGoldenrodYellow" HorizontalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </Border>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -460,7 +473,8 @@
                           PendingConnection="{Binding Canvas.PendingConnection}"
                           SelectedItems="{Binding Canvas.SelectedNodes}"
                           DisconnectConnectorCommand="{Binding Canvas.DisconnectConnectorCommand}"
-                          MouseRightButtonUp="Editor_OnMouseRightButtonUp" MouseLeftButtonDown="Editor_OnMouseDoubleClick">
+                          MouseRightButtonUp="Editor_OnMouseRightButtonUp" MouseLeftButtonDown="Editor_OnMouseDoubleClick"
+                          AllowDrop="True" Drop="Editor_Drop">
                         <nodify:NodifyEditor.PendingConnectionTemplate>
                             <DataTemplate DataType="{x:Type viewModels:PendingConnection}">
                                 <nodify:PendingConnection Source="{Binding Source, Mode=OneWayToSource}"
@@ -822,6 +836,13 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                             </Style>
                         </nodify:NodifyEditor.ItemContainerStyle>
                     </nodify:NodifyEditor>
+                    <TextBlock x:Name="InitialInstructionsTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#868686" FontWeight="Bold" TextAlignment="Center" Visibility="{Binding Canvas.Nodes.Count, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
+                        <Run FontSize="23">Welcome to Parcel PV1 Neo!</Run>
+                        <LineBreak/>
+                        <Run FontSize="16" FontWeight="Normal">Right Click RMB or Press Tab to show Functions Tray</Run>
+                        <LineBreak/>
+                        <Run FontSize="16" FontWeight="Normal">Drag-and-drop from Node Palette to get Started</Run>
+                    </TextBlock>
                 </Grid>
             </Grid>
             <StackPanel Margin="4, 8" Orientation="Vertical"
