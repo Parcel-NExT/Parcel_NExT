@@ -144,7 +144,7 @@ namespace Parcel.Neo.Base.Framework
             static string FormalizeUnnammedPin(Type type)
             {
                 string defaultName = type.Name;
-                if (type.IsArray)
+                if (type.IsArray) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
                     return $"{FormalizeUnnammedPin(type.GetElementType())} Array";
                 else return defaultName;
             }

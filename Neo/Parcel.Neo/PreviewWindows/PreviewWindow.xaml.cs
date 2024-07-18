@@ -111,7 +111,7 @@ namespace Parcel.Neo
             if (Node.HasCache(output))
             {
                 ConnectorCache cache = Node[output];
-                if (cache.DataType.IsArray && PrimitiveTypes.Any(t => t.IsAssignableFrom(cache.DataType.GetElementType()))) // This should not be necessary since the handling of IList should have already handled it
+                if (cache.DataType.IsArray && PrimitiveTypes.Any(t => t.IsAssignableFrom(cache.DataType.GetElementType()))) // This should not be necessary since the handling of IList should have already handled it // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
                     PreviewPrimitiveArray((Array)cache.DataObject);
                 else if (cache.DataObject is System.Collections.IList list)
                     PreviewCollections(list);

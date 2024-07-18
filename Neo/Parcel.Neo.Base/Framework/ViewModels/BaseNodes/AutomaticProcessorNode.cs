@@ -93,7 +93,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 
             void CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
             {
-                bool supportsCoercion = inputType.IsArray;
+                bool supportsCoercion = inputType.IsArray; // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
 
                 if (inputType == typeof(bool))
                     Input.Add(new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion });
@@ -147,7 +147,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 Func<object[], object[]> marshal = RetrieveCallMarshal();
                 object[] outputs = marshal.Invoke(Input.Select((input, index) =>
                 {
-                    if (input.AllowsArrayCoercion && !input.Connections.Any(c => c.Input.DataType.IsArray))
+                    if (input.AllowsArrayCoercion && !input.Connections.Any(c => c.Input.DataType.HasElementType)) //Remark: Notice IsArray is not robust enough since it doesn't work on pass by ref arrays e.g. System.Double[]&
                         return input.FetchArrayInputValues(InputTypes[index].GetElementType());
                     else 
                         return input.FetchInputValue<object>();
