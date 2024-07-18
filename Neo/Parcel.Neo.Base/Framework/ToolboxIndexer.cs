@@ -45,6 +45,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterToolbox(toolboxAssemblies, "Database Application", Assembly.Load("Parcel.InMemoryDB.WebSurveys"));
             RegisterToolbox(toolboxAssemblies, "Yahoo Finance", Assembly.Load("Parcel.YahooFinance"));
             RegisterToolbox(toolboxAssemblies, "MiniGames", Assembly.Load("Parcel.MiniGames"));
+            RegisterToolbox(toolboxAssemblies, "Document Model", Assembly.Load("Parcel.DocumentModel"));
 
             // Index specific nodes
             Dictionary<string, ToolboxNodeExport?[]> toolboxes = IndexToolboxes(toolboxAssemblies);
