@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Win32;
 using Parcel.MiniGame.Legends.Actions;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
@@ -86,10 +87,24 @@ namespace Parcel.Neo
         #endregion
 
         #region Events
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Title = "Choose Path of Saved File"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string path = saveFileDialog.FileName;
+                string suffix = Path.GetExtension(path);
+                // TODO: Implement smart saving depends on specific data type and suffix
+                // ...
+            }
+        }
         private void PreviewWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
-                this.DragMove();    // Allow only LMB, since RMB can cause an exception
+                DragMove();    // Allow only LMB, since RMB can cause an exception
         }
         #endregion
 
