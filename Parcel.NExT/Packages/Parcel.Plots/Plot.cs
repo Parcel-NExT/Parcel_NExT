@@ -152,16 +152,30 @@ namespace Parcel.Graphing
 
             ScottPlot.Plot plot = new();
             // Male group bar data
-            CreateDataBars(ageGroups, maleData, plot, true, configurations);
+            CreateDataBars(maleData, plot, true, configurations);
             // Female group bar data
-            CreateDataBars(ageGroups, femaleData, plot, false, configurations);
+            CreateDataBars(femaleData, plot, false, configurations);
 
             // Set display range
-            int margin = ageGroups.Select(s => s.Length).Max() * 2;
-            plot.Axes.SetLimitsX(-maleData.Max() - margin, +femaleData.Max() + margin); // Include extra margin to account for label
-            // plot.Axes.Remove(ScottPlot.Edge.Left); // TODO: Remove default Y axis, at the moment this cannot be done; See https://github.com/ScottPlot/ScottPlot/issues/4078
-            if (configurations.Frameless)
-                plot.Layout.Frameless();
+            const int fontSize = 12;
+            int margin = ageGroups.Select(s => s.Length).Max() * fontSize/6; // Heuristic scale
+            double maleMin = maleData.Max();
+            plot.Axes.SetLimitsX(-maleMin - margin, +femaleData.Max() + margin / 2); // Include extra margin to account for label // TODO: At the moment there is no reliable way to determine absolute size
+            plot.Layout.Frameless();
+            plot.HideGrid();
+            // Title
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            // Labels
+            for (int i = 0; i < ageGroups.Length; i++)
+            {
+                string item = ageGroups[i];
+                ScottPlot.Plottables.Text text = plot.Add.Text(item, -maleMin - fontSize/3*2, i * (configurations.BarSize + configurations.BarGap));
+                text.FontSize = fontSize;
+                text.LabelBold = true;
+                text.LabelFontColor = ScottPlot.Colors.Black;
+                text.LabelAlignment = ScottPlot.Alignment.MiddleRight;
+            }
             // Draw division line
             plot.Add.VerticalLine(0, 1, ScottPlot.Colors.Black);
 
@@ -171,19 +185,18 @@ namespace Parcel.Graphing
             return new Image(path);
 
             // Helper
-            static void CreateDataBars(string[] ageGroups, double[] data, ScottPlot.Plot plot, bool male, PopulationPyramidConfiguration configuration)
+            static void CreateDataBars(double[] data, ScottPlot.Plot plot, bool male, PopulationPyramidConfiguration configuration)
             {
                 ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(male ? data.Select(d => -d).ToArray() : data);
                 int index = 0;
-                // Set position and width
                 foreach (ScottPlot.Bar bar in barPlot.Bars)
                 {
+                    // Set position and width
                     bar.Size = configuration.BarSize;
-                }
-                // Set label
-                foreach (ScottPlot.Bar bar in barPlot.Bars)
-                {
-                    bar.Label = male ? $"{ageGroups[index]} {Math.Abs(bar.Value)}" : bar.Value.ToString();
+                    bar.Position = index * (configuration.BarSize + configuration.BarGap);
+
+                    // Set label
+                    bar.Label = bar.Value.ToString();
                     index++;
                 }
                 // Customize label style

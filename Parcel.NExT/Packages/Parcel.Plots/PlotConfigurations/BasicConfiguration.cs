@@ -52,8 +52,9 @@ namespace Parcel.Graphing.PlotConfigurations
     }
     public sealed class PopulationPyramidConfiguration : BasicConfiguration
     {
+        public string Title { get; set; } = string.Empty;
         public double BarSize { get; set; } = 0.8;
         public Color[]? AgeGroupColors { get; set; } = null;
-        public bool Frameless { get; set; } = false;
+        public double BarGap { get; set; } = 0.1;
     }
 }
