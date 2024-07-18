@@ -196,7 +196,7 @@ namespace Parcel.Graphing
                     bar.Position = index * (configuration.BarSize + configuration.BarGap);
 
                     // Set label
-                    bar.Label = bar.Value.ToString();
+                    bar.Label = Math.Abs(bar.Value).ToString();
                     index++;
                 }
                 // Customize label style
