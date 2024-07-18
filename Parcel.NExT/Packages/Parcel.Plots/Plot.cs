@@ -111,9 +111,9 @@ namespace Parcel.Graphing
 
             ScottPlot.Plot plot = new();
 
-            ScottPlot.Statistics.Histogram hist = new(min: values.Min(), max: values.Max(), binCount: configurations.HisogramBars);
+            ScottPlot.Statistics.Histogram hist = new(min: values.Min(), max: values.Max(), binCount: configurations.HisogramBars, true, false);
             hist.AddRange(values);
-            ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
+            ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(values: hist.Counts, positions: hist.BinCenters);
             foreach (var bar in barPlot.Bars)
                 bar.Size = hist.BinSize;
 

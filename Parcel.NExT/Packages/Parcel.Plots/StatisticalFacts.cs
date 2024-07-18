@@ -16,9 +16,9 @@ namespace Parcel.Graphing
             ScottPlot.Plot plot = new();
             values = ScottPlot.Generate.RandomNormal(count, mean, standardDeviation);
 
-            ScottPlot.Statistics.Histogram hist = new(min: values.Min(), max: values.Max(), binCount: 20);
+            ScottPlot.Statistics.Histogram hist = new(min: values.Min(), max: values.Max(), binCount: 20, true, false);
             hist.AddRange(values);
-            ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
+            ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(values: hist.Counts, positions: hist.BinCenters);
             foreach (var bar in barPlot.Bars)
                 bar.Size = hist.BinSize;
 
@@ -34,11 +34,11 @@ namespace Parcel.Graphing
         public static Image UniformDistribution(out double[] values, int count = 1000, double min = 0, double max = 1)
         {
             ScottPlot.Plot plot = new();
-            values = ScottPlot.Generate.Random(count, min, max);
+            values = ScottPlot.Generate.RandomSample(count, min, max);
 
-            ScottPlot.Statistics.Histogram hist = new(min: values.Min(), max: values.Max(), binCount: 20);
+            ScottPlot.Statistics.Histogram hist = new(min: values.Min(), max: values.Max(), binCount: 20, true, false);
             hist.AddRange(values);
-            ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
+            ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(values: hist.Counts, positions: hist.BinCenters);
             foreach (var bar in barPlot.Bars)
                 bar.Size = hist.BinSize;
 
