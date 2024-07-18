@@ -1,6 +1,4 @@
-﻿using Parcel.CoreEngine.Helpers;
-using Parcel.MiniGame.Legends.Data;
-using Parcel.Types;
+﻿using Parcel.Types;
 
 namespace Parcel.MiniGame.Legends.Actions
 {

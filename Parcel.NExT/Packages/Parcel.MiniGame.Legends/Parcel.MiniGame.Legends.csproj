@@ -12,17 +12,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Scripts\WelcomeMessage.txt" />
+    <None Remove="Assets\Scripts\Help.md" />
+    <None Remove="Assets\Scripts\WelcomeMessage.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Scripts\WelcomeMessage.txt" />
+    <EmbeddedResource Include="Assets\Scripts\Help.md" />
+    <EmbeddedResource Include="Assets\Scripts\WelcomeMessage.md" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
     <ProjectReference Include="..\Parcel.ImageProcessing\Parcel.ImageProcessing.csproj" />
     <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
+    <ProjectReference Include="..\Parcel.InMemoryDB\Parcel.InMemoryDB.csproj" />
     <ProjectReference Include="..\Parcel.Plots\Parcel.Plots.csproj" />
   </ItemGroup>
 

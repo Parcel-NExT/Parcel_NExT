@@ -1,6 +1,6 @@
 ﻿using Parcel.MiniGame.Legends.Data;
 
-namespace Parcel.MiniGame.Legends
+namespace Parcel.MiniGame.Legends.Subsystems
 {
     internal static class Singleton
     {

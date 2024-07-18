@@ -1,5 +1,6 @@
 ﻿using Parcel.CoreEngine.Helpers;
 using Parcel.MiniGame.Legends.Data;
+using Parcel.MiniGame.Legends.Subsystems;
 
 namespace Parcel.MiniGame.Legends.Actions
 {
@@ -14,12 +15,16 @@ namespace Parcel.MiniGame.Legends.Actions
             Singleton.GameInstance = new GameInstance();
             Singleton.GameInstance.StartGame();
 
-            return EmbeddedResourceHelper.ReadTextResource("Parcel.MiniGame.Legends.Assets.Scripts.WelcomeMessage.txt");
+            return EmbeddedResourceHelper.ReadTextResource("Parcel.MiniGame.Legends.Assets.Scripts.WelcomeMessage.md");
         }
         public static ActionResult CompleteTurn()
         {
             Singleton.GameInstance.ProceedToNextTurn();
             return "Turn completed.";
+        }
+        public static ActionResult Help()
+        {
+            return EmbeddedResourceHelper.ReadTextResource("Parcel.MiniGame.Legends.Assets.Scripts.Help.md");
         }
         #endregion
     }
