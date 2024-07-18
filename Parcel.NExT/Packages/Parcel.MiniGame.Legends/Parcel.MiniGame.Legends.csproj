@@ -12,10 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\" />
+    <None Remove="Assets\Scripts\WelcomeMessage.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Scripts\WelcomeMessage.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
     <ProjectReference Include="..\Parcel.ImageProcessing\Parcel.ImageProcessing.csproj" />
     <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
     <ProjectReference Include="..\Parcel.Plots\Parcel.Plots.csproj" />

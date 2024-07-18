@@ -1,12 +1,11 @@
-﻿
-namespace Parcel.MiniGame.Legends
+﻿namespace Parcel.MiniGame.Legends.Data
 {
-    public class GameInstance
+    internal class GameInstance
     {
         #region Methods
         public void StartGame()
         {
-            throw new NotImplementedException();
+            
         }
         public void ProceedToNextTurn()
         {

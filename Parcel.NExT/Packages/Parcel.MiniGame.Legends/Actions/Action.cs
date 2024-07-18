@@ -1,6 +1,8 @@
-﻿using Parcel.Types;
+﻿using Parcel.CoreEngine.Helpers;
+using Parcel.MiniGame.Legends.Data;
+using Parcel.Types;
 
-namespace Parcel.MiniGame.Legends
+namespace Parcel.MiniGame.Legends.Actions
 {
     /// <summary>
     /// Contains result of an action
@@ -16,7 +18,7 @@ namespace Parcel.MiniGame.Legends
         /// <summary>
         /// Construct empty result
         /// </summary>
-        public ActionResult() {}
+        public ActionResult() { }
         /// <summary>
         /// Construct result containing text message
         /// </summary>
@@ -37,7 +39,7 @@ namespace Parcel.MiniGame.Legends
         /// Construct result containing text message and image content
         /// </summary>
         public ActionResult(string message, Image image, bool error = false)
-        { 
+        {
             // Remark: Usually we do not use this
             Message = message;
             Image = image;
@@ -64,26 +66,6 @@ namespace Parcel.MiniGame.Legends
         /// Whether the result indicates success
         /// </summary>
         public bool Success => !Error;
-        #endregion
-    }
-
-    /// <summary>
-    /// Main class for all interactive actions that progresses gameplay.
-    /// </summary>
-    public static class Action
-    {
-        #region Turn
-        public static ActionResult StartGame()
-        {
-            Singleton.GameInstance = new GameInstance();
-            Singleton.GameInstance.StartGame();
-            return "Game started.";
-        }
-        public static ActionResult CompleteTurn()
-        {
-            Singleton.GameInstance.ProceedToNextTurn();
-            return "Turn completed.";
-        }
         #endregion
     }
 }

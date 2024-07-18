@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Parcel.MiniGame.Legends.Actions;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
@@ -122,14 +123,18 @@ namespace Parcel.Neo
                 else if (cache.DataType == typeof(Types.Image))
                 {
                     Types.Image image = (cache.DataObject as Types.Image)!;
-                    string? address = image.FileReference;
-                    if (address != null && File.Exists(address))
-                        PreviewImage(new BitmapImage(new Uri(address)));
-                    else
-                        PreviewImage(ImageSourceHelper.ConvertToBitmapImage(image));
+                    PreviewImage(image);
                 }
                 else if (cache.DataType == typeof(DataColumn))
                     PreviewColumnData(cache.DataObject as Parcel.Types.DataColumn);
+                else if (cache.DataType == typeof(ActionResult))
+                {
+                    ActionResult? actionResult = cache.DataObject as ActionResult;
+                    if (actionResult.Image != null)
+                        PreviewImage(actionResult.Image);
+                    else
+                        PreviewPrimitives(actionResult.Message);
+                }
                 else
                 {
                     TestLabel = $"No preview is available for this node's output ({cache.DataObject})";
@@ -174,7 +179,14 @@ namespace Parcel.Neo
             TestLabel = $"{data}";
             StringDisplayVisibility = Visibility.Visible;
         }
-
+        private void PreviewImage(Parcel.Types.Image image)
+        {
+            string? address = image.FileReference;
+            if (address != null && File.Exists(address))
+                PreviewImage(new BitmapImage(new Uri(address)));
+            else
+                PreviewImage(ImageSourceHelper.ConvertToBitmapImage(image));
+        }
         private void PreviewImage(ImageSource imageSource)
         {
             PreviewImageVisibility = Visibility.Visible;

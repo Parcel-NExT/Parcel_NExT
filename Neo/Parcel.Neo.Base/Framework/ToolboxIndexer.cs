@@ -45,7 +45,6 @@ namespace Parcel.Neo.Base.Framework
             RegisterToolbox(toolboxAssemblies, "Database Application", Assembly.Load("Parcel.InMemoryDB.WebSurveys"));
             RegisterToolbox(toolboxAssemblies, "Yahoo Finance", Assembly.Load("Parcel.YahooFinance"));
             RegisterToolbox(toolboxAssemblies, "MiniGames", Assembly.Load("Parcel.MiniGames"));
-            RegisterToolbox(toolboxAssemblies, "MiniGame (Legends)", Assembly.Load("Parcel.MiniGame.Legends"));
 
             // Index specific nodes
             Dictionary<string, ToolboxNodeExport?[]> toolboxes = IndexToolboxes(toolboxAssemblies);
@@ -65,6 +64,9 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.BooleanRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.LogicRoutines));
             RegisterType(toolboxes, "File System", typeof(Standard.System.FileSystem));
+            // Register specific types - Auxiliary
+            RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Actions.GameActions));
+            RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Queries.Query));
             // Register specific types - directly borrow from libraries
             RegisterType(toolboxes, "Collections", typeof(Enumerable));
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Statistics)); // TODO: Might provide selective set of functions instead of everything; Alternative, figure out how to do in-app documentation

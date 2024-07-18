@@ -7,6 +7,9 @@ Theme: Classical/Historical Strategy
 ## Table of Contents
 
 * Introduction
+* Chapter 1: Gameplay
+* Technical Notes
+* References
 
 ## Introduction
 
@@ -35,12 +38,20 @@ Sold for $3.5 on Steam (and Itch.io) as Parcel Package (add-on/DLC). (Including 
 
 Notice Steam version of Parcel NExT has Steam API built-in and uses Steam's system for updating etc. and is connected to a Steam account, and features Steam achievemtns, profile, etc. It's supportef by both Neo and Gospel. It uses a different codebase compared with non-steam version.
 
+### Technical Requirements
+
+* Not-stated, fully evaluatable
+* Automatic playable
+* Multiplayer ready
+
 ### Version Improvements
+
 * V2: Use images instead of messages. (Actually might start with this)
 
 ## Chapter 1: Gameplay
 
 ## Gameplay
+
 Payer cpntrols at each turn:
 * Financial allocation
 * (Hero specific actions)
@@ -52,6 +63,10 @@ Goals:
 * 搜集历史人物
 * 战役
 * Map domination and victory (country unification)
+
+## Technical Notes
+
+At the moment to display ActionResult, it requires source-level change of the frontend. ActionResult is needed to ensure dependency.
 
 ## References
 
@@ -69,6 +84,7 @@ Game style reference:
 * Country-level there are technology reaearch
 
 ### 红白机 三国志
+
 * Turn Based, player owns countries which constitutes of cities.
 * At each turn player command each owned city for one action
 
@@ -86,3 +102,11 @@ Game style reference:
 * 游戏自动保存（数据SQLite），也可以手动保存到具体文件，或者configure保存路径。尽量隐藏别国和世界数据，只保存玩家个人数据。
 * 游戏数据包裹表单、图表、还有图片RPG素材。
 * 游戏完全实现需要document级别meta-programming、完善的制图（地图、数据报表等），以及multimedia playback功能包括音效和短片。
+
+## 20240718
+
+### Top Level Abstraction
+
+From the highlest level, managing a country if just economy, politics, diplomacy and military. We can have hierarchies for all of those.
+
+On the other levels are religion, civil etc.

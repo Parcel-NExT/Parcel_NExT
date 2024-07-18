@@ -1,6 +1,8 @@
-﻿namespace Parcel.MiniGame.Legends
+﻿using Parcel.MiniGame.Legends.Data;
+
+namespace Parcel.MiniGame.Legends
 {
-    public static class Singleton
+    internal static class Singleton
     {
         #region Access
         private static GameInstance? _gameInstance;
