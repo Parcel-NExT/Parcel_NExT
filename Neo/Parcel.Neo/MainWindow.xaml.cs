@@ -19,9 +19,7 @@ using Parcel.CoreEngine.Helpers;
 using System.Collections.ObjectModel;
 using Parcel.Neo.ViewModels;
 using System.Linq;
-using System.Windows.Media;
 using Nodify;
-using System.Xml.Linq;
 
 namespace Parcel.Neo
 {
@@ -424,6 +422,12 @@ namespace Parcel.Neo
                 // Automatically select node
                 Editor.SelectedItem = node;
             }
+            e.Handled = true;
+        }
+        private void NodesPaletteGridSplitter_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GridSplitter? splitter = sender as GridSplitter;
+            ShowNodesPaletteMenuItem.IsChecked = false;
             e.Handled = true;
         }
         #endregion

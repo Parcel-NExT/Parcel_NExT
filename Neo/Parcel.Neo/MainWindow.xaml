@@ -398,7 +398,7 @@
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Console" Click="ToggleConsoleWindowMenuItem_Click" ToolTip="Toggles showing/hiding console window, which displays output messages from Print commands. Notice closing console window directly also closes the application."/>
-                <MenuItem Header="Show Nodes Palette" IsCheckable="True" IsChecked="True" Checked="ShowNodesPaletteMenuItem_Checked" Unchecked="ShowNodesPaletteMenuItem_Unchecked" ToolTip="Toggle showing/hiding Nodes Palette, which allows drag-and-drop creation of nodes."/>
+                <MenuItem x:Name="ShowNodesPaletteMenuItem" Header="Show Nodes Palette" IsCheckable="True" IsChecked="True" Checked="ShowNodesPaletteMenuItem_Checked" Unchecked="ShowNodesPaletteMenuItem_Unchecked" ToolTip="Toggle showing/hiding Nodes Palette, which allows drag-and-drop creation of nodes."/>
             </MenuItem>
             <MenuItem Header="Package" Visibility="Collapsed">
                 <MenuItem Header="Import"/>
@@ -501,7 +501,7 @@
                     </Border>
                 </DockPanel>
                 <!-- Horizontal Splitter -->
-                <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Stretch" Visibility="Visible" Background="SlateGray"/>
+                <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Stretch" Visibility="Visible" Background="SlateGray" MouseDoubleClick="NodesPaletteGridSplitter_MouseDoubleClick" ToolTip="Drag to adjust Nodes Palette width. Double-click to hide Nodes Palette."/>
                 <!-- Monolithic Node Graph -->
                 <Grid Grid.Column="2" Background="{StaticResource LargeGridLinesDrawingBrush}">
                     <nodify:NodifyEditor HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
