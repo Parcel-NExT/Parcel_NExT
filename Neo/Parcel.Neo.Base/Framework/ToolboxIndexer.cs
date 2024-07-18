@@ -51,6 +51,7 @@ namespace Parcel.Neo.Base.Framework
             // Register specific types - Parcel Standard
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.StatisticalFacts));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.DrawHelper));
             RegisterType(toolboxes, "Data Grid", typeof(Types.DataGrid));
             RegisterType(toolboxes, "Data Grid", typeof(Types.DataGridOperationsHelper));

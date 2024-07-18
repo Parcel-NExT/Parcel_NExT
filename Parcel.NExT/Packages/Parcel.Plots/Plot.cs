@@ -105,15 +105,17 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image Histogram(double[] v, HisogramConfiguration? configurations)
+        public static Image Histogram(double[] values, HisogramConfiguration? configurations)
         {
             configurations ??= new();
 
             ScottPlot.Plot plot = new();
 
-            ScottPlot.Statistics.Histogram hist = new(min: v.Min(), max: v.Max(), binCount: configurations.HisogramBars);
-            hist.AddRange(v);
-            plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
+            ScottPlot.Statistics.Histogram hist = new(min: values.Min(), max: values.Max(), binCount: configurations.HisogramBars);
+            hist.AddRange(values);
+            ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(values: hist.Counts, positions: hist.Bins);
+            foreach (var bar in barPlot.Bars)
+                bar.Size = hist.BinSize;
 
             if (!string.IsNullOrEmpty(configurations.Title))
                 plot.Title(configurations.Title);
@@ -216,7 +218,7 @@ namespace Parcel.Graphing
         #endregion
 
         #region Helpers
-        private static string GetTempImagePath()
+        internal static string GetTempImagePath()
             => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
         private static ScottPlot.Color Convert(Parcel.Types.Color color)
             => ScottPlot.Color.FromHex(color.ToString());
