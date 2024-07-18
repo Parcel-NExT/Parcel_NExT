@@ -26,6 +26,23 @@ namespace Parcel.Graphing
             };
         }
         /// <summary>
+        /// Create a configuration for ScatterPlotMultiSeries
+        /// </summary>
+        public static ScatterPlotMultiSeriesConfiguration ConfigureScatterPlotMultiSeries(string title = "", string xAxis = "", string yAxis = "", String[]? legends = null, Color[]? colors = null, int imageWidth = 600, int imageHeight = 400)
+        {
+
+            return new ScatterPlotMultiSeriesConfiguration()
+            {
+                Title = title,
+                XAxis = xAxis,
+                YAxis = yAxis,
+                Legends = legends,
+                Colors = colors,
+                ImageWidth = imageWidth,
+                ImageHeight = imageHeight
+            };
+        }
+        /// <summary>
         /// Create a configuration for LinePlot
         /// </summary>
         public static LinePlotConfiguration ConfigureLinePlot(string title = "", string xAxis = "", string yAxis = "", string legend = "", int imageWidth = 600, int imageHeight = 400)
@@ -60,9 +77,24 @@ namespace Parcel.Graphing
             };
         }
         /// <summary>
+        /// Create a configuration for BarChart
+        /// </summary>
+        public static BarChartConfiguration ConfigureBarChart(string title = "", string xAxis = "", string yAxis = "", int imageWidth = 600, int imageHeight = 400)
+        {
+
+            return new BarChartConfiguration()
+            {
+                Title = title,
+                XAxis = xAxis,
+                YAxis = yAxis,
+                ImageWidth = imageWidth,
+                ImageHeight = imageHeight
+            };
+        }
+        /// <summary>
         /// Create a configuration for Hisogram
         /// </summary>
-        public static HisogramConfiguration ConfigureHisogram(string title = "", string xAxis = "", string yAxis = "", int hisogramBars = 400, int imageWidth = 600, int imageHeight = 400)
+        public static HisogramConfiguration ConfigureHisogram(string title = "", string xAxis = "", string yAxis = "", int hisogramBars = 10, int imageWidth = 600, int imageHeight = 400)
         {
 
             return new HisogramConfiguration()
@@ -71,6 +103,23 @@ namespace Parcel.Graphing
                 XAxis = xAxis,
                 YAxis = yAxis,
                 HisogramBars = hisogramBars,
+                ImageWidth = imageWidth,
+                ImageHeight = imageHeight
+            };
+        }
+        /// <summary>
+        /// Create a configuration for PopulationPyramid
+        /// </summary>
+        public static PopulationPyramidConfiguration ConfigurePopulationPyramid(string title = "", Double barSize = 0.8, int labelFontSize = 12, Color[]? ageGroupColors = null, Double barGap = 0.1, int imageWidth = 600, int imageHeight = 400)
+        {
+
+            return new PopulationPyramidConfiguration()
+            {
+                Title = title,
+                BarSize = barSize,
+                LabelFontSize = labelFontSize,
+                AgeGroupColors = ageGroupColors,
+                BarGap = barGap,
                 ImageWidth = imageWidth,
                 ImageHeight = imageHeight
             };

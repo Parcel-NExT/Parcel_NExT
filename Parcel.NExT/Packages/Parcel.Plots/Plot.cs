@@ -17,6 +17,40 @@ namespace Parcel.Graphing
     public static class Plot
     {
         #region Standard Plots
+        public static Image ScatterPlot(double[] x, double[][] ys, ScatterPlotMultiSeriesConfiguration? configurations)
+        {
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+            if (configurations.Colors != null)
+                plot.Add.Palette = new CustomPalette()
+                {
+                    Colors = [.. configurations.Colors.Select(Convert)]
+                };
+
+            for (int i = 0; i < ys.Length; i++)
+            {
+                double[] y = ys[i];
+
+                ScottPlot.Plottables.Scatter s = plot.Add.Scatter(x, y);
+                if (configurations.Legends != null)
+                {
+                    plot.Legend.IsVisible = true;
+                    s.LegendText = configurations.Legends[i];
+                }
+            }
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Left.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+
+            string path = GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            return new Image(path);
+        }
         public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration? configurations)
         {
             configurations ??= new();
@@ -105,6 +139,25 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
+        public static Image BarChart(double[] values, BarChartConfiguration? configurations)
+        {
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+            plot.Add.Bars(values);
+            plot.Axes.Margins(bottom: 0); // Tell the plot to autoscale with no padding beneath the bars
+
+            if(!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Left.Label.Text = configurations.YAxis;
+
+            string path = GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            return new Image(path);
+        }
         public static Image Histogram(double[] values, HisogramConfiguration? configurations)
         {
             configurations ??= new();
@@ -159,10 +212,13 @@ namespace Parcel.Graphing
             CreateDataBars(femaleData, plot, false, configurations);
 
             // Set display range
-            const int fontSize = 12;
-            int margin = ageGroups.Select(s => s.Length).Max() * fontSize/6; // Heuristic scale
-            double maleMin = maleData.Max();
-            plot.Axes.SetLimitsX(-maleMin - margin, +femaleData.Max() + margin / 2); // Include extra margin to account for label // TODO: At the moment there is no reliable way to determine absolute size
+            int fontSize = configurations.LabelFontSize;
+            float margin = MeasureWidth(ageGroups.OrderByDescending(s => s.Length).First(), fontSize);
+            double maleMax = maleData.Max();
+            double femaleMax = femaleData.Max();
+            double absMax = Math.Max(maleMax, femaleMax);
+            double additionalPadding = absMax / 4; // Notice charts autoamtically adjusts scale based on actual data being plotted; We use 1/4 for additional padding
+            plot.Axes.SetLimitsX(-maleMax - margin - additionalPadding, + femaleMax + margin / 2); // Include extra margin to account for label
             plot.Layout.Frameless();
             plot.HideGrid();
             // Title
@@ -172,7 +228,7 @@ namespace Parcel.Graphing
             for (int i = 0; i < ageGroups.Length; i++)
             {
                 string item = ageGroups[i];
-                ScottPlot.Plottables.Text text = plot.Add.Text(item, -maleMin - fontSize/3*2, i * (configurations.BarSize + configurations.BarGap));
+                ScottPlot.Plottables.Text text = plot.Add.Text(item, -maleMax - additionalPadding, i * (configurations.BarSize + configurations.BarGap));
                 text.FontSize = fontSize;
                 text.LabelBold = true;
                 text.LabelFontColor = ScottPlot.Colors.Black;
@@ -206,6 +262,15 @@ namespace Parcel.Graphing
                 barPlot.ValueLabelStyle.FontSize = 18;
                 barPlot.Horizontal = true;
                 barPlot.LegendText = male ? "Male" : "Female";
+            }
+
+            static float MeasureWidth(string text, int fontSize)
+            {
+                return new ScottPlot.Label()
+                {
+                    Text = text,
+                    FontSize = fontSize
+                }.Measure().Width;
             }
         }
         #endregion

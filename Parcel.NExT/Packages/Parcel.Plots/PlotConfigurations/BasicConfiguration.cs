@@ -27,6 +27,14 @@ namespace Parcel.Graphing.PlotConfigurations
         public string Legend { get; set; } = string.Empty;
         public Color Color { get; set; } = Color.Parse("#1F77B4FF");
     }
+    public sealed class ScatterPlotMultiSeriesConfiguration : BasicConfiguration
+    {
+        public string Title { get; set; } = string.Empty;
+        public string XAxis { get; set; } = string.Empty;
+        public string YAxis { get; set; } = string.Empty;
+        public string[]? Legends { get; set; } = null;
+        public Color[]? Colors { get; set; } = null;
+    }
     public sealed class LinePlotConfiguration : BasicConfiguration
     {
         public string Title { get; set; } = string.Empty;
@@ -43,6 +51,12 @@ namespace Parcel.Graphing.PlotConfigurations
         public string Legend1 { get; set; } = string.Empty;
         public string Legend2 { get; set; } = string.Empty;
     }
+    public sealed class BarChartConfiguration : BasicConfiguration
+    {
+        public string Title { get; set; } = string.Empty;
+        public string XAxis { get; set; } = string.Empty;
+        public string YAxis { get; set; } = string.Empty;
+    }
     public sealed class HisogramConfiguration : BasicConfiguration
     {
         public string Title { get; set; } = string.Empty;
@@ -54,6 +68,7 @@ namespace Parcel.Graphing.PlotConfigurations
     {
         public string Title { get; set; } = string.Empty;
         public double BarSize { get; set; } = 0.8;
+        public int LabelFontSize { get; set; } = 12;
         public Color[]? AgeGroupColors { get; set; } = null;
         public double BarGap { get; set; } = 0.1;
     }
