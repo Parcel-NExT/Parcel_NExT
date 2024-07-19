@@ -386,7 +386,10 @@ namespace Parcel.Neo.Base.Algorithms
                                 if (connector is PrimitiveInputConnector primitive)
                                     value = primitive.Value;
                                 else value = autoNode.Descriptor.DefaultInputValues[i];
-                                if (TypeHelper.IsNumericalType(value.GetType()))
+
+                                if (value == null)
+                                    return "null";
+                                else if (TypeHelper.IsNumericalType(value.GetType()))
                                     return value.ToString();
                                 return $"\"{value}\"";
                             })

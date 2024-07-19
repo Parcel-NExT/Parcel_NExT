@@ -286,9 +286,11 @@ namespace Parcel.Neo
         private LiveCodePreviewWindow? _liveCodePreviewWindow;
         private void ToggleLiveCodePreviewMenuItem_Checked(object sender, RoutedEventArgs e)
         {
-            foreach (Window window in OwnedWindows)
-                if (window is LiveCodePreviewWindow)
-                    return;
+            if (_liveCodePreviewWindow != null)
+            {
+                _liveCodePreviewWindow.Close();
+                _liveCodePreviewWindow = null;
+            }
 
             _liveCodePreviewWindow = new LiveCodePreviewWindow()
             {
@@ -296,6 +298,7 @@ namespace Parcel.Neo
             };
             _liveCodePreviewWindow.Closed += (sender, e) => _liveCodePreviewWindow = null;
             _liveCodePreviewWindow.Show();
+            UpdateLiveCodePreview();
         }
         private void ExportCleanChartMenuItem_Click(object sender, RoutedEventArgs e)
         {
