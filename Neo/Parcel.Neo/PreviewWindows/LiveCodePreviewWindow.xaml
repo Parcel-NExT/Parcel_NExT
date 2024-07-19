@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Parcel.Neo.PreviewWindows"
         mc:Ignorable="d"
-        Title="Code Preview (Live)" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+        Title="Code Preview (Live)" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner"
+        DataContext="{Binding RelativeSource={RelativeSource self}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -35,8 +36,6 @@
                 <MenuItem Header="Update (Source) Document" ToolTip="Sync with graph document."/>
             </MenuItem>
         </Menu>
-        <TextBox DockPanel.Dock="Bottom" Height="400" Width="600" Background="#1E1E1E">
-            
-        </TextBox>
+        <TextBox DockPanel.Dock="Bottom" Height="400" Width="600" Text="{Binding LiveCodePreview}" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True" TextWrapping="WrapWithOverflow" FontFamily="Consolas" Foreground="#3f95d3" Background="#192d3e"/>
     </DockPanel>
 </Window>

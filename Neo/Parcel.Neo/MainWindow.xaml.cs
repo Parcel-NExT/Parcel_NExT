@@ -282,16 +282,19 @@ namespace Parcel.Neo
                 _consoleIsOpen = true;
             }
         }
+        private LiveCodePreviewWindow? _liveCodePreviewWindow;
         private void ToggleLiveCodePreviewMenuItem_Checked(object sender, RoutedEventArgs e)
         {
             foreach (Window window in OwnedWindows)
                 if (window is LiveCodePreviewWindow)
                     return;
 
-            new LiveCodePreviewWindow()
+            _liveCodePreviewWindow = new LiveCodePreviewWindow()
             {
                 Owner = this
-            }.Show();
+            };
+            _liveCodePreviewWindow.Closed += (sender, e) => _liveCodePreviewWindow = null;
+            _liveCodePreviewWindow.Show();
         }
         private void ExportCleanChartMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -478,7 +481,16 @@ namespace Parcel.Neo
 
             node!.Location = spawnLocation;
             Canvas.Nodes.Add(node);
+
+            // Update script preview
+            UpdateLiveCodePreview();
+
             return node;
+        }
+        private void UpdateLiveCodePreview()
+        {
+            if (_liveCodePreviewWindow != null)
+                _liveCodePreviewWindow.UpdateCode(AlgorithmHelper.GenerateGraphPureScriptPreview(Canvas));
         }
         private void SpawnPreviewWindow(ProcessorNode node)
         {

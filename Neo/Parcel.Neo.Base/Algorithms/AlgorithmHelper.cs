@@ -75,6 +75,53 @@ namespace Parcel.Neo.Base.Algorithms
 
             // Copy compiled result to destination path
         }
+        public static string GenerateGraphPureScriptPreview(NodesCanvas canvas)
+        {
+            // Filter executable nodes
+            IEnumerable<ProcessorNode> processors = canvas.Nodes
+                .Where(n => n is ProcessorNode node)
+                .Select(n => n as ProcessorNode);
+
+            // Fetch dependency graph
+            ExecutionQueue graph = new();
+            graph.InitializeGraph(processors);
+
+            // Gather essential information
+            ScriptDependencySummary summary = GatherScriptDependencies(graph, new PureSyntaxHandler());
+
+            // Pre-build scripts
+            StringBuilder mainSection = new();
+            foreach (string line in summary.ScriptSectionStatements)
+                mainSection.AppendLine($"{line};");
+            StringBuilder[] scriptSections = [mainSection];
+
+            // Generate script contents
+            StringBuilder mainScriptBuilder = new();
+            // Import package references
+            foreach ((string importName, string nickName) in summary.StandardPackageImports)
+                mainScriptBuilder.AppendLine($"Import({importName})");
+            mainScriptBuilder.AppendLine();
+            // Make necessary namespace usage and static usage
+            // Style preference: if the script is very short, use static, otherwise, use type name based addressing.
+            if (summary.UniqueTypes.Count() < 10)
+                foreach (Type type in summary.InvolvedStaticTypes)
+                    mainScriptBuilder.AppendLine($"using static {type.FullName};");
+            else
+                foreach (string uniqueNamespace in summary.UniqueNamespaces.Select(n => n.Namespace).Distinct())
+                    mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
+            mainScriptBuilder.AppendLine();
+            // Do variable declarations first
+            foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
+                mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
+            // Append script sections
+            foreach (StringBuilder section in scriptSections)
+            {
+                mainScriptBuilder.Append(section.ToString().TrimEnd());
+                mainScriptBuilder.AppendLine();
+            }
+
+            return mainScriptBuilder.ToString();
+        }
         public static void GenerateGraphPureScripts(string folderPath, string mainScriptFilename, NodesCanvas canvas)
         {
             // Generate scripts (a script contains functions and other information, a function contains sections and other information)
