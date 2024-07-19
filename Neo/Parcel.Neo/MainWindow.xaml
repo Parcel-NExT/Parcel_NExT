@@ -862,7 +862,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                             </Style>
                         </nodify:NodifyEditor.ItemContainerStyle>
                     </nodify:NodifyEditor>
-                    <TextBlock x:Name="InitialInstructionsTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#868686" FontWeight="Bold" TextAlignment="Center" Visibility="{Binding Canvas.Nodes.Count, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
+                    <TextBlock x:Name="InitialInstructionsTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#868686" FontWeight="Bold" TextAlignment="Center" Visibility="{Binding Canvas.Nodes.Count, Converter={converters:BooleanToVisibilityConverter Negate=True}}" IsHitTestVisible="False">
                         <Run FontSize="23">Welcome to Parcel PV1 Neo!</Run>
                         <LineBreak/>
                         <Run FontSize="16" FontWeight="Normal">Right Click RMB or Press Tab to show Functions Tray</Run>

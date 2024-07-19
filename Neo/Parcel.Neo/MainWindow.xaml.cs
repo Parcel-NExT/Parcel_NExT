@@ -292,7 +292,7 @@ namespace Parcel.Neo
                 _liveCodePreviewWindow = null;
             }
 
-            _liveCodePreviewWindow = new LiveCodePreviewWindow()
+            _liveCodePreviewWindow = new LiveCodePreviewWindow(UpdateLiveCodePreview)
             {
                 Owner = this
             };
@@ -494,7 +494,13 @@ namespace Parcel.Neo
         private void UpdateLiveCodePreview()
         {
             if (_liveCodePreviewWindow != null)
-                _liveCodePreviewWindow.UpdateCode(AlgorithmHelper.GenerateGraphPureScriptPreview(Canvas));
+            {
+                string generatedCode =
+                    _liveCodePreviewWindow.CurrentLanguageMode == LiveCodePreviewWindow.LanguageMode.CSharp
+                    ? AlgorithmHelper.GenerateGraphPurePreviewScript(Canvas)
+                    : AlgorithmHelper.GenerateGraphPythonPreviewScript(Canvas);
+                _liveCodePreviewWindow.UpdateCode(generatedCode);
+            }
         }
         private void SpawnPreviewWindow(ProcessorNode node)
         {

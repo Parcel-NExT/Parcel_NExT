@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -11,10 +12,25 @@ namespace Parcel.Neo.PreviewWindows
     /// </summary>
     public partial class LiveCodePreviewWindow : Window, INotifyPropertyChanged
     {
-        public LiveCodePreviewWindow()
+        public enum LanguageMode
+        {
+            CSharp,
+            Python
+        }
+
+        #region Properties
+        private Action RegenerateCallback { get; }
+        public LanguageMode CurrentLanguageMode { get; private set; }
+        #endregion
+
+        #region Construction
+        public LiveCodePreviewWindow(Action regenerateCallback)
         {
             InitializeComponent();
+
+            RegenerateCallback = regenerateCallback;
         }
+        #endregion
 
         #region Methods
         internal void UpdateCode(string code)
@@ -45,6 +61,16 @@ namespace Parcel.Neo.PreviewWindows
                 string path = saveFileDialog.FileName;
                 System.IO.File.WriteAllText(path, _liveCodePreview);
             }
+        }
+        private void ChangeLanguageModePureMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentLanguageMode = LanguageMode.CSharp;
+            RegenerateCallback?.Invoke();
+        }
+        private void ChangeLanguageModePythonMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentLanguageMode = LanguageMode.Python;
+            RegenerateCallback?.Invoke();
         }
         #endregion
 

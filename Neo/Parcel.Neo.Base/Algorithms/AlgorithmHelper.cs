@@ -75,7 +75,10 @@ namespace Parcel.Neo.Base.Algorithms
 
             // Copy compiled result to destination path
         }
-        public static string GenerateGraphPureScriptPreview(NodesCanvas canvas)
+        /// <summary>
+        /// Generates a preview script that is shorter than the full version during export and focuses just on the active graph
+        /// </summary>
+        public static string GenerateGraphPurePreviewScript(NodesCanvas canvas)
         {
             // Filter executable nodes
             IEnumerable<ProcessorNode> processors = canvas.Nodes
@@ -194,6 +197,70 @@ namespace Parcel.Neo.Base.Algorithms
                     */
                     """;
             }
+        }
+        /// <summary>
+        /// Generates a preview script that is shorter than the full version during export and focuses just on the active graph
+        /// </summary>
+        public static string GenerateGraphPythonPreviewScript(NodesCanvas canvas)
+        {
+            // Filter executable nodes
+            IEnumerable<ProcessorNode> processors = canvas.Nodes
+                .Where(n => n is ProcessorNode node)
+                .Select(n => n as ProcessorNode);
+
+            // Fetch dependency graph
+            ExecutionQueue graph = new();
+            graph.InitializeGraph(processors);
+            // Gather essential information
+            ScriptDependencySummary summary = GatherScriptDependencies(graph, new PythonSyntaxHandler());
+
+            // Pre-build scripts
+            StringBuilder mainSection = new();
+            foreach (var line in summary.ScriptSectionStatements)
+                mainSection.AppendLine(line);
+            StringBuilder[] scriptSections = [mainSection];
+
+            // Generate script contents
+            StringBuilder mainScriptBuilder = new();
+            // Main import
+            mainScriptBuilder.AppendLine("""
+                # Import Root Parcel NExT Module
+                from ParcelNExT import LoadPackage
+
+                """);
+            // Import package references
+            mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
+            foreach ((string importName, string nickName) in summary.StandardPackageImports)
+                mainScriptBuilder.AppendLine($"LoadPackage('{importName}')"); // TODO: Add brief summary of package description if available
+            if (!summary.StandardPackageImports.ContainsKey("Parcel.Standard")) // Import console print
+                mainScriptBuilder.AppendLine("LoadPackage('Parcel.Standard')");
+            mainScriptBuilder.AppendLine();
+            // Import static types from corresponding namespaces; Notice Pythonnet doesn't support using static methods at the top level
+            mainScriptBuilder.AppendLine("# Import submodules");
+            foreach (Type type in summary.InvolvedStaticTypes)
+                mainScriptBuilder.AppendLine($"from {type.Namespace} import {type.Name}"); // TODO: Add brief summary of class description if available
+            if (!summary.StandardPackageImports.ContainsKey("Parcel.Standard")) // Import console print
+                mainScriptBuilder.AppendLine("from Parcel.Standard.System import Console");
+            mainScriptBuilder.AppendLine();
+            // Additional imports
+            mainScriptBuilder.AppendLine("""
+                # Additional system imports
+                import sys
+                import textwrap
+
+                """);
+            // Main function
+            TypedVariable[] programInputs = [.. summary.GraphInputs];
+            mainScriptBuilder.AppendLine("# Main script content");
+            // Do variable declarations first
+            foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
+                mainScriptBuilder.AppendLine($"{key.Name} = {value}");
+            // Append script sections
+            foreach (StringBuilder section in scriptSections)
+                mainScriptBuilder.AppendLine(section.ToString());
+            mainScriptBuilder.AppendLine();
+
+            return mainScriptBuilder.ToString();
         }
         public static void GenerateGraphPythonScripts(string folderPath, string mainScriptFilename, NodesCanvas canvas)
         { 
