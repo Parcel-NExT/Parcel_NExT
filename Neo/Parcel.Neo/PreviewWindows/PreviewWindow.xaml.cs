@@ -12,6 +12,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Win32;
+using Parcel.MiniGame.Legends.Actions;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
@@ -85,10 +87,24 @@ namespace Parcel.Neo
         #endregion
 
         #region Events
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Title = "Choose Path of Saved File"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string path = saveFileDialog.FileName;
+                string suffix = Path.GetExtension(path);
+                // TODO: Implement smart saving depends on specific data type and suffix
+                // ...
+            }
+        }
         private void PreviewWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
-                this.DragMove();    // Allow only LMB, since RMB can cause an exception
+                DragMove();    // Allow only LMB, since RMB can cause an exception
         }
         #endregion
 
@@ -122,14 +138,18 @@ namespace Parcel.Neo
                 else if (cache.DataType == typeof(Types.Image))
                 {
                     Types.Image image = (cache.DataObject as Types.Image)!;
-                    string? address = image.FileReference;
-                    if (address != null && File.Exists(address))
-                        PreviewImage(new BitmapImage(new Uri(address)));
-                    else
-                        PreviewImage(ImageSourceHelper.ConvertToBitmapImage(image));
+                    PreviewImage(image);
                 }
                 else if (cache.DataType == typeof(DataColumn))
                     PreviewColumnData(cache.DataObject as Parcel.Types.DataColumn);
+                else if (cache.DataType == typeof(ActionResult))
+                {
+                    ActionResult? actionResult = cache.DataObject as ActionResult;
+                    if (actionResult.Image != null)
+                        PreviewImage(actionResult.Image);
+                    else
+                        PreviewPrimitives(actionResult.Message);
+                }
                 else
                 {
                     TestLabel = $"No preview is available for this node's output ({cache.DataObject})";
@@ -174,7 +194,14 @@ namespace Parcel.Neo
             TestLabel = $"{data}";
             StringDisplayVisibility = Visibility.Visible;
         }
-
+        private void PreviewImage(Parcel.Types.Image image)
+        {
+            string? address = image.FileReference;
+            if (address != null && File.Exists(address))
+                PreviewImage(new BitmapImage(new Uri(address)));
+            else
+                PreviewImage(ImageSourceHelper.ConvertToBitmapImage(image));
+        }
         private void PreviewImage(ImageSource imageSource)
         {
             PreviewImageVisibility = Visibility.Visible;

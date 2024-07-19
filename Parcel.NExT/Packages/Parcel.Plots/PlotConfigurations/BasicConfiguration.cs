@@ -69,7 +69,8 @@ namespace Parcel.Graphing.PlotConfigurations
         public string Title { get; set; } = string.Empty;
         public double BarSize { get; set; } = 0.8;
         public int LabelFontSize { get; set; } = 12;
-        public Color[]? AgeGroupColors { get; set; } = null;
+        public Color MaleBarColor { get; set; } = Color.Parse("#1F77B4FF");
+        public Color FemaleBarColor { get; set; } = Color.Parse("#FF7F0EFF");
         public double BarGap { get; set; } = 0.1;
     }
 }

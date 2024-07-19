@@ -25,11 +25,12 @@ namespace Parcel.CoreEngine.Helpers
                 Signature = signature;
                 Summary = summary;
 
-                Match regex = Regex.Match(Signature, @"[TM]:([\w\.]*?)\((.*)\)");
+                Match regex = Regex.Match(Signature, @"[TMP]:([\w\.]*?)\((.*)\)");
                 Name = regex.Groups[1].Value;
                 MemberType = Signature.First() switch
                 {
                     'M' => MemberType.Member,
+                    'P' => MemberType.Member,
                     'T' => MemberType.Class,
                     _ => throw new ArgumentException($"Unknown type: {Signature.First()}")
                 };

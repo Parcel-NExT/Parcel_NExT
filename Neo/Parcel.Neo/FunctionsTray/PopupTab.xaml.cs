@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -83,8 +84,10 @@ namespace Parcel.Neo
         }
         private void UpdateSearch(string searchText)
         {
+            Assembly[] ignoreAssemblies = [typeof(Parcel.MiniGame.Legends.Actions.ActionResult).Assembly, typeof(Parcel.MiniGame.PuzzleGame).Assembly];
             _searchResultLookup = [];
             SearchResults = new ObservableCollection<SearchResult>(_availableNodes
+                .Where(n => n.Key.Descriptor == null || !ignoreAssemblies.Contains(n.Key.Descriptor.Method.DeclaringType.Assembly)) // Ignore games
                 .Where(n => n.Key.Name.Contains(searchText, StringComparison.CurrentCultureIgnoreCase))
                 .Select(node =>
                 {
