@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using Parcel.CoreEngine.Interfaces;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 using Parcel.Neo.Base.Framework.ViewModels;
 
 namespace Parcel.Neo.Base.Framework
@@ -39,11 +39,11 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Mapping
-        public Callable Method { get; }
+        public MethodInfo Method { get; }
         #endregion
 
         #region Construction
-        public AutomaticNodeDescriptor(string nodeName, Callable method)
+        public AutomaticNodeDescriptor(string nodeName, MethodInfo method)
         {
             // Parse definitions
             SeperateMethodParametersForNode(method, out (Type Type, string ParameterName, object? DefaultValue)[] nodeInputTypes, out (Type Type, string ParameterName)[] nodeOutputTypes);
@@ -72,7 +72,7 @@ namespace Parcel.Neo.Base.Framework
                     else
                     {
                         // Automatic conversion of number values
-                        if (nonOutMethodParameterValues[current] != null && nonOutMethodParameterValues[current].GetType() != item.ParameterType && TypeDescriptor.GetConverter(nonOutMethodParameterValues[current].GetType()).CanConvertTo(item.ParameterType)) // Requires IConvertible
+                        if (nonOutMethodParameterValues[current].GetType() != item.ParameterType && TypeDescriptor.GetConverter(nonOutMethodParameterValues[current].GetType()).CanConvertTo(item.ParameterType)) // Requires IConvertible
                             methodExpectedParameterValuesArray[i] = Convert.ChangeType(nonOutMethodParameterValues[current], item.ParameterType);
                         else
                             methodExpectedParameterValuesArray[i] = nonOutMethodParameterValues[current];
@@ -81,7 +81,7 @@ namespace Parcel.Neo.Base.Framework
                 }
                 if (Method.IsStatic)
                 {
-                    object? returnValue = Method.StaticInvoke(methodExpectedParameterValuesArray);
+                    object? returnValue = Method.Invoke(null, methodExpectedParameterValuesArray);
                     if (Method.ReturnType == typeof(void))
                         return [.. outParameterIndices.Select(i => methodExpectedParameterValuesArray[i])];
                     else
@@ -104,7 +104,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Helper
-        private static void SeperateMethodParametersForNode(Callable method, out (Type, string, object?)[] nodeInputTypes, out (Type ValueType, string ValueName)[] nodeOutputTypes)
+        private static void SeperateMethodParametersForNode(MethodInfo method, out (Type, string, object?)[] nodeInputTypes, out (Type ValueType, string ValueName)[] nodeOutputTypes)
         {
             ParameterInfo[] methodParameters = method.GetParameters();
 
@@ -145,7 +145,7 @@ namespace Parcel.Neo.Base.Framework
             static string FormalizeUnnammedPin(Type type)
             {
                 string defaultName = type.Name;
-                if (type.IsArray) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
+                if (type.IsArray)
                     return $"{FormalizeUnnammedPin(type.GetElementType())} Array";
                 else return defaultName;
             }

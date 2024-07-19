@@ -93,7 +93,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 
             void CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
             {
-                bool supportsCoercion = inputType.IsArray; // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
+                bool supportsCoercion = inputType.IsArray;
 
                 if (inputType == typeof(bool))
                     Input.Add(new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion });
@@ -103,8 +103,6 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                     Input.Add(new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion });
                 else if (inputType == typeof(DateTime))
                     Input.Add(new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion });
-                else if (inputType == typeof(Color))
-                    Input.Add(new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion });
                 else
                     Input.Add(new InputConnector(inputType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion });
             }
@@ -147,7 +145,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 Func<object[], object[]> marshal = RetrieveCallMarshal();
                 object[] outputs = marshal.Invoke(Input.Select((input, index) =>
                 {
-                    if (input.AllowsArrayCoercion && !input.Connections.Any(c => c.Input.DataType.HasElementType)) //Remark: Notice IsArray is not robust enough since it doesn't work on pass by ref arrays e.g. System.Double[]&
+                    if (input.AllowsArrayCoercion && !input.Connections.Any(c => c.Input.DataType.IsArray))
                         return input.FetchArrayInputValues(InputTypes[index].GetElementType());
                     else 
                         return input.FetchInputValue<object>();
@@ -185,6 +183,24 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
         #endregion
 
         #region Auto-Connect Interface
+        public override Tuple<ToolboxNodeExport, Vector2D, InputConnector>[] AutoPopulatedConnectionNodes
+        {
+            get
+            {
+                List<Tuple<ToolboxNodeExport, Vector2D, InputConnector>> auto = [];
+                for (int i = 0; i < Input.Count; i++)
+                {
+                    if(!InputConnectorShouldRequireAutoConnection(Input[i])) continue;
+
+                    // TODO: Review and examine this part of logic and see whether we can improve it
+                    Type nodeType = InputTypes[i];
+                    ToolboxNodeExport toolDef = new(Input[i].Title, nodeType);
+                    auto.Add(new Tuple<ToolboxNodeExport, Vector2D, InputConnector>(toolDef, new Vector2D(-100, -50 + (i - 1) * 50), Input[i]));
+                }
+                return [.. auto];
+            }
+        }
+
         public override bool ShouldHaveAutoConnection => Input.Count > 0 && Input.Any(InputConnectorShouldRequireAutoConnection);
         #endregion
     }

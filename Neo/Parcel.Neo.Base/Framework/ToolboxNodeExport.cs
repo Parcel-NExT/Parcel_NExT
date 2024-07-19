@@ -1,8 +1,8 @@
-﻿using Parcel.CoreEngine.Interfaces;
-using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+﻿using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -28,17 +28,16 @@ namespace Parcel.Neo.Base.Framework
         public string ReturnsList { get; }
         public bool HasReturnValue { get; }
         public AutomaticNodeDescriptor Descriptor { get; }
-        public bool IsConstructor => Method?.IsConstructor ?? false;
         #endregion
 
         #region Payload Type
         private NodeImplementationType ImplementationType { get; }
-        private Callable? Method { get; }
+        private MethodInfo Method { get; }
         private Type ProcessorNodeType { get; }
         #endregion
 
         #region Constructor
-        public ToolboxNodeExport(string name, Callable method)
+        public ToolboxNodeExport(string name, MethodInfo method)
         {
             Name = name;
             Method = method;
@@ -66,7 +65,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Method
-        readonly Dictionary<(string, Callable), AutomaticNodeDescriptor> DescriptorsCache = [];
+        Dictionary<(string, MethodInfo), AutomaticNodeDescriptor> DescriptorsCache = [];
         public BaseNode InstantiateNode()
         {
             switch (ImplementationType)
@@ -75,7 +74,7 @@ namespace Parcel.Neo.Base.Framework
                     // TODO: We can use automatic node to invoke constructors for types that have constructor
                     return (BaseNode)Activator.CreateInstance(ProcessorNodeType);
                 case NodeImplementationType.MethodInfo:
-                    (string Name, Callable Method) key = (Name, Method);
+                    (string Name, MethodInfo Method) key = (Name, Method);
                     if (!DescriptorsCache.ContainsKey(key))
                         DescriptorsCache[key] = new AutomaticNodeDescriptor(Name, Method);
                     return new AutomaticProcessorNode(DescriptorsCache[key]);

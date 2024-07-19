@@ -20,7 +20,7 @@ namespace Parcel.Neo.Converters
             }
             else if (double.TryParse(stringValue, out var d))
             {
-                return (Negate ? (d <= 0) : (d > 0)) ? Visibility.Visible : FalseVisibility;
+                return (Negate ? !(d > 0) : (d > 0)) ? Visibility.Visible : FalseVisibility;
             }
 
             bool result = value != null;

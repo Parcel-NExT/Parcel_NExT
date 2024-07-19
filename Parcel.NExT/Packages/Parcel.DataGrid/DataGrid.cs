@@ -273,7 +273,7 @@ namespace Parcel.Types
         #region Accessors
         public int ColumnCount => Columns.Count;
         public IEnumerable<string> ColumnHeaders => Columns.Select(c => c.Header);
-        public int RowCount => Columns.FirstOrDefault()?.Length ?? 0;
+        public int RowCount => Columns.First().Length;
         /// <remarks>
         /// When used in a foreach statement, can retrieve directly as IDictionary<string, object> instead of dynamic
         /// </remarks>

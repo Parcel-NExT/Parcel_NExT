@@ -45,7 +45,7 @@ namespace Parcel.CoreEngine.Conversion
                 var elements = (IEnumerable<object>)result;
                 return string.Join("\n", elements.Select(r => r.ToString()));
             }
-            else if (resultType.IsArray && primitiveTypes.Contains(resultType.GetElementType()!)) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
+            else if (resultType.IsArray && primitiveTypes.Contains(resultType.GetElementType()!))
             {
                 List<object> elements = [];
                 foreach (var e in (Array)result)
@@ -160,7 +160,7 @@ namespace Parcel.CoreEngine.Conversion
         /// </summary>
         private static object ConvertValue(Type type, string[] values)
         {
-            if (type.IsArray) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
+            if (type.IsArray)
             {
                 Type elementType = type.GetElementType()!;
                 var array = Array.CreateInstance(elementType, values.Length);

@@ -51,9 +51,9 @@ namespace Parcel.Scripting.Utilities
                 instance = Activator.CreateInstance(type);
 
             // Initialize all arrays
-            foreach (var p in properties.Where(p => p.Value.PropertyType.IsArray)) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
+            foreach (var p in properties.Where(p => p.Value.PropertyType.IsArray))
                 p.Value.SetValue(instance, Array.CreateInstance(p.Value.PropertyType.GetElementType(), 0));
-            foreach (var a in attributes.Where(a => a.Value.FieldType.IsArray)) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
+            foreach (var a in attributes.Where(a => a.Value.FieldType.IsArray))
                 a.Value.SetValue(instance, Array.CreateInstance(a.Value.FieldType.GetElementType(), 0));
 
             Dictionary<string, string[]> mapping = MapMany(true, arguments);
@@ -164,7 +164,7 @@ namespace Parcel.Scripting.Utilities
         #region Helpers
         private static object ConvertValue(string name, Type type, string[] values)
         {
-            if (type.IsArray) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
+            if (type.IsArray)
             {
                 Type elementType = type.GetElementType();
                 var array = Array.CreateInstance(elementType, values.Length);
