@@ -43,14 +43,14 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Construction
-        public AutomaticNodeDescriptor(string nodeName, MethodInfo method)
+        public AutomaticNodeDescriptor(string nodeName, Callable method)
         {
             // Parse definitions
             SeperateMethodParametersForNode(method, out (Type Type, string ParameterName, object? DefaultValue)[] nodeInputTypes, out (Type Type, string ParameterName)[] nodeOutputTypes);
 
             // Set properties
             NodeName = nodeName;
-            Method = new Callable(method);
+            Method = method;
             InputTypes = [.. nodeInputTypes.Select(p => p.Type)];
             OutputTypes = [.. nodeOutputTypes.Select(p => p.Type)];
             CallMarshal = nodeInputValues =>
@@ -81,7 +81,7 @@ namespace Parcel.Neo.Base.Framework
                 }
                 if (Method.IsStatic)
                 {
-                    object? returnValue = Method.Invoke(null, methodExpectedParameterValuesArray);
+                    object? returnValue = Method.StaticInvoke(methodExpectedParameterValuesArray);
                     if (Method.ReturnType == typeof(void))
                         return [.. outParameterIndices.Select(i => methodExpectedParameterValuesArray[i])];
                     else
@@ -104,7 +104,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Helper
-        private static void SeperateMethodParametersForNode(MethodInfo method, out (Type, string, object?)[] nodeInputTypes, out (Type ValueType, string ValueName)[] nodeOutputTypes)
+        private static void SeperateMethodParametersForNode(Callable method, out (Type, string, object?)[] nodeInputTypes, out (Type ValueType, string ValueName)[] nodeOutputTypes)
         {
             ParameterInfo[] methodParameters = method.GetParameters();
 
