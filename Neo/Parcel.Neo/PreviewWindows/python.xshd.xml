@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <SyntaxDefinition name="Python" extensions=".py;.pyw" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-	<Color name="Comment" foreground="Green" exampleText="# comment" />
+	<Color name="Comment" foreground="#496e2f" exampleText="# comment" />
 	<Color name="String" foreground="Gray" exampleText="name = 'abc'"/>
-	<Color name="MethodCall" foreground="Purple" exampleText="def Hello()"/>
-	<Color name="NumberLiteral" foreground="DarkBlue" exampleText="3.1415f"/>
-	<Color name="Keywords" fontWeight="bold" foreground="Blue" exampleText="if"/>
+	<Color name="MethodCall" foreground="#bfb070" exampleText="def Hello()"/>
+	<Color name="NumberLiteral" foreground="#69839c" exampleText="3.1415f"/>
+	<Color name="Keywords" fontWeight="bold" foreground="#1F85DE" exampleText="if"/>
 
 	<Property name="DocCommentMarker" value="///" />
 
 	<RuleSet name="CommentMarkerSet">
-		<Keywords fontWeight="bold" foreground="Red">
+		<Keywords fontWeight="bold" foreground="#95681c">
 			<Word>TODO</Word>
 			<Word>FIXME</Word>
 		</Keywords>
-		<Keywords fontWeight="bold" foreground="#E0E000">
+		<Keywords fontWeight="bold" foreground="#b99d34">
 			<Word>HACK</Word>
 			<Word>UNDONE</Word>
 		</Keywords>
@@ -47,6 +47,11 @@
 				<Span begin="\\" end="."/>
 			</RuleSet>
 		</Span>
+		
+		<!--Parcel Keywords-->
+		<Keywords foreground="#4b7dd1">
+			<Word>LoadPackage</Word>
+		</Keywords>
 
 		<Keywords color="Keywords">
 			<Word>and</Word>
