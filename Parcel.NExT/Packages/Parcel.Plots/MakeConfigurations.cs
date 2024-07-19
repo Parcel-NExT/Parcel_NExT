@@ -118,7 +118,6 @@ namespace Parcel.Graphing
                 Title = title,
                 BarSize = barSize,
                 LabelFontSize = labelFontSize,
-                AgeGroupColors = ageGroupColors,
                 BarGap = barGap,
                 ImageWidth = imageWidth,
                 ImageHeight = imageHeight
