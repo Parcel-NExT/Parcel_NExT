@@ -247,6 +247,7 @@ namespace Parcel.Neo
             if (node is not GraphReferenceNode reference || _graphPreviewWindows.ContainsKey(reference) || _previewWindows.ContainsKey(reference))  // For graph reference we really don't want to execute it during preview the first time
                 ExecuteAll();
             SpawnPreviewWindow(node);
+            UpdateLiveCodePreview(); // Update connector parameter changes etc.
 
             e.Handled = true;
         }

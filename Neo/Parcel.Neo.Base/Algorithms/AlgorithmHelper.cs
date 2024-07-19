@@ -92,7 +92,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Pre-build scripts
             StringBuilder mainSection = new();
             foreach (string line in summary.ScriptSectionStatements)
-                mainSection.AppendLine($"{line};");
+                mainSection.AppendLine(line);
             StringBuilder[] scriptSections = [mainSection];
 
             // Generate script contents
@@ -141,7 +141,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Pre-build scripts
             StringBuilder mainSection = new();
             foreach (string line in summary.ScriptSectionStatements)
-                mainSection.AppendLine($"{line};");
+                mainSection.AppendLine(line);
             StringBuilder[] scriptSections = [mainSection];
 
             // Generate script contents
@@ -428,7 +428,7 @@ namespace Parcel.Neo.Base.Algorithms
                             // TODO: Deal with multiple outputs
                             string outputVariableName = GetNewVariableName(ScopedVariables, autoNode.MainOutput.Title.Camelize());
                             TypedVariable newVariable = new(outputVariableName, autoNode.MainOutput.DataType);
-                            statements.Add(syntaxHandler.CreateVariable(newVariable, syntaxHandler.CallFunction(methodCallName, functionCallArguments, parameters)));
+                            statements.Add(syntaxHandler.CreateVariableFromFunctionCall(newVariable, methodCallName, functionCallArguments, parameters));
                             ScopedVariables.Add(newVariable);
 
                             // Book keep node outputs
@@ -567,6 +567,7 @@ namespace Parcel.Neo.Base.Algorithms
         public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames);
         public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters);
         public string ReturnResults(string[] returns);
+        public string CreateVariableFromFunctionCall(TypedVariable newVariable, string methodCallName, TypedVariable[] functionCallArguments, FunctionCallParameter[] parameters);
     }
     public sealed class PythonSyntaxHandler : ISyntaxHandler
     {
@@ -590,6 +591,8 @@ namespace Parcel.Neo.Base.Algorithms
                 }
                 return parameter.FinalEvaluatedValue;
             }))})";
+        public string CreateVariableFromFunctionCall(TypedVariable newVariable, string methodCallName, TypedVariable[] functionCallArguments, FunctionCallParameter[] parameters)
+            => CreateVariable(newVariable, CallFunction(methodCallName, functionCallArguments, parameters));
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {string.Join(", ", returns)}" : "return";
 
@@ -617,6 +620,8 @@ namespace Parcel.Neo.Base.Algorithms
             => $"{variable.Type.Name} {variable.Name}{variable.Name} = [{string.Join(", ", elementVariableNames)}];";
         public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters)
             => $"{functionName}({string.Join(", ", parameters.Select(p => p.FinalEvaluatedValue))});";
+        public string CreateVariableFromFunctionCall(TypedVariable newVariable, string methodCallName, TypedVariable[] functionCallArguments, FunctionCallParameter[] parameters)
+            => CreateVariable(newVariable, CallFunction(methodCallName, functionCallArguments, parameters)).TrimEnd(';') + ';'; // Remove redundant ';' at the end
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {(returns.Length == 1 ? returns.Single() : $"({string.Join(", ", returns)})")};" : "return;";
     }
