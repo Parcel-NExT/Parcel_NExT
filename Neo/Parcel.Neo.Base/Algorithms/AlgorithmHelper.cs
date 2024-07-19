@@ -101,7 +101,8 @@ namespace Parcel.Neo.Base.Algorithms
             // Generate script contents
             StringBuilder mainScriptBuilder = new();
             // Import package references
-            mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
+            if (summary.StandardPackageImports.Count > 0)
+                mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
@@ -115,15 +116,20 @@ namespace Parcel.Neo.Base.Algorithms
                     mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
             mainScriptBuilder.AppendLine();
             // Start of main function
-            mainScriptBuilder.AppendLine("# Main script content");
+            StringBuilder bodyBuilder = new();
             // Do variable declarations first
             foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
-                mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
+                bodyBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
             // Append script sections
             foreach (StringBuilder section in scriptSections)
             {
-                mainScriptBuilder.Append(section.ToString().TrimEnd());
-                mainScriptBuilder.AppendLine();
+                bodyBuilder.Append(section.ToString().TrimEnd());
+                bodyBuilder.AppendLine();
+            }
+            if (bodyBuilder.ToString().Trim().Length > 0)
+            {
+                mainScriptBuilder.AppendLine("# Main script content");
+                mainScriptBuilder.AppendLine(bodyBuilder.ToString());
             }
 
             return mainScriptBuilder.ToString();
@@ -461,7 +467,7 @@ namespace Parcel.Neo.Base.Algorithms
                                 else value = autoNode.Descriptor.DefaultInputValues[i];
 
                                 if (value == null)
-                                    return "null";
+                                    return syntaxHandler.Null;
                                 else if (TypeHelper.IsNumericalType(value.GetType()))
                                     return value.ToString();
                                 return $"\"{value}\"";
@@ -638,6 +644,7 @@ namespace Parcel.Neo.Base.Algorithms
     }
     public interface ISyntaxHandler
     {
+        public string Null { get; }
         public string CreateVariable(TypedVariable variable, string value);
         public string AssignVariable(TypedVariable variable, string value);
         public string CreateArrayVariable(TypedVariable variable, string[] elementVariableNames);
@@ -647,6 +654,7 @@ namespace Parcel.Neo.Base.Algorithms
     }
     public sealed class PythonSyntaxHandler : ISyntaxHandler
     {
+        public string Null => "None";
         public string CreateVariable(TypedVariable variable, string value)
             => $"{variable.Name} = {value}";
         public string AssignVariable(TypedVariable variable, string value)
@@ -688,6 +696,7 @@ namespace Parcel.Neo.Base.Algorithms
     }
     public sealed class PureSyntaxHandler : ISyntaxHandler
     {
+        public string Null => "null";
         public string CreateVariable(TypedVariable variable, string value)
             => $"{variable.Type.Name} {variable.Name} = {value};";
         public string AssignVariable(TypedVariable variable, string value)
