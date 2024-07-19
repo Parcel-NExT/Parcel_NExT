@@ -1,9 +1,17 @@
-﻿using Microsoft.Win32;
+﻿using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using Parcel.NExT.Interpreter;
+using Parcel.CoreEngine.Helpers;
+using SkiaSharp;
 
 namespace Parcel.Neo.PreviewWindows
 {
@@ -41,7 +49,15 @@ namespace Parcel.Neo.PreviewWindows
 
         #region Public View Properties
         private string _liveCodePreview;
-        public string LiveCodePreview { get => _liveCodePreview; set => SetField(ref _liveCodePreview, value); }
+        public string LiveCodePreview 
+        { 
+            get => _liveCodePreview; 
+            set
+            {
+                SetField(ref _liveCodePreview, value);
+                CodeEditor.Text = LiveCodePreview;
+            }
+        }
         #endregion
 
         #region Events
@@ -84,13 +100,19 @@ namespace Parcel.Neo.PreviewWindows
         {
             CurrentLanguageMode = LanguageMode.CSharp;
             RegenerateCallback?.Invoke();
+            CodeEditor.SyntaxHighlighting = ReadCSharpSyntaxHighlightingRules();
             e.Handled = true;
         }
         private void ChangeLanguageModePythonMenuItem_Click(object sender, RoutedEventArgs e)
         {
             CurrentLanguageMode = LanguageMode.Python;
             RegenerateCallback?.Invoke();
+            CodeEditor.SyntaxHighlighting = ReadPythonSyntaxHighlightingRules();
             e.Handled = true;
+        }
+        private void CodeEditor_Initialized(object sender, EventArgs e)
+        {
+            CodeEditor.SyntaxHighlighting = ReadCSharpSyntaxHighlightingRules();
         }
         #endregion
 
@@ -104,6 +126,26 @@ namespace Parcel.Neo.PreviewWindows
             field = value;
             NotifyPropertyChanged(propertyName);
             return true;
+        }
+        #endregion
+
+        #region Helpers
+        private static IHighlightingDefinition ReadCSharpSyntaxHighlightingRules()
+        {
+            // Remark: For built-in: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#"); 
+            // Alternative: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(FileName));
+
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.csharp.xshd.xml");
+            using System.Xml.XmlTextReader reader = new(stream);
+            return HighlightingLoader.Load(reader,
+                HighlightingManager.Instance);
+        }
+        private static IHighlightingDefinition ReadPythonSyntaxHighlightingRules()
+        {
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.python.xshd.xml");
+            using System.Xml.XmlTextReader reader = new(stream);
+            return HighlightingLoader.Load(reader,
+                HighlightingManager.Instance);
         }
         #endregion
     }

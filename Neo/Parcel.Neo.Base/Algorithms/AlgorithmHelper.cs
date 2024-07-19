@@ -132,7 +132,7 @@ namespace Parcel.Neo.Base.Algorithms
                 mainScriptBuilder.AppendLine(bodyBuilder.ToString());
             }
 
-            return mainScriptBuilder.ToString();
+            return mainScriptBuilder.ToString().Trim();
         }
         public static void GenerateGraphPureScripts(string folderPath, string mainScriptFilename, NodesCanvas canvas)
         {
@@ -272,7 +272,7 @@ namespace Parcel.Neo.Base.Algorithms
                 mainScriptBuilder.AppendLine(section.ToString());
             mainScriptBuilder.AppendLine();
 
-            return mainScriptBuilder.ToString();
+            return mainScriptBuilder.ToString().Trim();
         }
         public static void GenerateGraphPythonScripts(string folderPath, string mainScriptFilename, NodesCanvas canvas)
         { 

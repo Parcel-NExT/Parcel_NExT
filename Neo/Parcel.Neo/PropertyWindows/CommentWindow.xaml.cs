@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Highlighting;
-using Parcel.Neo.Base.Framework;
+﻿using System.Windows;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
 namespace Parcel.Neo

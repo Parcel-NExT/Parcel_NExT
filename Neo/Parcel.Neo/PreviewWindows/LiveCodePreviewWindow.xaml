@@ -20,7 +20,7 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <DockPanel>
+    <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top">
             <Menu.Resources>
                 <ResourceDictionary Source="../Styling/NeoMenuStylingDictionary.xaml"/>
@@ -38,23 +38,30 @@
                 <MenuItem Header="Update (Source) Document" ToolTip="Sync with graph document."/>
             </MenuItem>
         </Menu>
-        <TextBox DockPanel.Dock="Bottom" Text="{Binding LiveCodePreview}" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True" TextWrapping="WrapWithOverflow" FontFamily="Consolas" Margin="0" Padding="3">
-            <TextBox.Background>
+        <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" WordWrap="True"  FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="False" VerticalScrollBarVisibility="Auto" Initialized="CodeEditor_Initialized"> <!--Show line numbers is causing issue with height-->
+            <avalonEdit:TextEditor.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="../ScrollbarResource.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+            </avalonEdit:TextEditor.Resources>
+            <avalonEdit:TextEditor.Background>
                 <LinearGradientBrush StartPoint="0 0" EndPoint="0.8 1">
                     <LinearGradientBrush.GradientStops>
                         <GradientStop Offset="0.1" Color="#192d3e" />
                         <GradientStop Offset="1" Color="#182e42" />
                     </LinearGradientBrush.GradientStops>
                 </LinearGradientBrush>
-            </TextBox.Background>
-            <TextBox.Foreground>
+            </avalonEdit:TextEditor.Background>
+            <avalonEdit:TextEditor.Foreground>
                 <LinearGradientBrush StartPoint="0 0" EndPoint="0.8 1">
                     <LinearGradientBrush.GradientStops>
                         <GradientStop Offset="0.1" Color="#3f95d3" />
                         <GradientStop Offset="1" Color="#4e9fda" />
                     </LinearGradientBrush.GradientStops>
                 </LinearGradientBrush>
-            </TextBox.Foreground>
-        </TextBox>
+            </avalonEdit:TextEditor.Foreground>
+        </avalonEdit:TextEditor>
     </DockPanel>
 </Window>
