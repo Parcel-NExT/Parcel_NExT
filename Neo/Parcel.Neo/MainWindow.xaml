@@ -456,7 +456,38 @@
                                                                 <Image Source="{Binding PreviewImage}" MaxWidth="128" MaxHeight="128" Visibility="{Binding PreviewImage, Converter={converters:BooleanToVisibilityConverter}}"/>
                                                                 <!--Generated Preview-->
                                                                 <!--(Remark) At the moment this is causing significant loading speed downgrade (and gigantic memory cost), though it's a one-time cost.-->
-                                                                <Border Margin="6" Padding="2" Background="#416788" BorderBrush="#3073ad" BorderThickness="3" CornerRadius="2" Visibility="{Binding PreviewImage, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
+                                                                <Border Margin="6" Padding="2" BorderThickness="3" CornerRadius="2" Visibility="{Binding PreviewImage, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
+                                                                    <Border.Style>
+                                                                        <Style TargetType="Border" x:Name="OuterBoder">
+                                                                            <Setter Property="Background">
+                                                                                <Setter.Value>
+                                                                                    <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                                                                        <LinearGradientBrush.GradientStops>
+                                                                                            <GradientStop Offset="0.1" Color="#416788" />
+                                                                                            <GradientStop Offset="1" Color="#3073ad" />
+                                                                                        </LinearGradientBrush.GradientStops>
+                                                                                    </LinearGradientBrush>
+                                                                                </Setter.Value>
+                                                                            </Setter>
+                                                                            <Setter Property="BorderBrush" Value="#3073ad"/>
+
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding IsConstructor}" Value="True">
+                                                                                    <Setter Property="Background">
+                                                                                        <Setter.Value>
+                                                                                            <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                                                                                <LinearGradientBrush.GradientStops>
+                                                                                                    <GradientStop Offset="0.1" Color="#9d7e3e" />
+                                                                                                    <GradientStop Offset="1" Color="#c1a14a" />
+                                                                                                </LinearGradientBrush.GradientStops>
+                                                                                            </LinearGradientBrush>
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                    <Setter Property="BorderBrush" Value="#c1a14a"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Border.Style>
                                                                     <StackPanel>
                                                                         <Label Content="{Binding DisplayName}" Foreground="#adb4ba" Margin="1" Padding="0" FontWeight="Bold"/>
                                                                         <Separator Margin="1" HorizontalAlignment="Stretch" Foreground="LightGray" Height="2"/>

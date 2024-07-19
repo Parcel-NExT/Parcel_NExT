@@ -28,11 +28,12 @@ namespace Parcel.Neo.Base.Framework
         public string ReturnsList { get; }
         public bool HasReturnValue { get; }
         public AutomaticNodeDescriptor Descriptor { get; }
+        public bool IsConstructor => Method?.IsConstructor ?? false;
         #endregion
 
         #region Payload Type
         private NodeImplementationType ImplementationType { get; }
-        private Callable Method { get; }
+        private Callable? Method { get; }
         private Type ProcessorNodeType { get; }
         #endregion
 

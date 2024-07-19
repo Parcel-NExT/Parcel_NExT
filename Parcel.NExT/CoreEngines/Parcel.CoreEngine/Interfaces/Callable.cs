@@ -27,6 +27,8 @@ namespace Parcel.CoreEngine.Interfaces
         public Type ReflectedType { get; }
         public Type DeclaringType { get; }
         public Type ReturnType { get; }
+
+        public bool IsConstructor => Type == CallableType.Constructor;
         #endregion
 
         #region Constructor

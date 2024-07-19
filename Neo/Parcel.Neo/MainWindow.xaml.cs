@@ -445,7 +445,8 @@ namespace Parcel.Neo
                 {
                     DisplayName = n.Name,
                     Definition = n,
-                    PreviewImage = null
+                    PreviewImage = null,
+                    IsConstructor = n.IsConstructor
                 }).ToArray();
                 NodesPaletteToolboxViewModel category = new()
                 {

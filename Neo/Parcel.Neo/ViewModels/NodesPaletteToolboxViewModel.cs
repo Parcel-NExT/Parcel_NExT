@@ -7,7 +7,7 @@ namespace Parcel.Neo.ViewModels
 {
     public class NodesPaletteToolboxNodeItemViewModel : ObservableObject
     {
-        #region View Components
+        #region View Components - Essential
         private ImageSource? _previewImage;
         public ImageSource? PreviewImage
         {
@@ -22,6 +22,15 @@ namespace Parcel.Neo.ViewModels
             set => SetField(ref _displayName, value);
         }
         public ToolboxNodeExport Definition { get; set; }
+        #endregion
+
+        #region View Components - Styling
+        private bool _isConstructor;
+        public bool IsConstructor
+        {
+            get => _isConstructor;
+            set => SetField(ref _isConstructor, value);
+        }
         #endregion
     }
 
