@@ -37,6 +37,10 @@ flowchart TD
 
 - [ ] Document/Image save from Preview Window.
 
+Nodes Palette:
+
+- [ ] Implement search function. (Can be done in a data driven way by adding an extra property that holds nodes for the toolbox and let the data bound property only contains current active results; The search action itself should be done using an event instead of data binding)
+
 ## Setup
 
 All key components are implemented inside `Parcel.Neo.Base` assembly, the front end is implemented in `Parcel.Neo`, and all functional components are implemented in various **Toolboxes** (will soon be completely replaced by Parcel packages).

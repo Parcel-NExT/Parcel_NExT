@@ -18,7 +18,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
         {
             Type expectedFirstArgumentType = targetMethod.GetParameters().First().ParameterType;
             // Plain array
-            if (incomingArgumentType.IsArray && incomingArgumentType.GetElementType() == expectedFirstArgumentType)
+            if (incomingArgumentType.IsArray && incomingArgumentType.GetElementType() == expectedFirstArgumentType) // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
                 return true;
             // Enumerable
             else if (incomingArgumentType.IsGenericType && incomingArgumentType.IsAssignableTo(typeof(IEnumerable))

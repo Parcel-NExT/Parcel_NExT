@@ -5,7 +5,6 @@ using Parcel.Types;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Base.DataTypes;
 using System.ComponentModel;
-using System.Xml.Linq;
 
 namespace Parcel.Neo.Base.Framework.ViewModels
 {
@@ -20,7 +19,17 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             set => SetField(ref _defaultDataStorage, value is string s ? bool.Parse(s) : value); 
         }
     }
-    
+    public sealed class PrimitiveColorInputConnector : PrimitiveInputConnector
+    {
+        public PrimitiveColorInputConnector(Color? defaultValue = null) : base(typeof(Color))
+            => Value = defaultValue; // Can be null
+
+        public override object? Value
+        {
+            get => _defaultDataStorage;
+            set => SetField(ref _defaultDataStorage, value is string s ? Color.Parse(s) : (Color)value);
+        }
+    }
     public sealed class PrimitiveDateTimeInputConnector : PrimitiveInputConnector
     {
         public PrimitiveDateTimeInputConnector(DateTime? defaultValue = null) : base(typeof(DateTime)) 

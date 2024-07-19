@@ -10,19 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ScottPlot" Version="5.0.36" />
+    <PackageReference Include="SkiaSharp" Version="2.88.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CoreEngines\Parcel.NExT.NodeGraph\Parcel.NExT.NodeGraph.csproj" />
-    <ProjectReference Include="..\Parcel.Drawing\Parcel.Drawing.csproj" />
     <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Licenses\ScottPlot LICENSE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -63,6 +63,13 @@
             => vector.Variance();
         #endregion
 
+        #region Serialization
+        public static void SaveToFile(this double[] vector, string filePath)
+            => File.WriteAllLines(filePath, vector.Select(v => v.ToString()));
+        public static double[] ReadFromFile(string filePath)
+            => File.ReadAllLines(filePath).Select(double.Parse).ToArray();
+        #endregion
+
         #region Operations
         public enum AccumulateApplyFunction
         {
