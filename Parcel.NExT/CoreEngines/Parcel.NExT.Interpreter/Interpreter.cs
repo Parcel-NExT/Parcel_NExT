@@ -14,7 +14,7 @@ namespace Parcel.NExT.Interpreter
         /// <summary>
         /// The overall distribution version for Pure in general; This should match the version of the Core assembly
         /// </summary>
-        public static readonly string DistributionVersion = "v0.0.1";
+        public static readonly string DistributionVersion = "v0.0.3";
         public static readonly string VersionChangelog = """
             > Pure 1 (2022-2024)
             * v0.0.1-v0.0.3: Misc. basic functional implementations.
@@ -52,6 +52,7 @@ namespace Parcel.NExT.Interpreter
             > Pure 2 (2024)
             * v0.0.1: Initial setup.
             * v0.0.2: Runtime swap to Parcel NExT.
+            * v0.0.3: Help command supports inspecting module information.
             """;
         #endregion
 

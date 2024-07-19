@@ -491,10 +491,26 @@ namespace Parcel.NExT.Interpreter.Scripting
         }
         public static bool PrintName(string name)
         {
+            Assembly foundAssembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(a => a.GetName().Name == name);
             string[] nameSpaces = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Select(t => t.Namespace)).Distinct().ToArray();
             string[] types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Select(t => t.Name)).Distinct().ToArray();
             string[] typesFullname = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes().Select(t => t.FullName)).Distinct().ToArray();
+            bool returnValue = false;
 
+            // Print module level information
+            if (foundAssembly != null)
+            {
+                returnValue |= true;
+                Console.WriteLine($"""
+                    Assembly: {foundAssembly.FullName}
+                    Location: {foundAssembly.Location}
+                    Namespaces:
+                      {string.Join(Environment.NewLine + "  ", foundAssembly.GetExportedTypes().Select(t => t.Namespace).Where(n => n != null).OrderBy(n => n).Distinct())}
+                    Types:
+                      {string.Join(Environment.NewLine + "  ", foundAssembly.GetExportedTypes().Select(t => t.Name).OrderBy(n => n))}
+                    """);
+            }
+            
             if (nameSpaces.Contains(name))
             {
                 var subNamespaces = AppDomain.CurrentDomain
@@ -525,7 +541,7 @@ namespace Parcel.NExT.Interpreter.Scripting
                         Types: 
                           {string.Join(Environment.NewLine + "  ", publicTypes)}
                         """);
-                return true;
+                returnValue |= true;
             }
             else if (types.Contains(name))
             {
@@ -536,7 +552,7 @@ namespace Parcel.NExT.Interpreter.Scripting
                     PrintType(foundTypes.Single());
                 else
                     Console.WriteLine(string.Join('\n', foundTypes.Select(t => t.FullName)));
-                return true;
+                returnValue |= true;
             }
             else if (typesFullname.Contains(name))
             {
@@ -544,7 +560,7 @@ namespace Parcel.NExT.Interpreter.Scripting
                     .GetAssemblies()
                     .SelectMany(a => a.GetTypes().Where(t => t.FullName == name)).Single();
                 PrintType(type);
-                return true;
+                returnValue |= true;
             }
             else if (AppDomain.CurrentDomain.GetAssemblies().Any(a => a.GetTypes().Any(t => t.GetMethods().Any(m => m.Name == name))))
             {
@@ -560,9 +576,9 @@ namespace Parcel.NExT.Interpreter.Scripting
                     Console.WriteLine($"From type {methodInfos.Select(m => m.DeclaringType).Distinct().Single().Name}: ");
                 foreach (var method in methodInfos)
                     Console.WriteLine(PrintMethod(method, isMethodsNonUnique)); // Is method is defined in many types, we print types names
-                return true;
+                returnValue |= true;
             }
-            return false;
+            return returnValue;
         }
         public static void PrintType(Type type)
         {
