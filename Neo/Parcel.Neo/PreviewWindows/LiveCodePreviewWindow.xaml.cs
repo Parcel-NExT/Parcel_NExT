@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Win32;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -25,6 +26,26 @@ namespace Parcel.Neo.PreviewWindows
         #region Public View Properties
         private string _liveCodePreview;
         public string LiveCodePreview { get => _liveCodePreview; set => SetField(ref _liveCodePreview, value); }
+        #endregion
+
+        #region Events
+        private void CopyToClipboardMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(_liveCodePreview);
+        }
+        private void SaveScriptAsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                AddExtension = true,
+                Filter = "Text Files (.txt)| *.txt|Pure Script File (.cs)| *.cs|Python Script File (.py)| *.py|All Files| *.*"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string path = saveFileDialog.FileName;
+                System.IO.File.WriteAllText(path, _liveCodePreview);
+            }
+        }
         #endregion
 
         #region Data Binding

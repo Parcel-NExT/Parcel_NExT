@@ -25,14 +25,15 @@
             <Menu.Resources>
                 <ResourceDictionary Source="../Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
-            <MenuItem Header="File">
-                <MenuItem Header="Save As..."/>
+            <MenuItem Header="Script">
+                <MenuItem Header="Copy to Clipboard" Click="CopyToClipboardMenuItem_Click"/>
+                <MenuItem Header="Save As..." Click="SaveScriptAsMenuItem_Click"/>
             </MenuItem>
-            <MenuItem Header="Language">
+            <MenuItem Header="Language" Visibility="Collapsed">
                 <MenuItem Header="Pure (2)"/>
                 <MenuItem Header="Python"/>
             </MenuItem>
-            <MenuItem Header="Action">
+            <MenuItem Header="Action" Visibility="Collapsed">
                 <MenuItem Header="Update (Source) Document" ToolTip="Sync with graph document."/>
             </MenuItem>
         </Menu>
