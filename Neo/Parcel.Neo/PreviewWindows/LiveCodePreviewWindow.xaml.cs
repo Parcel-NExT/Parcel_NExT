@@ -20,7 +20,7 @@ namespace Parcel.Neo.PreviewWindows
 
         #region Properties
         private Action RegenerateCallback { get; }
-        public LanguageMode CurrentLanguageMode { get; private set; }
+        public LanguageMode CurrentLanguageMode { get; private set; } = LanguageMode.CSharp;
         #endregion
 
         #region Construction
@@ -45,6 +45,10 @@ namespace Parcel.Neo.PreviewWindows
         #endregion
 
         #region Events
+        private void RefreshScriptMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            RegenerateCallback?.Invoke();
+        }
         private void CopyToClipboardMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(_liveCodePreview);

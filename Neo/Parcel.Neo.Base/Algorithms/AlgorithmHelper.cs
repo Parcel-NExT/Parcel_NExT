@@ -101,6 +101,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Generate script contents
             StringBuilder mainScriptBuilder = new();
             // Import package references
+            mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
@@ -113,6 +114,8 @@ namespace Parcel.Neo.Base.Algorithms
                 foreach (string uniqueNamespace in summary.UniqueNamespaces.Select(n => n.Namespace).Distinct())
                     mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
             mainScriptBuilder.AppendLine();
+            // Start of main function
+            mainScriptBuilder.AppendLine("# Main script content");
             // Do variable declarations first
             foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
                 mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
@@ -150,6 +153,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Generate script contents
             StringBuilder mainScriptBuilder = new();
             // Import package references
+            mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
@@ -162,6 +166,8 @@ namespace Parcel.Neo.Base.Algorithms
                 foreach (string uniqueNamespace in summary.UniqueNamespaces.Select(n => n.Namespace).Distinct())
                     mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
             mainScriptBuilder.AppendLine();
+            // Start of main function
+            mainScriptBuilder.AppendLine("# Main script content");
             // Do variable declarations first
             foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
                 mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");

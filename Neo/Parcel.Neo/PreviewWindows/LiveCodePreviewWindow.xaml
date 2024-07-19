@@ -26,6 +26,7 @@
                 <ResourceDictionary Source="../Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
             <MenuItem Header="Script">
+                <MenuItem Header="Refresh" Click="RefreshScriptMenuItem_Click" ToolTip="Refreshes current script to reflect changes in the graph."/>
                 <MenuItem Header="Copy to Clipboard" Click="CopyToClipboardMenuItem_Click" ToolTip="Copy the script into clipboard."/>
                 <MenuItem Header="Save As..." Click="SaveScriptAsMenuItem_Click" ToolTip="Save the script content into file."/>
             </MenuItem>
