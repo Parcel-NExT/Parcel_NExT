@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Parcel.CoreEngine.Interfaces;
 using Parcel.Neo.Base.Framework.ViewModels;
 
 namespace Parcel.Neo.Base.Framework
@@ -38,7 +39,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Mapping
-        public MethodInfo Method { get; }
+        public Callable Method { get; }
         #endregion
 
         #region Construction
@@ -49,7 +50,7 @@ namespace Parcel.Neo.Base.Framework
 
             // Set properties
             NodeName = nodeName;
-            Method = method;
+            Method = new Callable(method);
             InputTypes = [.. nodeInputTypes.Select(p => p.Type)];
             OutputTypes = [.. nodeOutputTypes.Select(p => p.Type)];
             CallMarshal = nodeInputValues =>
