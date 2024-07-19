@@ -51,7 +51,20 @@ namespace Parcel.Neo.PreviewWindows
         }
         private void CopyToClipboardMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(_liveCodePreview);
+            // TODO: Instead of menu item, provide a clickable clipboard icon for button
+
+            for (int i = 0; i < 10; i++) // Remark: Clipboard.SetText can fail. See https://stackoverflow.com/questions/68666/clipbrd-e-cant-open-error-when-setting-the-clipboard-from-net
+            {
+                try
+                {
+                    Clipboard.SetText(_liveCodePreview);
+                    break;
+                }
+                catch { }
+                System.Threading.Thread.Sleep(10);
+            }
+
+            e.Handled = true;
         }
         private void SaveScriptAsMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -65,16 +78,19 @@ namespace Parcel.Neo.PreviewWindows
                 string path = saveFileDialog.FileName;
                 System.IO.File.WriteAllText(path, _liveCodePreview);
             }
+            e.Handled = true;
         }
         private void ChangeLanguageModePureMenuItem_Click(object sender, RoutedEventArgs e)
         {
             CurrentLanguageMode = LanguageMode.CSharp;
             RegenerateCallback?.Invoke();
+            e.Handled = true;
         }
         private void ChangeLanguageModePythonMenuItem_Click(object sender, RoutedEventArgs e)
         {
             CurrentLanguageMode = LanguageMode.Python;
             RegenerateCallback?.Invoke();
+            e.Handled = true;
         }
         #endregion
 
