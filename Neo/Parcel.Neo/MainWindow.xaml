@@ -459,16 +459,8 @@
                                                                 <Border Margin="6" Padding="2" BorderThickness="3" CornerRadius="2" Visibility="{Binding PreviewImage, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
                                                                     <Border.Style>
                                                                         <Style TargetType="Border" x:Name="OuterBoder">
-                                                                            <Setter Property="Background">
-                                                                                <Setter.Value>
-                                                                                    <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
-                                                                                        <LinearGradientBrush.GradientStops>
-                                                                                            <GradientStop Offset="0.1" Color="#416788" />
-                                                                                            <GradientStop Offset="1" Color="#3073ad" />
-                                                                                        </LinearGradientBrush.GradientStops>
-                                                                                    </LinearGradientBrush>
-                                                                                </Setter.Value>
-                                                                            </Setter>
+                                                                            <Setter Property="Background" Value="#416788"/>
+
                                                                             <Setter Property="BorderBrush" Value="#3073ad"/>
 
                                                                             <Style.Triggers>
