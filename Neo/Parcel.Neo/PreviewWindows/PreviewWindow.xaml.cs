@@ -12,9 +12,12 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Win32;
+using Parcel.MiniGame.Legends.Actions;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+using Parcel.Neo.Helpers;
 using Parcel.Types;
 
 namespace Parcel.Neo
@@ -84,10 +87,24 @@ namespace Parcel.Neo
         #endregion
 
         #region Events
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new()
+            {
+                Title = "Choose Path of Saved File"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string path = saveFileDialog.FileName;
+                string suffix = Path.GetExtension(path);
+                // TODO: Implement smart saving depends on specific data type and suffix
+                // ...
+            }
+        }
         private void PreviewWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
-                this.DragMove();    // Allow only LMB, since RMB can cause an exception
+                DragMove();    // Allow only LMB, since RMB can cause an exception
         }
         #endregion
 
@@ -110,7 +127,7 @@ namespace Parcel.Neo
             if (Node.HasCache(output))
             {
                 ConnectorCache cache = Node[output];
-                if (cache.DataType.IsArray && PrimitiveTypes.Any(t => t.IsAssignableFrom(cache.DataType.GetElementType()))) // This should not be necessary since the handling of IList should have already handled it
+                if (cache.DataType.IsArray && PrimitiveTypes.Any(t => t.IsAssignableFrom(cache.DataType.GetElementType()))) // This should not be necessary since the handling of IList should have already handled it // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
                     PreviewPrimitiveArray((Array)cache.DataObject);
                 else if (cache.DataObject is System.Collections.IList list)
                     PreviewCollections(list);
@@ -121,14 +138,18 @@ namespace Parcel.Neo
                 else if (cache.DataType == typeof(Types.Image))
                 {
                     Types.Image image = (cache.DataObject as Types.Image)!;
-                    string? address = image.FileReference;
-                    if (address != null && System.IO.File.Exists(address))
-                        PreviewImage(new BitmapImage(new Uri(address)));
-                    else
-                        PreviewImage(ConvertToBitmapImage(image));
+                    PreviewImage(image);
                 }
                 else if (cache.DataType == typeof(DataColumn))
                     PreviewColumnData(cache.DataObject as Parcel.Types.DataColumn);
+                else if (cache.DataType == typeof(ActionResult))
+                {
+                    ActionResult? actionResult = cache.DataObject as ActionResult;
+                    if (actionResult.Image != null)
+                        PreviewImage(actionResult.Image);
+                    else
+                        PreviewPrimitives(actionResult.Message);
+                }
                 else
                 {
                     TestLabel = $"No preview is available for this node's output ({cache.DataObject})";
@@ -173,7 +194,14 @@ namespace Parcel.Neo
             TestLabel = $"{data}";
             StringDisplayVisibility = Visibility.Visible;
         }
-
+        private void PreviewImage(Parcel.Types.Image image)
+        {
+            string? address = image.FileReference;
+            if (address != null && File.Exists(address))
+                PreviewImage(new BitmapImage(new Uri(address)));
+            else
+                PreviewImage(ImageSourceHelper.ConvertToBitmapImage(image));
+        }
         private void PreviewImage(ImageSource imageSource)
         {
             PreviewImageVisibility = Visibility.Visible;
@@ -214,15 +242,6 @@ namespace Parcel.Neo
             // Bind object
             dataGridData = objects;
         }
-        private static ImageSource ConvertToBitmapImage(Types.Image image)
-        {
-            // Remark-cz: This is slightly hacky because at the moment we cannot find a reliable way to conver Bitmap directly into WPF recognizable ImageSource and honestly it's API is very sick and I don't want to bother.
-            string tempPath = GetTempImagePath();
-            image.ConvertParcelImageToBitmap().Save(tempPath);
-            return new BitmapImage(new Uri(tempPath));
-        }
-        private static string GetTempImagePath()
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
         #endregion
     }
 

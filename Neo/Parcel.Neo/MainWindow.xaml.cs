@@ -16,6 +16,11 @@ using Parcel.Neo.PopupWindows;
 using BaseConnection = Parcel.Neo.Base.Framework.ViewModels.BaseConnection;
 using Parcel.Neo.Base.DataTypes;
 using Parcel.CoreEngine.Helpers;
+using System.Collections.ObjectModel;
+using Parcel.Neo.ViewModels;
+using System.Linq;
+using Nodify;
+using Parcel.Neo.PreviewWindows;
 
 namespace Parcel.Neo
 {
@@ -40,6 +45,8 @@ namespace Parcel.Neo
             EventManager.RegisterClassHandler(typeof(Nodify.BaseConnection), MouseLeftButtonDownEvent, new MouseButtonEventHandler(OnConnectionInteraction));
             EventManager.RegisterClassHandler(typeof(Nodify.Node), MouseLeftButtonDownEvent, new MouseButtonEventHandler(NodeDoubleclick_OpenProperties));
             EventManager.RegisterClassHandler(typeof(Nodify.GroupingNode), MouseLeftButtonDownEvent, new MouseButtonEventHandler(NodeDoubleclick_OpenProperties));
+
+            UpdatePaletteToolboxes();
         }
         public NodesCanvas Canvas { get; set; } = new NodesCanvas();
         #endregion
@@ -75,6 +82,12 @@ namespace Parcel.Neo
             }
         }
 
+        private ObservableCollection<NodesPaletteToolboxViewModel> _paletteToolboxes = [];
+        public ObservableCollection<NodesPaletteToolboxViewModel> PaletteToolboxes
+        {
+            get => _paletteToolboxes;
+            set => SetField(ref _paletteToolboxes, value);
+        }
         #endregion
 
         #region Advanced Node Graph Behaviors
@@ -269,6 +282,17 @@ namespace Parcel.Neo
                 _consoleIsOpen = true;
             }
         }
+        private void ToggleLiveCodePreviewMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in OwnedWindows)
+                if (window is LiveCodePreviewWindow)
+                    return;
+
+            new LiveCodePreviewWindow()
+            {
+                Owner = this
+            }.Show();
+        }
         private void ExportCleanChartMenuItem_Click(object sender, RoutedEventArgs e)
         {
             OpenFolderDialog folderDialog = new()
@@ -355,6 +379,20 @@ namespace Parcel.Neo
                 ProcessHelper.OpenFileWithDefaultProgram(folderPath);
             }
         }
+        private void ShowNodesPaletteMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            if (NodesPaletteColumn == null) return; // Can happen during window initialization
+            NodesPaletteColumn.Width = new GridLength(300);
+            NodesPaletteSplitterColumn.Width = new GridLength(3);
+            e.Handled = true;
+        }
+        private void ShowNodesPaletteMenuItem_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (NodesPaletteColumn == null) return; // Can happen during window initialization
+            NodesPaletteColumn.Width = new GridLength(0);
+            NodesPaletteSplitterColumn.Width = new GridLength(0);
+            e.Handled = true;
+        }
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             new AboutWindow()
@@ -362,9 +400,75 @@ namespace Parcel.Neo
                 Owner = this
             }.ShowDialog();
         }
+        private void NodePaletteCategoryHeaderLabelStackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NodesPaletteToolboxViewModel? categoryItem = (sender as StackPanel).DataContext as NodesPaletteToolboxViewModel;
+            categoryItem.Collapsed = !categoryItem.Collapsed;
+        }
+        private void NodePaletteNodeItemBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NodesPaletteToolboxNodeItemViewModel? item = (sender as Border).DataContext as NodesPaletteToolboxNodeItemViewModel;
+
+            // Start dragging
+            DataObject data = new();
+            data.SetData(DataFormats.StringFormat, item.DisplayName);
+            data.SetData("Object", item);
+
+            // Initiate the drag-and-drop operation.
+            DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
+
+            // Remark: Notice any visual effects including text message or preview image needs application-specific implementation
+        }
+        private void Editor_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.StringFormat) && e.Data.GetDataPresent("Object"))
+            {
+                string dataString = (string)e.Data.GetData(DataFormats.StringFormat); // Not used
+                NodesPaletteToolboxNodeItemViewModel nodeItem = (NodesPaletteToolboxNodeItemViewModel)e.Data.GetData("Object");
+                ToolboxNodeExport nodeDef = nodeItem.Definition;
+
+                // Spawn node
+                Point position = e.GetPosition(sender as NodifyEditor);
+                BaseNode node = SpawnNode(nodeDef, new Vector2D(position.X, position.Y));
+
+                // Automatically select node
+                Editor.SelectedItem = node;
+            }
+            e.Handled = true;
+        }
+        private void NodesPaletteGridSplitter_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GridSplitter? splitter = sender as GridSplitter;
+            ShowNodesPaletteMenuItem.IsChecked = false;
+            e.Handled = true;
+        }
         #endregion
 
         #region Routine
+        private void UpdatePaletteToolboxes()
+        {
+            Dictionary<string, ToolboxNodeExport[]> toolboxes = ToolboxIndexer.Toolboxes;
+            PaletteToolboxes.Clear();
+            foreach ((string ToolboxName, ToolboxNodeExport[] Toolbox) in toolboxes)
+            {
+                NodesPaletteToolboxNodeItemViewModel[] nodes = Toolbox
+                    .Where(n => n != null)
+                    .Select(n => new NodesPaletteToolboxNodeItemViewModel()
+                {
+                    DisplayName = n.Name,
+                    Definition = n,
+                    PreviewImage = null,
+                    IsConstructor = n.IsConstructor
+                }).ToArray();
+                NodesPaletteToolboxViewModel category = new()
+                {
+                    ToolboxName = ToolboxName,
+                    Items = new ObservableCollection<NodesPaletteToolboxNodeItemViewModel>(nodes),
+                    Collapsed = true
+                };
+                PaletteToolboxes.Add(category);
+            }
+        }
         private BaseNode SpawnNode(ToolboxNodeExport tool, Vector2D spawnLocation)
         {
             BaseNode node = tool.InstantiateNode();
@@ -466,7 +570,9 @@ namespace Parcel.Neo
                 if (toolboxNodeExport != null)
                 {
                     LastTool = toolboxNodeExport;
-                    SpawnNode(LastTool, new Vector2D(spawnLocation.X, spawnLocation.Y));
+                    var node = SpawnNode(LastTool, new Vector2D(spawnLocation.X, spawnLocation.Y));
+                    // Automatically select node
+                    Editor.SelectedItem = node;
                 }
             }
             popupTab.ItemSelectedAdditionalCallback += CreateNodeFromSelectedSearchItem;
@@ -528,10 +634,8 @@ namespace Parcel.Neo
         #endregion
 
         #region State
-        private readonly Dictionary<ProcessorNode, PreviewWindow> _previewWindows =
-            new Dictionary<ProcessorNode, PreviewWindow>();
-        private readonly Dictionary<GraphReferenceNode, MainWindow> _graphPreviewWindows =
-            new Dictionary<GraphReferenceNode, MainWindow>();
+        private readonly Dictionary<ProcessorNode, PreviewWindow> _previewWindows = [];
+        private readonly Dictionary<GraphReferenceNode, MainWindow> _graphPreviewWindows = [];
         #endregion
 
         #region Interop

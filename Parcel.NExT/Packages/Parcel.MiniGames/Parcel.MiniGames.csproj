@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<RootNamespace>Parcel.MiniGame</RootNamespace>
+	<Version>0.0.1</Version>
+	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="唐诗三百首.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="唐诗三百首.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+  </ItemGroup>
+
+</Project>

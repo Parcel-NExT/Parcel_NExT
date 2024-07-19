@@ -189,6 +189,10 @@ namespace Parcel.Database
             => Views.Contains(name);
         #endregion
 
+        #region Traditional Procedural Use
+
+        #endregion
+
         #region Helpers
         private static void InsertData(SqliteConnection connection, string tableName, DataTable table)
         {

@@ -1,0 +1,42 @@
+﻿<Window x:Class="Parcel.Neo.PreviewWindows.LiveCodePreviewWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Parcel.Neo.PreviewWindows"
+        mc:Ignorable="d"
+        Title="Code Preview (Live)" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="Label">
+                <Setter Property="Foreground" Value="LightGray"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="LightGray"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <Menu.Resources>
+                <ResourceDictionary Source="../Styling/NeoMenuStylingDictionary.xaml"/>
+            </Menu.Resources>
+            <MenuItem Header="File">
+                <MenuItem Header="Save As..."/>
+            </MenuItem>
+            <MenuItem Header="Language">
+                <MenuItem Header="Pure (2)"/>
+                <MenuItem Header="Python"/>
+            </MenuItem>
+            <MenuItem Header="Action">
+                <MenuItem Header="Update (Source) Document" ToolTip="Sync with graph document."/>
+            </MenuItem>
+        </Menu>
+        <TextBox DockPanel.Dock="Bottom" Height="400" Width="600" Background="#1E1E1E">
+            
+        </TextBox>
+    </DockPanel>
+</Window>

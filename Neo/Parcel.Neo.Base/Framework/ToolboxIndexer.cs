@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.IO;
 using Parcel.CoreEngine.Helpers;
+using Parcel.CoreEngine.Interfaces;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -36,7 +37,6 @@ namespace Parcel.Neo.Base.Framework
                 catch (Exception) { continue; }
             }
             // Register entire (referenced) assemblies
-            RegisterToolbox(toolboxAssemblies, "Plot", Assembly.Load("Parcel.Plots"));
             RegisterToolbox(toolboxAssemblies, "Generator", Assembly.Load("Parcel.Generators"));
             RegisterToolbox(toolboxAssemblies, "Vector", Assembly.Load("Parcel.Vector"));
             RegisterToolbox(toolboxAssemblies, "Large Language Model", Assembly.Load("Parcel.LLM"));
@@ -44,12 +44,17 @@ namespace Parcel.Neo.Base.Framework
             RegisterToolbox(toolboxAssemblies, "Database Service", Assembly.Load("Parcel.InMemoryDB.Integration"));
             RegisterToolbox(toolboxAssemblies, "Database Application", Assembly.Load("Parcel.InMemoryDB.WebSurveys"));
             RegisterToolbox(toolboxAssemblies, "Yahoo Finance", Assembly.Load("Parcel.YahooFinance"));
-            
+            RegisterToolbox(toolboxAssemblies, "MiniGames", Assembly.Load("Parcel.MiniGames"));
+
             // Index specific nodes
             Dictionary<string, ToolboxNodeExport?[]> toolboxes = IndexToolboxes(toolboxAssemblies);
             // Register front-end specific toolboxes (In general we try to eliminate those, or to say the least standardization effort is needed to make sure those are understood across implementations
             AddToolbox(toolboxes, "Basic", new BasicToolbox());
             // Register specific types - Parcel Standard
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.StatisticalFacts));
+            RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.DrawHelper));
             RegisterType(toolboxes, "Data Grid", typeof(Types.DataGrid));
             RegisterType(toolboxes, "Data Grid", typeof(Types.DataGridOperationsHelper));
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataGridIntegration));
@@ -59,6 +64,9 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.BooleanRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.LogicRoutines));
             RegisterType(toolboxes, "File System", typeof(Standard.System.FileSystem));
+            // Register specific types - Auxiliary
+            RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Actions.GameActions));
+            RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Queries.Query));
             // Register specific types - directly borrow from libraries
             RegisterType(toolboxes, "Collections", typeof(Enumerable));
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Statistics)); // TODO: Might provide selective set of functions instead of everything; Alternative, figure out how to do in-app documentation
@@ -139,13 +147,22 @@ namespace Parcel.Neo.Base.Framework
         }
         private static void RegisterType(Dictionary<string, ToolboxNodeExport?[]> toolboxes, string name, Type type)
         {
-            List<ToolboxNodeExport> nodes = [.. GetInstanceMethods(type), .. GetStaticMethods(type)];
+            List<ToolboxNodeExport> nodes = [..GetConstructors(type), .. GetInstanceMethods(type), .. GetStaticMethods(type)];
 
             if (toolboxes.ContainsKey(name))
                 // Add divider
                 toolboxes[name] = [.. toolboxes[name], null, .. nodes];
             else
                 toolboxes[name] = [.. nodes];
+        }
+        private static IEnumerable<ToolboxNodeExport> GetConstructors(Type type)
+        {
+            IEnumerable<ConstructorInfo> constructors = type
+                            .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+                            .Where(m => m.DeclaringType != typeof(object))
+                            .OrderBy(t => t.Name);
+            foreach (ConstructorInfo constructor in constructors)
+                yield return new ToolboxNodeExport($"Make {type.Name}", new Callable(constructor));
         }
         private static IEnumerable<ToolboxNodeExport> GetStaticMethods(Type type)
         {
@@ -154,7 +171,7 @@ namespace Parcel.Neo.Base.Framework
                             .Where(m => m.DeclaringType != typeof(object))
                             .OrderBy(t => t.Name);
             foreach (MethodInfo method in methods)
-                yield return new ToolboxNodeExport(method.Name, method);
+                yield return new ToolboxNodeExport(method.Name, new Callable(method));
         }
         private static IEnumerable<ToolboxNodeExport> GetInstanceMethods(Type type)
         {
@@ -163,7 +180,7 @@ namespace Parcel.Neo.Base.Framework
                             .Where(m => m.DeclaringType != typeof(object))
                             .OrderBy(t => t.Name);
             foreach (MethodInfo method in methods)
-                yield return new ToolboxNodeExport(method.Name, method);
+                yield return new ToolboxNodeExport(method.Name, new Callable(method));
         }
         private static IEnumerable<ToolboxNodeExport?> GetExportNodesFromConvention(string name, Assembly assembly)
         {
@@ -210,7 +227,7 @@ namespace Parcel.Neo.Base.Framework
                     string? tooltip = null;
                     string signature = GenerateMethodSignature(method);
                     nodeSummary?.TryGetValue(signature, out tooltip);
-                    yield return new ToolboxNodeExport(method.Name, method)
+                    yield return new ToolboxNodeExport(method.Name, new Callable(method))
                     {
                         Tooltip = tooltip
                     };

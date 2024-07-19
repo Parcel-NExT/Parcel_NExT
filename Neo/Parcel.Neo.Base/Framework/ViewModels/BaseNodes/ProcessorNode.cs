@@ -107,8 +107,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 
         #region Auto Connect Interface
         protected bool InputConnectorShouldRequireAutoConnection(InputConnector connector)
-            => !IsPrimitiveInput(connector) && connector.Connections.Count == 0 &&
-               connector.DataType != typeof(DataGrid); // Technically DataGrid connectors do need connection but we can't auto generate for it
+            => false && !IsPrimitiveInput(connector) && connector.Connections.Count == 0; // TODO: Pending unify handling of such behavior on input connector instead of relying on ProcessorNode implementations, since we are shifting attention more towards automatic nodes.
         private static bool IsPrimitiveInput(InputConnector connector)
             => connector is PrimitiveInputConnector;
         public virtual bool ShouldHaveAutoConnection => Input.Count != 0 && Input.Any(InputConnectorShouldRequireAutoConnection);
