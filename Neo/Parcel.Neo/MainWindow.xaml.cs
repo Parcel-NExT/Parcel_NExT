@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using Parcel.Neo.ViewModels;
 using System.Linq;
 using Nodify;
+using Parcel.Neo.PreviewWindows;
 
 namespace Parcel.Neo
 {
@@ -280,6 +281,17 @@ namespace Parcel.Neo
                 AllocConsole();
                 _consoleIsOpen = true;
             }
+        }
+        private void ToggleLiveCodePreviewMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in OwnedWindows)
+                if (window is LiveCodePreviewWindow)
+                    return;
+
+            new LiveCodePreviewWindow()
+            {
+                Owner = this
+            }.Show();
         }
         private void ExportCleanChartMenuItem_Click(object sender, RoutedEventArgs e)
         {

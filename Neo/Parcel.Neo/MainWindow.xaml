@@ -334,37 +334,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <Menu DockPanel.Dock="Top" Background="#104675">
+        <Menu DockPanel.Dock="Top">
             <Menu.Resources>
-                <Style TargetType="MenuItem">
-                    <Setter Property="Foreground" Value="#c0c0c0"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type MenuItem}">
-                                <Border x:Name="MenuItemBorder" Margin="1" Padding="2" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-                                    <Grid VerticalAlignment="Center">
-                                        <DockPanel LastChildFill="True">
-                                            <Label DockPanel.Dock="Right" Content="{TemplateBinding IsChecked, Converter={converters:BooleanToMenuItemCheckedLabelConverter}}" Visibility="{TemplateBinding IsCheckable, Converter={converters:BooleanToVisibilityConverter}}" VerticalAlignment="Center" FontSize="10" Foreground="LightGoldenrodYellow" Margin="4, 0" Padding="0"/>
-                                            <ContentPresenter Content="{TemplateBinding Header}" ContentSource="Header" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                                        </DockPanel>
-                                        <Popup AllowsTransparency="True" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PlacementTarget="{Binding ElementName=MenuItemBorder}" HorizontalOffset="1" VerticalOffset="-1">
-                                            <Border BorderBrush="#414141" Background="#414141">
-                                                <ScrollViewer Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                                </ScrollViewer>
-                                            </Border>
-                                        </Popup>
-                                    </Grid>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter Property="Background" Value="#1271C8"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
+                <ResourceDictionary Source="Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Visibility="Collapsed"/>
@@ -397,6 +369,7 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="View">
+                <MenuItem Header="Live Code Preview" Click="ToggleLiveCodePreviewMenuItem_Checked" ToolTip="View generated C# code live."/>
                 <MenuItem Header="Console" Click="ToggleConsoleWindowMenuItem_Click" ToolTip="Toggles showing/hiding console window, which displays output messages from Print commands. Notice closing console window directly also closes the application."/>
                 <MenuItem x:Name="ShowNodesPaletteMenuItem" Header="Show Nodes Palette" IsCheckable="True" IsChecked="True" Checked="ShowNodesPaletteMenuItem_Checked" Unchecked="ShowNodesPaletteMenuItem_Unchecked" ToolTip="Toggle showing/hiding Nodes Palette, which allows drag-and-drop creation of nodes."/>
             </MenuItem>
