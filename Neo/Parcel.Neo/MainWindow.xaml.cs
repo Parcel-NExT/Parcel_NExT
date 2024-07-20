@@ -581,7 +581,7 @@ namespace Parcel.Neo
             Point cursor = GetCurosrWindowPosition();
             Point spawnLocation = Editor.MouseLocation;
 
-            PopupTab popupTab = new(this)
+            FunctionsTray popupTab = new(this)
             {
                 Left = cursor.X - 20, // Remark-cz: The (-20, -10) is a hack to make it slightly harder to mis-mouse-leave and close the popup
                 Top = cursor.Y - 10,

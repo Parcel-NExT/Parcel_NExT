@@ -8,11 +8,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Parcel.Neo.Base.Framework;
 
-namespace Parcel.Neo
+namespace Parcel.Neo.PopupWindows
 {
-    public partial class PopupTab : BaseWindow
+    public partial class FunctionsTray : Parcel.Neo.BaseWindow
     {
-        public PopupTab(Window owner)
+        public FunctionsTray(Window owner)
         {
 
             Owner = owner;

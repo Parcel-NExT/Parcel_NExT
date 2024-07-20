@@ -18,7 +18,7 @@ namespace Parcel.Neo.PreviewWindows
     /// <summary>
     /// Interaction logic for LiveCodePreviewWindow.xaml
     /// </summary>
-    public partial class LiveCodePreviewWindow : Window, INotifyPropertyChanged
+    public partial class LiveCodePreviewWindow : BaseWindow
     {
         public enum LanguageMode
         {
@@ -113,19 +113,6 @@ namespace Parcel.Neo.PreviewWindows
         private void CodeEditor_Initialized(object sender, EventArgs e)
         {
             CodeEditor.SyntaxHighlighting = ReadCSharpSyntaxHighlightingRules();
-        }
-        #endregion
-
-        #region Data Binding
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        protected bool SetField<type>(ref type field, type value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<type>.Default.Equals(field, value)) return false;
-            field = value;
-            NotifyPropertyChanged(propertyName);
-            return true;
         }
         #endregion
 

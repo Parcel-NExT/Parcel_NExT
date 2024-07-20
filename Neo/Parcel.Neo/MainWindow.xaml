@@ -23,7 +23,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ScrollbarResource.xaml"/>
+                <ResourceDictionary Source="Styling/ScrollbarResource.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!--Data Converters-->
