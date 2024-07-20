@@ -15,7 +15,7 @@ namespace Parcel.Neo.PopupWindows
         public PropertyWindow(Window owner, ProcessorNode processor)
         {
             // Support SQL syntax highlight
-            using (System.IO.Stream? stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.sql.xshd.xml"))
+            using (System.IO.Stream? stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PopupWindows.sql.xshd.xml"))
             {
                 using System.Xml.XmlTextReader reader = new(stream);
                 SQLSyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
@@ -35,7 +35,7 @@ namespace Parcel.Neo.PopupWindows
 
             if (processor is DataTable dataTable)
             {
-                PreviewWindow.PopulateDataGrid(WpfDataGrid, dataTable.InitializeDataGrid(), out string[] dataGridDataColumns, out List<dynamic> dataGridData);
+                OutputWindow.PopulateDataGrid(WpfDataGrid, dataTable.InitializeDataGrid(), out string[] dataGridDataColumns, out List<dynamic> dataGridData);
                 DataGridDataColumns = dataGridDataColumns;
                 DataGridData = dataGridData;
                 DataGridVisibility = Visibility.Visible;

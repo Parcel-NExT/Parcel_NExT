@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 
-namespace Parcel.Neo.PreviewWindows
+namespace Parcel.Neo.PopupWindows
 {
     /// <summary>
     /// Interaction logic for LiveCodePreviewWindow.xaml
@@ -115,14 +115,14 @@ namespace Parcel.Neo.PreviewWindows
             // Remark: For built-in: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#"); 
             // Alternative: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(FileName));
 
-            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.csharp.xshd.xml");
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PopupWindows.csharp.xshd.xml");
             using System.Xml.XmlTextReader reader = new(stream);
             return HighlightingLoader.Load(reader,
                 HighlightingManager.Instance);
         }
         internal static IHighlightingDefinition ReadPythonSyntaxHighlightingRules()
         {
-            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.python.xshd.xml");
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PopupWindows.python.xshd.xml");
             using System.Xml.XmlTextReader reader = new(stream);
             return HighlightingLoader.Load(reader,
                 HighlightingManager.Instance);

@@ -20,7 +20,6 @@ using System.Collections.ObjectModel;
 using Parcel.Neo.ViewModels;
 using System.Linq;
 using Nodify;
-using Parcel.Neo.PreviewWindows;
 
 namespace Parcel.Neo
 {
@@ -244,9 +243,9 @@ namespace Parcel.Neo
                 Canvas.Save(GetAutoSavePath(CurrentFilePath));
             
             node.IsPreview = true;
-            if (node is not GraphReferenceNode reference || _graphPreviewWindows.ContainsKey(reference) || _previewWindows.ContainsKey(reference))  // For graph reference we really don't want to execute it during preview the first time
+            if (node is not GraphReferenceNode reference || _graphPreviewWindows.ContainsKey(reference) || _outputWindows.ContainsKey(reference))  // For graph reference we really don't want to execute it during preview the first time
                 ExecuteAll();
-            SpawnPreviewWindow(node);
+            SpawnOutputWindow(node);
             UpdateLiveCodePreview(); // Update connector parameter changes etc.
 
             e.Handled = true;
@@ -509,11 +508,11 @@ namespace Parcel.Neo
                 _liveCodePreviewWindow.UpdateCode(generatedCode);
             }
         }
-        private void SpawnPreviewWindow(ProcessorNode node)
+        private void SpawnOutputWindow(ProcessorNode node)
         {
-            if (_previewWindows.ContainsKey(node))
+            if (_outputWindows.ContainsKey(node))
             {
-                _previewWindows[node].Activate();
+                _outputWindows[node].Activate();
             }
             else
             {
@@ -536,9 +535,9 @@ namespace Parcel.Neo
                     graphPreview.Show();
                 }
                 
-                PreviewWindow preview = new(this, node);
-                _previewWindows.Add(node, preview);
-                preview.Closed += (sender, args) => _previewWindows.Remove((sender as PreviewWindow)!.Node); 
+                OutputWindow preview = new(this, node);
+                _outputWindows.Add(node, preview);
+                preview.Closed += (sender, args) => _outputWindows.Remove((sender as OutputWindow)!.Node); 
                 preview.Show();   
             }
         }
@@ -580,7 +579,7 @@ namespace Parcel.Neo
         private void ExecuteAll()
         {
             AlgorithmHelper.ExecuteGraph(Canvas);
-            foreach (PreviewWindow p in _previewWindows.Values)
+            foreach (OutputWindow p in _outputWindows.Values)
                 p.Update();
         }
         private void ShowSearchNodePopup()
@@ -610,7 +609,7 @@ namespace Parcel.Neo
         private void OpenCanvas()
         {
             // Close previews
-            foreach (KeyValuePair<ProcessorNode,PreviewWindow> previewWindow in _previewWindows)
+            foreach (KeyValuePair<ProcessorNode,OutputWindow> previewWindow in _outputWindows)
                 previewWindow.Value.Close();
             foreach (KeyValuePair<GraphReferenceNode,MainWindow> graphPreviewWindow in _graphPreviewWindows)
                 graphPreviewWindow.Value.Close();
@@ -663,7 +662,7 @@ namespace Parcel.Neo
         #endregion
 
         #region State
-        private readonly Dictionary<ProcessorNode, PreviewWindow> _previewWindows = [];
+        private readonly Dictionary<ProcessorNode, OutputWindow> _outputWindows = [];
         private readonly Dictionary<GraphReferenceNode, MainWindow> _graphPreviewWindows = [];
         #endregion
 

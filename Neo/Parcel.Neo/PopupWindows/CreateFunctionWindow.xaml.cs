@@ -3,7 +3,7 @@ using Parcel.Neo.ViewModels;
 using Parcel.NExT.Interpreter.Analyzer;
 using System;
 
-namespace Parcel.Neo.PreviewWindows
+namespace Parcel.Neo.PopupWindows
 {
     public partial class CreateFunctionWindow : BaseWindow
     {
