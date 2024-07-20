@@ -24,9 +24,9 @@ namespace Parcel.Neo.Base.Framework
     }
 
     /// <summary>
-    /// Automatic nodes provides a way to quickly define a large library of simple function nodes without explicitly defining classes for them
+    /// Provides metadata about functions based on native implementations; Enables quickly define a large library of simple function nodes without explicitly defining classes for them by directly utilizing C# codes.
     /// </summary>
-    public class AutomaticNodeDescriptor
+    public class FunctionalNodeDescription
     {
         #region Properties
         public string NodeName { get; }
@@ -43,7 +43,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Construction
-        public AutomaticNodeDescriptor(string nodeName, Callable method)
+        public FunctionalNodeDescription(string nodeName, Callable method)
         {
             // Parse definitions
             SeperateMethodParametersForNode(method, out (Type Type, string ParameterName, object? DefaultValue)[] nodeInputTypes, out (Type Type, string ParameterName)[] nodeOutputTypes);

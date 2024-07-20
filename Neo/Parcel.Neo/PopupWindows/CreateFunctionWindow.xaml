@@ -76,9 +76,11 @@
             </Border>
         </Grid>
         <Grid DockPanel.Dock="Top">
-
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Analyze" Click="AnalyzeCodeButton_Click"/>
+            </StackPanel>
         </Grid>
-        <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" WordWrap="True"  FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="False" VerticalScrollBarVisibility="Auto" Initialized="CodeEditor_Initialized"> <!--Show line numbers is causing issue with height-->
+        <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" WordWrap="True"  FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" Initialized="CodeEditor_Initialized"> <!--Show line numbers is causing issue with height-->
             <avalonEdit:TextEditor.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>

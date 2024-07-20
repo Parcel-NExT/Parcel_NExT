@@ -36,6 +36,17 @@ namespace Parcel.Neo.PreviewWindows
         #region Methods
         #endregion
 
+        #region Events
+        private void AnalyzeCodeButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            string code = CodeEditor.Text;
+        }
+        private void CodeEditor_Initialized(object sender, EventArgs e)
+        {
+            CodeEditor.SyntaxHighlighting = LiveCodePreviewWindow.ReadCSharpSyntaxHighlightingRules();
+        }
+        #endregion
+
         #region Public View Properties
         private string _sourceCode;
         public string SoureceCode 
@@ -53,13 +64,6 @@ namespace Parcel.Neo.PreviewWindows
         {
             get => _nodePreview;
             set => SetField(ref _nodePreview, value);
-        }
-        #endregion
-
-        #region Events
-        private void CodeEditor_Initialized(object sender, EventArgs e)
-        {
-            CodeEditor.SyntaxHighlighting = LiveCodePreviewWindow.ReadCSharpSyntaxHighlightingRules();
         }
         #endregion
     }
