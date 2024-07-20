@@ -273,6 +273,13 @@ namespace Parcel.Graphing
                 }.Measure().Width;
             }
         }
+        /// <summary>
+        /// Simple timeline event
+        /// </summary>
+        public static Image Timeline(DateTime[] times, string[] activities)
+        {
+
+        }
         #endregion
 
         #region Node Graphs
