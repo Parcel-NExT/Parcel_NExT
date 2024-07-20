@@ -466,7 +466,8 @@ namespace Parcel.Neo.Base.Algorithms
                                     value = primitive.Value;
                                 else value = autoNode.Descriptor.DefaultInputValues[i];
 
-                                if (value == null)
+                                // TODO: In the case of DBNull.Value, maybe we should throw an exception or somehow otherwise indicate it instead of just putting a null
+                                if (value == null || value == DBNull.Value) // A null means the parameter has default value null, and DBNull means it doesn't have default value and there is not explicitly passed value - basically missing a parameter in the function call
                                     return syntaxHandler.Null;
                                 else if (TypeHelper.IsNumericalType(value.GetType()))
                                     return value.ToString();
