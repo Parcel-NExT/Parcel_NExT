@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Parcel.Types;
 using Parcel.Neo.Base.Serialization;
-using Parcel.Neo.Base.DataTypes;
 using System.Diagnostics;
 using Parcel.CoreEngine.Helpers;
+using Parcel.CoreEngine.Service.Interpretation;
 
 namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 {

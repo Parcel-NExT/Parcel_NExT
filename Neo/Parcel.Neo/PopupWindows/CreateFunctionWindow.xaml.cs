@@ -40,6 +40,7 @@ namespace Parcel.Neo.PreviewWindows
         private void AnalyzeCodeButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             string code = CodeEditor.Text;
+
         }
         private void CodeEditor_Initialized(object sender, EventArgs e)
         {
