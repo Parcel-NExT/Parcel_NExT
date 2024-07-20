@@ -7,25 +7,27 @@
         Title="Warning (Experimental Feature)" SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize">
     <Window.Resources>
-        <Style TargetType="Label">
-            <Setter Property="Foreground" Value="LightGray"/>
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="LightGray"/>
-            <Setter Property="MaxWidth" Value="500"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
-            <Setter Property="Padding" Value="0, 0"/>
-        </Style>
-        <Style TargetType="Hyperlink">
-            <EventSetter Event="RequestNavigate" Handler="Hyperlink_RequestNavigate"/>
-        </Style>
-        <Style TargetType="Button">
-            <Setter Property="Foreground" Value="DarkSlateGray"/>
-            <Setter Property="MinWidth" Value="75"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="Padding" Value="5, 0"/>
-        </Style>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="Foreground" Value="LightGray"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="LightGray"/>
+                <Setter Property="MaxWidth" Value="500"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                <Setter Property="Padding" Value="0, 0"/>
+            </Style>
+            <Style TargetType="Hyperlink">
+                <EventSetter Event="RequestNavigate" Handler="Hyperlink_RequestNavigate"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Foreground" Value="DarkSlateGray"/>
+                <Setter Property="MinWidth" Value="75"/>
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Padding" Value="5, 0"/>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
     <Grid Background="#1E1E1E">
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="8">
