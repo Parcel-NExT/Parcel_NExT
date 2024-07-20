@@ -102,7 +102,7 @@ namespace Parcel.Neo.Base.Algorithms
             StringBuilder mainScriptBuilder = new();
             // Import package references
             if (summary.StandardPackageImports.Count > 0)
-                mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
+                mainScriptBuilder.AppendLine("// Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
@@ -128,7 +128,7 @@ namespace Parcel.Neo.Base.Algorithms
             }
             if (bodyBuilder.ToString().Trim().Length > 0)
             {
-                mainScriptBuilder.AppendLine("# Main script content");
+                mainScriptBuilder.AppendLine("// Main script content");
                 mainScriptBuilder.AppendLine(bodyBuilder.ToString());
             }
 
@@ -159,7 +159,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Generate script contents
             StringBuilder mainScriptBuilder = new();
             // Import package references
-            mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
+            mainScriptBuilder.AppendLine("// Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
@@ -173,7 +173,7 @@ namespace Parcel.Neo.Base.Algorithms
                     mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
             mainScriptBuilder.AppendLine();
             // Start of main function
-            mainScriptBuilder.AppendLine("# Main script content");
+            mainScriptBuilder.AppendLine("// Main script content");
             // Do variable declarations first
             foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
                 mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
@@ -651,6 +651,7 @@ namespace Parcel.Neo.Base.Algorithms
         public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters);
         public string ReturnResults(string[] returns);
         public string CreateVariableFromFunctionCall(TypedVariable newVariable, string methodCallName, TypedVariable[] functionCallArguments, FunctionCallParameter[] parameters);
+        public string MakeEndOfLineComment(string content);
     }
     public sealed class PythonSyntaxHandler : ISyntaxHandler
     {
@@ -679,6 +680,8 @@ namespace Parcel.Neo.Base.Algorithms
             => CreateVariable(newVariable, CallFunction(methodCallName, functionCallArguments, parameters));
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {string.Join(", ", returns)}" : "return";
+        public string MakeEndOfLineComment(string content) 
+            => $"# {content}";
 
         #region Helpers
         private static string CastPrimitiveType(Type type)
@@ -709,5 +712,7 @@ namespace Parcel.Neo.Base.Algorithms
             => CreateVariable(newVariable, CallFunction(methodCallName, functionCallArguments, parameters)).TrimEnd(';') + ';'; // Remove redundant ';' at the end
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {(returns.Length == 1 ? returns.Single() : $"({string.Join(", ", returns)})")};" : "return;";
+        public string MakeEndOfLineComment(string content)
+            => $"// {content}";
     }
 }
