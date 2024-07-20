@@ -1,4 +1,6 @@
-﻿using Parcel.Neo.ViewModels;
+﻿using Parcel.CoreEngine.Service.Interpretation;
+using Parcel.Neo.ViewModels;
+using Parcel.NExT.Interpreter.Analyzer;
 using System;
 
 namespace Parcel.Neo.PreviewWindows
@@ -20,6 +22,7 @@ namespace Parcel.Neo.PreviewWindows
         {
             InitializeComponent();
 
+            // Test use
             NodePreview = new()
             {
                 Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(GetType().GetMethod(nameof(TestMethod)))),
@@ -30,7 +33,6 @@ namespace Parcel.Neo.PreviewWindows
         }
         public static void TestMethod(string input)
         { }
-
         #endregion
 
         #region Methods
@@ -40,7 +42,14 @@ namespace Parcel.Neo.PreviewWindows
         private void AnalyzeCodeButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             string code = CodeEditor.Text;
-
+            FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
+            NodePreview = new()
+            {
+                // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
+                DisplayName = "Hello World",
+                IsConstructor = false,
+                PreviewImage = null
+            };
         }
         private void CodeEditor_Initialized(object sender, EventArgs e)
         {
