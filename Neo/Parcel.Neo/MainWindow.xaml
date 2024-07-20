@@ -775,7 +775,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                             </Style>
                                                         </Border.Resources>
                                                     </Border>
-                                                    <Button Content="Preview" Click="ProcessorNodePreviewButton_Click" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
+                                                    <Button Content="Run" Click="ProcessorNodePreviewButton_Click" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
                                                         <Button.Resources>
                                                             <!--Custom Styling-->
                                                             <Style TargetType="{x:Type Button}">
