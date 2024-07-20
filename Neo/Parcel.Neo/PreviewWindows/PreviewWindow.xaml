@@ -1,9 +1,9 @@
-﻿<local:BaseWindow x:Class="Parcel.Neo.PreviewWindow"
+﻿<base:BaseWindow x:Class="Parcel.Neo.PreviewWindow"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:local="clr-namespace:Parcel.Neo"
+            xmlns:base="clr-namespace:Parcel.Neo"
             mc:Ignorable="d" MouseDown="PreviewWindow_OnMouseDown"
             Title="{Binding Node, Converter={StaticResource ProcessorNodeToNodeFullNameConverter}}" 
             Height="200" MinWidth="420" SizeToContent="Width" WindowStartupLocation="CenterOwner"
@@ -49,4 +49,4 @@
             <Grid x:Name="WindowGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></Grid>
         </Grid>
     </DockPanel>
-</local:BaseWindow>
+</base:BaseWindow>

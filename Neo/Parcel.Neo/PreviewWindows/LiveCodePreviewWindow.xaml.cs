@@ -1,17 +1,10 @@
 ﻿using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows;
-using Parcel.NExT.Interpreter;
-using Parcel.CoreEngine.Helpers;
-using SkiaSharp;
 
 namespace Parcel.Neo.PreviewWindows
 {
@@ -117,7 +110,7 @@ namespace Parcel.Neo.PreviewWindows
         #endregion
 
         #region Helpers
-        private static IHighlightingDefinition ReadCSharpSyntaxHighlightingRules()
+        internal static IHighlightingDefinition ReadCSharpSyntaxHighlightingRules()
         {
             // Remark: For built-in: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#"); 
             // Alternative: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(FileName));
@@ -127,7 +120,7 @@ namespace Parcel.Neo.PreviewWindows
             return HighlightingLoader.Load(reader,
                 HighlightingManager.Instance);
         }
-        private static IHighlightingDefinition ReadPythonSyntaxHighlightingRules()
+        internal static IHighlightingDefinition ReadPythonSyntaxHighlightingRules()
         {
             using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.python.xshd.xml");
             using System.Xml.XmlTextReader reader = new(stream);

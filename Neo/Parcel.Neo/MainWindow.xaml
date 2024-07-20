@@ -338,7 +338,7 @@
             <Menu.Resources>
                 <ResourceDictionary Source="Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
-            <MenuItem Header="File">
+            <MenuItem Header="Document">
                 <MenuItem Header="Open..." Visibility="Collapsed"/>
                 <MenuItem Header="Save" Visibility="Collapsed"/>
                 <MenuItem Header="Save As..." Visibility="Collapsed"/>
@@ -357,6 +357,9 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Close" ToolTip="Closes the application. At the moment it won't automatically save current document nor display a warning message before quitting."/>
+            </MenuItem>
+            <MenuItem Header="Node">
+                <MenuItem Header="Create Function..." Click="CreateFunctionMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Edit" Visibility="Collapsed">
                 <MenuItem Header="Select All (Ctrl+A)"/>

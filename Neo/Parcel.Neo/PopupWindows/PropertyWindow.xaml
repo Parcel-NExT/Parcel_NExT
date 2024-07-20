@@ -21,7 +21,7 @@
         <StackPanel DockPanel.Dock="Top" DataContext="{Binding Processor}">
             <DockPanel LastChildFill="True">
                 <Label Content="Name"></Label>
-                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
             </DockPanel>
             <Separator HorizontalAlignment="Stretch"/>
         </StackPanel>

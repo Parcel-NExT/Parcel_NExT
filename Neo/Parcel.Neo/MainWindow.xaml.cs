@@ -300,6 +300,13 @@ namespace Parcel.Neo
             _liveCodePreviewWindow.Show();
             UpdateLiveCodePreview();
         }
+        private void CreateFunctionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            new CreateFunctionWindow()
+            {
+                Owner = this
+            }.Show();
+        }
         private void ExportCleanChartMenuItem_Click(object sender, RoutedEventArgs e)
         {
             OpenFolderDialog folderDialog = new()
