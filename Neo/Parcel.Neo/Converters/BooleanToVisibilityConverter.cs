@@ -22,6 +22,11 @@ namespace Parcel.Neo.Converters
             {
                 return (Negate ? (d <= 0) : (d > 0)) ? Visibility.Visible : FalseVisibility;
             }
+            else if (value is string s)
+            {
+                bool empty = string.IsNullOrWhiteSpace(s);
+                return (Negate ? !empty : empty) ? Visibility.Visible : FalseVisibility;
+            }
 
             bool result = value != null;
             return (Negate ? !result : result) ? Visibility.Visible : FalseVisibility;

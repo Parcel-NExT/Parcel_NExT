@@ -53,6 +53,11 @@ namespace Parcel.Neo.PopupWindows
         {
             CodeEditor.SyntaxHighlighting = LiveCodePreviewWindow.ReadCSharpSyntaxHighlightingRules();
         }
+        private void CodeEditor_TextChanged(object sender, EventArgs e)
+        {
+            string code = CodeEditor.Text;
+            NodePreview = AnalyzeSnippet(code);
+        }
         #endregion
 
         #region Public View Properties
@@ -66,6 +71,12 @@ namespace Parcel.Neo.PopupWindows
                 CodeEditor.Text = SoureceCode;
             }
         }
+        private string _errorMessage;
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set => SetField(ref _errorMessage, value);
+        }
 
         private NodesPaletteToolboxNodeItemViewModel _nodePreview;
         public NodesPaletteToolboxNodeItemViewModel NodePreview
@@ -76,21 +87,29 @@ namespace Parcel.Neo.PopupWindows
         #endregion
 
         #region Helpers
-        private static NodesPaletteToolboxNodeItemViewModel AnalyzeSnippet(string code)
+        private NodesPaletteToolboxNodeItemViewModel AnalyzeSnippet(string code)
         {
-            FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
-
-            var method = typeof(CreateFunctionWindow).GetMethod(nameof(Fetch));
-            return new()
+            try
             {
-                // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
-                Definition = new Base.Framework.ToolboxNodeExport(method.Name, new CoreEngine.Interfaces.Callable(method)),
-                DisplayName = method.Name,
-                IsConstructor = false,
-                PreviewImage = null
-            };
-        }
+                FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
 
+                var method = typeof(CreateFunctionWindow).GetMethod(nameof(Fetch));
+                return new()
+                {
+                    // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
+                    Definition = new Base.Framework.ToolboxNodeExport(method.Name, new CoreEngine.Interfaces.Callable(method)),
+                    DisplayName = method.Name,
+                    IsConstructor = false,
+                    PreviewImage = null
+                };
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+                return NodePreview;
+            }
+            
+        }
         public static string Fetch(string url)
         {
             return string.Empty;

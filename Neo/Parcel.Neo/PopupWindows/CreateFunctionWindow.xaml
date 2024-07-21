@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:System="clr-namespace:System;assembly=System.Runtime"
+        xmlns:converters="clr-namespace:Parcel.Neo.Converters"
         xmlns:base="clr-namespace:Parcel.Neo"
         mc:Ignorable="d"
-        Title="Live Code Preview (Experimental)" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner" 
-        MinWidth="400" MinHeight="300" Background="#809ab1"
+        Title="Create Function (Pure)" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner" 
+        MinWidth="400" MinHeight="300" Background="#18578d"
         DataContext="{Binding RelativeSource={RelativeSource self}}">
     <Window.Resources>
         <ResourceDictionary>
@@ -23,79 +24,90 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <Grid DockPanel.Dock="Bottom">
+        <Grid DockPanel.Dock="Bottom" Margin="0, 2, 0, 8">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Analyze" Click="AnalyzeCodeButton_Click">
+                <Button Content="Create" Click="AnalyzeCodeButton_Click">
                     <Button.Resources>
                         <Style TargetType="Button">
-                            <Setter Property="FontSize" Value="14"/>
-                            <Setter Property="Padding" Value="4"/>
+                            <Setter Property="FontSize" Value="18"/>
+                            <Setter Property="Padding" Value="8, 4"/>
                             <Setter Property="Margin" Value="2"/>
-                            <Setter Property="Background" Value="LimeGreen"/>
+                            <Setter Property="Background" Value="#184872"/>
                             <Setter Property="Foreground" Value="WhiteSmoke"/>
                             <Setter Property="FontWeight" Value="Bold"/>
                             <Setter Property="BorderThickness" Value="2"/>
+                        </Style>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="3"/>
                         </Style>
                     </Button.Resources>
                 </Button>
             </StackPanel>
         </Grid>
         <Grid DockPanel.Dock="Bottom">
-            <StackPanel>
-                <Label Content="Preview" HorizontalAlignment="Center" FontSize="16"/>
-                <Border BorderThickness="1" BorderBrush="DarkSlateGray" Margin="16, 2" Padding="2" HorizontalAlignment="Center">
-                    <Border.Style>
-                        <Style>
-                            <Style.Triggers>
-                                <Trigger Property="Border.IsMouseOver" Value="True">
-                                    <Setter Property="Border.Background" Value="#2A20B2AA" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <StackPanel Orientation="Vertical">
-                        <!--Generated Preview-->
-                        <Border Margin="6" Padding="2" BorderThickness="3" CornerRadius="2">
+            <Border Margin="4" Padding="4" BorderThickness="2" BorderBrush="#1a232a" Background="#133b5d">
+                <StackPanel>
+                    <StackPanel Visibility="{Binding ErrorMessage, Converter={converters:BooleanToVisibilityConverter}}">
+                        <Label Content="Error" HorizontalAlignment="Center" FontSize="16" FontStyle="Italic" Margin="0, 2, 0, 10" Padding="0" Foreground="#ae3b2d"/>
+                        <TextBlock Text="{Binding ErrorMessage}"/>
+                    </StackPanel>
+                    <StackPanel Visibility="{Binding ErrorMessage, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
+                        <Label Content="Preview" HorizontalAlignment="Center" FontSize="16" FontStyle="Italic" Margin="0, 2, 0, 10" Padding="0"/>
+                        <Border BorderThickness="1" BorderBrush="#456078" Margin="16, 2" Padding="2" HorizontalAlignment="Center" Background="#0c2b44">
                             <Border.Style>
-                                <Style TargetType="Border" x:Name="OuterBoder">
-                                    <Setter Property="Background" Value="#416788"/>
-                                    <Setter Property="BorderBrush" Value="#3073ad"/>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Border.IsMouseOver" Value="True">
+                                            <Setter Property="Border.Background" Value="#2A20B2AA" />
+                                        </Trigger>
+                                    </Style.Triggers>
                                 </Style>
                             </Border.Style>
-                            <StackPanel>
-                                <Label Content="{Binding NodePreview.DisplayName}" Foreground="#adb4ba" Margin="1" Padding="0" FontWeight="Bold"/>
-                                <Separator Margin="1" HorizontalAlignment="Stretch" Foreground="LightGray" Height="2"/>
-                                <Border Margin="1" Padding="0">
-                                    <DockPanel LastChildFill="True">
-                                        <ItemsControl ItemsSource="{Binding NodePreview.Definition.Descriptor.InputNames}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type System:String}">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Label Content="○" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center" FontSize="12"/>
-                                                        <Label Content="{Binding}" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                        <ItemsControl ItemsSource="{Binding NodePreview.Definition.Descriptor.OutputNames}" HorizontalAlignment="Right">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type System:String}">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Label Content="{Binding}" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center"/>
-                                                        <Label Content="○" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center" FontSize="12"/>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </DockPanel>
+                            <StackPanel Orientation="Vertical">
+                                <!--Generated Preview-->
+                                <Border Margin="6" Padding="2" BorderThickness="3" CornerRadius="2">
+                                    <Border.Style>
+                                        <Style TargetType="Border" x:Name="OuterBoder">
+                                            <Setter Property="Background" Value="#416788"/>
+                                            <Setter Property="BorderBrush" Value="#3073ad"/>
+                                        </Style>
+                                    </Border.Style>
+                                    <StackPanel>
+                                        <Label Content="{Binding NodePreview.DisplayName}" Foreground="#adb4ba" Margin="1" Padding="0" FontWeight="Bold"/>
+                                        <Separator Margin="1" HorizontalAlignment="Stretch" Foreground="LightGray" Height="2"/>
+                                        <Border Margin="1" Padding="0">
+                                            <DockPanel LastChildFill="True">
+                                                <ItemsControl ItemsSource="{Binding NodePreview.Definition.Descriptor.InputNames}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type System:String}">
+                                                            <StackPanel Orientation="Horizontal" Margin="0, 0, 10, 0">
+                                                                <Label Content="○" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center" FontSize="12"/>
+                                                                <Label Content="{Binding}" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <ItemsControl ItemsSource="{Binding NodePreview.Definition.Descriptor.OutputNames}" HorizontalAlignment="Right">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type System:String}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Label Content="{Binding}" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center"/>
+                                                                <Label Content="○" Foreground="White" Margin="1" Padding="0" VerticalAlignment="Center" FontSize="12"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </DockPanel>
+                                        </Border>
+                                    </StackPanel>
                                 </Border>
                             </StackPanel>
                         </Border>
                     </StackPanel>
-                </Border>
-            </StackPanel>
+                </StackPanel>
+            </Border>
         </Grid>
-        <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" WordWrap="True"  FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" Initialized="CodeEditor_Initialized"> <!--Show line numbers is causing issue with height-->
+        <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" WordWrap="True" FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" Initialized="CodeEditor_Initialized" TextChanged="CodeEditor_TextChanged"> <!--Show line numbers is causing issue with height; TextChanged is not called-->
             <avalonEdit:TextEditor.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
