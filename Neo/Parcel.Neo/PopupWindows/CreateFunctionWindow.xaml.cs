@@ -23,16 +23,21 @@ namespace Parcel.Neo.PopupWindows
             InitializeComponent();
 
             // Test use
-            NodePreview = new()
-            {
-                Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(GetType().GetMethod(nameof(TestMethod)))),
-                DisplayName = "Hello World",
-                IsConstructor = false,
-                PreviewImage = null
-            };
+            CodeEditor.Text = """
+                using System.Net.Http;
+                using System.Net.Http.Headers;
+                
+                string Fetch(string url)
+                {
+                    using HttpClient client = new();
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
+                    client.DefaultRequestHeaders.Add("User-Agent", "Parcel REST API - The Very Lean HttpClient");
+                    return client.GetStringAsync(url).Result;
+                }
+                """;
+            NodePreview = AnalyzeSnippet(CodeEditor.Text);
         }
-        public static void TestMethod(string input)
-        { }
         #endregion
 
         #region Methods
@@ -42,14 +47,7 @@ namespace Parcel.Neo.PopupWindows
         private void AnalyzeCodeButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             string code = CodeEditor.Text;
-            FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
-            NodePreview = new()
-            {
-                // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
-                DisplayName = "Hello World",
-                IsConstructor = false,
-                PreviewImage = null
-            };
+            NodePreview = AnalyzeSnippet(code);
         }
         private void CodeEditor_Initialized(object sender, EventArgs e)
         {
@@ -74,6 +72,27 @@ namespace Parcel.Neo.PopupWindows
         {
             get => _nodePreview;
             set => SetField(ref _nodePreview, value);
+        }
+        #endregion
+
+        #region Helpers
+        private static NodesPaletteToolboxNodeItemViewModel AnalyzeSnippet(string code)
+        {
+            FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
+
+            return new()
+            {
+                // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
+                Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(typeof(CreateFunctionWindow).GetMethod(nameof(Fetch)))),
+                DisplayName = "Hello World",
+                IsConstructor = false,
+                PreviewImage = null
+            };
+        }
+
+        public static string Fetch(string url)
+        {
+            return string.Empty;
         }
         #endregion
     }
