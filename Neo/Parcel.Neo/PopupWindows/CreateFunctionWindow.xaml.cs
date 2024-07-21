@@ -80,11 +80,12 @@ namespace Parcel.Neo.PopupWindows
         {
             FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
 
+            var method = typeof(CreateFunctionWindow).GetMethod(nameof(Fetch));
             return new()
             {
                 // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
-                Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(typeof(CreateFunctionWindow).GetMethod(nameof(Fetch)))),
-                DisplayName = "Hello World",
+                Definition = new Base.Framework.ToolboxNodeExport(method.Name, new CoreEngine.Interfaces.Callable(method)),
+                DisplayName = method.Name,
                 IsConstructor = false,
                 PreviewImage = null
             };
