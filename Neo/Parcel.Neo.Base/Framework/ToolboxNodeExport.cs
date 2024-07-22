@@ -1,6 +1,6 @@
-﻿using Parcel.CoreEngine.Interfaces;
-using Parcel.CoreEngine.Service.Interpretation;
+﻿using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+using Parcel.NExT.Interpreter.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,7 +97,7 @@ namespace Parcel.Neo.Base.Framework
                         return string.Join(", ", processor.Input.Where(i => !i.IsHidden).Select(i => i.Title));
                     else return string.Empty;
                 case NodeImplementationType.MethodInfo:
-                    return string.Join(", ", Method.GetParameters().Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}?" : p.Name)));
+                    return string.Join(", ", Method.Parameters.Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}?" : p.Name)));
                 default:
                     throw new ArgumentOutOfRangeException($"Unrecognized implementation type: {ImplementationType}");
             }
@@ -112,7 +112,7 @@ namespace Parcel.Neo.Base.Framework
                         return string.Join(", ", processor.Input.Where(i => !i.IsHidden).Select(i => i.Title));
                     else return string.Empty;
                 case NodeImplementationType.MethodInfo:
-                    return string.Join(", ", Method.GetParameters().Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}:{p.ParameterType.Name}?" : $"{p.Name}:{p.ParameterType.Name}")));
+                    return string.Join(", ", Method.Parameters.Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}:{p.ParameterType.Name}?" : $"{p.Name}:{p.ParameterType.Name}")));
                 default:
                     throw new ArgumentOutOfRangeException($"Unrecognized implementation type: {ImplementationType}");
             }

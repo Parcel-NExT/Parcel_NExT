@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.IO;
 using Parcel.CoreEngine.Helpers;
-using Parcel.CoreEngine.Interfaces;
+using Parcel.NExT.Interpreter.Types;
 
 namespace Parcel.Neo.Base.Framework
 {

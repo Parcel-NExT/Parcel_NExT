@@ -26,22 +26,22 @@
     <DockPanel LastChildFill="True">
         <Grid DockPanel.Dock="Bottom" Margin="0, 2, 0, 8">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Create" Click="AnalyzeCodeButton_Click">
-                    <Button.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="FontSize" Value="18"/>
-                            <Setter Property="Padding" Value="8, 4"/>
-                            <Setter Property="Margin" Value="2"/>
-                            <Setter Property="Background" Value="#184872"/>
-                            <Setter Property="Foreground" Value="WhiteSmoke"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="BorderThickness" Value="2"/>
-                        </Style>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="3"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="Padding" Value="8, 4"/>
+                        <Setter Property="Margin" Value="2"/>
+                        <Setter Property="Background" Value="#184872"/>
+                        <Setter Property="Foreground" Value="WhiteSmoke"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                    </Style>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="3"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="Import"/>
+                <Button Content="Create" Click="CreateNodeFunctionButton_Click" Background="#519a3e"/>
             </StackPanel>
         </Grid>
         <Grid DockPanel.Dock="Bottom">

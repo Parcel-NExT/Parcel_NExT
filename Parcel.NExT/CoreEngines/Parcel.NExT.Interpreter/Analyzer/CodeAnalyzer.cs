@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
-using Parcel.CoreEngine.Service.Interpretation;
+﻿using Parcel.CoreEngine.Service.Interpretation;
 
 namespace Parcel.NExT.Interpreter.Analyzer
 {
@@ -22,22 +19,15 @@ namespace Parcel.NExT.Interpreter.Analyzer
         {
         }
     }
-
     public static class CodeAnalyzer
     {
         public static FunctionalNodeDescription? AnalyzeFunctionalNode(string code)
         {
-            SyntaxTree tree = CSharpSyntaxTree.ParseText(code);
-            CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
-
-            SyntaxKind kind = root.Kind();
-            SyntaxList<UsingDirectiveSyntax> usings = root.Usings;
-            SyntaxList<MemberDeclarationSyntax> members = root.Members;
-
-            if (members.Where(m => m.Kind() == SyntaxKind.LocalFunctionStatement).Count() != 1)
+            CodeSnippetComponents snippet = new(code);
+            if (snippet.AllFunctions.Length != 1)
                 throw new InvalidScriptException("Expecting only a single function definition.");
-
-            return null;
+            
+            return new FunctionalNodeDescription(snippet.EntryFunction.Identifier.Text, new Types.Callable(snippet));
         }
     }
 }

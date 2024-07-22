@@ -1,4 +1,4 @@
-﻿using Parcel.CoreEngine.Interfaces;
+﻿using Parcel.NExT.Interpreter.Types;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -39,7 +39,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
                 object[] nonOutMethodParameterValues = nodeInputValues.Skip(Method.IsStatic ? 0 : 1).ToArray();
 
                 int current = 0;
-                ParameterInfo[] declaredParameters = Method.GetParameters();
+                ParameterInfo[] declaredParameters = Method.Parameters;
                 object?[] methodExpectedParameterValuesArray = new object[declaredParameters.Length];
                 List<int> outParameterIndices = [];
                 for (int i = 0; i < declaredParameters.Length; i++)
@@ -87,7 +87,7 @@ namespace Parcel.CoreEngine.Service.Interpretation
         #region Helper
         private static void SeperateMethodParametersForNode(Callable method, out (Type, string, object?)[] nodeInputTypes, out (Type ValueType, string ValueName)[] nodeOutputTypes)
         {
-            ParameterInfo[] methodParameters = method.GetParameters();
+            ParameterInfo[] methodParameters = method.Parameters;
 
             // Goal: Deal with instance methods, `out` (and don't worry about `ref`) parameters and method return type
             // Rules:

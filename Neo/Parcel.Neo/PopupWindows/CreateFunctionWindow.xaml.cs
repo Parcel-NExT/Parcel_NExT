@@ -1,6 +1,7 @@
 ﻿using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.Neo.ViewModels;
 using Parcel.NExT.Interpreter.Analyzer;
+using Parcel.NExT.Interpreter.Types;
 using System;
 
 namespace Parcel.Neo.PopupWindows
@@ -27,7 +28,7 @@ namespace Parcel.Neo.PopupWindows
                 using System.Net.Http;
                 using System.Net.Http.Headers;
                 
-                string Fetch(string url)
+                public static string Fetch(string url)
                 {
                     using HttpClient client = new();
                     client.DefaultRequestHeaders.Accept.Clear();
@@ -44,10 +45,9 @@ namespace Parcel.Neo.PopupWindows
         #endregion
 
         #region Events
-        private void AnalyzeCodeButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void CreateNodeFunctionButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            string code = CodeEditor.Text;
-            NodePreview = AnalyzeSnippet(code);
+            // TODO: Inform main window to allocate a new Toolbox with this item as target, ready to be used
         }
         private void CodeEditor_Initialized(object sender, EventArgs e)
         {
@@ -97,7 +97,7 @@ namespace Parcel.Neo.PopupWindows
                 return new()
                 {
                     // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
-                    Definition = new Base.Framework.ToolboxNodeExport(method.Name, new CoreEngine.Interfaces.Callable(method)),
+                    Definition = new Base.Framework.ToolboxNodeExport(method.Name, new Callable(method)),
                     DisplayName = method.Name,
                     IsConstructor = false,
                     PreviewImage = null
