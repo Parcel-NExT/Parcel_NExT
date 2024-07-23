@@ -32,7 +32,7 @@ namespace Parcel.NExT.Interpreter.Types
         #region Property        
         public CallableType Type { get; }
         public bool IsStatic { get; }
-        public ParameterInfo[] Parameters { get; } // TODO: Downstream shouldn't depend on this because it's not available from code snipepts and also not available from Action/Func if we were to support those in the future
+        public ParameterInfo[] Parameters { get; } // TODO: Downstream shouldn't depend on this because it's not available from code snipepts and also not available from Action/Func if we were to support those in the future; We definitely need to implement our own encapsulated version of this, preparing for future use case e.g. Python scripts (in-memory) and python modules (disk files)
         /// <remarks>
         /// Comparing to DeclaringType, ReflectedType takes inheritance into consideration.
         /// </remarks>

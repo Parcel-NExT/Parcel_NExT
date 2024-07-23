@@ -39,7 +39,6 @@ namespace Parcel.Neo.Base.Algorithms
             }
             else throw new ArgumentException("Invalid node type");
         }
-
         public static void ExecuteGraph(NodesCanvas canvas)
         {
             IEnumerable<ProcessorNode> processors = canvas.Nodes
