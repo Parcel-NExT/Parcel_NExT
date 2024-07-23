@@ -1,7 +1,14 @@
 ﻿using System.Text;
 
+// TODO: Consider rename namespace to Parcel.CoreEngine.Interfaces
 namespace Parcel.Infrastructure
 {
+    /// <summary>
+    /// Represents a Parcel serializable feature.
+    /// Parcel serializable features are two fold: They can be represented safely as self-contained texts (not necessarily JSON); 
+    /// And they can serialize into binary data
+    /// Mostly used by specific Payload objects.
+    /// </summary>
     public interface IParcelSerializable
     {
         #region Binary Serialization
@@ -28,14 +35,14 @@ namespace Parcel.Infrastructure
             using BinaryReader reader = new(memory, Encoding.UTF8, false);
             while (totalConsumed <= length)
             {
-                entities.Add(ReadFromStream(reader, out int consumedBytes));
+                entities.Add(ReadFromStream(reader, out long consumedBytes));
                 totalConsumed += consumedBytes;
             }
 
             return [.. entities];
         }
         public void WriteToStream(BinaryWriter writer, IParcelSerializable data);
-        public IParcelSerializable ReadFromStream(BinaryReader reader, out int consumedBytes);
+        public IParcelSerializable ReadFromStream(BinaryReader reader, out long consumedBytes);
         #endregion
 
         #region Textual Serialization
