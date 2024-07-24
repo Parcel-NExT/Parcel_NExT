@@ -182,6 +182,7 @@ namespace Parcel.Neo.Base.Algorithms
                 mainScriptBuilder.Append(section.ToString().TrimEnd());
                 mainScriptBuilder.AppendLine();
             }
+            // TODO: Create wrapper main function, automatically try-catch exceptions and output exceptions then quit gracefully during error
 
             // Create output folder if not exist
             Directory.CreateDirectory(folderPath);
