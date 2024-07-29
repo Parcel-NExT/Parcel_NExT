@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Parcel.Services
 {
-    public static class ChatGPT
+    public sealed class ChatGPTConfiguration
     {
         #region Enums
         public enum ChatGPTModel
@@ -13,34 +13,50 @@ namespace Parcel.Services
         #endregion
 
         #region Defaults
-        private const string OpenAIChatCompletionEndpoint = "https://api.openai.com/v1/chat/completions";
-        private const int DefaultTokenSizeLimit = 4000;
+        internal const string OpenAIChatCompletionEndpoint = "https://api.openai.com/v1/chat/completions";
+        internal const int DefaultTokenSizeLimit = 4000;
 
-        private const string GPT4TurboModel = "gpt-4-turbo-preview";
-        #endregion
-
-        #region Global Configurations
-        public static void ConfigureChatGPT(string aipToken, int defaultTokenSizeLimit, ChatGPTModel model)
-        {
-            APIToken = aipToken; ;
-            TokenSizeLimit = defaultTokenSizeLimit;
-            Model = model switch
-            {
-                ChatGPTModel.GPT4Turbo => GPT4TurboModel,
-                _ => throw new ArgumentOutOfRangeException($"Invalid model: {model}")
-            };
-        }
-        public static string APIToken { get; set; }
-        public static int TokenSizeLimit { get; set; } = DefaultTokenSizeLimit;
-        public static string Model { get; set; } = GPT4TurboModel;
+        internal const string GPT4TurboModel = "gpt-4-turbo-preview";
         #endregion
 
         #region Methods
+        public static ChatGPTConfiguration ConfigureChatGPT(string aipToken, int defaultTokenSizeLimit, ChatGPTModel model)
+        {
+            return new ChatGPTConfiguration()
+            {
+                APIToken = aipToken,
+                TokenSizeLimit = defaultTokenSizeLimit,
+                Model = model switch
+                {
+                    ChatGPTModel.GPT4Turbo => GPT4TurboModel,
+                    _ => throw new ArgumentOutOfRangeException($"Invalid model: {model}")
+                }
+            };
+        }
+        #endregion
+
+        #region Configurations
+        public string APIToken { get; set; }
+        public int TokenSizeLimit { get; set; } = DefaultTokenSizeLimit;
+        public string Model { get; set; } = GPT4TurboModel;
+        #endregion
+    }
+
+    /// <summary>
+    /// API for ChatGPT
+    /// </summary>
+    public static class ChatGPT
+    {
+        #region Methods
+        public static string Complete(string query, ChatGPTConfiguration configuration)
+        {
+            return Complete(string.Empty, query, configuration.Model, configuration.APIToken, configuration.TokenSizeLimit);
+        }
         public static string Complete(string system, string query, string model, string apiToken, int sizeLimit)
         {
             using HttpClient httpClient = new()
             {
-                BaseAddress = new Uri(OpenAIChatCompletionEndpoint)
+                BaseAddress = new Uri(ChatGPTConfiguration.OpenAIChatCompletionEndpoint)
             };
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
 
@@ -69,9 +85,12 @@ namespace Parcel.Services
             return jsonResponse;
         }
         public static string Complete(string query, string token)
-            => Complete(string.Empty, query, GPT4TurboModel, token, DefaultTokenSizeLimit);
+            => Complete(string.Empty, query, ChatGPTConfiguration.GPT4TurboModel, token, ChatGPTConfiguration.DefaultTokenSizeLimit);
+        #endregion
+
+        #region Higher Level Interface
         public static string AskChatGPTAboutData(string question, string dataCSV, string apiToken)
-        => throw new NotImplementedException();
+            => throw new NotImplementedException();
         public static string AskChatGPTAboutImage(string question, string imageReference, string apiToken)
             => throw new NotImplementedException();
         #endregion
