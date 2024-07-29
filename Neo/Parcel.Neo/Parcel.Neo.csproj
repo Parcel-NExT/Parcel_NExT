@@ -23,10 +23,6 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Charles-Zhang-Parcel/PV1_Neo</RepositoryUrl>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="PreviewWindows\csharp.xshd.xml" />
-    <None Remove="PreviewWindows\python.xshd.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Icon.ico" />
@@ -43,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.NExT.Interpreter\Parcel.NExT.Interpreter.csproj" />
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Image\Parcel.Image.csproj" />
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB.WebSurveys\Parcel.InMemoryDB.WebSurveys.csproj" />
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.MiniGame.Legends\Parcel.MiniGame.Legends.csproj" />
@@ -50,9 +47,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="PreviewWindows\csharp.xshd.xml" />
-    <EmbeddedResource Include="PreviewWindows\python.xshd.xml" />
-    <EmbeddedResource Include="PreviewWindows\sql.xshd.xml" />
+    <EmbeddedResource Include="PopupWindows\csharp.xshd.xml" />
+    <EmbeddedResource Include="PopupWindows\python.xshd.xml" />
+    <EmbeddedResource Include="PopupWindows\sql.xshd.xml" />
   </ItemGroup>
 
   <ItemGroup>

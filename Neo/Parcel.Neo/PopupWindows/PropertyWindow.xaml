@@ -1,9 +1,10 @@
-﻿<local:BaseWindow x:Class="Parcel.Neo.PropertyWindow"
+﻿<base:BaseWindow x:Class="Parcel.Neo.PopupWindows.PropertyWindow"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                  xmlns:local="clr-namespace:Parcel.Neo"
+                  xmlns:local="clr-namespace:Parcel.Neo.PopupWindows"
+                  xmlns:base="clr-namespace:Parcel.Neo"
                   xmlns:converters="clr-namespace:Parcel.Neo.Converters"
                   xmlns:framework="clr-namespace:Parcel.Neo.Base.Framework;assembly=Parcel.Neo.Base"
                   mc:Ignorable="d"
@@ -20,7 +21,7 @@
         <StackPanel DockPanel.Dock="Top" DataContext="{Binding Processor}">
             <DockPanel LastChildFill="True">
                 <Label Content="Name"></Label>
-                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Margin="2"></TextBox>
             </DockPanel>
             <Separator HorizontalAlignment="Stretch"/>
         </StackPanel>
@@ -65,4 +66,4 @@
             </Grid>
         </DockPanel>
     </DockPanel>
-</local:BaseWindow>
+</base:BaseWindow>

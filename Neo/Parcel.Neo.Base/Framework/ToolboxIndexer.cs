@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.IO;
 using Parcel.CoreEngine.Helpers;
-using Parcel.CoreEngine.Interfaces;
+using Parcel.NExT.Interpreter.Types;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -24,6 +24,10 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Method
+        public static void AddTool(string toolbox, ToolboxNodeExport node)
+            => RegisterTool(Toolboxes, toolbox, node);
+        public static void AddTools(string toolbox, ToolboxNodeExport[] nodes)
+            => RegisterTools(Toolboxes, toolbox, nodes);
         private static Dictionary<string, ToolboxNodeExport[]> IndexToolboxes()
         {
             Dictionary<string, Assembly> toolboxAssemblies = [];
@@ -150,6 +154,22 @@ namespace Parcel.Neo.Base.Framework
         {
             List<ToolboxNodeExport> nodes = [..GetConstructors(type), .. GetInstanceMethods(type), .. GetStaticMethods(type)];
 
+            if (toolboxes.ContainsKey(name))
+                // Add divider
+                toolboxes[name] = [.. toolboxes[name], null, .. nodes];
+            else
+                toolboxes[name] = [.. nodes];
+        }
+        private static void RegisterTool(Dictionary<string, ToolboxNodeExport?[]> toolboxes, string name, ToolboxNodeExport node)
+        {
+            if (toolboxes.ContainsKey(name))
+                // Add divider
+                toolboxes[name] = [.. toolboxes[name], null, node];
+            else
+                toolboxes[name] = [node];
+        }
+        private static void RegisterTools(Dictionary<string, ToolboxNodeExport?[]> toolboxes, string name, ToolboxNodeExport[] nodes)
+        {
             if (toolboxes.ContainsKey(name))
                 // Add divider
                 toolboxes[name] = [.. toolboxes[name], null, .. nodes];

@@ -1,24 +1,17 @@
 ﻿using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows;
-using Parcel.NExT.Interpreter;
-using Parcel.CoreEngine.Helpers;
-using SkiaSharp;
 
-namespace Parcel.Neo.PreviewWindows
+namespace Parcel.Neo.PopupWindows
 {
     /// <summary>
     /// Interaction logic for LiveCodePreviewWindow.xaml
     /// </summary>
-    public partial class LiveCodePreviewWindow : Window, INotifyPropertyChanged
+    public partial class LiveCodePreviewWindow : BaseWindow
     {
         public enum LanguageMode
         {
@@ -116,33 +109,20 @@ namespace Parcel.Neo.PreviewWindows
         }
         #endregion
 
-        #region Data Binding
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        protected bool SetField<type>(ref type field, type value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<type>.Default.Equals(field, value)) return false;
-            field = value;
-            NotifyPropertyChanged(propertyName);
-            return true;
-        }
-        #endregion
-
         #region Helpers
-        private static IHighlightingDefinition ReadCSharpSyntaxHighlightingRules()
+        internal static IHighlightingDefinition ReadCSharpSyntaxHighlightingRules()
         {
             // Remark: For built-in: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#"); 
             // Alternative: ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(FileName));
 
-            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.csharp.xshd.xml");
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PopupWindows.csharp.xshd.xml");
             using System.Xml.XmlTextReader reader = new(stream);
             return HighlightingLoader.Load(reader,
                 HighlightingManager.Instance);
         }
-        private static IHighlightingDefinition ReadPythonSyntaxHighlightingRules()
+        internal static IHighlightingDefinition ReadPythonSyntaxHighlightingRules()
         {
-            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.python.xshd.xml");
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PopupWindows.python.xshd.xml");
             using System.Xml.XmlTextReader reader = new(stream);
             return HighlightingLoader.Load(reader,
                 HighlightingManager.Instance);

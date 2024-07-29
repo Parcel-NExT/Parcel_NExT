@@ -20,12 +20,12 @@ using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Helpers;
 using Parcel.Types;
 
-namespace Parcel.Neo
+namespace Parcel.Neo.PopupWindows
 {
-    public partial class PreviewWindow : BaseWindow
+    public partial class OutputWindow : BaseWindow
     {
         #region Construction
-        public PreviewWindow(Window owner, ProcessorNode processorNode)
+        public OutputWindow(Window owner, ProcessorNode processorNode)
         {
             Owner = owner;
             Node = processorNode;
@@ -101,7 +101,7 @@ namespace Parcel.Neo
                 // ...
             }
         }
-        private void PreviewWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void OutputWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
                 DragMove();    // Allow only LMB, since RMB can cause an exception

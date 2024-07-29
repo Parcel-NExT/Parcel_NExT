@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Parcel.Types;
 using Parcel.Neo.Base.Serialization;
-using Parcel.Neo.Base.DataTypes;
 using System.Diagnostics;
 using Parcel.CoreEngine.Helpers;
+using Parcel.CoreEngine.Service.Interpretation;
 
 namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 {
@@ -27,8 +27,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 {nameof(OutputNames), new NodeSerializationRoutine(() => SerializationHelper.Serialize(OutputNames), value => OutputNames = SerializationHelper.GetStrings(value))},
             };
         }
-        public AutomaticNodeDescriptor Descriptor { get; } // Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the moment! The reason we don't want it is because the descriptor itself is not serialized which means when the graph is loaded all such information is gone - and that's why we had IToolboxDefinition before.
-        public AutomaticProcessorNode(AutomaticNodeDescriptor descriptor) :this()
+        public FunctionalNodeDescription Descriptor { get; } // Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the moment! The reason we don't want it is because the descriptor itself is not serialized which means when the graph is loaded all such information is gone - and that's why we had IToolboxDefinition before.
+        public AutomaticProcessorNode(FunctionalNodeDescription descriptor) :this()
         {
             // Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the mometn!
             Descriptor = descriptor;

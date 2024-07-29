@@ -1,5 +1,5 @@
 ﻿using Parcel.CoreEngine.Helpers;
-using Parcel.CoreEngine.Interfaces;
+using Parcel.Infrastructure;
 
 namespace Parcel.CoreEngine.Primitives
 {
@@ -19,6 +19,25 @@ namespace Parcel.CoreEngine.Primitives
         {
             var lines = Raw.SplitLines(true);
             return lines.Skip(skipFirstRow ? 1 : HasHeader ? 1 : 0).Select(row => row.SplitCSVLine().ToArray());
+        }
+        #endregion
+
+        #region Serialization
+        public IParcelSerializable FromText(string text)
+        {
+            throw new NotImplementedException();
+        }
+        public IParcelSerializable ReadFromStream(BinaryReader reader, out long consumedBytes)
+        {
+            throw new NotImplementedException();
+        }
+        public string ToText()
+        {
+            throw new NotImplementedException();
+        }
+        public void WriteToStream(BinaryWriter writer, IParcelSerializable data)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

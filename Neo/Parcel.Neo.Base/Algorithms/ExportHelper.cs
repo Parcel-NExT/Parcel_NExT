@@ -1,5 +1,4 @@
 ﻿using Parcel.Neo.Base.Framework.ViewModels;
-using System;
 
 namespace Parcel.Neo.Base.Algorithms
 {

@@ -23,7 +23,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ScrollbarResource.xaml"/>
+                <ResourceDictionary Source="Styling/ScrollbarResource.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!--Data Converters-->
@@ -338,7 +338,7 @@
             <Menu.Resources>
                 <ResourceDictionary Source="Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
-            <MenuItem Header="File">
+            <MenuItem Header="Document">
                 <MenuItem Header="Open..." Visibility="Collapsed"/>
                 <MenuItem Header="Save" Visibility="Collapsed"/>
                 <MenuItem Header="Save As..." Visibility="Collapsed"/>
@@ -357,6 +357,12 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Close" ToolTip="Closes the application. At the moment it won't automatically save current document nor display a warning message before quitting."/>
+            </MenuItem>
+            <MenuItem Header="Node">
+                <MenuItem Header="Create Function..." Click="CreateFunctionMenuItem_Click"/>
+                <MenuItem Header="Modify Function..." Visibility="Collapsed"/>
+                <MenuItem Header="(Batch) Import Functions..." ToolTip="Batch import functions from many script files." Visibility="Collapsed"/>
+                <MenuItem Header="Export Functions..." Visibility="Collapsed"/>
             </MenuItem>
             <MenuItem Header="Edit" Visibility="Collapsed">
                 <MenuItem Header="Select All (Ctrl+A)"/>
@@ -772,7 +778,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                             </Style>
                                                         </Border.Resources>
                                                     </Border>
-                                                    <Button Content="Preview" Click="ProcessorNodePreviewButton_Click" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
+                                                    <Button Content="Run" Click="ProcessorNodePreviewButton_Click" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
                                                         <Button.Resources>
                                                             <!--Custom Styling-->
                                                             <Style TargetType="{x:Type Button}">

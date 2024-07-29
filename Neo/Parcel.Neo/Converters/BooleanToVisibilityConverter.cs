@@ -22,9 +22,14 @@ namespace Parcel.Neo.Converters
             {
                 return (Negate ? (d <= 0) : (d > 0)) ? Visibility.Visible : FalseVisibility;
             }
+            else if (value is string s)
+            {
+                bool empty = string.IsNullOrWhiteSpace(s);
+                return (Negate ? !empty : empty) ? FalseVisibility : Visibility.Visible;
+            }
 
-            bool result = value != null;
-            return (Negate ? !result : result) ? Visibility.Visible : FalseVisibility;
+            bool hasResult = value != null;
+            return (Negate ? !hasResult : hasResult) ? Visibility.Visible: FalseVisibility;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

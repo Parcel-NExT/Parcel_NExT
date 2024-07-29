@@ -10,6 +10,7 @@ Consider this an easter egg.
 * Puzzle
 * Trivia/Quiz
 * 灯谜
+* English Word: Add `Random Word` for reading pleasure; Add `English Dictionary` for lookup. Use https://github.com/wordset/wordset-dictionary
 
 Pure reading (no interaction, just public-domain reading):
 * Novel excerpts

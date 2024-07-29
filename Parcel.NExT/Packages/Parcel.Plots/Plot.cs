@@ -17,7 +17,7 @@ namespace Parcel.Graphing
     public static class Plot
     {
         #region Standard Plots
-        public static Image ScatterPlot(double[] x, double[][] ys, ScatterPlotMultiSeriesConfiguration? configurations)
+        public static Image ScatterPlot(double[] x, double[][] ys, ScatterPlotMultiSeriesConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -51,7 +51,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration? configurations)
+        public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -80,7 +80,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[] y2, ScatterPlotTwoAxesConfiguration? configurations)
+        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[] y2, ScatterPlotTwoAxesConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -117,7 +117,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image LinePlot(double[] x, double[] y, LinePlotConfiguration? configurations)
+        public static Image LinePlot(double[] x, double[] y, LinePlotConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -139,7 +139,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image BarChart(double[] values, BarChartConfiguration? configurations)
+        public static Image BarChart(double[] values, BarChartConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -158,7 +158,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image Histogram(double[] values, HisogramConfiguration? configurations)
+        public static Image Histogram(double[] values, HisogramConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -186,7 +186,7 @@ namespace Parcel.Graphing
         #region Standard Charts
         /// <alias>Age Population Chart</alias>
         /// <remarks>Notice a population pyramid devides humans into male and female and might not be a gender neural way to represent diversity within population</remarks>
-        public static Image PopulationPyramid(string[] ageGroups, double[] maleData, double[] femaleData, PopulationPyramidConfiguration? configurations)
+        public static Image PopulationPyramid(string[] ageGroups, double[] maleData, double[] femaleData, PopulationPyramidConfiguration? configurations = null)
         {
             // TODO: Move age group outside of drawing frame and well aligned on the left side of the drawing area; Might need to use custom text labels for this
 

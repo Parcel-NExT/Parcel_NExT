@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
-namespace Parcel.Neo
+namespace Parcel.Neo.PopupWindows
 {
     public partial class CommentWindow : BaseWindow
     {

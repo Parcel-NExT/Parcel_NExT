@@ -1,5 +1,6 @@
-﻿using Parcel.CoreEngine.Interfaces;
+﻿using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
+using Parcel.NExT.Interpreter.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Parcel.Neo.Base.Framework
         public string ArgumentsListSimple{ get; }
         public string ReturnsList { get; }
         public bool HasReturnValue { get; }
-        public AutomaticNodeDescriptor Descriptor { get; }
+        public FunctionalNodeDescription Descriptor { get; }
         public bool IsConstructor => Method?.IsConstructor ?? false;
         #endregion
 
@@ -49,7 +50,7 @@ namespace Parcel.Neo.Base.Framework
             ArgumentsListSimple = GetArgumentsListSimple();
             ReturnsList = GetReturnsList();
             HasReturnValue = GetHasReturnValue();
-            Descriptor = new AutomaticNodeDescriptor(Name, Method);
+            Descriptor = new FunctionalNodeDescription(Name, Method);
         }
         public ToolboxNodeExport(string name, Type type)
         {
@@ -66,7 +67,7 @@ namespace Parcel.Neo.Base.Framework
         #endregion
 
         #region Method
-        readonly Dictionary<(string, Callable), AutomaticNodeDescriptor> DescriptorsCache = [];
+        readonly Dictionary<(string, Callable), FunctionalNodeDescription> DescriptorsCache = [];
         public BaseNode InstantiateNode()
         {
             switch (ImplementationType)
@@ -77,7 +78,7 @@ namespace Parcel.Neo.Base.Framework
                 case NodeImplementationType.MethodInfo:
                     (string Name, Callable Method) key = (Name, Method);
                     if (!DescriptorsCache.ContainsKey(key))
-                        DescriptorsCache[key] = new AutomaticNodeDescriptor(Name, Method);
+                        DescriptorsCache[key] = new FunctionalNodeDescription(Name, Method);
                     return new AutomaticProcessorNode(DescriptorsCache[key]);
                 default:
                     throw new ApplicationException("Invalid implementation type.");
@@ -96,7 +97,7 @@ namespace Parcel.Neo.Base.Framework
                         return string.Join(", ", processor.Input.Where(i => !i.IsHidden).Select(i => i.Title));
                     else return string.Empty;
                 case NodeImplementationType.MethodInfo:
-                    return string.Join(", ", Method.GetParameters().Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}?" : p.Name)));
+                    return string.Join(", ", Method.Parameters.Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}?" : p.Name)));
                 default:
                     throw new ArgumentOutOfRangeException($"Unrecognized implementation type: {ImplementationType}");
             }
@@ -111,7 +112,7 @@ namespace Parcel.Neo.Base.Framework
                         return string.Join(", ", processor.Input.Where(i => !i.IsHidden).Select(i => i.Title));
                     else return string.Empty;
                 case NodeImplementationType.MethodInfo:
-                    return string.Join(", ", Method.GetParameters().Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}:{p.ParameterType.Name}?" : $"{p.Name}:{p.ParameterType.Name}")));
+                    return string.Join(", ", Method.Parameters.Select(p => (Nullable.GetUnderlyingType(p.ParameterType) != null ? $"{p.Name}:{p.ParameterType.Name}?" : $"{p.Name}:{p.ParameterType.Name}")));
                 default:
                     throw new ArgumentOutOfRangeException($"Unrecognized implementation type: {ImplementationType}");
             }

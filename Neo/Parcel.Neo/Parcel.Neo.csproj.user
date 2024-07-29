@@ -13,7 +13,10 @@
     <Page Update="PopupWindows\AboutWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ScrollbarResource.xaml">
+    <Page Update="PopupWindows\CreateFunctionWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styling\ScrollbarResource.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styling\NeoMenuStylingDictionary.xaml">

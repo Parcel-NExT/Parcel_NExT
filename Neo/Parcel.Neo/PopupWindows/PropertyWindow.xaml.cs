@@ -8,14 +8,14 @@ using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Base.Toolboxes.Basic.Nodes;
 
-namespace Parcel.Neo
+namespace Parcel.Neo.PopupWindows
 {
     public partial class PropertyWindow : BaseWindow
     {
         public PropertyWindow(Window owner, ProcessorNode processor)
         {
             // Support SQL syntax highlight
-            using (System.IO.Stream? stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PreviewWindows.sql.xshd.xml"))
+            using (System.IO.Stream? stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Parcel.Neo.PopupWindows.sql.xshd.xml"))
             {
                 using System.Xml.XmlTextReader reader = new(stream);
                 SQLSyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
@@ -32,10 +32,10 @@ namespace Parcel.Neo
                 PrimitivePreviewText = primitiveNode.Value;
             }
             InitializeComponent();
-            
+
             if (processor is DataTable dataTable)
             {
-                PreviewWindow.PopulateDataGrid(WpfDataGrid, dataTable.InitializeDataGrid(), out string[] dataGridDataColumns, out List<dynamic> dataGridData);
+                OutputWindow.PopulateDataGrid(WpfDataGrid, dataTable.InitializeDataGrid(), out string[] dataGridDataColumns, out List<dynamic> dataGridData);
                 DataGridDataColumns = dataGridDataColumns;
                 DataGridData = dataGridData;
                 DataGridVisibility = Visibility.Visible;
@@ -69,7 +69,7 @@ namespace Parcel.Neo
         public string PrimitivePreviewText { get; }
         public Visibility PrimitivePreviewTextBlockVisibility { get; } = Visibility.Collapsed;
         #endregion
-        
+
         #region Syntax Highlighter
 
         private IHighlightingDefinition _SQLSyntaxHighlighting;
@@ -92,8 +92,8 @@ namespace Parcel.Neo
         {
             TextEditor editor = sender as TextEditor;
             PropertyEditor property = editor!.DataContext as PropertyEditor;
-            
-            property!.Binding  = editor.Text;
+
+            property!.Binding = editor.Text;
         }
         private void PropertyWindow_OnClosed(object sender, EventArgs e)
         {
@@ -104,18 +104,18 @@ namespace Parcel.Neo
                 int colCount = sample!.Keys.Count;
                 int rowCount = DataGridData.Count;  // TODO: At the moment if an entry is finished half-way before the window is closed, it produce bad data
                 string[] keys = sample!.Keys.ToArray();
-                
+
                 // Col first, then Rows; Like Parcel's DataGrid
                 dataTable.Data = new object[colCount][];    // Notice despite the syntax, this actually initializes the outer dimension, aka. new object[][colCount]
                 for (int i = 0; i < colCount; i++)
                     dataTable.Data[i] = new object[rowCount];
-                
+
                 // Populate data
                 for (int col = 0; col < colCount; col++)
                 {
                     for (int row = 0; row < rowCount; row++)
                     {
-                        dataTable.Data[col][row] =  ((IDictionary<string, object>)DataGridData[row])[keys[col]];
+                        dataTable.Data[col][row] = ((IDictionary<string, object>)DataGridData[row])[keys[col]];
                     }
                 }
             }

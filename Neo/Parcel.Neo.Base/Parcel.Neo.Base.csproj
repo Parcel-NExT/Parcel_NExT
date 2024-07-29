@@ -10,6 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.CoreEngine.Service\Parcel.CoreEngine.Service.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.NExT.Python\Parcel.NExT.Python.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Calculator\Parcel.Calculator.csproj" />

@@ -39,7 +39,6 @@ namespace Parcel.Neo.Base.Algorithms
             }
             else throw new ArgumentException("Invalid node type");
         }
-
         public static void ExecuteGraph(NodesCanvas canvas)
         {
             IEnumerable<ProcessorNode> processors = canvas.Nodes
@@ -102,7 +101,7 @@ namespace Parcel.Neo.Base.Algorithms
             StringBuilder mainScriptBuilder = new();
             // Import package references
             if (summary.StandardPackageImports.Count > 0)
-                mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
+                mainScriptBuilder.AppendLine("// Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
@@ -128,7 +127,7 @@ namespace Parcel.Neo.Base.Algorithms
             }
             if (bodyBuilder.ToString().Trim().Length > 0)
             {
-                mainScriptBuilder.AppendLine("# Main script content");
+                mainScriptBuilder.AppendLine("// Main script content");
                 mainScriptBuilder.AppendLine(bodyBuilder.ToString());
             }
 
@@ -159,7 +158,7 @@ namespace Parcel.Neo.Base.Algorithms
             // Generate script contents
             StringBuilder mainScriptBuilder = new();
             // Import package references
-            mainScriptBuilder.AppendLine("# Load Parcel NExT packages");
+            mainScriptBuilder.AppendLine("// Load Parcel NExT packages");
             foreach ((string importName, string nickName) in summary.StandardPackageImports)
                 mainScriptBuilder.AppendLine($"Import({importName})");
             mainScriptBuilder.AppendLine();
@@ -173,7 +172,7 @@ namespace Parcel.Neo.Base.Algorithms
                     mainScriptBuilder.AppendLine($"using {uniqueNamespace};");
             mainScriptBuilder.AppendLine();
             // Start of main function
-            mainScriptBuilder.AppendLine("# Main script content");
+            mainScriptBuilder.AppendLine("// Main script content");
             // Do variable declarations first
             foreach ((TypedVariable key, string value) in summary.VariableDeclarations)
                 mainScriptBuilder.AppendLine($"{key.Type.Name} {key.Name} = {value};");
@@ -183,6 +182,7 @@ namespace Parcel.Neo.Base.Algorithms
                 mainScriptBuilder.Append(section.ToString().TrimEnd());
                 mainScriptBuilder.AppendLine();
             }
+            // TODO: Create wrapper main function, automatically try-catch exceptions and output exceptions then quit gracefully during error
 
             // Create output folder if not exist
             Directory.CreateDirectory(folderPath);
@@ -466,7 +466,8 @@ namespace Parcel.Neo.Base.Algorithms
                                     value = primitive.Value;
                                 else value = autoNode.Descriptor.DefaultInputValues[i];
 
-                                if (value == null)
+                                // TODO: In the case of DBNull.Value, maybe we should throw an exception or somehow otherwise indicate it instead of just putting a null
+                                if (value == null || value == DBNull.Value) // A null means the parameter has default value null, and DBNull means it doesn't have default value and there is not explicitly passed value - basically missing a parameter in the function call
                                     return syntaxHandler.Null;
                                 else if (TypeHelper.IsNumericalType(value.GetType()))
                                     return value.ToString();
@@ -651,6 +652,7 @@ namespace Parcel.Neo.Base.Algorithms
         public string CallFunction(string functionName, TypedVariable[] parameterNames, FunctionCallParameter[] parameters);
         public string ReturnResults(string[] returns);
         public string CreateVariableFromFunctionCall(TypedVariable newVariable, string methodCallName, TypedVariable[] functionCallArguments, FunctionCallParameter[] parameters);
+        public string MakeEndOfLineComment(string content);
     }
     public sealed class PythonSyntaxHandler : ISyntaxHandler
     {
@@ -679,6 +681,8 @@ namespace Parcel.Neo.Base.Algorithms
             => CreateVariable(newVariable, CallFunction(methodCallName, functionCallArguments, parameters));
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {string.Join(", ", returns)}" : "return";
+        public string MakeEndOfLineComment(string content) 
+            => $"# {content}";
 
         #region Helpers
         private static string CastPrimitiveType(Type type)
@@ -709,5 +713,7 @@ namespace Parcel.Neo.Base.Algorithms
             => CreateVariable(newVariable, CallFunction(methodCallName, functionCallArguments, parameters)).TrimEnd(';') + ';'; // Remove redundant ';' at the end
         public string ReturnResults(string[] returns)
             => returns.Any() ? $"return {(returns.Length == 1 ? returns.Single() : $"({string.Join(", ", returns)})")};" : "return;";
+        public string MakeEndOfLineComment(string content)
+            => $"// {content}";
     }
 }
