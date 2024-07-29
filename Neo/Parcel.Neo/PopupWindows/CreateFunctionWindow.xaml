@@ -7,8 +7,8 @@
         xmlns:converters="clr-namespace:Parcel.Neo.Converters"
         xmlns:base="clr-namespace:Parcel.Neo"
         mc:Ignorable="d"
-        Title="Create Function (Pure)" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner" 
-        MinWidth="400" MinHeight="300" Background="#18578d"
+        Title="Create Function (Pure)" WindowStartupLocation="CenterOwner" 
+        Width="500" Height="600" Background="#18578d"
         DataContext="{Binding RelativeSource={RelativeSource self}}">
     <Window.Resources>
         <ResourceDictionary>
@@ -29,6 +29,7 @@
                 <ResourceDictionary Source="../Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
             <MenuItem Header="Script">
+                <MenuItem Header="Batch Import" Click="BatchImportMenuItem_Click" ToolTip="Import all functions from a single script file." Visibility="Collapsed"/>
                 <MenuItem Header="Import..." Click="ImportSnippetMenuItem_Click" ToolTip="Import snippet from file." Visibility="Collapsed"/>
                 <MenuItem Header="Save As..." Click="SaveSnippetAsMenuItem_Click" ToolTip="Save the snippet content into file." Visibility="Collapsed"/>
             </MenuItem>
@@ -61,7 +62,7 @@
                 <StackPanel>
                     <StackPanel Visibility="{Binding ErrorMessage, Converter={converters:BooleanToVisibilityConverter}}">
                         <Label Content="Error" HorizontalAlignment="Center" FontSize="16" FontStyle="Italic" Margin="0, 2, 0, 10" Padding="0" Foreground="#ae3b2d"/>
-                        <TextBlock Text="{Binding ErrorMessage}"/>
+                        <TextBlock Text="{Binding ErrorMessage}" TextAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Visibility="{Binding ErrorMessage, Converter={converters:BooleanToVisibilityConverter Negate=True}}">
                         <Label Content="Preview" HorizontalAlignment="Center" FontSize="16" FontStyle="Italic" Margin="0, 2, 0, 10" Padding="0"/>
@@ -119,7 +120,7 @@
                 </StackPanel>
             </Border>
         </Grid>
-        <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" WordWrap="True" FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" Initialized="CodeEditor_Initialized" TextChanged="CodeEditor_TextChanged"> <!--Show line numbers is causing issue with height; TextChanged is not called-->
+        <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" WordWrap="True" FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto" Initialized="CodeEditor_Initialized" TextChanged="CodeEditor_TextChanged"> <!--Show line numbers is causing issue with (window) height and SizeToContent; TextChanged is not called-->
             <avalonEdit:TextEditor.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
