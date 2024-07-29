@@ -99,6 +99,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                     Input.Add(new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion });
                 else if (inputType == typeof(string))
                     Input.Add(new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String", AllowsArrayCoercion = supportsCoercion });
+                else if (inputType.IsEnum)
+                    Input.Add(new PrimitiveEnumInputConnector(inputType, defaultValue != DBNull.Value ? defaultValue : null) { Title = preferredTitle ?? "Enum", AllowsArrayCoercion = supportsCoercion });
                 else if (TypeHelper.IsNumericalType(inputType))
                     Input.Add(new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion });
                 else if (inputType == typeof(DateTime))

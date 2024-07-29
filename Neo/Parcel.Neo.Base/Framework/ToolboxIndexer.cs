@@ -232,10 +232,21 @@ namespace Parcel.Neo.Base.Framework
             }
 
             // Export nodes from types
-            Type[] types = assembly.GetExportedTypes()
-                .Where(t => t.IsAbstract) // TODO: Support instance methods
+            // TODO: Support instance methods
+            // TODO: Support non-static type's static methods
+            Type[] typesA = assembly.GetExportedTypes() // Public static (abstract) export types
+                .Where(t => t.IsAbstract)
                 .Where(t => t.Name != "Object")
                 .ToArray();
+            Type[] typesB = assembly.GetExportedTypes() // Public classes with static methods
+                .Where(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static).Length > 0)
+                .Where(t => t.Name != "Object")
+                .ToArray();
+            Type[] types = typesA
+                .Concat(typesB)
+                .Distinct()
+                .ToArray();
+
             foreach (Type type in types)
             {
                 MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static)

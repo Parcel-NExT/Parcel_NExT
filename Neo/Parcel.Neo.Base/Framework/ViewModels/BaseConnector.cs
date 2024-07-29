@@ -47,13 +47,55 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         public PrimitiveStringInputConnector(string? defaultValue = null) : base(typeof(string))
             => Value = defaultValue ?? string.Empty;
     }
-    
+    public sealed class PrimitiveEnumInputConnector : PrimitiveInputConnector
+    {
+        #region View Binding
+        private Dictionary<string, int> _options;
+        public string[] Options
+        {
+            get => _options.Keys.ToArray();
+        }
+        #endregion
+
+        #region Construction
+        public PrimitiveEnumInputConnector(Type type, object? defaultValue = null) : base(type)
+        {
+            defaultValue ??= 0;
+
+            if (!type.IsEnum)
+                throw new ArgumentException($"Invalid type for enum input: {type.Name}");
+            if (defaultValue is not int)
+                throw new ApplicationException("Expect raw int value from enum.");
+
+            string[] names = Enum.GetNames(type);
+            int[] values = Enum.GetValues(type).Cast<int>().ToArray();
+            _options = Enumerable.Range(0, names.Length).ToDictionary(i => names[i], i => values[i]);
+
+            Value = defaultValue;
+        }
+        #endregion
+
+        #region Value Setting
+        public string DisplayValue
+        {
+            get => _options.First(o => o.Value == (int)_defaultDataStorage).Key;
+            set => SetField(ref _defaultDataStorage, value is string s ? _options[value] : throw new ApplicationException());
+        }
+
+        /// <remarks>Stored value will be actual numerical value of the enum item (not its index)</remarks>
+        public override object Value
+        {
+            get => _defaultDataStorage;
+            set => SetField(ref _defaultDataStorage, value is string s ? TypeDescriptor.GetConverter(DataType).ConvertFromInvariantString(s) : value);
+        }
+        #endregion
+    }
     public sealed class PrimitiveNumberInputConnector : PrimitiveInputConnector
     {
         public PrimitiveNumberInputConnector(Type type, object? defaultValue = null) : base(type)
         {
             if (!type.IsValueType)
-                throw new ArgumentException($"Invalid type for numberi nput: {type.Name}");
+                throw new ArgumentException($"Invalid type for number input: {type.Name}");
             Value = defaultValue ?? Activator.CreateInstance(type)!;
         }
         
