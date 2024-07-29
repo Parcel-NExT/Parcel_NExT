@@ -17,9 +17,8 @@ namespace Parcel.NExT.Interpreter.Types
         public enum CallableType
         {
             Constructor,
-            StaticMethod,
-            InstanceMethod,
-            Snippet
+            StaticMethod, // Including snippets
+            InstanceMethod
         }
 
         #region Designation
@@ -107,7 +106,7 @@ namespace Parcel.NExT.Interpreter.Types
 
             // Assign callable properties
             Method = entryMethod;
-            Type = CallableType.Snippet;
+            Type = CallableType.StaticMethod;
             IsStatic = true;
             ReturnType = System.Type.GetType($"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}");
             ReflectedType = null;
@@ -119,18 +118,12 @@ namespace Parcel.NExT.Interpreter.Types
         #region Method
         public object? Invoke(object? instance, object?[]? arguments)
         {
-            if (Type == CallableType.Snippet)
-                throw new NotImplementedException();
-
             if (Type != CallableType.Constructor)
                 return Method!.Invoke(instance, arguments);
             else throw new InvalidOperationException("Cannot call `Invoke` on constructor with instance parameter. Use `StaticInvoke` instead.");
         }
         public object? StaticInvoke(object?[]? arguments)
         {
-            if (Type == CallableType.Snippet)
-                throw new NotImplementedException();
-
             if (Type != CallableType.StaticMethod && Type != CallableType.Constructor)
                 throw new InvalidOperationException($"Callable is not static.");
 
@@ -141,9 +134,6 @@ namespace Parcel.NExT.Interpreter.Types
         }
         public object? InstanceInvoke(object? instance, object?[]? arguments)
         {
-            if (Type == CallableType.Snippet)
-                throw new NotImplementedException();
-
             if (Type != CallableType.InstanceMethod)
                 throw new InvalidOperationException($"Callable is not instance based.");
 
