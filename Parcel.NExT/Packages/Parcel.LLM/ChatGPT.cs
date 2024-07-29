@@ -48,11 +48,11 @@ namespace Parcel.Services
     public static class ChatGPT
     {
         #region Methods
-        public static string Complete(string query, ChatGPTConfiguration configuration)
+        public static string ChatGPTComplete(string query, ChatGPTConfiguration configuration)
         {
-            return Complete(string.Empty, query, configuration.Model, configuration.APIToken, configuration.TokenSizeLimit);
+            return ChatGPTComplete(string.Empty, query, configuration.Model, configuration.APIToken, configuration.TokenSizeLimit);
         }
-        public static string Complete(string system, string query, string model, string apiToken, int sizeLimit)
+        public static string ChatGPTComplete(string system, string query, string model, string apiToken, int sizeLimit)
         {
             using HttpClient httpClient = new()
             {
@@ -84,8 +84,8 @@ namespace Parcel.Services
             string jsonResponse = response.Content.ReadAsStringAsync().Result;
             return jsonResponse;
         }
-        public static string Complete(string query, string token)
-            => Complete(string.Empty, query, ChatGPTConfiguration.GPT4TurboModel, token, ChatGPTConfiguration.DefaultTokenSizeLimit);
+        public static string ChatGPTComplete(string query, string token)
+            => ChatGPTComplete(string.Empty, query, ChatGPTConfiguration.GPT4TurboModel, token, ChatGPTConfiguration.DefaultTokenSizeLimit);
         #endregion
 
         #region Higher Level Interface
