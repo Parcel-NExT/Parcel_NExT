@@ -22,10 +22,16 @@
                 <Label DockPanel.Dock="Top" Content="Version: 0.1.0 Build v2024-07-19" HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
                 <Label DockPanel.Dock="Top" Content="by Methodox, Inc." HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
                 <Label DockPanel.Dock="Top" Content="A Parcel NExT Front-end (Graph Editor)." HorizontalAlignment="Center" Margin="0" Padding="0"  FontSize="8"/>
+                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" TextAlignment="Center" FontSize="8">
+                    Written by: 
+                    <Hyperlink NavigateUri="https://www.linkedin.com/in/chaojianzhang/" RequestNavigate="Hyperlink_RequestNavigate">
+                        Charles Zhang
+                    </Hyperlink>
+                </TextBlock>
                 <TextBlock DockPanel.Dock="Top" TextWrapping="WrapWithOverflow"  MaxWidth="320" HorizontalAlignment="Center" TextAlignment="Center">
-                    This program is designed to make programming accessible. 
+                    This program is designed to make programming accessible. Parcel is free to use for everyone.
                     <LineBreak/>
-                    You are free to use, modify, and share this software, including commercial use.
+                    You can use it for personal, professional, educational and commercial purposes, including to modify and redistribute this software (with restrictions). See license for details.
                 </TextBlock>
                     
                 <Label DockPanel.Dock="Top" Content="Contacts" HorizontalAlignment="Center" Margin="0" Padding="0,4,0,0" FontSize="8" FontStyle="Italic" FontWeight="Bold"/>
@@ -73,6 +79,9 @@
                         MIT License
                     </Hyperlink>
                 </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="0, 4, 0, 0">
+                <Label Content="❤️ Made with love, dedication and craftsmanship." HorizontalAlignment="Center" Margin="0" Padding="0"  FontSize="6"/>
             </StackPanel>
         </StackPanel>
     </Grid>
