@@ -92,13 +92,11 @@ namespace Parcel.Neo.PopupWindows
             try
             {
                 FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
-
-                var method = typeof(CreateFunctionWindow).GetMethod(nameof(Fetch));
+                Callable method = description.Method;
                 return new()
                 {
-                    // Definition = new Base.Framework.ToolboxNodeExport("Hello World", new CoreEngine.Interfaces.Callable(description)),// Need refactoring.
-                    Definition = new Base.Framework.ToolboxNodeExport(method.Name, new Callable(method)),
-                    DisplayName = method.Name,
+                    Definition = new Base.Framework.ToolboxNodeExport(description.NodeName, method),
+                    DisplayName = description.NodeName,
                     IsConstructor = false,
                     PreviewImage = null
                 };
@@ -109,10 +107,6 @@ namespace Parcel.Neo.PopupWindows
                 return NodePreview;
             }
             
-        }
-        public static string Fetch(string url)
-        {
-            return string.Empty;
         }
         #endregion
     }

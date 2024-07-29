@@ -24,6 +24,12 @@ namespace Parcel.NExT.Interpreter.Types
 
         #region Designation
         private ConstructorInfo? Constructor { get; }
+        /// <summary>
+        /// Used by reflected methods and snippets
+        /// </summary>
+        /// <remarks>
+        /// TODO: Cleanup/optimization - Downstream shouldn't depend on ParameterInfo, or otherwise we should attempt to abstract only the parameters we need
+        /// </remarks>
         private MethodInfo? Method { get; }
         private CodeSnippetComponents Snippet { get; }
         private ScriptState<object> CompiledSnippet { get; }
@@ -32,15 +38,15 @@ namespace Parcel.NExT.Interpreter.Types
         #region Property        
         public CallableType Type { get; }
         public bool IsStatic { get; }
-        public ParameterInfo[] Parameters { get; } // TODO: Downstream shouldn't depend on this because it's not available from code snipepts and also not available from Action/Func if we were to support those in the future; We definitely need to implement our own encapsulated version of this, preparing for future use case e.g. Python scripts (in-memory) and python modules (disk files)
+        public ParameterInfo[] Parameters { get; } // TODO: Downstream shouldn't depend on this because it's not available from code snipepts (well actually it is, so we are fine for now) and also not available from Action/Func if we were to support those in the future; We definitely need to implement our own encapsulated version of this, preparing for future use case e.g. Python scripts (in-memory) and python modules (disk files)
         /// <remarks>
         /// Comparing to DeclaringType, ReflectedType takes inheritance into consideration.
         /// </remarks>
         public Type? ReflectedType { get; }
         /// <remarks>
-        /// Could be null if it's from snippet
+        /// Will not be null even if it's from snippet
         /// </remarks>
-        public Type? DeclaringType { get; }
+        public Type DeclaringType { get; }
         public Type ReturnType { get; }
 
         public bool IsConstructor => Type == CallableType.Constructor;
@@ -76,8 +82,8 @@ namespace Parcel.NExT.Interpreter.Types
                 throw new ArgumentException("Entry function must be static public.");
             Snippet = snippet;
 
-            // Build compilation
-            // Remark: In general, we cannot directly get System.Reflection type from semantic model, which is good, because that way we can control exactly what to load; It just means a bit more infrastructure is needed to make sure semantics are clear and during runtime expected types and methods are loaded
+            // Semantics analysis (At the moment this doesn't do much, in the future we can add syntax checks)
+            // (Remark) In general, we cannot directly get System.Reflection type from semantic model, which is good, because that way we can control exactly what to load; It just means a bit more infrastructure is needed to make sure semantics are clear and during runtime expected types and methods are loaded
             CSharpCompilation compilation = CSharpCompilation.Create("HelloWorld")
                 .AddReferences(MetadataReference.CreateFromFile(typeof(string).Assembly.Location))
                 .AddSyntaxTrees(entryFunction.Parent.Parent.SyntaxTree);
@@ -85,29 +91,28 @@ namespace Parcel.NExT.Interpreter.Types
             Microsoft.CodeAnalysis.TypeInfo returnType = semanticModel.GetTypeInfo(entryFunction.ReturnType);
             INamedTypeSymbol? typeSymbol = (INamedTypeSymbol)returnType.Type;
 
-            // Quick hacK: Actually compile the code
+            // Actually compile the code for caching and reflection purpose
             ScriptOptions options = ScriptOptions.Default
+                .AddReferences(typeof(Enumerable).Assembly)
                 .AddReferences(typeof(HttpClient).Assembly);
-            CompiledSnippet = CSharpScript.RunAsync(snippet.Code, options).Result;
-            IAssemblySymbol assembly = CompiledSnippet.Script.GetCompilation().Assembly;
-            // TODO: Need more refactoring
-            // MethodInfo[] methods = CompiledSnippet.Script.GetCompilation().Assembly.GetMethods(); // Remark: Downstream shouldn't depend on ParameterInfo
-            // Notice snippet global/local functions appear to be Func/Action instead of proper methods because they seem not to belong to any Type/class
-            //ParameterInfo[] result = CompiledSnippet
-            //    .ContinueWithAsync("""
-            //    ParameterInfo[] temporaryFetchedParameterInfos = ;
-            //    """).Result
-            //    .ContinueWithAsync<ParameterInfo[]>("temporaryFetchedParameterInfos")
-            //    .Result.ReturnValue; // Actually we cannot do it because it's not safe
-            // https://stackoverflow.com/questions/47219017/roslyn-how-can-i-instantiate-a-class-in-a-script-during-runtime-and-invoke-meth
+            CompiledSnippet = CSharpScript.RunAsync($$"""
+                using System.Reflection;
+                using System.Linq;
+
+                {{snippet.Code}}
+
+                return Assembly.GetExecutingAssembly().GetExportedTypes().First().GetMethod("{{entryFunction.Identifier}}");
+                """, options).Result;
+            MethodInfo entryMethod = (MethodInfo)CompiledSnippet.ReturnValue;
 
             // Assign callable properties
-            Type = CallableType.Constructor;
+            Method = entryMethod;
+            Type = CallableType.Snippet;
             IsStatic = true;
             ReturnType = System.Type.GetType($"{typeSymbol.ContainingNamespace}.{typeSymbol.Name}");
             ReflectedType = null;
-            DeclaringType = null;
-            Parameters = null;
+            DeclaringType = entryMethod.DeclaringType;
+            Parameters = entryMethod.GetParameters();
         }
         #endregion
 
