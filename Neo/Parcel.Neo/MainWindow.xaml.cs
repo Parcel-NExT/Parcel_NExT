@@ -458,7 +458,7 @@ namespace Parcel.Neo
         #endregion
 
         #region Routine
-        private void UpdatePaletteToolboxes()
+        public void UpdatePaletteToolboxes()
         {
             Dictionary<string, ToolboxNodeExport[]> toolboxes = ToolboxIndexer.Toolboxes;
             PaletteToolboxes.Clear();

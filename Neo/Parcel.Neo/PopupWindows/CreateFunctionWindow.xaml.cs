@@ -1,4 +1,5 @@
 ﻿using Parcel.CoreEngine.Service.Interpretation;
+using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.NExT.Interpreter.Analyzer;
 using System;
@@ -72,7 +73,14 @@ namespace Parcel.Neo.PopupWindows
             FunctionalNodeDescription? compilation = CompileSnippet(CodeEditor.Text);
             if (compilation != null)
             {
-                // TODO: Inform main window to allocate a new Toolbox with this item as target, ready to be used (update in RMB context menu and also in the Nodes Palette
+                // Update in RMB context menu and also in the Nodes Palette
+
+                // Register
+                ToolboxIndexer.AddTool("Custom", new ToolboxNodeExport(compilation.NodeName, compilation.Method));
+                // Inform main window to allocate a new Toolbox with this item as target, ready to be used
+                (Owner as MainWindow).UpdatePaletteToolboxes();
+
+                Close();
             }
         }
         private void CodeEditor_Initialized(object sender, EventArgs e)
