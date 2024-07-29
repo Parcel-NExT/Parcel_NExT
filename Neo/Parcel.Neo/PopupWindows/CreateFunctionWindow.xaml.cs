@@ -1,7 +1,6 @@
 ﻿using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.Neo.ViewModels;
 using Parcel.NExT.Interpreter.Analyzer;
-using Parcel.NExT.Interpreter.Types;
 using System;
 
 namespace Parcel.Neo.PopupWindows
@@ -41,13 +40,14 @@ namespace Parcel.Neo.PopupWindows
         }
         #endregion
 
-        #region Methods
-        #endregion
-
         #region Events
         private void CreateNodeFunctionButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // TODO: Inform main window to allocate a new Toolbox with this item as target, ready to be used
+            FunctionalNodeDescription? compilation = CompileSnippet(CodeEditor.Text);
+            if (compilation != null)
+            {
+                // TODO: Inform main window to allocate a new Toolbox with this item as target, ready to be used (update in RMB context menu and also in the Nodes Palette
+            }
         }
         private void CodeEditor_Initialized(object sender, EventArgs e)
         {
@@ -57,6 +57,14 @@ namespace Parcel.Neo.PopupWindows
         {
             string code = CodeEditor.Text;
             NodePreview = AnalyzeSnippet(code);
+        }
+        private void ImportSnippetMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        private void SaveSnippetAsMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -91,14 +99,14 @@ namespace Parcel.Neo.PopupWindows
         {
             try
             {
-                FunctionalNodeDescription? description = CodeAnalyzer.AnalyzeFunctionalNode(code);
-                Callable method = description.Method;
+                CodeSnippetComponents? snippet = CodeAnalyzer.AnalyzeFunctionalNode(code);
                 return new()
                 {
-                    Definition = new Base.Framework.ToolboxNodeExport(description.NodeName, method),
-                    DisplayName = description.NodeName,
+                    Definition = null,
+                    DisplayName = snippet.EntryFunction.Identifier.Text,
                     IsConstructor = false,
                     PreviewImage = null
+                    // TODO: Need to populate InputNames and OutputNames somehow; Need to refactor NodesPaletteToolboxNodeItemViewModel and ToolboxNodeExport to clarify model dependencies
                 };
             }
             catch (Exception e)
@@ -107,6 +115,19 @@ namespace Parcel.Neo.PopupWindows
                 return NodePreview;
             }
             
+        }
+        private FunctionalNodeDescription? CompileSnippet(string code)
+        {
+            try
+            {
+                return CodeAnalyzer.CompileFunctionalNode(code);
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+                return null;
+            }
+
         }
         #endregion
     }

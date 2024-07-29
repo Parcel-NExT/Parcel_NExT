@@ -24,6 +24,19 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
+        <Menu DockPanel.Dock="Top">
+            <Menu.Resources>
+                <ResourceDictionary Source="../Styling/NeoMenuStylingDictionary.xaml"/>
+            </Menu.Resources>
+            <MenuItem Header="Script">
+                <MenuItem Header="Import..." Click="ImportSnippetMenuItem_Click" ToolTip="Import snippet from file." Visibility="Collapsed"/>
+                <MenuItem Header="Save As..." Click="SaveSnippetAsMenuItem_Click" ToolTip="Save the snippet content into file." Visibility="Collapsed"/>
+            </MenuItem>
+            <MenuItem Header="Language" Visibility="Collapsed">
+                <MenuItem Header="C#" ToolTip="Change language mode to C#"/>
+                <MenuItem Header="Python" ToolTip="Change language mode to Python"/>
+            </MenuItem>
+        </Menu>
         <Grid DockPanel.Dock="Bottom" Margin="0, 2, 0, 8">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <StackPanel.Resources>
@@ -40,7 +53,6 @@
                         <Setter Property="CornerRadius" Value="3"/>
                     </Style>
                 </StackPanel.Resources>
-                <Button Content="Import"/>
                 <Button Content="Create" Click="CreateNodeFunctionButton_Click" Background="#519a3e"/>
             </StackPanel>
         </Grid>
@@ -77,7 +89,7 @@
                                         <Separator Margin="1" HorizontalAlignment="Stretch" Foreground="LightGray" Height="2"/>
                                         <Border Margin="1" Padding="0">
                                             <DockPanel LastChildFill="True">
-                                                <ItemsControl ItemsSource="{Binding NodePreview.Definition.Descriptor.InputNames}">
+                                                <ItemsControl ItemsSource="{Binding NodePreview.InputNames}">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate DataType="{x:Type System:String}">
                                                             <StackPanel Orientation="Horizontal" Margin="0, 0, 10, 0">
@@ -87,7 +99,7 @@
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
-                                                <ItemsControl ItemsSource="{Binding NodePreview.Definition.Descriptor.OutputNames}" HorizontalAlignment="Right">
+                                                <ItemsControl ItemsSource="{Binding NodePreview.OutputNames}" HorizontalAlignment="Right">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate DataType="{x:Type System:String}">
                                                             <StackPanel Orientation="Horizontal">

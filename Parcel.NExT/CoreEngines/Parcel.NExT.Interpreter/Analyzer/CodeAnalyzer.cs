@@ -21,12 +21,20 @@ namespace Parcel.NExT.Interpreter.Analyzer
     }
     public static class CodeAnalyzer
     {
-        public static FunctionalNodeDescription? AnalyzeFunctionalNode(string code)
+        public static CodeSnippetComponents? AnalyzeFunctionalNode(string code)
         {
             CodeSnippetComponents snippet = new(code);
             if (snippet.AllFunctions.Length != 1)
                 throw new InvalidScriptException("Expecting only a single function definition.");
             
+            return snippet;
+        }
+        public static FunctionalNodeDescription? CompileFunctionalNode(string code)
+        {
+            CodeSnippetComponents snippet = new(code);
+            if (snippet.AllFunctions.Length != 1)
+                throw new InvalidScriptException("Expecting only a single function definition.");
+
             return new FunctionalNodeDescription(snippet.EntryFunction.Identifier.Text, new Types.Callable(snippet));
         }
     }
