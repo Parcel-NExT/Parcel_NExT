@@ -7,10 +7,10 @@ namespace Parcel.NExT.Interpreter.Analyzer
     /// <summary>
     /// Holder and analyzer for global statements only (Roslyn scripting/Pure style)
     /// </summary>
-    public class CodeSnippetComponents
+    public class SingleEntranceCodeSnippetComponents
     {
         #region Construction
-        public CodeSnippetComponents(string code)
+        public SingleEntranceCodeSnippetComponents(string code)
         {
             Code = code;
             Analyze(code);

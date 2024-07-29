@@ -1,11 +1,18 @@
-﻿using Parcel.CoreEngine.Service.Interpretation;
+﻿using Microsoft.CodeAnalysis;
+using Parcel.CoreEngine.Service.Interpretation;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.NExT.Interpreter.Analyzer;
 using System;
+using System.Linq;
+using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Parcel.Neo.PopupWindows
 {
+    // TODO: Notice we haven't updated CodeGen to work with this yet.
+    // TODO: When a snippet contains multiple functions, we can either treat it as a self-contained unit and expect a main "entry function" or import multiple functions?
+
     public class NodeItemPreviewViewModel : ObservableObject
     {
         #region Data Binding Properties
@@ -94,9 +101,22 @@ namespace Parcel.Neo.PopupWindows
         }
         private void BatchImportMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string path = openFileDialog.FileName;
+                string script = System.IO.File.ReadAllText(path);
+
+                string toolboxName = System.IO.Path.GetFileNameWithoutExtension(path);
+                FunctionalNodeDescription[]? functions = GatherFunctionsFromSnippet(script);
+                if (functions != null)
+                    ToolboxIndexer.AddTools(toolboxName, functions.Select(f => new ToolboxNodeExport(f.NodeName, f.Method)).ToArray());
+
+                (Owner as MainWindow).UpdatePaletteToolboxes();
+                Close();
+            }
         }
-        private void ImportSnippetMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void OpenSnippetMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -137,7 +157,7 @@ namespace Parcel.Neo.PopupWindows
         {
             try
             {
-                CodeSnippetComponents? snippet = CodeAnalyzer.AnalyzeFunctionalNode(code);
+                SingleEntranceCodeSnippetComponents? snippet = CodeAnalyzer.AnalyzeFunctionalNode(code);
                 CodeAnalyzer.ExtractFunctionInformation(snippet.EntryFunction, out string functionName, out string[] inputs, out string[] outputs);
                 ErrorMessage = null;
                 return new()
@@ -160,6 +180,20 @@ namespace Parcel.Neo.PopupWindows
             {
                 ErrorMessage = null;
                 return CodeAnalyzer.CompileFunctionalNode(code);
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+                return null;
+            }
+
+        }
+        private FunctionalNodeDescription[]? GatherFunctionsFromSnippet(string code)
+        {
+            try
+            {
+                ErrorMessage = null;
+                return CodeAnalyzer.CompileNodeFunctions(code);
             }
             catch (Exception e)
             {

@@ -29,8 +29,8 @@
                 <ResourceDictionary Source="../Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
             <MenuItem Header="Script">
-                <MenuItem Header="Batch Import" Click="BatchImportMenuItem_Click" ToolTip="Import all functions from a single script file." Visibility="Collapsed"/>
-                <MenuItem Header="Import..." Click="ImportSnippetMenuItem_Click" ToolTip="Import snippet from file." Visibility="Collapsed"/>
+                <MenuItem Header="Batch Import..." Click="BatchImportMenuItem_Click" ToolTip="Import all functions from a single script file."/>
+                <MenuItem Header="Open..." Click="OpenSnippetMenuItem_Click" ToolTip="Load snippet from file." Visibility="Collapsed"/>
                 <MenuItem Header="Save As..." Click="SaveSnippetAsMenuItem_Click" ToolTip="Save the snippet content into file." Visibility="Collapsed"/>
             </MenuItem>
             <MenuItem Header="Language" Visibility="Collapsed">

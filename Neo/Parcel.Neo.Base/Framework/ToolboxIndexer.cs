@@ -25,9 +25,9 @@ namespace Parcel.Neo.Base.Framework
 
         #region Method
         public static void AddTool(string toolbox, ToolboxNodeExport node)
-        {
-            RegisterTool(Toolboxes, toolbox, node);
-        }
+            => RegisterTool(Toolboxes, toolbox, node);
+        public static void AddTools(string toolbox, ToolboxNodeExport[] nodes)
+            => RegisterTools(Toolboxes, toolbox, nodes);
         private static Dictionary<string, ToolboxNodeExport[]> IndexToolboxes()
         {
             Dictionary<string, Assembly> toolboxAssemblies = [];
@@ -167,6 +167,14 @@ namespace Parcel.Neo.Base.Framework
                 toolboxes[name] = [.. toolboxes[name], null, node];
             else
                 toolboxes[name] = [node];
+        }
+        private static void RegisterTools(Dictionary<string, ToolboxNodeExport?[]> toolboxes, string name, ToolboxNodeExport[] nodes)
+        {
+            if (toolboxes.ContainsKey(name))
+                // Add divider
+                toolboxes[name] = [.. toolboxes[name], null, .. nodes];
+            else
+                toolboxes[name] = [.. nodes];
         }
         private static IEnumerable<ToolboxNodeExport> GetConstructors(Type type)
         {

@@ -30,7 +30,7 @@ namespace Parcel.NExT.Interpreter.Types
         /// TODO: Cleanup/optimization - Downstream shouldn't depend on ParameterInfo, or otherwise we should attempt to abstract only the parameters we need
         /// </remarks>
         private MethodInfo? Method { get; }
-        private CodeSnippetComponents Snippet { get; }
+        private SingleEntranceCodeSnippetComponents Snippet { get; }
         private ScriptState<object> CompiledSnippet { get; }
         #endregion
 
@@ -74,7 +74,10 @@ namespace Parcel.NExT.Interpreter.Types
             DeclaringType = constructor.DeclaringType!;
             Parameters = Constructor.GetParameters();
         }
-        public Callable(CodeSnippetComponents snippet)
+        /// <summary>
+        /// Create a callable from a single-entrace snippet
+        /// </summary>
+        public Callable(SingleEntranceCodeSnippetComponents snippet)
         {
             LocalFunctionStatementSyntax entryFunction = snippet.EntryFunction;
             if (!entryFunction.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)) || !entryFunction.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword)))

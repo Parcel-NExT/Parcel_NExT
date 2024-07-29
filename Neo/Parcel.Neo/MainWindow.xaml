@@ -360,9 +360,9 @@
             </MenuItem>
             <MenuItem Header="Node">
                 <MenuItem Header="Create Function..." Click="CreateFunctionMenuItem_Click"/>
-                <MenuItem Header="Modify Function..."/>
-                <MenuItem Header="Import Functions..."/>
-                <MenuItem Header="Export Functions..."/>
+                <MenuItem Header="Modify Function..." Visibility="Collapsed"/>
+                <MenuItem Header="(Batch) Import Functions..." ToolTip="Batch import functions from many script files." Visibility="Collapsed"/>
+                <MenuItem Header="Export Functions..." Visibility="Collapsed"/>
             </MenuItem>
             <MenuItem Header="Edit" Visibility="Collapsed">
                 <MenuItem Header="Select All (Ctrl+A)"/>
