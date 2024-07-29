@@ -4,7 +4,7 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:base="clr-namespace:Parcel.Neo"
-            mc:Ignorable="d" MouseDown="PreviewWindow_OnMouseDown"
+            mc:Ignorable="d" MouseDown="OutputWindow_OnMouseDown"
             Title="{Binding Node, Converter={StaticResource ProcessorNodeToNodeFullNameConverter}}" 
             Height="200" MinWidth="420" SizeToContent="Width" WindowStartupLocation="CenterOwner"
             DataContext="{Binding RelativeSource={RelativeSource self}}">
