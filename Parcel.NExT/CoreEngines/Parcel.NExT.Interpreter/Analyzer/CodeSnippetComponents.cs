@@ -38,13 +38,17 @@ namespace Parcel.NExT.Interpreter.Analyzer
             Usings = usings.ToArray();
 
             SyntaxList<MemberDeclarationSyntax> members = root.Members;
-            if (members.Any(m => m.Kind() != SyntaxKind.GlobalStatement))
+            if (members.Count() == 0 || members.Any(m => m.Kind() != SyntaxKind.GlobalStatement))
                 throw new InvalidScriptException("Requires statements at the global level.");
 
             LocalFunctionStatementSyntax[] localFunctions = members.Select(m => m as GlobalStatementSyntax)
                 .Where(gm => gm.Statement.Kind() == SyntaxKind.LocalFunctionStatement)
                 .Select(gm => gm.Statement as LocalFunctionStatementSyntax)
                 .ToArray();
+
+            if (localFunctions.Length == 0)
+                throw new InvalidScriptException("Requires function definition.");
+
             EntryFunction = localFunctions.Single(f => f.Modifiers.Any(t => t.IsKind(SyntaxKind.PublicKeyword)) && f.Modifiers.Any(t => t.IsKind(SyntaxKind.StaticKeyword)));
             StaticFunctions = localFunctions.Where(f => f.Modifiers.Any(t => t.IsKind(SyntaxKind.StaticKeyword))).ToArray();
             AllFunctions = localFunctions.ToArray();

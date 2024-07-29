@@ -1,10 +1,36 @@
 ﻿using Parcel.CoreEngine.Service.Interpretation;
-using Parcel.Neo.ViewModels;
+using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.NExT.Interpreter.Analyzer;
 using System;
 
 namespace Parcel.Neo.PopupWindows
 {
+    public class NodeItemPreviewViewModel : ObservableObject
+    {
+        #region Data Binding Properties
+        private string _displayName;
+        public string DisplayName
+        {
+            get => _displayName;
+            set => SetField(ref _displayName, value);
+        }
+
+        private string[] _inputNames;
+        public string[] InputNames
+        {
+            get => _inputNames;
+            set => SetField(ref _inputNames, value);
+        }
+
+        private string[] _outputNames;
+        public string[] OutputNames
+        {
+            get => _outputNames;
+            set => SetField(ref _outputNames, value);
+        }
+        #endregion
+    }
+
     public partial class CreateFunctionWindow : BaseWindow
     {
         public enum LanguageMode
@@ -58,6 +84,10 @@ namespace Parcel.Neo.PopupWindows
             string code = CodeEditor.Text;
             NodePreview = AnalyzeSnippet(code);
         }
+        private void BatchImportMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
         private void ImportSnippetMenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             throw new NotImplementedException();
@@ -86,8 +116,8 @@ namespace Parcel.Neo.PopupWindows
             set => SetField(ref _errorMessage, value);
         }
 
-        private NodesPaletteToolboxNodeItemViewModel _nodePreview;
-        public NodesPaletteToolboxNodeItemViewModel NodePreview
+        private NodeItemPreviewViewModel _nodePreview;
+        public NodeItemPreviewViewModel NodePreview
         {
             get => _nodePreview;
             set => SetField(ref _nodePreview, value);
@@ -95,31 +125,32 @@ namespace Parcel.Neo.PopupWindows
         #endregion
 
         #region Helpers
-        private NodesPaletteToolboxNodeItemViewModel AnalyzeSnippet(string code)
+        private NodeItemPreviewViewModel AnalyzeSnippet(string code)
         {
             try
             {
                 CodeSnippetComponents? snippet = CodeAnalyzer.AnalyzeFunctionalNode(code);
+                CodeAnalyzer.ExtractFunctionInformation(snippet.EntryFunction, out string functionName, out string[] inputs, out string[] outputs);
+                ErrorMessage = null;
                 return new()
                 {
-                    Definition = null,
                     DisplayName = snippet.EntryFunction.Identifier.Text,
-                    IsConstructor = false,
-                    PreviewImage = null
+                    InputNames = inputs,
+                    OutputNames = outputs,
                     // TODO: Need to populate InputNames and OutputNames somehow; Need to refactor NodesPaletteToolboxNodeItemViewModel and ToolboxNodeExport to clarify model dependencies
                 };
             }
             catch (Exception e)
             {
                 ErrorMessage = e.Message;
-                return NodePreview;
+                return null;
             }
-            
         }
         private FunctionalNodeDescription? CompileSnippet(string code)
         {
             try
             {
+                ErrorMessage = null;
                 return CodeAnalyzer.CompileFunctionalNode(code);
             }
             catch (Exception e)

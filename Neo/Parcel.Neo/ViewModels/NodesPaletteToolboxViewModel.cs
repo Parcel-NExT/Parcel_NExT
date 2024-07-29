@@ -5,6 +5,9 @@ using System.Windows.Media;
 
 namespace Parcel.Neo.ViewModels
 {
+    /// <summary>
+    /// A view model for NodesPalette, this contains reference to ToolboxNodeExport as payload for drag-n-drop purpose
+    /// </summary>
     public class NodesPaletteToolboxNodeItemViewModel : ObservableObject
     {
         #region View Components - Essential
@@ -21,6 +24,9 @@ namespace Parcel.Neo.ViewModels
             get => _displayName;
             set => SetField(ref _displayName, value);
         }
+        #endregion
+
+        #region Payload
         public ToolboxNodeExport Definition { get; set; }
         #endregion
 

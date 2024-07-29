@@ -1,4 +1,5 @@
-﻿using Parcel.CoreEngine.Service.Interpretation;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Parcel.CoreEngine.Service.Interpretation;
 
 namespace Parcel.NExT.Interpreter.Analyzer
 {
@@ -36,6 +37,12 @@ namespace Parcel.NExT.Interpreter.Analyzer
                 throw new InvalidScriptException("Expecting only a single function definition.");
 
             return new FunctionalNodeDescription(snippet.EntryFunction.Identifier.Text, new Types.Callable(snippet));
+        }
+        public static void ExtractFunctionInformation(LocalFunctionStatementSyntax function, out string name, out string[] inputName, out string[] outputNames)
+        {
+            name = function.Identifier.Text;
+            inputName = [.. function.ParameterList.Parameters.Select(p => p.Identifier.Text)];
+            outputNames = [function.ReturnType.ToString()]; // TODO: Extract and append `out` parameters
         }
     }
 }
