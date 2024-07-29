@@ -288,6 +288,18 @@
                                 </nodify:NodeInput.HeaderTemplate>
                             </nodify:NodeInput>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:PrimitiveEnumInputConnector}">
+                            <nodify:NodeInput>
+                                <nodify:NodeInput.HeaderTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:PrimitiveEnumInputConnector}">
+                                        <StackPanel Orientation="Horizontal" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:NodeInput},Mode=FindAncestor}}">
+                                            <TextBlock Text="{Binding Title}" Margin="0 0 5 0" />
+                                            <ComboBox ItemsSource="{Binding Options}" SelectedValue="{Binding DisplayValue}" MinWidth="25" Visibility="{Binding IsConnected, Converter={converters:BooleanToVisibilityConverter Negate=True}}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </nodify:NodeInput.HeaderTemplate>
+                            </nodify:NodeInput>
+                        </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:PrimitiveNumberInputConnector}">
                             <nodify:NodeInput>
                                 <nodify:NodeInput.HeaderTemplate>
