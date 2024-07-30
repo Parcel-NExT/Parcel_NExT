@@ -18,7 +18,16 @@ namespace Parcel.Graphing.PlotConfigurations
         public int ImageWidth { get; set; } = 600;
         public int ImageHeight { get; set; } = 400;
     }
-
+    public sealed class NumberDisplayConfiguration : BasicConfiguration
+    {
+        public int DecimalPlaces { get; set; } = 2;
+        public Color NumberColor { get; set; } = Color.Parse("#1F77B4FF");
+        public Color TitleColor { get; set; } = Color.Parse("#192a39FF");
+    }
+    public sealed class TableDisplayConfiguration : BasicConfiguration
+    {
+        public Color Color { get; set; } = Color.Parse("#1F77B4FF");
+    }
     public sealed class ScatterPlotConfiguration : BasicConfiguration
     {
         public string Title { get; set; } = string.Empty;

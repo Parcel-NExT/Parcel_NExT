@@ -16,6 +16,48 @@ namespace Parcel.Graphing
 
     public static class Plot
     {
+        #region Numerical Analytics
+        public static Image NumberDisplay(string label, double number, NumberDisplayConfiguration? configurations = null)
+        {
+            configurations ??= new NumberDisplayConfiguration()
+            {
+                ImageWidth = 200,
+                ImageHeight = 160,
+            };
+
+            ScottPlot.Plot plot = new();
+            plot.Layout.Frameless();
+            plot.HideGrid();
+
+            const float padding = 40;
+
+            ScottPlot.Plottables.Text titleText = plot.Add.Text($"{label}\n\n", configurations.ImageWidth + padding * 2, configurations.ImageHeight + padding * 2);
+            titleText.LabelFontSize = 22;
+            titleText.LabelBold = false;
+            titleText.LabelFontColor = Convert(configurations.TitleColor);
+            titleText.LabelPadding = padding;
+            titleText.LabelAlignment = ScottPlot.Alignment.MiddleCenter;
+
+            ScottPlot.Plottables.Text numberText = plot.Add.Text($"\n{number.ToString($"F{configurations.DecimalPlaces}")}", configurations.ImageWidth + padding * 2, configurations.ImageHeight + padding * 2);
+            numberText.LabelFontSize = 26;
+            numberText.LabelBold = true;
+            numberText.LabelFontColor = Convert(configurations.NumberColor);
+            numberText.LabelBackgroundColor = ScottPlot.Colors.DarkSlateGray.WithAlpha(.1);
+            numberText.LabelBorderColor = ScottPlot.Colors.Black;
+            numberText.LabelBorderWidth = 3;
+            numberText.LabelPadding = padding;
+            numberText.LabelAlignment = ScottPlot.Alignment.MiddleCenter;
+
+            string path = GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 60 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 60 : configurations.ImageHeight);
+            return new Image(path);
+        }
+        public static Image TableDisplay(DataGrid dataGrid, TableDisplayConfiguration configurations)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
         #region Standard Plots
         public static Image ScatterPlot(double[] x, double[][] ys, ScatterPlotMultiSeriesConfiguration? configurations = null)
         {
@@ -266,7 +308,7 @@ namespace Parcel.Graphing
 
             static float MeasureWidth(string text, int fontSize)
             {
-                return new ScottPlot.Label()
+                return new ScottPlot.LabelStyle()
                 {
                     Text = text,
                     FontSize = fontSize
