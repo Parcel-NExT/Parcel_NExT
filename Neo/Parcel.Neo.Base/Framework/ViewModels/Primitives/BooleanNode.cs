@@ -18,7 +18,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.Primitives
         #endregion
         
         #region Node Interface
-        private readonly OutputConnector _truthOutput = new OutputConnector(typeof(bool))
+        private readonly OutputConnector _truthOutput = new(typeof(bool))
         {
             Title = "Truth"
         }; 

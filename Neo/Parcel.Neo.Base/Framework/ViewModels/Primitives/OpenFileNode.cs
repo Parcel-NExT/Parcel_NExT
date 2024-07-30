@@ -13,7 +13,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.Primitives
         #endregion
         
         #region Node Interface
-        private readonly OutputConnector _filePathOutput = new OutputConnector(typeof(string))
+        private readonly OutputConnector _filePathOutput = new(typeof(string))
         {
             Title = "File"
         }; 
