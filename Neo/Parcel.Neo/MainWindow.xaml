@@ -288,6 +288,56 @@
                                 </nodify:NodeInput.HeaderTemplate>
                             </nodify:NodeInput>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:PrimitiveVector2InputConnector}">
+                            <nodify:NodeInput>
+                                <nodify:NodeInput.HeaderTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:PrimitiveVector2InputConnector}">
+                                        <StackPanel Orientation="Horizontal" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:NodeInput},Mode=FindAncestor}}">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="FontSize" Value="12"/>
+                                                    <Setter Property="Margin" Value="0"/>
+                                                    <Setter Property="Padding" Value="0"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <TextBlock Text="{Binding Title}" Margin="0 0 5 0" />
+                                            <Label Content="(X: "/>
+                                            <TextBox Text="{Binding ValueX}" MinWidth="25" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" Visibility="{Binding IsConnected, Converter={converters:BooleanToVisibilityConverter Negate=True}}" />
+                                            <Label Content="Y: "/>
+                                            <TextBox Text="{Binding ValueY}" MinWidth="25" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" Visibility="{Binding IsConnected, Converter={converters:BooleanToVisibilityConverter Negate=True}}" />
+                                            <Label Content=")"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </nodify:NodeInput.HeaderTemplate>
+                            </nodify:NodeInput>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:PrimitiveSizeInputConnector}">
+                            <nodify:NodeInput>
+                                <nodify:NodeInput.HeaderTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:PrimitiveSizeInputConnector}">
+                                        <StackPanel Orientation="Horizontal" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:NodeInput},Mode=FindAncestor}}">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="FontSize" Value="12"/>
+                                                    <Setter Property="Margin" Value="0"/>
+                                                    <Setter Property="Padding" Value="0"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <TextBlock Text="{Binding Title}" Margin="0 0 5 0" />
+                                            <Label Content="("/>
+                                            <TextBox Text="{Binding Width}" MinWidth="25" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" Visibility="{Binding IsConnected, Converter={converters:BooleanToVisibilityConverter Negate=True}}" />
+                                            <Label Content="x"/>
+                                            <TextBox Text="{Binding Height}" MinWidth="25" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" Visibility="{Binding IsConnected, Converter={converters:BooleanToVisibilityConverter Negate=True}}" />
+                                            <Label Content=")"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </nodify:NodeInput.HeaderTemplate>
+                            </nodify:NodeInput>
+                        </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:PrimitiveEnumInputConnector}">
                             <nodify:NodeInput>
                                 <nodify:NodeInput.HeaderTemplate>

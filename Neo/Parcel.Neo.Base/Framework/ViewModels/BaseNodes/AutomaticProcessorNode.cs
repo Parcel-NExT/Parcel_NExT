@@ -6,6 +6,7 @@ using Parcel.Neo.Base.Serialization;
 using System.Diagnostics;
 using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.Interpretation;
+using System.Numerics;
 
 namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 {
@@ -107,6 +108,10 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                     Input.Add(new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion });
                 else if (inputType == typeof(Color))
                     Input.Add(new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion });
+                else if (inputType == typeof(Vector2))
+                    Input.Add(new PrimitiveVector2InputConnector(defaultValue != DBNull.Value ? (Vector2)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion });
+                else if (inputType == typeof(System.Drawing.Size))
+                    Input.Add(new PrimitiveSizeInputConnector(defaultValue != DBNull.Value ? (System.Drawing.Size)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion });
                 else
                     Input.Add(new InputConnector(inputType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion });
             }

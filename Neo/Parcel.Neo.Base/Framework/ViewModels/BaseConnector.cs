@@ -5,6 +5,7 @@ using Parcel.Types;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Base.DataTypes;
 using System.ComponentModel;
+using System.Numerics;
 
 namespace Parcel.Neo.Base.Framework.ViewModels
 {
@@ -17,6 +18,88 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         {  
             get => _defaultDataStorage;
             set => SetField(ref _defaultDataStorage, value is string s ? bool.Parse(s) : value); 
+        }
+    }
+    public sealed class PrimitiveVector2InputConnector : PrimitiveInputConnector
+    {
+        public PrimitiveVector2InputConnector(Vector2? defaultValue = null) : base(typeof(Vector2))
+            => Value = defaultValue ?? new(); // Struct cannot be null
+
+        public override object? Value
+        {
+            get => _defaultDataStorage;
+            set
+            {
+                if (value is string s)
+                {
+                    string[] parts = (s.Contains('x') ? s.Split('x') : s.Split(',')) // Separator can be either , or x
+                        .Select(s => s.Trim())
+                        .ToArray();
+                    SetField(ref _defaultDataStorage, new Vector2(float.Parse(parts.First()), float.Parse(parts.Last())));
+                }
+                else 
+                    SetField(ref _defaultDataStorage, (Vector2)value);
+            }
+        }
+
+        public string ValueX
+        {
+            get => ((Vector2)_defaultDataStorage).X.ToString();
+            set
+            {
+                var original = (Vector2)_defaultDataStorage;
+                SetField(ref _defaultDataStorage, new Vector2(float.Parse(value), original.Y));
+            }
+        }
+        public string ValueY
+        {
+            get => ((Vector2)_defaultDataStorage).Y.ToString();
+            set
+            {
+                var original = (Vector2)_defaultDataStorage;
+                SetField(ref _defaultDataStorage, new Vector2(original.X, float.Parse(value)));
+            }
+        }
+    }
+    public sealed class PrimitiveSizeInputConnector : PrimitiveInputConnector
+    {
+        public PrimitiveSizeInputConnector(System.Drawing.Size? defaultValue = null) : base(typeof(System.Drawing.Size))
+            => Value = defaultValue ?? new(); // Struct cannot be be null
+
+        public override object? Value
+        {
+            get => _defaultDataStorage;
+            set
+            {
+                if (value is string s)
+                {
+                    string[] parts = (s.Contains('x') ? s.Split('x') : s.Split(',')) // Separator can be either , or x
+                        .Select(s => s.Trim())
+                        .ToArray();
+                    SetField(ref _defaultDataStorage, new System.Drawing.Size(int.Parse(parts.First()), int.Parse(parts.Last())));
+                }
+                else
+                    SetField(ref _defaultDataStorage, (System.Drawing.Size)value);
+            }
+        }
+
+        public string Width
+        {
+            get => ((System.Drawing.Size)_defaultDataStorage).Width.ToString();
+            set
+            {
+                var original = (System.Drawing.Size)_defaultDataStorage;
+                SetField(ref _defaultDataStorage, new System.Drawing.Size(int.Parse(value), original.Height));
+            }
+        }
+        public string Height
+        {
+            get => ((System.Drawing.Size)_defaultDataStorage).Height.ToString();
+            set
+            {
+                var original = (System.Drawing.Size)_defaultDataStorage;
+                SetField(ref _defaultDataStorage, new System.Drawing.Size(original.Width, int.Parse(value)));
+            }
         }
     }
     public sealed class PrimitiveColorInputConnector : PrimitiveInputConnector
