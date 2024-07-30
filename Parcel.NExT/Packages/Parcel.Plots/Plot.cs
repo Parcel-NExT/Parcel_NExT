@@ -54,6 +54,7 @@ namespace Parcel.Graphing
         }
         public static Image TableDisplay(DataGrid dataGrid, TableDisplayConfiguration configurations)
         {
+            // Remark: This is gonna take some effort.
             throw new NotImplementedException();
         }
         #endregion
