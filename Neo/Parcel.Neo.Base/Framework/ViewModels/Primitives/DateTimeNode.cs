@@ -19,7 +19,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.Primitives
         #endregion
         
         #region Node Interface
-        private readonly OutputConnector _dateTimeOutput = new OutputConnector(typeof(DateTime))
+        private readonly OutputConnector _dateTimeOutput = new(typeof(DateTime))
         {
             Title = "DateTime"
         }; 

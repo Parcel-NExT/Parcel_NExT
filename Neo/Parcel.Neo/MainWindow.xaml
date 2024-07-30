@@ -574,50 +574,37 @@ BasedOn="{StaticResource {x:Type TextBox}}">
 
                             <!--Node Type Data Templates-->
                             <DataTemplate DataType="{x:Type baseNodes:PrimitiveNode}">
-                                <nodify:Node Header="{Binding Title}"
-          Content="{Binding}"
-          Input="{Binding Input}"
-          Output="{Binding Output}"
-          InputConnectorTemplate="{StaticResource PrimitiveNodeInputConnectorTemplate}"
-          OutputConnectorTemplate="{StaticResource PrimitiveNodeOutputConnectorTemplate}">
+                                <nodify:Node Header="{Binding Title}" Content="{Binding}" Input="{Binding Input}" Output="{Binding Output}" InputConnectorTemplate="{StaticResource PrimitiveNodeInputConnectorTemplate}" OutputConnectorTemplate="{StaticResource PrimitiveNodeOutputConnectorTemplate}">
                                     <nodify:Node.Resources>
                                         <DataTemplate DataType="{x:Type baseNodes:PrimitiveNode}">
-                                            <TextBox Text="{Binding Value}"
-                  MinWidth="100" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride"
-                  Margin="5 0 0 0" />
+                                            <TextBox Text="{Binding Value}" MinWidth="100" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" Margin="5 0 0 0" />
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type primitives:OpenFileNode}">
                                             <DockPanel LastChildFill="True">
                                                 <Button DockPanel.Dock="Right" Content="Open" Click="OpenFileNode_ButtonClick"></Button>
-                                                <TextBox Text="{Binding Path}"
-                      MinWidth="100" MaxWidth="180" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride"
-                      Margin="5 0 0 0" />
+                                                <TextBox Text="{Binding Path}" MinWidth="100" MaxWidth="180" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" Margin="5 0 0 0" />
                                             </DockPanel>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type primitives:SaveFileNode}">
                                             <DockPanel LastChildFill="True">
                                                 <Button DockPanel.Dock="Right" Content="Open" Click="SaveFileNode_ButtonClick"></Button>
-                                                <TextBox Text="{Binding Path}"
-                      MinWidth="100" MaxWidth="180" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride"
-                      Margin="5 0 0 0" />
+                                                <TextBox Text="{Binding Path}" MinWidth="100" MaxWidth="180" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" Margin="5 0 0 0" />
                                             </DockPanel>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type primitives:BooleanNode}">
-                                            <CheckBox IsChecked="{Binding Value}"
-                   MinWidth="100"
-                   Margin="5 0 0 0" />
+                                            <CheckBox IsChecked="{Binding Value}" MinWidth="100" Margin="5 0 0 0" />
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type primitives:PasswordNode}">
+                                            <PasswordBox PasswordChanged="PrimitiveInputPasswordBox_PasswordChanged" MinWidth="100" Margin="5 0 0 0" />
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type primitives:TextNode}">
+                                            <TextBox Text="{Binding Value}" AcceptsReturn="True" AcceptsTab="True" Width="100" Height="60" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="5 2 0 2" TextAlignment="Left" VerticalContentAlignment="Top"/>
                                         </DataTemplate>
                                     </nodify:Node.Resources>
                                 </nodify:Node>
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type baseNodes:ProcessorNode}">
-                                <nodify:Node Header="{Binding Title}"
-          Input="{Binding Input}"
-          Output="{Binding Output}"
-          Content="{Binding}"
-          ToolTip="{Binding Tooltip}"
-          InputConnectorTemplate="{StaticResource PrimitiveNodeInputConnectorTemplate}"
-          OutputConnectorTemplate="{StaticResource PrimitiveNodeOutputConnectorTemplate}">
+                                <nodify:Node Header="{Binding Title}" Input="{Binding Input}" Output="{Binding Output}" Content="{Binding}" ToolTip="{Binding Tooltip}" InputConnectorTemplate="{StaticResource PrimitiveNodeInputConnectorTemplate}" OutputConnectorTemplate="{StaticResource PrimitiveNodeOutputConnectorTemplate}">
                                     <nodify:Node.Resources>
                                         <SolidColorBrush Color="MediumPurple" x:Key="PreviewModeBorderColor"></SolidColorBrush>
                                         <Style TargetType="{x:Type nodify:Node}">
@@ -678,12 +665,8 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                             </DataTemplate.Resources>
                                             <DockPanel LastChildFill="True">
                                                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                                    <Button Style="{StaticResource IconButton}"
-                         Content="{StaticResource PlusIcon}"
-                         Command="{Binding AddEntryCommand}" />
-                                                    <Button Style="{StaticResource IconButton}"
-                         Content="{StaticResource RemoveKeyIcon}"
-                         Command="{Binding RemoveEntryCommand}" />
+                                                    <Button Style="{StaticResource IconButton}" Content="{StaticResource PlusIcon}" Command="{Binding AddEntryCommand}" />
+                                                    <Button Style="{StaticResource IconButton}" Content="{StaticResource RemoveKeyIcon}" Command="{Binding RemoveEntryCommand}" />
                                                 </StackPanel>
                                                 <ListView ItemsSource="{Binding Definitions}">
                                                     <ListView.ItemContainerStyle>
@@ -695,8 +678,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                         <DataTemplate DataType="{x:Type specialNodes:DictionaryEntryDefinition}">
                                                             <DockPanel LastChildFill="True" MinWidth="150">
                                                                 <TextBox Text="{Binding Name}" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride"></TextBox>
-                                                                <ComboBox ItemsSource="{Binding Source={StaticResource DictionaryEntryTypeEntriesFromEnum}}"
-                                       SelectedItem="{Binding Type}"></ComboBox>
+                                                                <ComboBox ItemsSource="{Binding Source={StaticResource DictionaryEntryTypeEntriesFromEnum}}" SelectedItem="{Binding Type}"></ComboBox>
                                                                 <TextBox Text="{Binding Value}" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride"></TextBox>
                                                             </DockPanel>
                                                         </DataTemplate>
@@ -839,12 +821,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                             </DataTemplate>
                             <!--Special Nodes-->
                             <DataTemplate DataType="{x:Type specialNodes:GraphStats}">
-                                <nodify:Node Header="{Binding Title}"
-          Content="{Binding}"
-          Input="{Binding Input}"
-          Output="{Binding Output}"
-          InputConnectorTemplate="{StaticResource PrimitiveNodeInputConnectorTemplate}"
-          OutputConnectorTemplate="{StaticResource PrimitiveNodeOutputConnectorTemplate}">
+                                <nodify:Node Header="{Binding Title}" Content="{Binding}" Input="{Binding Input}" Output="{Binding Output}" InputConnectorTemplate="{StaticResource PrimitiveNodeInputConnectorTemplate}" OutputConnectorTemplate="{StaticResource PrimitiveNodeOutputConnectorTemplate}">
                                     <nodify:Node.ContentTemplate>
                                         <DataTemplate DataType="{x:Type specialNodes:GraphStats}">
                                             <DataTemplate.Resources>

@@ -18,7 +18,8 @@ namespace Parcel.Neo.Base.Toolboxes.Basic
             new("String", typeof(StringNode)),
             new("Boolean", typeof(BooleanNode)),
             new("DateTime", typeof(DateTimeNode)),
-            // new("Text", typeof(object)),
+            new("Password", typeof(PasswordNode)),
+            new("Text", typeof(TextNode)),
             new("File", typeof(OpenFileNode)),
             // new("Save File", typeof(object)),
             // new("Array", typeof(object)), // Generic array representation of all above types, CANNOT have mixed types

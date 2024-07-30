@@ -268,6 +268,13 @@ namespace Parcel.Neo
                 e.Handled = true;
             }
         }
+        private void PrimitiveInputPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            PasswordBox box = sender as PasswordBox;
+            PrimitiveNode node = box.DataContext as PrimitiveNode;
+            if (node != null && node is PasswordNode password)
+                password.Value = box.Password;
+        }
         private bool _consoleIsOpen;
         private void ToggleConsoleWindowMenuItem_Click(object sender, RoutedEventArgs e)
         {

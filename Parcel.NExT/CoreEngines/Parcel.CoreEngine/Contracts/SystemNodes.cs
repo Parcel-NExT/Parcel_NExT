@@ -20,6 +20,8 @@
         public const string FrontEndVideoAnnotationNodeTarget = "Parcel.Annotation.Video:Frontend";
         public const string PrimitiveNumberNodeTarget = "Parcel.Number:Primitive";
         public const string PrimitiveStringNodeTarget = "Parcel.String:Primitive";
+        public const string PrimitivePasswordNodeTarget = "Parcel.Password:Primitive";
+        public const string PrimitiveTextNodeTarget = "Parcel.Text:Primitive";
         public const string FlowChartDataEntityNodeTarget = "Parcel.DataEntity:FlowChart";
         public const string FlowChartActionEntityNodeTarget = "Parcel.ActionEntity:FlowChart";
         #endregion
@@ -48,6 +50,9 @@
             // Basic raw data types
             PrimitiveNumberNodeTarget,
             PrimitiveStringNodeTarget,
+            // Enhanced Semantics
+            PrimitivePasswordNodeTarget,
+            PrimitiveTextNodeTarget,
 
             // Generic conceptual flow chart representation
             FlowChartDataEntityNodeTarget, // A representational node for flowchart data entity, it contains no logic and is used just like Custom node but semantically refers to a data input or output. Users can create attributes on this and make connections. All runtimes should generally just ignore this node during evaluation.
