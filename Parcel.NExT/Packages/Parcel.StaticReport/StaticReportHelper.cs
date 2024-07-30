@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Numerics;
 using Color = Parcel.Types.Color;
 
-namespace Parcel.StaticReport
+namespace Parcel.Graphing
 {
     public class ReportFormattingParameters
     {
