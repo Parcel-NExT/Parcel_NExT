@@ -275,6 +275,12 @@ namespace Parcel.Neo
             if (node != null && node is PasswordNode password)
                 password.Value = box.Password;
         }
+        private void SaveCanvasMenuItem_Click(object sender, RoutedEventArgs e)
+            => SaveCanvas(false);
+        private void SaveCanvasAsMenuItem_Click(object sender, RoutedEventArgs e)
+            => SaveCanvas(true);
+        private void OpenCanvasMenuItem_Click(object sender, RoutedEventArgs e)
+            => OpenCanvas();
         private bool _consoleIsOpen;
         private void ToggleConsoleWindowMenuItem_Click(object sender, RoutedEventArgs e)
         {
