@@ -43,6 +43,8 @@ namespace Parcel.Neo.Base.Serialization
             // Serialize
             NodeGraphData graph = new()
             {
+                RuntimeMetadata = new(),
+                GraphMetadata = new(),
                 Nodes = nodes,
                 Connections = connections
             };
@@ -102,12 +104,12 @@ namespace Parcel.Neo.Base.Serialization
             writer.Write(graph.RuntimeMetadata.Remark);
 
             // Graph Metadata
-            writer.Write(graph.Title);
-            writer.Write(graph.Author);
-            writer.Write(graph.Description);
-            writer.Write(graph.CreationTime.ToString("yyyy-MM-dd"));
-            writer.Write(graph.UpdateTime.ToString("yyyy-MM-dd"));
-            writer.Write(graph.Revision);
+            writer.Write(graph.GraphMetadata.Title);
+            writer.Write(graph.GraphMetadata.Author);
+            writer.Write(graph.GraphMetadata.Description);
+            writer.Write(graph.GraphMetadata.CreationTime.ToString("yyyy-MM-dd"));
+            writer.Write(graph.GraphMetadata.UpdateTime.ToString("yyyy-MM-dd"));
+            writer.Write(graph.GraphMetadata.Revision);
 
             // Nodes
             writer.Write(graph.Nodes.Length);
@@ -146,18 +148,22 @@ namespace Parcel.Neo.Base.Serialization
                 Remark = reader.ReadString()
             };
 
-            // Initialize graph
-            NodeGraphData graph = new()
+            // Graph Metadata
+            GraphMetadata graphMetadata = new()
             {
-                RuntimeMetadata = runtimeMetadata,
-
-                // Graph Metadata
                 Title = reader.ReadString(),
                 Author = reader.ReadString(),
                 Description = reader.ReadString(),
                 CreationTime = DateTime.Parse(reader.ReadString()),
                 UpdateTime = DateTime.Parse(reader.ReadString()),
                 Revision = reader.ReadInt32()
+            };
+
+            // Initialize graph
+            NodeGraphData graph = new()
+            {
+                RuntimeMetadata = runtimeMetadata,
+                GraphMetadata = graphMetadata,
             };
 
             // Nodes

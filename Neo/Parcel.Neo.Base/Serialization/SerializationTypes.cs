@@ -14,6 +14,16 @@ namespace Parcel.Neo.Base.Serialization
         public string FileformatVersion { get; set; } = "1.0";
         public string Remark { get; set; } = "This file format is for legacy purpose only.";
     }
+    internal sealed class GraphMetadata
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+
+        public DateTime CreationTime { get; set; }
+        public DateTime UpdateTime { get; set; }
+        public int Revision { get; set; } = 0;
+    }
 
     internal class NodeGraphData
     {
@@ -22,13 +32,7 @@ namespace Parcel.Neo.Base.Serialization
         #endregion
 
         #region Graph Metadata
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public string Description { get; set; }
-        
-        public DateTime CreationTime { get; set; }
-        public DateTime UpdateTime { get; set; }
-        public int Revision { get; set; }
+        public GraphMetadata GraphMetadata { get; set; }
         #endregion
         
         #region Nodes Data
