@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.Interpretation;
 using System.Numerics;
+using Parcel.CoreEngine.Messaging;
 
 namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 {
@@ -75,10 +76,22 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 Type inputType = InputTypes[index];
                 object? defaultValue = DefaultInputValues?[index];
                 string preferredTitle = InputNames?[index];
+                InputConnector? connector = null;
+
                 if (Nullable.GetUnderlyingType(inputType) != null)
-                    CreateInputPin(Nullable.GetUnderlyingType(inputType), defaultValue, preferredTitle); // TODO: Current implementation has issue making nullable default values as type default rather than null
-                else 
-                    CreateInputPin(inputType, defaultValue, preferredTitle);
+                    connector = CreateInputPin(Nullable.GetUnderlyingType(inputType), defaultValue, preferredTitle); // TODO: Current implementation has issue making nullable default values as type default rather than null
+                else
+                    connector = CreateInputPin(inputType, defaultValue, preferredTitle);
+
+                // Update serialization
+                ProcessorNodeMemberSerialization.Add(preferredTitle, new NodeSerializationRoutine(
+                    () => connector is PrimitiveInputConnector p ? p.SerializeStorage() : [],
+                    bytes =>
+                    {
+                        if (connector is PrimitiveInputConnector p)
+                            p.DeserializeStorage(bytes);
+                    }
+                ));
             }
 
             for (int index = 0; index < OutputTypes.Length; index++)
@@ -88,28 +101,32 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 Output.Add(new OutputConnector(outputType) { Title = preferredTitle ?? "Result" });
             }
 
-            void CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
+            InputConnector CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
             {
                 bool supportsCoercion = inputType.IsArray; // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
 
+                InputConnector? connector = null;
                 if (inputType == typeof(bool))
-                    Input.Add(new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(string))
-                    Input.Add(new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType.IsEnum)
-                    Input.Add(new PrimitiveEnumInputConnector(inputType, defaultValue != DBNull.Value ? defaultValue : null) { Title = preferredTitle ?? "Enum", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveEnumInputConnector(inputType, defaultValue != DBNull.Value ? defaultValue : null) { Title = preferredTitle ?? "Enum", AllowsArrayCoercion = supportsCoercion };
                 else if (TypeHelper.IsNumericalType(inputType))
-                    Input.Add(new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(DateTime))
-                    Input.Add(new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(Color))
-                    Input.Add(new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(Vector2))
-                    Input.Add(new PrimitiveVector2InputConnector(defaultValue != DBNull.Value ? (Vector2)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveVector2InputConnector(defaultValue != DBNull.Value ? (Vector2)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(System.Drawing.Size))
-                    Input.Add(new PrimitiveSizeInputConnector(defaultValue != DBNull.Value ? (System.Drawing.Size)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveSizeInputConnector(defaultValue != DBNull.Value ? (System.Drawing.Size)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion };
                 else
-                    Input.Add(new InputConnector(inputType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion });
+                    connector = new InputConnector(inputType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion };
+
+                Input.Add(connector);
+                return connector;
             }
             static string? GetPreferredTitle(Type type)
             {
