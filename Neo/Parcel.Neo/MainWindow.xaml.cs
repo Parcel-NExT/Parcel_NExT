@@ -77,7 +77,7 @@ namespace Parcel.Neo
             set
             {
                 SetField(ref _currentFilePath, value);
-                DynamicTitle = $"{(Owner != null ? "<Reference>" : "<Main>")} {System.IO.Path.GetFileNameWithoutExtension(value)}";
+                DynamicTitle = $"{(Owner != null ? "<Subgraph Reference>" : "<Main Graph>")} {System.IO.Path.GetFileNameWithoutExtension(value)}";
             }
         }
 
@@ -637,10 +637,11 @@ namespace Parcel.Neo
         {
             if (createNewFile || CurrentFilePath == null || !System.IO.File.Exists(CurrentFilePath))
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog
+                SaveFileDialog saveFileDialog = new()
                 {
                     Title = "Choose Where to Save Current Workflow",
-                    Filter = _parcelWorkflowFileNameFilter
+                    Filter = _parcelWorkflowFileNameFilter,
+                    AddExtension = true,
                 };
                 if (saveFileDialog.ShowDialog() == true)
                     CurrentFilePath = saveFileDialog.FileName;
