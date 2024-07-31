@@ -84,6 +84,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                     connector = CreateInputPin(inputType, defaultValue, preferredTitle);
 
                 // Update serialization
+                // TODO: (Remark-cz) At the moment this is not working yet because when deserialization happens connectors are not initialized yet and when PopulateInputsOutputs runs it's already past serialization
                 ProcessorNodeMemberSerialization.Add(preferredTitle, new NodeSerializationRoutine(
                     () => connector is PrimitiveInputConnector p ? p.SerializeStorage() : [],
                     bytes =>
