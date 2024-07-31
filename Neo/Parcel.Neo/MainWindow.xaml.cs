@@ -28,7 +28,7 @@ namespace Parcel.Neo
     /// </summary>
     public sealed partial class MainWindow : BaseWindow
     {
-        private const string _parcelWorkflowFileNameFilter = "Parcel workflow file (*.parcel)|*.parcel|YAML file (*.yaml)|*.yaml";
+        private const string _parcelWorkflowFileNameFilter = "Parcel Workflow File (Legacy) (*.parcel)|*.parcel|All Files (*.*)|*.*";
 
         #region Constructor
         public MainWindow()
@@ -622,9 +622,9 @@ namespace Parcel.Neo
                 graphPreviewWindow.Value.Close();
             
             // Open
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            OpenFileDialog openFileDialog = new()
             {
-                Title = "Select Parcel Workflow File",
+                Title = "Select Parcel Workflow File Location",
                 Filter = _parcelWorkflowFileNameFilter
             };
             if (openFileDialog.ShowDialog() == true)
