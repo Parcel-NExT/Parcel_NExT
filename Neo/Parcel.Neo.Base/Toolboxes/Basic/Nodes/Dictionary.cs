@@ -38,7 +38,7 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
     public class Dictionary : ProcessorNode
     {
         #region Node Interface
-        private readonly OutputConnector _dataTableOutput = new OutputConnector(typeof(DataGrid))
+        private readonly OutputConnector _dataTableOutput = new(typeof(DataGrid))
         {
             Title = "Dictionary"
         };
@@ -52,10 +52,10 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
             Title = NodeTypeName = "Dictionary";
             Output.Add(_dataTableOutput);
 
-            Definitions = new ObservableCollection<DictionaryEntryDefinition>()
-            {
-                new DictionaryEntryDefinition() { Name = "Entry 1" }
-            };
+            Definitions =
+            [
+                new() { Name = "Entry 1" }
+            ];
 
             AddEntryCommand = new RequeryCommand(
                 () => Definitions.Add(new DictionaryEntryDefinition() { Name = $"Entry {Definitions.Count + 1}" }),
