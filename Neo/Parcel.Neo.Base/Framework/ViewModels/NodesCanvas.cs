@@ -6,6 +6,9 @@ using Parcel.Neo.Base.Serialization;
 
 namespace Parcel.Neo.Base.Framework.ViewModels
 {
+    /// <summary>
+    /// Serialization abstraction
+    /// </summary>
     public class CanvasSerialization
     {
         public List<BaseNode> Nodes { get; set; }
@@ -83,7 +86,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         #region Interface
         public void Open(string path)
         {
-            CanvasSerialization loaded = new GraphSerializer().Deserialize(path, this);
+            CanvasSerialization loaded = GraphSerializer.Deserialize(path, this);
             
             SelectedNodes.Clear();
             Nodes.Clear(); Nodes.AddRange(loaded.Nodes);
@@ -92,10 +95,10 @@ namespace Parcel.Neo.Base.Framework.ViewModels
 
         public void Save(string path)
         {
-            new GraphSerializer().Serialize(path, new CanvasSerialization()
+            GraphSerializer.Serialize(path, new CanvasSerialization()
             {
-                Nodes = Nodes.ToList(),
-                Connections = Connections.ToList()
+                Nodes = [.. Nodes],
+                Connections = [.. Connections]
             });
         }
         #endregion

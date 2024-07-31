@@ -10,7 +10,7 @@ namespace Parcel.Neo.Base.Serialization
     {
         public CanvasSerialization Load(string filePath)
         {
-            CanvasSerialization loaded = new GraphSerializer().Deserialize(filePath, new NodesCanvas());
+            CanvasSerialization loaded = GraphSerializer.Deserialize(filePath, new NodesCanvas());
             return loaded;
         }
 
