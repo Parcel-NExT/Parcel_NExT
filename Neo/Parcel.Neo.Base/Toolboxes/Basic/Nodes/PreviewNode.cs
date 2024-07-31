@@ -5,6 +5,13 @@ using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
 namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
 {
+    /// <summary>
+    /// Previously: Provides a dedicated routing (compared to default main output).
+    /// New (proposed): Provides on-canvas preview of contents.
+    /// </summary>
+    /// <remarks>
+    /// TODO: @intern Revamp Preview node to provide on-surface preview instead of summoning a result window
+    /// </remarks>
     public class PreviewNode : ProcessorNode
     {
         #region Node Interface
