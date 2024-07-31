@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using Parcel.CoreEngine.Helpers;
 using Parcel.NExT.Interpreter.Types;
+using Parcel.CoreEngine.Service.Interpretation;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -83,6 +84,20 @@ namespace Parcel.Neo.Base.Framework
             // Remark: Notice that boolean algebra and String are available in PSL - Pending deciding whether we need dedicated exposure
 
             return toolboxes;
+        }
+        #endregion
+
+        #region Internal Method (Serialization Use)
+        /// <summary>
+        /// Loads a tool from a resource identifier.
+        /// </summary>
+        internal static FunctionalNodeDescription? LoadTool(string functionResourceIdentifier)
+        {
+            IEnumerable<ToolboxNodeExport> availableNodes = Toolboxes.SelectMany(toolbox => toolbox.Value);
+            ToolboxNodeExport? found = availableNodes.FirstOrDefault(n => n?.Descriptor.Method.GetRuntimeNodeTypeIdentifier() == functionResourceIdentifier);
+            if (found == null)
+                throw new ApplicationException($"Loading from arbitrary dynamic assembly during serialization is not supported at this moment!");
+            return found.Descriptor;
         }
         #endregion
 
@@ -258,7 +273,7 @@ namespace Parcel.Neo.Base.Framework
                 foreach (MethodInfo method in methods)
                 {
                     string? tooltip = null;
-                    string signature = GenerateMethodSignature(method);
+                    string signature = RetrieveXMLMethodSignature(method);
                     nodeSummary?.TryGetValue(signature, out tooltip);
                     yield return new ToolboxNodeExport(method.Name, new Callable(method))
                     {
@@ -277,7 +292,7 @@ namespace Parcel.Neo.Base.Framework
                 string folder = Path.GetDirectoryName(assemblyLocation);
                 return Path.Combine(folder, filename + extension);
             }
-            static string GenerateMethodSignature(MethodInfo methodInfo)
+            static string RetrieveXMLMethodSignature(MethodInfo methodInfo)
             {
                 return $"M:{methodInfo.DeclaringType.FullName}.{methodInfo.Name}({string.Join(",", methodInfo.GetParameters().Select(p => p.ParameterType.FullName))})";
             }

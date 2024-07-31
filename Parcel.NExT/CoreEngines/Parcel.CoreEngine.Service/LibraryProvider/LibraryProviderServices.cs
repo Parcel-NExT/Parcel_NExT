@@ -147,23 +147,12 @@ namespace Parcel.CoreEngine.Service.LibraryProvider
 
             Dictionary<string, SimplexString> members = [];
             members.Add("Methods", new(false, methods
-                .Select(GetMethodFullSignature)
+                .Select(m => m.GetMethodFullSignature())
                 .OrderBy(n => n)
                 .ToArray()));
             members.Add("Types", new(true, parcelExportTypes.Select(t => t.Name).OrderBy(n => n).ToArray()));
             members.Add("Module", new(false, moduleName));
             return members;
-        }
-        #endregion
-
-        #region Helpers
-        private string GetMethodSignature(MethodInfo method)
-        {
-            return $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})";
-        }
-        private string GetMethodFullSignature(MethodInfo method)
-        {
-            return $"{method.DeclaringType!.Name}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFormattedName()))})->{method.ReturnType.GetFormattedName()}";
         }
         #endregion
     }

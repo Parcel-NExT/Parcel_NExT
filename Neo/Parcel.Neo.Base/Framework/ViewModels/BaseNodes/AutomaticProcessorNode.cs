@@ -21,29 +21,22 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
         {
             ProcessorNodeMemberSerialization = new Dictionary<string, NodeSerializationRoutine>()
             {
-                {nameof(AutomaticNodeType), new NodeSerializationRoutine(() => SerializationHelper.Serialize(AutomaticNodeType), value => AutomaticNodeType = SerializationHelper.GetString(value))},
-                //{nameof(InputTypes), new NodeSerializationRoutine(() => SerializationHelper.Serialize(InputTypes), value => InputTypes = SerializationHelper.GetCacheDataTypes(value))},
-                //{nameof(OutputTypes), new NodeSerializationRoutine(() => SerializationHelper.Serialize(OutputTypes), value => OutputTypes = SerializationHelper.GetCacheDataTypes(value))},
-                {nameof(InputNames), new NodeSerializationRoutine(() => SerializationHelper.Serialize(InputNames), value => InputNames = SerializationHelper.GetStrings(value))},
-                {nameof(OutputNames), new NodeSerializationRoutine(() => SerializationHelper.Serialize(OutputNames), value => OutputNames = SerializationHelper.GetStrings(value))},
+                {
+                    nameof(Descriptor), new NodeSerializationRoutine(
+                        () => SerializationHelper.Serialize(Descriptor.Method.GetRuntimeNodeTypeIdentifier()), 
+                        value =>
+                        {
+                            string identifer = SerializationHelper.GetString(value);
+                            Descriptor = ToolboxIndexer.LoadTool(identifer);
+                        })
+                },
             };
         }
-        public FunctionalNodeDescription Descriptor { get; } // Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the moment! The reason we don't want it is because the descriptor itself is not serialized which means when the graph is loaded all such information is gone - and that's why we had IToolboxDefinition before.
         public AutomaticProcessorNode(FunctionalNodeDescription descriptor) :this()
         {
-            // Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the mometn!
             Descriptor = descriptor;
 
-            // Serialization
-            AutomaticNodeType = descriptor.NodeName;
-            InputTypes = descriptor.InputTypes;
-            DefaultInputValues = descriptor.DefaultInputValues;
-            OutputTypes = descriptor.OutputTypes;
-            InputNames = descriptor.InputNames;
-            OutputNames = descriptor.OutputNames;
-            
-            // Population
-            PopulateInputsOutputs();
+            InitializeNodeProperties(descriptor);
         }
         #endregion
 
@@ -53,27 +46,30 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
             try
             {
                 if (Descriptor != null)
-                {
-                    // This is runtime only!
                     return Descriptor.CallMarshal;
-                }
-                else 
-                {
-                    // Remark-cz: This is more general and can handle serialization well
-                    //IToolboxDefinition toolbox = (IToolboxDefinition)Activator.CreateInstance(Type.GetType(ToolboxFullName));
-                    //AutomaticNodeDescriptor descriptor = toolbox.AutomaticNodes.Single(an => an != null && an.NodeName == AutomaticNodeType);
-                    //return descriptor.CallMarshal;
-                    throw new NotImplementedException();
-                }
+                else
+                    throw new ApplicationException("Node is not properly initialized!");
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException($"Failed to retrieve node: {e.Message}.");
             }
         }
+        private void InitializeNodeProperties(FunctionalNodeDescription descriptor)
+        {
+            // Basic properties
+            InputTypes = descriptor.InputTypes;
+            DefaultInputValues = descriptor.DefaultInputValues;
+            OutputTypes = descriptor.OutputTypes;
+            InputNames = descriptor.InputNames;
+            OutputNames = descriptor.OutputNames;
+
+            // Node display initialization
+            PopulateInputsOutputs();
+        }
         private void PopulateInputsOutputs()
         {
-            Title = NodeTypeName = AutomaticNodeType;
+            Title = NodeTypeName = Descriptor.NodeName;
             for (int index = 0; index < InputTypes.Length; index++)
             {
                 Type inputType = InputTypes[index];
@@ -134,11 +130,21 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
         #endregion
 
         #region Properties
-        private string AutomaticNodeType { get; set; }
+        /// <remarks>
+        /// Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the moment! The reason we don't want it is because the descriptor itself is not serialized which means when the graph is loaded all such information is gone - and that's why we had IToolboxDefinition before.
+        /// </remarks>
+        public FunctionalNodeDescription Descriptor { get; private set; }
+
         private Type[] InputTypes { get; set; }
         private Type[] OutputTypes { get; set; }
         private object?[]? DefaultInputValues { get; set; }
+        /// <remarks>
+        /// For display purpose.
+        /// </remarks>
         private string[]? InputNames { get; set; }
+        /// <remarks>
+        /// For display purpose.
+        /// </remarks>
         private string[] OutputNames { get; set; }
         #endregion
 
@@ -186,7 +192,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
         internal override void PostDeserialization()
         {
             base.PostDeserialization();
-            PopulateInputsOutputs();
+            InitializeNodeProperties(Descriptor);
         }
         protected override NodeSerializationRoutine VariantInputConnectorsSerialization { get; } = null;
         #endregion
