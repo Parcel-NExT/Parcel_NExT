@@ -248,7 +248,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels
     }
 
     /// <remarks>
-    /// Storage is double
+    /// Storage is any numerical value
     /// </remarks>
     public sealed class PrimitiveNumberInputConnector : PrimitiveInputConnector
     {
@@ -265,7 +265,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             set => SetField(ref _defaultDataStorage, value is string s ? TypeDescriptor.GetConverter(DataType).ConvertFromInvariantString(s) : value); 
         }
         public override byte[] SerializeStorage()
-            => SerializationHelper.Serialize((double)_defaultDataStorage);
+            => SerializationHelper.Serialize(Convert.ToDouble(_defaultDataStorage));
         public override void DeserializeStorage(in byte[] raw)
             => _defaultDataStorage = SerializationHelper.GetDouble(raw);
     }
