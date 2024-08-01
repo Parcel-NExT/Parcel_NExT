@@ -279,12 +279,29 @@ namespace Parcel.Neo
         private void PrimitiveActionInputButton_Click(object sender, RoutedEventArgs e)
         {
             Button box = sender as Button;
-            InputConnector inputPin = box.DataContext as InputConnector;
-            ProcessorNode node = inputPin.Node as ProcessorNode;
-            
-            // Summon event picker interface
-            // TODO: Show some dialogue
+            PrimitiveActionInputConnector actionInput = box.DataContext as PrimitiveActionInputConnector;
+            ProcessorNode node = actionInput.Node as ProcessorNode;
+
             // Initialize dialogue with available functions/subgraphs that matches declarated signature to choose from, or alternatively create a new subgraph
+            ProcessorNode[] availableEndpoints = Canvas.Nodes.Where(n => n is ProcessorNode)
+                .Except(new BaseNode[] { node })
+                .OfType<ProcessorNode>()
+                .ToArray();
+
+            // Summon event picker interface
+            ActionEventPickerWindow picker = new(availableEndpoints);
+            if (picker.ShowDialog() == true)
+            {
+                ProcessorNode? eventAnchor = picker.Result;
+
+                actionInput.Value = () => 
+                {
+                    // TODO: Do something like AlgorithmHelper.ExecuteGraph()
+
+                    Console.WriteLine("This is a Placeholder.");
+                };
+            }
+            
             // Remark: The real difficult part is how we can "package" a part of node execution and pass that as Action - might be able to create a lambda in place
             // Remark: Also need to deal with node-level caching data instancing issues now we support events; Either way, it's going to take a lot of effort before it can be a mature feature
         }
