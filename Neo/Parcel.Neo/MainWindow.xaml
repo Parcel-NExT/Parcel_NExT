@@ -707,12 +707,8 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                             </DataTemplate.Resources>
                                             <DockPanel LastChildFill="True">
                                                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                                    <Button Style="{StaticResource IconButton}"
-                         Content="{StaticResource PlusIcon}"
-                         Command="{Binding AddEntryCommand}" />
-                                                    <Button Style="{StaticResource IconButton}"
-                         Content="{StaticResource RemoveKeyIcon}"
-                         Command="{Binding RemoveEntryCommand}" />
+                                                    <Button Style="{StaticResource IconButton}" Content="{StaticResource PlusIcon}" Command="{Binding AddEntryCommand}" />
+                                                    <Button Style="{StaticResource IconButton}" Content="{StaticResource RemoveKeyIcon}" Command="{Binding RemoveEntryCommand}" />
                                                 </StackPanel>
                                                 <ListView ItemsSource="{Binding Definitions}">
                                                     <ListView.ItemContainerStyle>
@@ -723,8 +719,8 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate DataType="{x:Type advanced:GraphInputOutputDefinition}">
                                                             <DockPanel LastChildFill="True" MinWidth="150">
-                                                                <TextBox Text="{Binding Name}" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride"></TextBox>
-                                                                <ComboBox SelectedItem="{Binding ValueType, Converter={StaticResource GraphInputOutputComboDataTypeNameToTypeConverter}, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="1">
+                                                                <TextBox Text="{Binding Name}" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" ToolTip="Name of the parameter."></TextBox>
+                                                                <ComboBox SelectedItem="{Binding ValueType, Converter={StaticResource GraphInputOutputComboDataTypeNameToTypeConverter}, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="1" ToolTip="Type of the parameter.">
                                                                     <!-- Primitive -->
                                                                     <ComboBoxItem Content="Boolean"/>
                                                                     <ComboBoxItem Content="Number"/>
@@ -734,6 +730,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                                     <ComboBoxItem Content="DataGrid"/>
                                                                     <ComboBoxItem Content="Vector"/>
                                                                 </ComboBox>
+                                                                <TextBox Text="{Binding ValueString}" PreviewKeyDown="PrimitiveInputTextbox_OnPreviewKeyDown_CommandOverride" MinWidth="35" ToolTip="Default value of the parameter."/>
                                                             </DockPanel>
                                                         </DataTemplate>
                                                     </ListView.ItemTemplate>

@@ -23,13 +23,28 @@ namespace Parcel.Neo.Base.Framework.Advanced
             get => _valueType;
             set => SetField(ref _valueType, value);
         }
-        #endregion
-
-        #region Payload
-        public object Payload { get; set; }
+        private object _payload;
+        public object Payload 
+        {
+            get => _payload;
+            set => SetField(ref _payload, value);
+        }
+        public string ValueString // For view binding use
+        {
+            get => _payload?.ToString() ?? string.Empty;
+            set
+            {
+                GraphInputOutputNodeBase.ConvertStoredSerialization(ValueType.FullName, value, out _, out object realObject);
+                SetField(ref _payload, realObject);
+            }
+        }
         #endregion
     }
 
+    // TODO: Implement string as base/foundamental representation instead of using object.
+    /// <remarks>
+    /// See GraphInputOutputComboDataTypeNameToTypeConverter for supported primitive types
+    /// </remarks>
     public abstract class GraphInputOutputNodeBase : ProcessorNode
     {
         #region Node Interface
@@ -96,35 +111,68 @@ namespace Parcel.Neo.Base.Framework.Advanced
         #region Routiens
         private byte[] SerializeEntries()
         {
-            List<(string, string)> data = Definitions
-                .Select(def => (def.Name, def.ValueType.FullName)) // TODO: Implement proper type referencing naming
+            List<(string Name, string Type, string Value)> data = Definitions
+                .Select(def => (def.Name, def.ValueType.FullName, def.ValueString)) // TODO: Implement proper type referencing naming
                 .ToList();
 
-            var stream = new MemoryStream();
-            var writer = new BinaryWriter(stream);
+            MemoryStream stream = new();
+            BinaryWriter writer = new(stream);
             writer.Write(data.Count);
-            foreach (var item in data)
+            foreach ((string Name, string Type, string Value) item in data)
             {
-                writer.Write(item.Item1);
-                writer.Write(item.Item2);
+                writer.Write(item.Name);
+                writer.Write(item.Type);
+                writer.Write(item.Value);
             }
             return stream.ToArray();
         }
         private void DeserializeEntries(byte[] entryData)
         {
-            var stream = new MemoryStream(entryData);
-            var reader = new BinaryReader(stream);
+            MemoryStream stream = new(entryData);
+            BinaryReader reader = new(stream);
             int count = reader.ReadInt32();
-            List<(string Name, string ValueType)> source = [];
+            List<(string Name, string ValueType, string Serialization)> source = [];
             for (int i = 0; i < count; i++)
-                source.Add((reader.ReadString(), reader.ReadString()));
+                source.Add((reader.ReadString(), reader.ReadString(), reader.ReadString()));
 
-            Definitions.AddRange(source.Select(tuple => new GraphInputOutputDefinition()
+            Definitions.AddRange(source.Select(tuple =>
             {
-                Name = tuple.Name,
-                ValueType = typeof(object) // TODO: Impelement proper de-referencing for ValueType
+                ConvertStoredSerialization(tuple.ValueType, tuple.Serialization, out Type type, out object value);
+                return new GraphInputOutputDefinition()
+                {
+                    Name = tuple.Name,
+                    ValueType = type,
+                    Payload = value
+                };
             }));
             DeserializeFinalize();
+        }
+        #endregion
+
+        #region Helpers
+        internal static void ConvertStoredSerialization(string typeName, string serialization, out Type type, out object value)
+        {
+            switch (typeName)
+            {
+                case "System.Boolean":
+                    type = typeof(bool);
+                    value = bool.Parse(serialization);
+                    break;
+                case "System.Double":
+                    type = typeof(double);
+                    value = double.Parse(serialization);
+                    break;
+                case "System.String":
+                    type = typeof(string);
+                    value = serialization;
+                    break;
+                case "System.DateTime":
+                    type = typeof(DateTime);
+                    value = DateTime.Parse(serialization);
+                    break;
+                default:
+                    throw new ApplicationException();
+            }
         }
         #endregion
     }

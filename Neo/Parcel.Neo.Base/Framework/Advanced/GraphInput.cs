@@ -39,7 +39,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
         #region Processor Interface
         protected override NodeExecutionResult Execute()
         {
-            Dictionary<OutputConnector, object> cache = new Dictionary<OutputConnector, object>();
+            Dictionary<OutputConnector, object> cache = new();
             for (int index = 0; index < Definitions.Count; index++)
             {
                 GraphInputOutputDefinition definition = Definitions[index];
