@@ -31,7 +31,7 @@ namespace Parcel.Neo.Base.Framework.Advanced
         }
         public string ValueString // For view binding use
         {
-            get => _payload?.ToString() ?? string.Empty;
+            get => _payload?.ToString() ?? (_valueType.IsValueType ? Activator.CreateInstance(_valueType).ToString() : string.Empty);
             set
             {
                 GraphInputOutputNodeBase.ConvertStoredSerialization(ValueType.FullName, value, out _, out object realObject);

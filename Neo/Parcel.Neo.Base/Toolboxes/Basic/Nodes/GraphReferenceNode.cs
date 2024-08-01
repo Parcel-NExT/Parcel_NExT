@@ -10,6 +10,7 @@ using Parcel.Neo.Base.DataTypes;
 
 namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
 {
+    // TODO: Implement like AUtoProcessorNode, add functions for serialization and proper input/output pins population using primitive input connectors.
     public class GraphReferenceNode : ProcessorNode
     {
         #region Node Interface
