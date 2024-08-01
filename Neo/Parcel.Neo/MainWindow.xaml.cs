@@ -284,6 +284,9 @@ namespace Parcel.Neo
             
             // Summon event picker interface
             // TODO: Show some dialogue
+            // Initialize dialogue with available functions/subgraphs that matches declarated signature to choose from, or alternatively create a new subgraph
+            // Remark: The real difficult part is how we can "package" a part of node execution and pass that as Action - might be able to create a lambda in place
+            // Remark: Also need to deal with node-level caching data instancing issues now we support events; Either way, it's going to take a lot of effort before it can be a mature feature
         }
         private void SaveCanvasMenuItem_Click(object sender, RoutedEventArgs e)
             => SaveCanvas(false);
