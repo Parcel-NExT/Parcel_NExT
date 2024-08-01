@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
 namespace Parcel.Neo.Base.Algorithms
 {
+    [Obsolete("Not functional; Never used.")]
     public class ExecutionTree: IExecutionGraph
     {
         #region Internal State
         private List<ExecutionTreeNode> Roots { get; set; } = new List<ExecutionTreeNode>();
-        private Dictionary<ProcessorNode, ExecutionTreeNode> Traversed { get; set; } =
-            new Dictionary<ProcessorNode, ExecutionTreeNode>();
+        private Dictionary<ProcessorNode, ExecutionTreeNode> Traversed { get; set; } = [];
         #endregion
 
         #region Interface

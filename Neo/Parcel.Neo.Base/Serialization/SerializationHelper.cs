@@ -10,6 +10,8 @@ namespace Parcel.Neo.Base.Serialization
 {
     public static class SerializationHelper
     {
+        public const string PV1NeoGraphExtension = ".parcel";
+
         #region Serialization
         public static byte[] Serialize(string value)
             => Encoding.UTF8.GetBytes(value);

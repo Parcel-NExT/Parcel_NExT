@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using Parcel.Neo.ViewModels;
 using System.Linq;
 using Nodify;
+using Parcel.Neo.Base.Serialization;
 
 namespace Parcel.Neo
 {
@@ -28,7 +29,7 @@ namespace Parcel.Neo
     /// </summary>
     public sealed partial class MainWindow : BaseWindow
     {
-        private const string _parcelWorkflowFileNameFilter = "Parcel Workflow File (Legacy) (*.parcel)|*.parcel|All Files (*.*)|*.*";
+        private const string _parcelWorkflowFileNameFilter = $"Parcel Workflow File (Legacy) (*{SerializationHelper.PV1NeoGraphExtension})|*{SerializationHelper.PV1NeoGraphExtension}|All Files (*.*)|*.*";
 
         #region Constructor
         public MainWindow()
@@ -284,6 +285,7 @@ namespace Parcel.Neo
         private bool _consoleIsOpen;
         private void ToggleConsoleWindowMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: At the moment there is issue with PV1 Neo that if we triggered console print before console window was shown, then open console window - all latter console print will not print to the console
             if (_consoleIsOpen)
             {
                 FreeConsole();

@@ -213,7 +213,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Windows.WindowsUI", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.StaticReport", "Packages\Parcel.StaticReport\Parcel.StaticReport.csproj", "{72AAFCE9-5403-4444-8D00-F8B7F3899FCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Email", "Packages\Parcel.Email\Parcel.Email.csproj", "{3D10549C-C340-42D3-97C1-C07AEB0F5897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Email", "Packages\Parcel.Email\Parcel.Email.csproj", "{3D10549C-C340-42D3-97C1-C07AEB0F5897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stewer", "Utilities\Stewer\Stewer.csproj", "{5422794F-51FA-498C-A25D-59A6F2E9ED08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -569,6 +571,10 @@ Global
 		{3D10549C-C340-42D3-97C1-C07AEB0F5897}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D10549C-C340-42D3-97C1-C07AEB0F5897}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D10549C-C340-42D3-97C1-C07AEB0F5897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5422794F-51FA-498C-A25D-59A6F2E9ED08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5422794F-51FA-498C-A25D-59A6F2E9ED08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5422794F-51FA-498C-A25D-59A6F2E9ED08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5422794F-51FA-498C-A25D-59A6F2E9ED08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -669,6 +675,7 @@ Global
 		{910EA64A-CD18-478F-A4AD-702D8E49D786} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{72AAFCE9-5403-4444-8D00-F8B7F3899FCA} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{3D10549C-C340-42D3-97C1-C07AEB0F5897} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{5422794F-51FA-498C-A25D-59A6F2E9ED08} = {F8939373-9D21-4D9F-B77A-59B094A2AB2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}
