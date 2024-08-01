@@ -28,7 +28,7 @@ namespace Parcel.Neo
     /// </summary>
     public sealed partial class MainWindow : BaseWindow
     {
-        private const string _parcelWorkflowFileNameFilter = "Parcel workflow file (*.parcel)|*.parcel|YAML file (*.yaml)|*.yaml";
+        private const string _parcelWorkflowFileNameFilter = "Parcel Workflow File (Legacy) (*.parcel)|*.parcel|All Files (*.*)|*.*";
 
         #region Constructor
         public MainWindow()
@@ -77,7 +77,7 @@ namespace Parcel.Neo
             set
             {
                 SetField(ref _currentFilePath, value);
-                DynamicTitle = $"{(Owner != null ? "<Reference>" : "<Main>")} {System.IO.Path.GetFileNameWithoutExtension(value)}";
+                DynamicTitle = $"{(Owner != null ? "<Subgraph Reference>" : "<Main Graph>")} {System.IO.Path.GetFileNameWithoutExtension(value)}";
             }
         }
 
@@ -275,6 +275,12 @@ namespace Parcel.Neo
             if (node != null && node is PasswordNode password)
                 password.Value = box.Password;
         }
+        private void SaveCanvasMenuItem_Click(object sender, RoutedEventArgs e)
+            => SaveCanvas(false);
+        private void SaveCanvasAsMenuItem_Click(object sender, RoutedEventArgs e)
+            => SaveCanvas(true);
+        private void OpenCanvasMenuItem_Click(object sender, RoutedEventArgs e)
+            => OpenCanvas();
         private bool _consoleIsOpen;
         private void ToggleConsoleWindowMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -622,9 +628,9 @@ namespace Parcel.Neo
                 graphPreviewWindow.Value.Close();
             
             // Open
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            OpenFileDialog openFileDialog = new()
             {
-                Title = "Select Parcel Workflow File",
+                Title = "Select Parcel Workflow File Location",
                 Filter = _parcelWorkflowFileNameFilter
             };
             if (openFileDialog.ShowDialog() == true)
@@ -637,10 +643,11 @@ namespace Parcel.Neo
         {
             if (createNewFile || CurrentFilePath == null || !System.IO.File.Exists(CurrentFilePath))
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog
+                SaveFileDialog saveFileDialog = new()
                 {
                     Title = "Choose Where to Save Current Workflow",
-                    Filter = _parcelWorkflowFileNameFilter
+                    Filter = _parcelWorkflowFileNameFilter,
+                    AddExtension = true,
                 };
                 if (saveFileDialog.ShowDialog() == true)
                     CurrentFilePath = saveFileDialog.FileName;

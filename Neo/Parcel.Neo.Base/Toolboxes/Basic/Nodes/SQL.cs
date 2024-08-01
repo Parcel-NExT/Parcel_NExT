@@ -6,6 +6,7 @@ using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Base.Serialization;
 using Parcel.Integration;
+using System;
 
 namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
 {
@@ -34,6 +35,7 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
     /// 1. Allow coercion or at least automatic array input handling on automatic nodes
     /// 2. Allow automatic property editors based on function argument attribute
     /// </remarks>
+    [Obsolete("Not sure whether we still need this as of 2024 July?")]
     public class SQL : DynamicInputProcessorNode, INodeProperty
     {
         #region Node Interface

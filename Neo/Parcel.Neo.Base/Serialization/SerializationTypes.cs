@@ -4,18 +4,35 @@ using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
 namespace Parcel.Neo.Base.Serialization
 {
-    internal class NodeGraphData
-    { 
-        #region Graph Metadata
-        public string Version { get; set; }
-        
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public string Description { get; set; }
-        
+    internal sealed class RuntimeMetadata
+    {
+        public string EditorName { get; set; } = "PV1 Neo";
+        public string EditorVersion { get; set; } = "0.5.0";
+        public string EditorDescription { get; set; } = "Beta Test Build.";
+
+        public string FileformatIdentifier { get; set; } = "Parcel PV1 Serialization Format";
+        public string FileformatVersion { get; set; } = "1.0";
+        public string Remark { get; set; } = "This file format is for legacy purpose only.";
+    }
+    internal sealed class GraphMetadata
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+
         public DateTime CreationTime { get; set; }
         public DateTime UpdateTime { get; set; }
-        public int Revision { get; set; }
+        public int Revision { get; set; } = 0;
+    }
+
+    internal class NodeGraphData
+    {
+        #region Runtime Metadata
+        public RuntimeMetadata RuntimeMetadata { get; set; }
+        #endregion
+
+        #region Graph Metadata
+        public GraphMetadata GraphMetadata { get; set; }
         #endregion
         
         #region Nodes Data

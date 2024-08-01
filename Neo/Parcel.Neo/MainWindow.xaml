@@ -401,9 +401,9 @@
                 <ResourceDictionary Source="Styling/NeoMenuStylingDictionary.xaml"/>
             </Menu.Resources>
             <MenuItem Header="Document">
-                <MenuItem Header="Open..." Visibility="Collapsed"/>
-                <MenuItem Header="Save" Visibility="Collapsed"/>
-                <MenuItem Header="Save As..." Visibility="Collapsed"/>
+                <MenuItem Header="Open..." Click="OpenCanvasMenuItem_Click"/>
+                <MenuItem Header="Save" Click="SaveCanvasMenuItem_Click"/>
+                <MenuItem Header="Save As..."  Click="SaveCanvasAsMenuItem_Click"/>
                 <Separator Visibility="Collapsed"/>
                 <MenuItem Header="Import..." ToolTip="Import and insert a document into current graph." Visibility="Collapsed"/>
                 <MenuItem Header="Export" ToolTip="Export graph into various formats.">

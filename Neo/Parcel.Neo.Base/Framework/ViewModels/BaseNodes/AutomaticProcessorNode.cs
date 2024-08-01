@@ -17,33 +17,34 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
     public class AutomaticProcessorNode: ProcessorNode
     {
         #region Constructor
+        private Dictionary<string, NodeSerializationRoutine>? GeneratedMemberSerializers = null;
         public AutomaticProcessorNode()
         {
             ProcessorNodeMemberSerialization = new Dictionary<string, NodeSerializationRoutine>()
             {
-                {nameof(AutomaticNodeType), new NodeSerializationRoutine(() => SerializationHelper.Serialize(AutomaticNodeType), value => AutomaticNodeType = SerializationHelper.GetString(value))},
-                //{nameof(InputTypes), new NodeSerializationRoutine(() => SerializationHelper.Serialize(InputTypes), value => InputTypes = SerializationHelper.GetCacheDataTypes(value))},
-                //{nameof(OutputTypes), new NodeSerializationRoutine(() => SerializationHelper.Serialize(OutputTypes), value => OutputTypes = SerializationHelper.GetCacheDataTypes(value))},
-                {nameof(InputNames), new NodeSerializationRoutine(() => SerializationHelper.Serialize(InputNames), value => InputNames = SerializationHelper.GetStrings(value))},
-                {nameof(OutputNames), new NodeSerializationRoutine(() => SerializationHelper.Serialize(OutputNames), value => OutputNames = SerializationHelper.GetStrings(value))},
+                {
+                    nameof(Descriptor), new NodeSerializationRoutine(
+                        () => SerializationHelper.Serialize(Descriptor.Method.GetRuntimeNodeTypeIdentifier()), 
+                        value =>
+                        {
+                            string identifer = SerializationHelper.GetString(value);
+                            Descriptor = ToolboxIndexer.LoadTool(identifer);
+                            GeneratedMemberSerializers = InitializeNodeProperties(Descriptor).ToDictionary(s => s.Item1, s => s.Item2);
+                        })
+                },
             };
         }
-        public FunctionalNodeDescription Descriptor { get; } // Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the moment! The reason we don't want it is because the descriptor itself is not serialized which means when the graph is loaded all such information is gone - and that's why we had IToolboxDefinition before.
         public AutomaticProcessorNode(FunctionalNodeDescription descriptor) :this()
         {
-            // Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the mometn!
             Descriptor = descriptor;
 
-            // Serialization
-            AutomaticNodeType = descriptor.NodeName;
-            InputTypes = descriptor.InputTypes;
-            DefaultInputValues = descriptor.DefaultInputValues;
-            OutputTypes = descriptor.OutputTypes;
-            InputNames = descriptor.InputNames;
-            OutputNames = descriptor.OutputNames;
-            
-            // Population
-            PopulateInputsOutputs();
+            InitializeNodeProperties(descriptor);
+        }
+        internal void SecondStageDeserialization(Dictionary<string, byte[]> members)
+        {
+            foreach ((string key, byte[] data) in members)
+                if (GeneratedMemberSerializers?.ContainsKey(key) ?? false)
+                    GeneratedMemberSerializers[key].Deserialize(data);
         }
         #endregion
 
@@ -53,36 +54,56 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
             try
             {
                 if (Descriptor != null)
-                {
-                    // This is runtime only!
                     return Descriptor.CallMarshal;
-                }
-                else 
-                {
-                    // Remark-cz: This is more general and can handle serialization well
-                    //IToolboxDefinition toolbox = (IToolboxDefinition)Activator.CreateInstance(Type.GetType(ToolboxFullName));
-                    //AutomaticNodeDescriptor descriptor = toolbox.AutomaticNodes.Single(an => an != null && an.NodeName == AutomaticNodeType);
-                    //return descriptor.CallMarshal;
-                    throw new NotImplementedException();
-                }
+                else
+                    throw new ApplicationException("Node is not properly initialized!");
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException($"Failed to retrieve node: {e.Message}.");
             }
         }
-        private void PopulateInputsOutputs()
+        private (string, NodeSerializationRoutine)[] InitializeNodeProperties(FunctionalNodeDescription descriptor)
         {
-            Title = NodeTypeName = AutomaticNodeType;
+            // Basic properties
+            InputTypes = descriptor.InputTypes;
+            DefaultInputValues = descriptor.DefaultInputValues;
+            OutputTypes = descriptor.OutputTypes;
+            InputNames = descriptor.InputNames;
+            OutputNames = descriptor.OutputNames;
+
+            // Node display initialization
+            return PopulateInputsOutputs();
+        }
+        private (string, NodeSerializationRoutine)[] PopulateInputsOutputs()
+        {
+            (string, NodeSerializationRoutine)[] serializers = new (string, NodeSerializationRoutine)[InputTypes.Length]; 
+
+            Title = NodeTypeName = Descriptor.NodeName;
             for (int index = 0; index < InputTypes.Length; index++)
             {
                 Type inputType = InputTypes[index];
                 object? defaultValue = DefaultInputValues?[index];
                 string preferredTitle = InputNames?[index];
+                InputConnector? connector = null;
+
                 if (Nullable.GetUnderlyingType(inputType) != null)
-                    CreateInputPin(Nullable.GetUnderlyingType(inputType), defaultValue, preferredTitle); // TODO: Current implementation has issue making nullable default values as type default rather than null
-                else 
-                    CreateInputPin(inputType, defaultValue, preferredTitle);
+                    connector = CreateInputPin(Nullable.GetUnderlyingType(inputType), defaultValue, preferredTitle); // TODO: Current implementation has issue making nullable default values as type default rather than null
+                else
+                    connector = CreateInputPin(inputType, defaultValue, preferredTitle);
+
+                // Update serialization
+                // TODO: (Remark-cz) At the moment this is not working yet because when deserialization happens connectors are not initialized yet and when PopulateInputsOutputs runs it's already past serialization
+                NodeSerializationRoutine serializer = new NodeSerializationRoutine(
+                    () => connector is PrimitiveInputConnector p ? p.SerializeStorage() : [],
+                    bytes =>
+                    {
+                        if (connector is PrimitiveInputConnector p)
+                            p.DeserializeStorage(bytes);
+                    }
+                );
+                ProcessorNodeMemberSerialization.Add(preferredTitle, serializer);
+                serializers[index] = (preferredTitle, serializer);
             }
 
             for (int index = 0; index < OutputTypes.Length; index++)
@@ -92,28 +113,34 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 Output.Add(new OutputConnector(outputType) { Title = preferredTitle ?? "Result" });
             }
 
-            void CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
+            return serializers;
+
+            InputConnector CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
             {
                 bool supportsCoercion = inputType.IsArray; // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
 
+                InputConnector? connector = null;
                 if (inputType == typeof(bool))
-                    Input.Add(new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(string))
-                    Input.Add(new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType.IsEnum)
-                    Input.Add(new PrimitiveEnumInputConnector(inputType, defaultValue != DBNull.Value ? defaultValue : null) { Title = preferredTitle ?? "Enum", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveEnumInputConnector(inputType, defaultValue != DBNull.Value ? defaultValue : null) { Title = preferredTitle ?? "Enum", AllowsArrayCoercion = supportsCoercion };
                 else if (TypeHelper.IsNumericalType(inputType))
-                    Input.Add(new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(DateTime))
-                    Input.Add(new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(Color))
-                    Input.Add(new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(Vector2))
-                    Input.Add(new PrimitiveVector2InputConnector(defaultValue != DBNull.Value ? (Vector2)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveVector2InputConnector(defaultValue != DBNull.Value ? (Vector2)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(System.Drawing.Size))
-                    Input.Add(new PrimitiveSizeInputConnector(defaultValue != DBNull.Value ? (System.Drawing.Size)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion });
+                    connector = new PrimitiveSizeInputConnector(defaultValue != DBNull.Value ? (System.Drawing.Size)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion };
                 else
-                    Input.Add(new InputConnector(inputType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion });
+                    connector = new InputConnector(inputType) { Title = preferredTitle ?? "Input", AllowsArrayCoercion = supportsCoercion };
+
+                Input.Add(connector);
+                return connector;
             }
             static string? GetPreferredTitle(Type type)
             {
@@ -134,11 +161,21 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
         #endregion
 
         #region Properties
-        private string AutomaticNodeType { get; set; }
+        /// <remarks>
+        /// Remark-cz: Hack we are saving descriptor here for easier invoking of dynamic types; However, this is not serializable at the moment! The reason we don't want it is because the descriptor itself is not serialized which means when the graph is loaded all such information is gone - and that's why we had IToolboxDefinition before.
+        /// </remarks>
+        public FunctionalNodeDescription Descriptor { get; private set; }
+
         private Type[] InputTypes { get; set; }
         private Type[] OutputTypes { get; set; }
         private object?[]? DefaultInputValues { get; set; }
+        /// <remarks>
+        /// For display purpose.
+        /// </remarks>
         private string[]? InputNames { get; set; }
+        /// <remarks>
+        /// For display purpose.
+        /// </remarks>
         private string[] OutputNames { get; set; }
         #endregion
 
@@ -183,11 +220,6 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 
         #region Serialization
         protected sealed override Dictionary<string, NodeSerializationRoutine> ProcessorNodeMemberSerialization { get; }
-        internal override void PostDeserialization()
-        {
-            base.PostDeserialization();
-            PopulateInputsOutputs();
-        }
         protected override NodeSerializationRoutine VariantInputConnectorsSerialization { get; } = null;
         #endregion
 

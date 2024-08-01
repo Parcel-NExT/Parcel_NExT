@@ -6,9 +6,13 @@ using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Base.DataTypes;
 using System.ComponentModel;
 using System.Numerics;
+using Parcel.Neo.Base.Serialization;
 
 namespace Parcel.Neo.Base.Framework.ViewModels
 {
+    /// <remarks>
+    /// Storage is Boolean
+    /// </remarks>
     public sealed class PrimitiveBooleanInputConnector : PrimitiveInputConnector
     {
         public PrimitiveBooleanInputConnector(bool? defaultValue = null) : base(typeof(bool))
@@ -19,7 +23,18 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             get => _defaultDataStorage;
             set => SetField(ref _defaultDataStorage, value is string s ? bool.Parse(s) : value); 
         }
+
+        #region Serialization
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((bool)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetBool(raw);
+        #endregion
     }
+
+    /// <remarks>
+    /// Storage is Vector2
+    /// </remarks>
     public sealed class PrimitiveVector2InputConnector : PrimitiveInputConnector
     {
         public PrimitiveVector2InputConnector(Vector2? defaultValue = null) : base(typeof(Vector2))
@@ -60,7 +75,18 @@ namespace Parcel.Neo.Base.Framework.ViewModels
                 SetField(ref _defaultDataStorage, new Vector2(original.X, float.Parse(value)));
             }
         }
+
+        #region Serialization
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((Vector2)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetVector2(raw);
+        #endregion
     }
+
+    /// <remarks>
+    /// Storage is DateTimSize
+    /// </remarks>
     public sealed class PrimitiveSizeInputConnector : PrimitiveInputConnector
     {
         public PrimitiveSizeInputConnector(System.Drawing.Size? defaultValue = null) : base(typeof(System.Drawing.Size))
@@ -101,7 +127,18 @@ namespace Parcel.Neo.Base.Framework.ViewModels
                 SetField(ref _defaultDataStorage, new System.Drawing.Size(original.Width, int.Parse(value)));
             }
         }
+
+        #region Serialization
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((System.Drawing.Size)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetSize(raw);
+        #endregion
     }
+
+    /// <remarks>
+    /// Storage is Color
+    /// </remarks>
     public sealed class PrimitiveColorInputConnector : PrimitiveInputConnector
     {
         public PrimitiveColorInputConnector(Color? defaultValue = null) : base(typeof(Color))
@@ -112,7 +149,18 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             get => _defaultDataStorage;
             set => SetField(ref _defaultDataStorage, value is string s ? Color.Parse(s) : (Color)value);
         }
+
+        #region Serialization
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((Color)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetColor(raw);
+        #endregion
     }
+
+    /// <remarks>
+    /// Storage is DateTime
+    /// </remarks>
     public sealed class PrimitiveDateTimeInputConnector : PrimitiveInputConnector
     {
         public PrimitiveDateTimeInputConnector(DateTime? defaultValue = null) : base(typeof(DateTime)) 
@@ -123,13 +171,34 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             get => _defaultDataStorage;
             set => SetField(ref _defaultDataStorage, value is string s ? DateTime.Parse(s) : value); 
         }
+
+        #region Serialization
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((DateTime)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetDateTime(raw);
+        #endregion
     }
-    
+
+    /// <remarks>
+    /// Storage is string
+    /// </remarks>
     public sealed class PrimitiveStringInputConnector : PrimitiveInputConnector
     {
         public PrimitiveStringInputConnector(string? defaultValue = null) : base(typeof(string))
             => Value = defaultValue ?? string.Empty;
+
+        #region Serialization
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((string)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetString(raw);
+        #endregion
     }
+
+    /// <remarks>
+    /// Storage is int
+    /// </remarks>
     public sealed class PrimitiveEnumInputConnector : PrimitiveInputConnector
     {
         #region View Binding
@@ -171,8 +240,16 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             get => _defaultDataStorage;
             set => SetField(ref _defaultDataStorage, value is string s ? TypeDescriptor.GetConverter(DataType).ConvertFromInvariantString(s) : value);
         }
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((int)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetInt(raw);
         #endregion
     }
+
+    /// <remarks>
+    /// Storage is double
+    /// </remarks>
     public sealed class PrimitiveNumberInputConnector : PrimitiveInputConnector
     {
         public PrimitiveNumberInputConnector(Type type, object? defaultValue = null) : base(type)
@@ -187,6 +264,10 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             get => _defaultDataStorage;
             set => SetField(ref _defaultDataStorage, value is string s ? TypeDescriptor.GetConverter(DataType).ConvertFromInvariantString(s) : value); 
         }
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((double)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetDouble(raw);
     }
     
     public abstract class PrimitiveInputConnector : InputConnector
@@ -198,6 +279,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         }
 
         protected PrimitiveInputConnector(Type dataType) : base(dataType) { }
+        public abstract byte[] SerializeStorage();
+        public abstract void DeserializeStorage(in byte[] raw);
     }
 
     public class InputConnector : BaseConnector

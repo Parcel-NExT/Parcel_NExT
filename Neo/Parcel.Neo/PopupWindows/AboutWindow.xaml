@@ -19,11 +19,11 @@
             <DockPanel HorizontalAlignment="Center">
                 <Image DockPanel.Dock="Left" Source="/Icon.png" Width="64" Margin="12"/>
                 <Label DockPanel.Dock="Top" Content="PV1 Neo" FontSize="22" HorizontalAlignment="Center" Margin="0" Padding="0"/>
-                <Label DockPanel.Dock="Top" Content="Version: 0.1.0 Build v2024-07-19" HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
-                <Label DockPanel.Dock="Top" Content="by Methodox, Inc." HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
+                <Label DockPanel.Dock="Top" Content="Methodox Technologies, Inc." HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
+                <Label DockPanel.Dock="Top" Content="Version: 0.5.0 Build v2024-08-02" HorizontalAlignment="Center" Margin="0" Padding="0" FontSize="8"/>
                 <Label DockPanel.Dock="Top" Content="A Parcel NExT Front-end (Graph Editor)." HorizontalAlignment="Center" Margin="0" Padding="0"  FontSize="8"/>
                 <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" TextAlignment="Center" FontSize="8">
-                    Written by: 
+                    Written by
                     <Hyperlink NavigateUri="https://www.linkedin.com/in/chaojianzhang/" RequestNavigate="Hyperlink_RequestNavigate">
                         Charles Zhang
                     </Hyperlink>

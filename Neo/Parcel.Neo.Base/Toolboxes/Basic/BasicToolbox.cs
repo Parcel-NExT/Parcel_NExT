@@ -11,30 +11,78 @@ namespace Parcel.Neo.Base.Toolboxes.Basic
         #region Interface
         public ToolboxNodeExport?[] ExportNodes => new ToolboxNodeExport?[]
         {
-            new("Comment", typeof(CommentNode)),
-            new("Preview", typeof(PreviewNode)),
+            new("Comment", typeof(CommentNode))
+            {
+                Tooltip = "A node that allows grouping other nodes together and provide descriptive comment."
+            },
+            new("Preview", typeof(PreviewNode))
+            {
+                Tooltip = "Provides preview of output from connected pins."
+            },
             null, // Divisor line // Primitive Nodes
-            new("Number", typeof(NumberNode)),
-            new("String", typeof(StringNode)),
-            new("Boolean", typeof(BooleanNode)),
-            new("DateTime", typeof(DateTimeNode)),
-            new("Password", typeof(PasswordNode)),
-            new("Text", typeof(TextNode)),
-            new("File", typeof(OpenFileNode)),
+            new("Number", typeof(NumberNode))
+            {
+                Tooltip = "Defines a literal number."
+            },
+            new("String", typeof(StringNode))
+            {
+                Tooltip = "Defines a literal string."
+            },
+            new("Boolean", typeof(BooleanNode))
+            {
+                Tooltip = "Defines a literal boolean."
+            },
+            new("DateTime", typeof(DateTimeNode))
+            {
+                Tooltip = "Defines a literal date time."
+            },
+            new("Password", typeof(PasswordNode))
+            {
+                Tooltip = "Defines a literal string that is shown as password."
+            },
+            new("Text", typeof(TextNode))
+            {
+                Tooltip = "Defines a literal string that covers multiple spans."
+            },
+            new("File", typeof(OpenFileNode))
+            {
+                Tooltip = "Defines a literal string that points to a file."
+            },
             // new("Save File", typeof(object)),
             // new("Array", typeof(object)), // Generic array representation of all above types, CANNOT have mixed types
             null, // Divisor line // Advanced Types
-            new("Data Table", typeof(DataTable)), // DataTable or matrix initializer
-            new("Dictionary", typeof(Dictionary)),
-            new("SQL Query", typeof(SQL)),
+            new("Data Table", typeof(DataTable))
+            {
+                Tooltip = "Defines an empty data table; Use this to initialize dataTable or matrix."
+            },
+            new("Dictionary", typeof(Dictionary))
+            {
+                Tooltip = "Defines a dictionary mapping of keys to values."
+            },
+            new("SQL Query", typeof(SQL)) // TODO: Pending deprecation.
+            {
+                Tooltip = "Defines a SQL query."
+            },
             null, // Divisor line // Graph Modularization
-            new("Graph Input", typeof(GraphInput)),
-            new("Graph Output", typeof(GraphOutput)),
-            new("Graph Reference", typeof(GraphReferenceNode)),
+            new("Graph Input", typeof(GraphInput))
+            {
+                Tooltip = "Defines inputs to this graph."
+            },
+            new("Graph Output", typeof(GraphOutput))
+            {
+                Tooltip = "Defines outputs of this graph."
+            },
+            new("Graph Reference", typeof(GraphReferenceNode))
+            {
+                Tooltip = "Defines reference to an existing graph."
+            },
             // new("Sub Graph", typeof(object)),
             null, // Divisor Line // Special (or consider moving them into "Annotation")
             // Special - Specialized Graph Visualization
-            new("Graph Stats", typeof(GraphStats)),
+            new("Graph Stats", typeof(GraphStats))
+            {
+                Tooltip = "A on-canvas display of current graph stats."
+            },
             //new("Console Output", typeof(object)), // With options to specify how many lines to show
             //new("Python Snippet", typeof(object)), // With auto binding inputs and outputs
             //null, // Divisor line // Utility

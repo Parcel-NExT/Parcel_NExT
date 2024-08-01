@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Scripting;
 using Parcel.NExT.Interpreter.Analyzer;
+using Parcel.NExT.Interpreter.Helpers;
 using System.Reflection;
 
 namespace Parcel.NExT.Interpreter.Types
@@ -17,8 +18,9 @@ namespace Parcel.NExT.Interpreter.Types
         public enum CallableType
         {
             Constructor,
-            StaticMethod, // Including snippets
-            InstanceMethod
+            StaticMethod,
+            InstanceMethod,
+            Snippet // Behaves like StaticMethod but has difference when it comes to serialization
         }
 
         #region Designation
@@ -30,8 +32,11 @@ namespace Parcel.NExT.Interpreter.Types
         /// TODO: Cleanup/optimization - Downstream shouldn't depend on ParameterInfo, or otherwise we should attempt to abstract only the parameters we need
         /// </remarks>
         private MethodInfo? Method { get; }
-        private SingleEntranceCodeSnippetComponents Snippet { get; }
         private ScriptState<object> CompiledSnippet { get; }
+        /// <summary>
+        /// Snippet source code
+        /// </summary>
+        private SingleEntranceCodeSnippetComponents Snippet { get; }
         #endregion
 
         #region Property        
@@ -127,13 +132,12 @@ namespace Parcel.NExT.Interpreter.Types
         }
         public object? StaticInvoke(object?[]? arguments)
         {
-            if (Type != CallableType.StaticMethod && Type != CallableType.Constructor)
-                throw new InvalidOperationException($"Callable is not static.");
-
-            if (Type == CallableType.StaticMethod)
+            if (Type == CallableType.StaticMethod || Type == CallableType.Snippet)
                 return Method!.Invoke(null, arguments);
-            else
+            else if (Type == CallableType.Constructor)
                 return Constructor!.Invoke(arguments);
+            else
+                throw new InvalidOperationException($"Callable is not static.");
         }
         public object? InstanceInvoke(object? instance, object?[]? arguments)
         {
@@ -158,6 +162,32 @@ namespace Parcel.NExT.Interpreter.Types
             }
 
             return null;
+        }
+        #endregion
+
+        #region Serialization (Parcel Open Standard)
+        /// <summary>
+        /// At the moment also called as "Function Resource Identifier".
+        /// Assembly/Package related identifying name, including all information that is needed to load this particular node from any given assembly.
+        /// </summary>
+        /// <remarks>
+        /// Pending better internal name/jargon for this; Pending consolidating with POS.
+        /// </remarks>
+        public string GetRuntimeNodeTypeIdentifier()
+        {
+            switch (Type)
+            {
+                case CallableType.Constructor:
+                    return Constructor.GetConstructorFullSignature();
+                case CallableType.StaticMethod:
+                    return Method.GetMethodFullSignature();
+                case CallableType.InstanceMethod:
+                    return Method.GetMethodFullSignature();
+                case CallableType.Snippet:
+                    return Snippet.Code; // TODO: Implement per POS PDS. Remark: Apparently this is a hack. We are not making use of static Code section per POS on PDS, but simply store things in-place.
+                default:
+                    throw new ArgumentException($"Unknown callable type: {Type}");
+            }
         }
         #endregion
     }

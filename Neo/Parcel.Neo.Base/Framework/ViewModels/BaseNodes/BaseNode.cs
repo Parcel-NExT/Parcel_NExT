@@ -72,6 +72,9 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 if(instanceMembers.ContainsKey(key))
                     instanceMembers[key].Deserialize(data);
             }
+            // Special handle AutomaticProcessorNode
+            if (this is AutomaticProcessorNode autoNode)
+                autoNode.SecondStageDeserialization(members);
         }
         internal virtual void PostDeserialization(){}
         

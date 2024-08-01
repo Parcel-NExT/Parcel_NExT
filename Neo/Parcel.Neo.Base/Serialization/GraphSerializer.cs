@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using K4os.Compression.LZ4.Streams;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 
@@ -11,10 +12,10 @@ namespace Parcel.Neo.Base.Serialization
     internal class GraphSerializer
     {
         #region Interface
-        public void Serialize(string filePath, CanvasSerialization canvas)
+        public static void Serialize(string filePath, CanvasSerialization canvas)
         {
             // Book-keeping structures
-            Dictionary<BaseNode, NodeData> nodeMapping = new Dictionary<BaseNode, NodeData>();
+            Dictionary<BaseNode, NodeData> nodeMapping = [];
 
             // Serialize nodes
             NodeData[] nodes = canvas.Nodes.Select(n =>
@@ -40,24 +41,26 @@ namespace Parcel.Neo.Base.Serialization
             }).ToArray();
             
             // Serialize
-            NodeGraphData graph = new NodeGraphData()
+            NodeGraphData graph = new()
             {
+                RuntimeMetadata = new(),
+                GraphMetadata = new(),
                 Nodes = nodes,
                 Connections = connections
             };
-            using Stream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
-            using BinaryWriter writer = new BinaryWriter(stream, Encoding.UTF8, false);
+            using LZ4EncoderStream stream = LZ4Stream.Encode(File.Create(filePath));
+            using BinaryWriter writer = new(stream, Encoding.UTF8, false);
             WriteToStream(writer, graph);
         }
-        public CanvasSerialization Deserialize(string filePath, NodesCanvas canvas)
+        public static CanvasSerialization Deserialize(string filePath, NodesCanvas canvas)
         {
             // Load raw graph data
-            using Stream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            using BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, false);
+            using LZ4DecoderStream stream = LZ4Stream.Decode(File.OpenRead(filePath));
+            using BinaryReader reader = new(stream, Encoding.UTF8, false);
             NodeGraphData graph = ReadFromStream(reader);
             
             // Book-keeping structures
-            Dictionary<NodeData, BaseNode> nodeMapping = new Dictionary<NodeData, BaseNode>();
+            Dictionary<NodeData, BaseNode> nodeMapping = [];
             
             // Deserialize nodes
             List<BaseNode> nodes = graph.Nodes.Select(n =>
@@ -78,7 +81,7 @@ namespace Parcel.Neo.Base.Serialization
             }).ToList();
             
             // Reconstruct canvas
-            CanvasSerialization loaded = new CanvasSerialization()
+            CanvasSerialization loaded = new()
             {
                 Nodes = nodes,
                 Connections = connections
@@ -88,21 +91,32 @@ namespace Parcel.Neo.Base.Serialization
         #endregion
 
         #region Binary Serialization
-        private void WriteToStream(BinaryWriter writer, NodeGraphData graph)
+        private static void WriteToStream(BinaryWriter writer, NodeGraphData graph)
         {
-            writer.Write(graph.Version);
-            writer.Write(graph.Title);
-            writer.Write(graph.Author);
-            writer.Write(graph.Description);
-            writer.Write(graph.CreationTime.ToString("yyyy-MM-dd"));
-            writer.Write(graph.UpdateTime.ToString("yyyy-MM-dd"));
-            writer.Write(graph.Revision);
+            // Remark: Subgraphs not implemented
 
+            // Runtime metadata
+            writer.Write(graph.RuntimeMetadata.EditorName);
+            writer.Write(graph.RuntimeMetadata.EditorVersion);
+            writer.Write(graph.RuntimeMetadata.EditorDescription);
+            writer.Write(graph.RuntimeMetadata.FileformatIdentifier);
+            writer.Write(graph.RuntimeMetadata.FileformatVersion);
+            writer.Write(graph.RuntimeMetadata.Remark);
+
+            // Graph Metadata
+            writer.Write(graph.GraphMetadata.Title);
+            writer.Write(graph.GraphMetadata.Author);
+            writer.Write(graph.GraphMetadata.Description);
+            writer.Write(graph.GraphMetadata.CreationTime.ToString("yyyy-MM-dd"));
+            writer.Write(graph.GraphMetadata.UpdateTime.ToString("yyyy-MM-dd"));
+            writer.Write(graph.GraphMetadata.Revision);
+
+            // Nodes
             writer.Write(graph.Nodes.Length);
             foreach (NodeData node in graph.Nodes)
             {
                 writer.Write(node.NodeType);
-                writer.Write(node.NodeMembers.Count());
+                writer.Write(node.NodeMembers.Length);
                 foreach ((string Key, byte[] Value) in node.NodeMembers)
                 {
                     writer.Write(Key);
@@ -111,6 +125,7 @@ namespace Parcel.Neo.Base.Serialization
                 }
             }
 
+            // Connections
             writer.Write(graph.Connections.Length);
             foreach (ConnectionData connection in graph.Connections)
             {
@@ -120,18 +135,38 @@ namespace Parcel.Neo.Base.Serialization
                 writer.Write(connection.DestinationPin);
             }
         }
-        private NodeGraphData ReadFromStream(BinaryReader reader)
+        private static NodeGraphData ReadFromStream(BinaryReader reader)
         {
-            NodeGraphData graph = new();
+            // Runtime metadata
+            RuntimeMetadata runtimeMetadata = new()
+            {
+                EditorName = reader.ReadString(),
+                EditorVersion = reader.ReadString(),
+                EditorDescription = reader.ReadString(),
+                FileformatIdentifier = reader.ReadString(),
+                FileformatVersion = reader.ReadString(),
+                Remark = reader.ReadString()
+            };
 
-            graph.Version = reader.ReadString();
-            graph.Title = reader.ReadString();
-            graph.Author = reader.ReadString();
-            graph.Description = reader.ReadString();
-            graph.CreationTime = DateTime.Parse(reader.ReadString());
-            graph.UpdateTime = DateTime.Parse(reader.ReadString());
-            graph.Revision = reader.ReadInt32();
+            // Graph Metadata
+            GraphMetadata graphMetadata = new()
+            {
+                Title = reader.ReadString(),
+                Author = reader.ReadString(),
+                Description = reader.ReadString(),
+                CreationTime = DateTime.Parse(reader.ReadString()),
+                UpdateTime = DateTime.Parse(reader.ReadString()),
+                Revision = reader.ReadInt32()
+            };
 
+            // Initialize graph
+            NodeGraphData graph = new()
+            {
+                RuntimeMetadata = runtimeMetadata,
+                GraphMetadata = graphMetadata,
+            };
+
+            // Nodes
             int nodesLength = reader.ReadInt32();
             graph.Nodes = new NodeData[nodesLength];
             for (int i = 0; i < nodesLength; i++)
@@ -151,6 +186,7 @@ namespace Parcel.Neo.Base.Serialization
                 }
             }
 
+            // Connections
             int connectionsLength = reader.ReadInt32();
             graph.Connections = new ConnectionData[connectionsLength];
             for (int i = 0; i < connectionsLength; i++)
