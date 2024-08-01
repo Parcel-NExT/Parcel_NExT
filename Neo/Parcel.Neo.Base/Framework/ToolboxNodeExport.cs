@@ -28,8 +28,9 @@ namespace Parcel.Neo.Base.Framework
         public string ArgumentsListSimple{ get; }
         public string ReturnsList { get; }
         public bool HasReturnValue { get; }
-        public FunctionalNodeDescription Descriptor { get; }
+        public FunctionalNodeDescription? Descriptor { get; }
         public bool IsConstructor => Method?.IsConstructor ?? false;
+        public bool IsFrontendNative => ImplementationType == NodeImplementationType.PV1NativeFrontendImplementedGraphNode;
         #endregion
 
         #region Payload Type

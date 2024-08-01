@@ -93,8 +93,10 @@ namespace Parcel.Neo.Base.Framework
         /// </summary>
         internal static FunctionalNodeDescription? LoadTool(string functionResourceIdentifier)
         {
+            // TODO: Notice this at the moment doesn't handle front-end implemented tools; Because during deserialization those are handled directly by deserialization process
+
             IEnumerable<ToolboxNodeExport> availableNodes = Toolboxes.SelectMany(toolbox => toolbox.Value);
-            ToolboxNodeExport? found = availableNodes.FirstOrDefault(n => n?.Descriptor.Method.GetRuntimeNodeTypeIdentifier() == functionResourceIdentifier);
+            ToolboxNodeExport? found = availableNodes.FirstOrDefault(n => (!n?.IsFrontendNative ?? false) && n?.Descriptor.Method.GetRuntimeNodeTypeIdentifier() == functionResourceIdentifier);
             if (found == null)
                 throw new ApplicationException($"Loading from arbitrary dynamic assembly during serialization is not supported at this moment!");
             return found.Descriptor;
