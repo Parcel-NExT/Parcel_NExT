@@ -57,7 +57,7 @@ namespace Parcel.Neo.Base.Framework
             Dictionary<string, ToolboxNodeExport?[]> toolboxes = IndexToolboxes(toolboxAssemblies);
             // Register front-end specific toolboxes (In general we try to eliminate those, or to say the least standardization effort is needed to make sure those are understood across implementations
             AddToolbox(toolboxes, "Basic", new BasicToolbox());
-            // Register specific types - Parcel Standard
+            // Register specific types - Parcel "Standard"
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.StatisticalFacts));
@@ -67,6 +67,9 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataGridIntegration));
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataProcessingHelper));
             RegisterType(toolboxes, "Math", typeof(Processing.Utilities.Calculator));
+            // Register specific types - The Real Parcel Standard
+            RegisterType(toolboxes, "Programming", typeof(Standard.Programming.ControlFlow));
+            RegisterType(toolboxes, "Programming", typeof(Standard.Programming.InputHelpers));
             RegisterType(toolboxes, "String Processing", typeof(Standard.Types.StringRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.BooleanRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.LogicRoutines));

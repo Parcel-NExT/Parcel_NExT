@@ -197,6 +197,55 @@ namespace Parcel.Neo.Base.Framework.ViewModels
     }
 
     /// <remarks>
+    /// Storage is actual action; Serialization uses string as identifier
+    /// </remarks>
+    public sealed class PrimitiveActionInputConnector : PrimitiveInputConnector
+    {
+        #region View Binding
+        #endregion
+
+        #region Construction
+        public PrimitiveActionInputConnector(Type type, object? defaultValue = null) : base(type)
+        {
+            if (!IsAction(type))
+                throw new ArgumentException($"Invalid type for action input must be action. Got {type.Name}");
+
+            Value = defaultValue;
+        }
+        #endregion
+
+        #region Value Setting
+        public override object Value
+        {
+            get => _defaultDataStorage;
+            set => SetField(ref _defaultDataStorage, value is string ? /*TODO: Dereferencing string to action*/value : value);
+        }
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize(_defaultDataStorage.ToString()); // TODO: Convert to identifiers
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetString(raw); /*TODO: Dereferencing string to action*/
+        #endregion
+
+        #region Helpers
+        public static bool IsAction(Type type)
+        {
+            if (type == typeof(System.Action)) return true;
+            if (type.BaseType == typeof(MulticastDelegate)) return true;
+            
+            Type generic = null;
+            if (type.IsGenericTypeDefinition) generic = type;
+            else if (type.IsGenericType) generic = type.GetGenericTypeDefinition();
+            
+            if (generic == null) return false;
+            if (generic == typeof(System.Action<>)) return true;
+            if (generic == typeof(System.Action<,>)) return true;
+            // ... and so on...
+            return false;
+        }
+        #endregion
+    }
+
+    /// <remarks>
     /// Storage is int
     /// </remarks>
     public sealed class PrimitiveEnumInputConnector : PrimitiveInputConnector
