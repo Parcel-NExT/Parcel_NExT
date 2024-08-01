@@ -276,6 +276,15 @@ namespace Parcel.Neo
             if (node != null && node is PasswordNode password)
                 password.Value = box.Password;
         }
+        private void PrimitiveActionInputButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button box = sender as Button;
+            InputConnector inputPin = box.DataContext as InputConnector;
+            ProcessorNode node = inputPin.Node as ProcessorNode;
+            
+            // Summon event picker interface
+            // TODO: Show some dialogue
+        }
         private void SaveCanvasMenuItem_Click(object sender, RoutedEventArgs e)
             => SaveCanvas(false);
         private void SaveCanvasAsMenuItem_Click(object sender, RoutedEventArgs e)

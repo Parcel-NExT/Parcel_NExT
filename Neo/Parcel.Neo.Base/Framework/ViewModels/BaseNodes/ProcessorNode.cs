@@ -11,6 +11,9 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
     {
         public OutputConnector MainOutput { get; }
     }
+    /// <summary>
+    /// Represents front-end implemented literal values
+    /// </summary>
     public abstract class ProcessorNode: BaseNode, IProcessor, IMainOutputNode, IAutoConnect
     {
         #region Public View Properties - State

@@ -350,6 +350,40 @@
                                 </nodify:NodeInput.HeaderTemplate>
                             </nodify:NodeInput>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModels:PrimitiveActionInputConnector}">
+                            <nodify:NodeInput>
+                                <nodify:NodeInput.HeaderTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:PrimitiveActionInputConnector}">
+                                        <DataTemplate.Resources>
+                                            <Style TargetType="Label">
+                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="FontSize" Value="12"/>
+                                                <Setter Property="Margin" Value="0"/>
+                                                <Setter Property="Padding" Value="0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataTemplate.Resources>
+                                        <Button MinWidth="60" MinHeight="25" BorderBrush="#3378b4" Margin="0" Padding="0" Click="PrimitiveActionInputButton_Click" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:NodeInput},Mode=FindAncestor}}">
+                                            <Button.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="CornerRadius" Value="3"/>
+                                                    <Setter Property="BorderThickness" Value="2"/>
+                                                </Style>
+                                            </Button.Resources>
+                                            <Button.Background>
+                                                <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                                    <LinearGradientBrush.GradientStops>
+                                                        <GradientStop Offset="0.1" Color="#2e5f8b" />
+                                                        <GradientStop Offset="1" Color="#074b86" />
+                                                    </LinearGradientBrush.GradientStops>
+                                                </LinearGradientBrush>
+                                            </Button.Background>
+                                            <Label Content="{Binding Title}" Margin="0 0 5 0" HorizontalAlignment="Center"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </nodify:NodeInput.HeaderTemplate>
+                            </nodify:NodeInput>
+                        </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModels:PrimitiveNumberInputConnector}">
                             <nodify:NodeInput>
                                 <nodify:NodeInput.HeaderTemplate>
