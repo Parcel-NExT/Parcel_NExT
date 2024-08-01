@@ -7,7 +7,6 @@ using System.Diagnostics;
 using Parcel.CoreEngine.Helpers;
 using Parcel.CoreEngine.Service.Interpretation;
 using System.Numerics;
-using Parcel.CoreEngine.Messaging;
 
 namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 {
@@ -18,6 +17,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
     public class AutomaticProcessorNode: ProcessorNode
     {
         #region Constructor
+        private Dictionary<string, NodeSerializationRoutine>? GeneratedMemberSerializers = null;
         public AutomaticProcessorNode()
         {
             ProcessorNodeMemberSerialization = new Dictionary<string, NodeSerializationRoutine>()
@@ -29,6 +29,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                         {
                             string identifer = SerializationHelper.GetString(value);
                             Descriptor = ToolboxIndexer.LoadTool(identifer);
+                            GeneratedMemberSerializers = InitializeNodeProperties(Descriptor).ToDictionary(s => s.Item1, s => s.Item2);
                         })
                 },
             };
@@ -38,6 +39,12 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
             Descriptor = descriptor;
 
             InitializeNodeProperties(descriptor);
+        }
+        internal void SecondStageDeserialization(Dictionary<string, byte[]> members)
+        {
+            foreach ((string key, byte[] data) in members)
+                if (GeneratedMemberSerializers?.ContainsKey(key) ?? false)
+                    GeneratedMemberSerializers[key].Deserialize(data);
         }
         #endregion
 
@@ -56,7 +63,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 throw new InvalidOperationException($"Failed to retrieve node: {e.Message}.");
             }
         }
-        private void InitializeNodeProperties(FunctionalNodeDescription descriptor)
+        private (string, NodeSerializationRoutine)[] InitializeNodeProperties(FunctionalNodeDescription descriptor)
         {
             // Basic properties
             InputTypes = descriptor.InputTypes;
@@ -66,10 +73,12 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
             OutputNames = descriptor.OutputNames;
 
             // Node display initialization
-            PopulateInputsOutputs();
+            return PopulateInputsOutputs();
         }
-        private void PopulateInputsOutputs()
+        private (string, NodeSerializationRoutine)[] PopulateInputsOutputs()
         {
+            (string, NodeSerializationRoutine)[] serializers = new (string, NodeSerializationRoutine)[InputTypes.Length]; 
+
             Title = NodeTypeName = Descriptor.NodeName;
             for (int index = 0; index < InputTypes.Length; index++)
             {
@@ -85,14 +94,16 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 
                 // Update serialization
                 // TODO: (Remark-cz) At the moment this is not working yet because when deserialization happens connectors are not initialized yet and when PopulateInputsOutputs runs it's already past serialization
-                ProcessorNodeMemberSerialization.Add(preferredTitle, new NodeSerializationRoutine(
+                NodeSerializationRoutine serializer = new NodeSerializationRoutine(
                     () => connector is PrimitiveInputConnector p ? p.SerializeStorage() : [],
                     bytes =>
                     {
                         if (connector is PrimitiveInputConnector p)
                             p.DeserializeStorage(bytes);
                     }
-                ));
+                );
+                ProcessorNodeMemberSerialization.Add(preferredTitle, serializer);
+                serializers[index] = (preferredTitle, serializer);
             }
 
             for (int index = 0; index < OutputTypes.Length; index++)
@@ -101,6 +112,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 string? preferredTitle = OutputNames == null ? GetPreferredTitle(outputType) : OutputNames?[index];
                 Output.Add(new OutputConnector(outputType) { Title = preferredTitle ?? "Result" });
             }
+
+            return serializers;
 
             InputConnector CreateInputPin(Type inputType, object? defaultValue, string preferredTitle)
             {
@@ -207,11 +220,6 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
 
         #region Serialization
         protected sealed override Dictionary<string, NodeSerializationRoutine> ProcessorNodeMemberSerialization { get; }
-        internal override void PostDeserialization()
-        {
-            base.PostDeserialization();
-            InitializeNodeProperties(Descriptor);
-        }
         protected override NodeSerializationRoutine VariantInputConnectorsSerialization { get; } = null;
         #endregion
 
