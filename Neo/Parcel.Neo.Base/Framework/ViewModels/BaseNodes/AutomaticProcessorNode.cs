@@ -207,11 +207,11 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 timer.Stop();
 
                 if ((int)timer.Elapsed.TotalMilliseconds > 0) // Millisecond scale
-                    return new NodeExecutionResult(new NodeMessage($"Finished in {timer.Elapsed.TotalMilliseconds:F2}ms"), cache);
+                    return new NodeExecutionResult(new NodeMessage($"Finished in {timer.Elapsed.TotalMilliseconds:F2}ms", NodeMessageType.RuntimeStats), cache);
                 else if ((int)timer.Elapsed.TotalMicroseconds > 0) // Microsecond scale
-                    return new NodeExecutionResult(new NodeMessage($"Finished in {timer.Elapsed.TotalMicroseconds:F2}μs"), cache);
+                    return new NodeExecutionResult(new NodeMessage($"Finished in {timer.Elapsed.TotalMicroseconds:F2}μs", NodeMessageType.RuntimeStats), cache);
                 else // Nanosecond scale
-                    return new NodeExecutionResult(new NodeMessage($"Finished in {timer.Elapsed.TotalNanoseconds:F2}ns"), cache);
+                    return new NodeExecutionResult(new NodeMessage($"Finished in {timer.Elapsed.TotalNanoseconds:F2}ns", NodeMessageType.RuntimeStats), cache);
             }
             catch (Exception e)
             {
