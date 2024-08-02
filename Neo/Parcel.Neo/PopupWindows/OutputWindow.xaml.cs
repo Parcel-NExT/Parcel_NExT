@@ -155,7 +155,7 @@ namespace Parcel.Neo.PopupWindows
                 }
                 else
                 {
-                    TestLabel = $"No preview is available for this node's output ({cache.DataObject})";
+                    TestLabel = $"No preview is available for this node ({cache.DataType.Name})'s output (String value: {cache.DataObject})";
                     StringDisplayVisibility = Visibility.Visible;
                 }
             }
