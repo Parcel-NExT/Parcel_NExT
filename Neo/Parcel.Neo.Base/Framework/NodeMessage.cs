@@ -5,6 +5,7 @@ namespace Parcel.Neo.Base.Framework
     public enum NodeMessageType
     {
         Empty,
+        RuntimeStats, // Less important than normal
         Normal,
         Error,
         Documentation

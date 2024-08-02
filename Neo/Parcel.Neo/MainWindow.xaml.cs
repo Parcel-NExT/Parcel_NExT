@@ -21,6 +21,8 @@ using Parcel.Neo.ViewModels;
 using System.Linq;
 using Nodify;
 using Parcel.Neo.Base.Serialization;
+using Parcel.Neo.Prompts;
+using Zora.Infrastructure.Package;
 
 namespace Parcel.Neo
 {
@@ -449,6 +451,49 @@ namespace Parcel.Neo
             NodesPaletteColumn.Width = new GridLength(0);
             NodesPaletteSplitterColumn.Width = new GridLength(0);
             e.Handled = true;
+        }
+        private void ImportPackageMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new()
+            {
+                Title = "Select Package Assembly (.dll)",
+                Filter = ".Net Assembly (*dll)|*dll|All Files (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string assemblyFile = openFileDialog.FileName;
+                ToolboxIndexer.AddTools(assemblyFile);
+                UpdatePaletteToolboxes();
+            }
+        }
+        private void BrowsePackagesMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void DownloadNamedPackageMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Consider merging this function into BrowsePackage window directly
+        }
+        private void CreateScaffoldPackageMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Consider merge this function into BrowserPackage window
+            var prompt = new StringEntryPromptDialog("Package Name", "Enter package name", "MyPackage") { Owner = this };
+            if (prompt.ShowDialog() == false) return;
+            string packageName = prompt.Value;
+
+            OpenFolderDialog folderDialog = new()
+            {
+                Title = "Choose Folder to Save Generated Package Template"
+            };
+            if (folderDialog.ShowDialog() == false) return;
+
+            string folderPath = folderDialog.FolderName;
+            string projectFolder = PackageTemplateGenerator.GenerateTemplate(packageName, folderPath);
+            // Pre-Compile
+            ProcessHelper.RunProgramIfAvailable("dotnet", projectFolder, "publish");
+
+            // Open output folder in file explorer (default program) after done
+            ProcessHelper.OpenFileWithDefaultProgram(folderPath);
         }
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {

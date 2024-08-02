@@ -7,14 +7,14 @@ using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using System.Diagnostics;
 
-namespace Parcel.NExT.Interpreter.Helpers
+namespace Zora.Infrastructure.NuGet
 {
     #region Placeholder Solution
     /// <remarks>
     /// Before the formal implementation is complete, here we provide an easy win-x64 use only implementation that makes use of `dotnet` cli;
     /// This relies on `pwsh` (PowerShell 7)
     /// </remarks>
-    internal static class QuickEasyDirtyNugetPreparer
+    public static class QuickEasyDirtyNugetPreparer
     {
         public static string TryDownloadNugetPackage(string packageName, string nugetRepoIdentifier)
         {

@@ -9,6 +9,8 @@ namespace Parcel.CoreEngine.Helpers
     {
         #region Process Summoning
         public static string GetOutput(string program, params string[] args)
+            => GetOutput(program, Directory.GetCurrentDirectory(), args);
+        public static string GetOutput(string program, string workingDirectory, params string[] args)
         {
             ProcessStartInfo startInfo = new()
             {
@@ -18,11 +20,12 @@ namespace Parcel.CoreEngine.Helpers
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                Arguments = args.JoinAsArguments()
+                Arguments = args.JoinAsArguments(),
+                WorkingDirectory = workingDirectory,
             };
 
             // Start the process
-            var process = new Process
+            Process process = new()
             {
                 StartInfo = startInfo
             };
@@ -33,7 +36,6 @@ namespace Parcel.CoreEngine.Helpers
             process.WaitForExit();
             return outputs;
         }
-
         public static string GetOutputWithInput(string program, string[]? args, string input)
         {
             using Process p = new()
@@ -57,6 +59,13 @@ namespace Parcel.CoreEngine.Helpers
             p.WaitForExit();
 
             return output;
+        }
+        public static string RunProgramIfAvailable(string programName, string startingFolder, params string[] arguments)
+        {
+            string? programPath = EnvironmentVariableHelper.FindProgram(programName);
+            if (programPath != null && File.Exists(programPath))
+                return GetOutput(programPath, startingFolder, arguments);
+            return string.Empty;
         }
         #endregion
 

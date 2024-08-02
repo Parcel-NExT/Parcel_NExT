@@ -31,7 +31,6 @@
             <converters:FlowToDirectionConverter x:Key="FlowToDirectionConverter" />
             <converters:MediaColorToParcelColorConverter x:Key="MediaColorToParcelColorConverter" />
             <converters:HiddenVisibilityConverter x:Key="HiddenVisibilityConverter" />
-            <converters:NodeMessageTypeToVisibilityConverter x:Key="NodeMessageTypeToVisibilityConverter" />
             <converters:NodeMessageTypeToBrushColorConverter x:Key="NodeMessageTypeToBrushColorConverter" />
             <converters:NodeLocationConverter x:Key="NodeLocationConverter" />
             <converters:GraphInputOutputComboDataTypeNameToTypeConverter x:Key="GraphInputOutputComboDataTypeNameToTypeConverter"/>
@@ -475,8 +474,12 @@
                 <MenuItem Header="Console" Click="ToggleConsoleWindowMenuItem_Click" ToolTip="Toggles showing/hiding console window, which displays output messages from Print commands. Notice closing console window directly also closes the application."/>
                 <MenuItem x:Name="ShowNodesPaletteMenuItem" Header="Show Nodes Palette" IsCheckable="True" IsChecked="True" Checked="ShowNodesPaletteMenuItem_Checked" Unchecked="ShowNodesPaletteMenuItem_Unchecked" ToolTip="Toggle showing/hiding Nodes Palette, which allows drag-and-drop creation of nodes."/>
             </MenuItem>
-            <MenuItem Header="Package" Visibility="Collapsed">
-                <MenuItem Header="Import"/>
+            <MenuItem Header="Package">
+                <MenuItem Header="Import" Click="ImportPackageMenuItem_Click" ToolTip="Import from local dll."/>
+                <MenuItem Header="Browse" Click="BrowsePackagesMenuItem_Click" ToolTip="Browse available packages (from both NuGet and Zora store). Can also download selected package."/>
+                <MenuItem Header="Download" Click="DownloadNamedPackageMenuItem_Click" ToolTip="Download named package directly."/>
+                <Separator/>
+                <MenuItem Header="Create Package..." Click="CreateScaffoldPackageMenuItem_Click" ToolTip="Create a new package."/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Manual" Visibility="Collapsed"/>
@@ -805,29 +808,15 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                         <DataTemplate DataType="{x:Type baseNodes:DynamicInputProcessorNode}">
                                             <DockPanel LastChildFill="True">
                                                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                                                    <Button Style="{StaticResource IconButton}"
-                         Content="{StaticResource PlusIcon}"
-                         Command="{Binding AddEntryCommand}" />
-                                                    <Button Style="{StaticResource IconButton}"
-                         Content="{StaticResource RemoveKeyIcon}"
-                         Command="{Binding RemoveEntryCommand}" />
-                                                    <TextBlock Foreground="{Binding Message.Type, Converter={StaticResource NodeMessageTypeToBrushColorConverter}}" 
-                            Margin="0" Padding="0" 
-                            MaxWidth="256" TextWrapping="WrapWithOverflow"
-                            Text="{Binding Message.Content}"
-                            Visibility="{Binding Message.Type, Converter={StaticResource NodeMessageTypeToVisibilityConverter}}">
-                                                    </TextBlock>
+                                                    <Button Style="{StaticResource IconButton}" Content="{StaticResource PlusIcon}" Command="{Binding AddEntryCommand}" />
+                                                    <Button Style="{StaticResource IconButton}" Content="{StaticResource RemoveKeyIcon}" Command="{Binding RemoveEntryCommand}" />
+                                                    <TextBlock Foreground="{Binding Message.Type, Converter={StaticResource NodeMessageTypeToBrushColorConverter}}" Margin="0" Padding="0" MaxWidth="256" TextWrapping="WrapWithOverflow" Text="{Binding Message.Content}" Visibility="{Binding Message.Type, Converter={converters:NodeMessageTypeToVisibilityConverter IncludeMinorMessage=False}}"/>
                                                 </StackPanel>
                                             </DockPanel>
                                         </DataTemplate>
 
                                         <DataTemplate DataType="{x:Type baseNodes:ProcessorNode}">
-                                            <TextBlock Foreground="{Binding Message.Type, Converter={StaticResource NodeMessageTypeToBrushColorConverter}}" 
-                    Margin="0" Padding="0" 
-                    MaxWidth="256" TextWrapping="WrapWithOverflow"
-                    Text="{Binding Message.Content}"
-                    Visibility="{Binding Message.Type, Converter={StaticResource NodeMessageTypeToVisibilityConverter}}">
-                                            </TextBlock>
+                                            <TextBlock Foreground="{Binding Message.Type, Converter={StaticResource NodeMessageTypeToBrushColorConverter}}" Margin="0" Padding="0" MaxWidth="256" TextWrapping="WrapWithOverflow" Text="{Binding Message.Content}" Visibility="{Binding Message.Type, Converter={converters:NodeMessageTypeToVisibilityConverter IncludeMinorMessage=False}}"/>
                                         </DataTemplate>
                                     </nodify:Node.Resources>
                                     <nodify:Node.HeaderTemplate>
@@ -835,13 +824,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                             <!--The data type here is just a string-->
                                             <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
                                                 <StackPanel DockPanel.Dock="Right" Margin="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <Border Margin="5, 0, 0, 0" Padding="0" Width="10" Height="10" CornerRadius="5"
-                         BorderThickness="2" BorderBrush="{StaticResource PreviewModeBorderColor}" 
-                         MouseDown="ProcessorNodeTogglePreviewButton_MouseDown"
-                         Tag="{Binding Path=DataContext, 
-                             RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}"
-                         DataContext="{Binding Path=DataContext, 
-                             RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
+                                                    <Border Margin="5, 0, 0, 0" Padding="0" Width="10" Height="10" CornerRadius="5" BorderThickness="2" BorderBrush="{StaticResource PreviewModeBorderColor}" MouseDown="ProcessorNodeTogglePreviewButton_MouseDown" Tag="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}">
                                                         <Border.Resources>
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="Background" Value="Transparent"></Setter>
@@ -885,6 +868,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                             </Style>
                                                         </Button.Resources>
                                                     </Button>
+                                                    <TextBlock Foreground="{Binding Message.Type, Converter={StaticResource NodeMessageTypeToBrushColorConverter}}" Margin="0" Padding="0" MaxWidth="256" TextAlignment="Left" VerticalAlignment="Bottom" FontSize="12" TextWrapping="WrapWithOverflow" Text="{Binding Message.Content}" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type nodify:Node},Mode=FindAncestor}}" Visibility="{Binding Message.Type, Converter={converters:NodeMessageTypeToVisibilityConverter IncludeMinorMessage=True, MinorMessageOnly=True}}"/>
                                                 </StackPanel>
                                                 <Label Content="{Binding }" Foreground="White" Margin="0" Padding="0" VerticalAlignment="Center"/>
                                             </DockPanel>
