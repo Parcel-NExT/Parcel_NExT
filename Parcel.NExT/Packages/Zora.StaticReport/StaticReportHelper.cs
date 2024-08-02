@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Numerics;
 using Color = Parcel.Types.Color;
 
-namespace Parcel.Graphing
+namespace Zora.Graphing
 {
     public class ReportFormattingParameters
     {
