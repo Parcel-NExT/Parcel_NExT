@@ -1,5 +1,9 @@
 # Parcel.Plots
 
+Author(s): Charles Zhang
+Published by: Methodox Technologies, Inc.
+License: MIT
+
 Main official power-charged plotting and charting library for Parcel.
 
 API style: data + dedicated configuration structure. Each plot type will have its own configuration structure that matches its plot type name. We have default values for all of configurations.
