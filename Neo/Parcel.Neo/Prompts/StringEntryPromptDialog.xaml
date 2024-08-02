@@ -1,0 +1,14 @@
+﻿<Window x:Class="Parcel.Neo.Prompts.StringEntryPromptDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Parcel.Neo.Prompts"
+        mc:Ignorable="d" 
+        Title="StringEntryPromptDialog" Height="100" Width="260">
+    <StackPanel Orientation="Vertical">
+        <Label x:Name="EntryLabel" Content=""/>
+        <TextBox x:Name="EntryTextBox"/>
+        <Button Content="Confirm" Click="ConfirmButton_Click"/>
+    </StackPanel>
+</Window>

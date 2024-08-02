@@ -8,8 +8,14 @@
     <Compile Update="PopupWindows\ActionEventPickerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Prompts\StringEntryPromptDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="PopupWindows\PackagePickerWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="PopupWindows\ActionEventPickerWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -20,6 +26,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="PopupWindows\CreateFunctionWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Prompts\StringEntryPromptDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styling\ScrollbarResource.xaml">
