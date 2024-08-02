@@ -478,7 +478,9 @@ namespace Parcel.Neo
             if (folderDialog.ShowDialog() == false) return;
 
             string folderPath = folderDialog.FolderName;
-            PackageTemplateGenerator.GenerateTemplate(packageName, folderPath);
+            string projectFolder = PackageTemplateGenerator.GenerateTemplate(packageName, folderPath);
+            // Pre-Compile
+            ProcessHelper.RunProgramIfAvailable("dotnet", projectFolder, "publish");
 
             // Open output folder in file explorer (default program) after done
             ProcessHelper.OpenFileWithDefaultProgram(folderPath);

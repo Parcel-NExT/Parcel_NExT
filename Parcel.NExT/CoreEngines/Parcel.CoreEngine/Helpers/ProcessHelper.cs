@@ -58,6 +58,10 @@ namespace Parcel.CoreEngine.Helpers
 
             return output;
         }
+        public static void RunProgramIfAvailable(string program, string projectFolder, params string[] arguments)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Desktop System Behavior
