@@ -29,6 +29,8 @@ namespace Parcel.Neo.Base.Framework
             => RegisterTool(Toolboxes, toolbox, node);
         public static void AddTools(string toolbox, ToolboxNodeExport[] nodes)
             => RegisterTools(Toolboxes, toolbox, nodes);
+        public static void AddTools(string assemblyPath)
+            => RegisterAssembly(assemblyPath);
         private static Dictionary<string, ToolboxNodeExport[]> IndexToolboxes()
         {
             Dictionary<string, Assembly> toolboxAssemblies = [];
@@ -106,6 +108,17 @@ namespace Parcel.Neo.Base.Framework
         }
         #endregion
 
+        #region Routines
+        private static void RegisterAssembly(string assemblyPath)
+        {
+            string toolboxName = Path.GetFileNameWithoutExtension(assemblyPath);
+            Assembly assembly = Assembly.LoadFrom(assemblyPath);
+
+            var nodes = LoadAssembly(assembly, toolboxName);
+            RegisterTools(Toolboxes, toolboxName, nodes.ToArray());
+        }
+        #endregion
+
         #region Helpers
         private static Dictionary<string, ToolboxNodeExport[]> IndexToolboxes(Dictionary<string, Assembly> assemblies)
         {
@@ -116,26 +129,35 @@ namespace Parcel.Neo.Base.Framework
                 Assembly assembly = assemblies[toolboxName];
                 toolboxes[toolboxName] = [];
 
-                // Load either old PV1 toolbox or new Parcel package
-                IEnumerable<ToolboxNodeExport?>? exportedNodes = null;
-                if (assembly
-                    .GetTypes()
-                    .Any(p => typeof(IToolboxDefinition).IsAssignableFrom(p)))
-                {
-                    // Loading per old PV1 convention
-                    exportedNodes = GetExportNodesFromConvention(toolboxName, assembly);
-                }
-                else
-                {
-                    // Remark-cz: In the future we will utilize Parcel.CoreEngine.Service for this
-                    // Load generic Parcel package
-                    exportedNodes = GetExportNodesFromGenericAssembly(assembly);
-                }
+                IEnumerable<ToolboxNodeExport?>? exportedNodes = LoadAssembly(assembly, toolboxName);
+
                 toolboxes[toolboxName] = exportedNodes!.Select(n => n!).ToArray();
             }
 
             return toolboxes;
         }
+
+        private static IEnumerable<ToolboxNodeExport?> LoadAssembly(Assembly assembly, string toolboxName)
+        {
+            // Load either old PV1 toolbox or new Parcel package
+            IEnumerable<ToolboxNodeExport?>? exportedNodes = null;
+            if (assembly
+                .GetTypes()
+                .Any(p => typeof(IToolboxDefinition).IsAssignableFrom(p)))
+            {
+                // Loading per old PV1 convention
+                exportedNodes = GetExportNodesFromConvention(toolboxName, assembly);
+            }
+            else
+            {
+                // Remark-cz: In the future we will utilize Parcel.CoreEngine.Service for this
+                // Load generic Parcel package
+                exportedNodes = GetExportNodesFromGenericAssembly(assembly);
+            }
+
+            return exportedNodes;
+        }
+
         private static void RegisterToolbox(Dictionary<string, Assembly> toolboxAssemblies, string name, Assembly? assembly)
         {
             if (assembly == null)

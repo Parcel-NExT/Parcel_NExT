@@ -454,7 +454,17 @@ namespace Parcel.Neo
         }
         private void ImportPackageMenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            OpenFileDialog openFileDialog = new()
+            {
+                Title = "Select Package Assembly (.dll)",
+                Filter = ".Net Assembly (*dll)|*dll|All Files (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string assemblyFile = openFileDialog.FileName;
+                ToolboxIndexer.AddTools(assemblyFile);
+                UpdatePaletteToolboxes();
+            }
         }
         private void BrowsePackagesMenuItem_Click(object sender, RoutedEventArgs e)
         {
