@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
 using Parcel.NExT.Interpreter.Helpers;
+using Zora.Infrastructure.NuGet;
 
 namespace Parcel.NExT.Interpreter.Scripting
 {
