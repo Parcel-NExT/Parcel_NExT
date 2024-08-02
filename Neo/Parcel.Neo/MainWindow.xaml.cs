@@ -466,6 +466,14 @@ namespace Parcel.Neo
                 UpdatePaletteToolboxes();
             }
         }
+        private void ReimportPackageMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        private void CompileAndReImportPackageMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
         private void BrowsePackagesMenuItem_Click(object sender, RoutedEventArgs e)
         {
 

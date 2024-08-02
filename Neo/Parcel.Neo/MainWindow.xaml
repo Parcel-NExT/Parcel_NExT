@@ -480,6 +480,9 @@
                 <MenuItem Header="Download" Click="DownloadNamedPackageMenuItem_Click" ToolTip="Download named package directly."/>
                 <Separator/>
                 <MenuItem Header="Create Package..." Click="CreateScaffoldPackageMenuItem_Click" ToolTip="Create a new package."/>
+                <Separator Visibility="Collapsed"/>
+                <MenuItem Header="Re-Import" Click="ReimportPackageMenuItem_Click" ToolTip="Re-Import from local dll; Useful during development." Visibility="Collapsed"/>
+                <MenuItem Header="Compile &amp; Import" Click="CompileAndReImportPackageMenuItem_Click" ToolTip="(Re-)Import by compiling using dotnet from local package; Useful during development." Visibility="Collapsed"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Manual" Visibility="Collapsed"/>
