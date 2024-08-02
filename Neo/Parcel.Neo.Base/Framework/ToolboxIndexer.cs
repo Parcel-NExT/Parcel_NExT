@@ -7,6 +7,8 @@ using System.IO;
 using Parcel.CoreEngine.Helpers;
 using Parcel.NExT.Interpreter.Types;
 using Parcel.CoreEngine.Service.Interpretation;
+using System.Numerics;
+using System.Drawing;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -53,7 +55,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterToolbox(toolboxAssemblies, "Yahoo Finance", Assembly.Load("Parcel.YahooFinance"));
             RegisterToolbox(toolboxAssemblies, "MiniGames", Assembly.Load("Parcel.MiniGames"));
             RegisterToolbox(toolboxAssemblies, "Document Model", Assembly.Load("Parcel.DocumentModel"));
-            RegisterToolbox(toolboxAssemblies, "Static Report", Assembly.Load("Parcel.StaticReport"));
+            RegisterToolbox(toolboxAssemblies, "Static Report", Assembly.Load("Zora.StaticReport"));
 
             // Index specific nodes
             Dictionary<string, ToolboxNodeExport?[]> toolboxes = IndexToolboxes(toolboxAssemblies);
@@ -80,6 +82,8 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Actions.GameActions));
             RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Queries.Query));
             // Register specific types - directly borrow from libraries
+            RegisterType(toolboxes, "Types", typeof(Vector2));
+            RegisterType(toolboxes, "Types", typeof(Size));
             RegisterType(toolboxes, "Collections", typeof(Enumerable));
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Statistics)); // TODO: Might provide selective set of functions instead of everything; Alternative, figure out how to do in-app documentation
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Correlation));

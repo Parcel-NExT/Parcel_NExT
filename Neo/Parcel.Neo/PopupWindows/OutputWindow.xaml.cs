@@ -89,9 +89,12 @@ namespace Parcel.Neo.PopupWindows
         #region Events
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            // Remark: Potential save types depends on what visualization we offer, e.g. Image (PNG), DataGrid (CSV), 3D Object (OBJ), Plain Text (TXT or MD), HTML (HTML).
+
             SaveFileDialog saveFileDialog = new()
             {
-                Title = "Choose Path of Saved File"
+                Title = "Choose Path of Saved File",
+                Filter = "All Files (*.*)|*.*" // TODO: Implement smart extension set depending on potential save type
             };
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -152,7 +155,7 @@ namespace Parcel.Neo.PopupWindows
                 }
                 else
                 {
-                    TestLabel = $"No preview is available for this node's output ({cache.DataObject})";
+                    TestLabel = $"No preview is available for this node ({cache.DataType.Name})'s output (String value: {cache.DataObject})";
                     StringDisplayVisibility = Visibility.Visible;
                 }
             }
