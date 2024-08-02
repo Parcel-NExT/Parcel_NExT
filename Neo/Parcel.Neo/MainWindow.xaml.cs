@@ -467,7 +467,7 @@ namespace Parcel.Neo
         private void CreateScaffoldPackageMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Consider merge this function into BrowserPackage window
-            var prompt = new StringEntryPromptDialog("Package Name", "Enter package name");
+            var prompt = new StringEntryPromptDialog("Package Name", "Enter package name", "MyPackage") { Owner = this };
             if (prompt.ShowDialog() == false) return;
             string packageName = prompt.Value;
 

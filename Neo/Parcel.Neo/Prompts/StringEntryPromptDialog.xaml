@@ -5,10 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Parcel.Neo.Prompts"
         mc:Ignorable="d" 
-        Title="StringEntryPromptDialog" Height="100" Width="260">
-    <StackPanel Orientation="Vertical">
-        <Label x:Name="EntryLabel" Content=""/>
+        Background="#145185" WindowStartupLocation="CenterOwner"
+        Title="StringEntryPromptDialog" Height="120" Width="260">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="DarkSlateGray"/>
+            <Setter Property="MinWidth" Value="75"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="5, 0"/>
+            <Setter Property="Foreground" Value="AntiqueWhite"/>
+            <Setter Property="Background" Value="#558fc0"/>
+            <Setter Property="BorderBrush" Value="WhiteSmoke"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Width" Value="200"></Setter>
+            <Setter Property="Foreground" Value="#d5e4f2"/>
+            <Setter Property="Background" Value="#7191ac"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="CaretBrush" Value="FloralWhite"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="SelectionBrush" Value="#c6c042"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="0, 4"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="LightGray"/>
+        </Style>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Label x:Name="EntryLabel" Content="Label Message:"/>
         <TextBox x:Name="EntryTextBox"/>
-        <Button Content="Confirm" Click="ConfirmButton_Click"/>
+        <Button Content="Confirm" Click="ConfirmButton_Click" HorizontalAlignment="Center"/>
     </StackPanel>
 </Window>

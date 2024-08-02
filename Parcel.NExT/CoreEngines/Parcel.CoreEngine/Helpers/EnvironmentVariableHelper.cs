@@ -8,15 +8,14 @@ namespace Parcel.CoreEngine.Helpers
     /// </summary>
     public static class EnvironmentVariableHelper
     {
-
-
         #region Helpers
         /// <summary>
         /// Find disk location of program
         /// </summary>
         public static string? FindProgram(string program)
         {
-            if (File.Exists(Path.GetFullPath(program))) return Path.GetFullPath(program);
+            if (File.Exists(Path.GetFullPath(program))) 
+                return Path.GetFullPath(program);
 
             string[] paths = Environment.GetEnvironmentVariable("PATH")!.Split(';');
             return paths

@@ -1,5 +1,4 @@
-﻿using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Parcel.Neo.PopupWindows
 {

@@ -8,12 +8,16 @@ namespace Parcel.Neo.Prompts
     public partial class StringEntryPromptDialog : Window
     {
         #region Constructor
-        public StringEntryPromptDialog(string title, string label)
+        public StringEntryPromptDialog(string title, string label, string defaultValue)
         {
+            title = title.Trim();
+            label = label.Trim();
+
             InitializeComponent();
 
             Title = title;
-            EntryLabel.Content = label;
+            EntryLabel.Content = label.EndsWith(':') ? label : $"{label}:";
+            EntryTextBox.Text = defaultValue;
         }
         #endregion
 
