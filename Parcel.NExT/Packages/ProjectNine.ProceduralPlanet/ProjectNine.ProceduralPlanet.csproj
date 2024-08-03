@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ProjectNine.Tooling.Generative</RootNamespace>
+    <Version>0.0.1</Version>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Colors\Bathymetric.col" />
+    <EmbeddedResource Include="Assets\Colors\Blackbody.col" />
+    <EmbeddedResource Include="Assets\Colors\burrows.col" />
+    <EmbeddedResource Include="Assets\Colors\burrowsB.col" />
+    <EmbeddedResource Include="Assets\Colors\Colors.rgb" />
+    <EmbeddedResource Include="Assets\Colors\default.col" />
+    <EmbeddedResource Include="Assets\Colors\defaultB.col" />
+    <EmbeddedResource Include="Assets\Colors\earth.map" />
+    <EmbeddedResource Include="Assets\Colors\Grey.rgb" />
+    <EmbeddedResource Include="Assets\Colors\greyscale.col" />
+    <EmbeddedResource Include="Assets\Colors\Jons.rgb" />
+    <EmbeddedResource Include="Assets\Colors\Lefebvre.col" />
+    <EmbeddedResource Include="Assets\Colors\Lefebvre2.col" />
+    <EmbeddedResource Include="Assets\Colors\light.col" />
+    <EmbeddedResource Include="Assets\Colors\mars.col" />
+    <EmbeddedResource Include="Assets\Colors\Mars.rgb" />
+    <EmbeddedResource Include="Assets\Colors\Olsson.col" />
+    <EmbeddedResource Include="Assets\Colors\Olsson2.col" />
+    <EmbeddedResource Include="Assets\Colors\OlssonLight.col" />
+    <EmbeddedResource Include="Assets\Colors\white.col" />
+    <EmbeddedResource Include="Assets\Colors\White.rgb" />
+    <EmbeddedResource Include="Assets\Colors\wood.col" />
+    <EmbeddedResource Include="Assets\Colors\yellow.col" />
+    <EmbeddedResource Include="Assets\Colors\Yellow.rgb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Emgu.CV.runtime.windows" Version="4.9.0.5494" />
+  </ItemGroup>
+
+</Project>
