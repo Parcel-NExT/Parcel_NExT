@@ -219,6 +219,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.NuGet", "Packages\Zora
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.StaticReport", "Packages\Zora.StaticReport\Zora.StaticReport.csproj", "{381853ED-9824-47F8-9B66-871EFB42F949}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zora.ThreeDimensional.ProceduralModeling", "Packages\Zora.ThreeDimensional.ProceduralModeling\Zora.ThreeDimensional.ProceduralModeling.csproj", "{C6758253-37C3-49CF-856F-AC25D1BC6B67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -581,6 +583,10 @@ Global
 		{381853ED-9824-47F8-9B66-871EFB42F949}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{381853ED-9824-47F8-9B66-871EFB42F949}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{381853ED-9824-47F8-9B66-871EFB42F949}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6758253-37C3-49CF-856F-AC25D1BC6B67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6758253-37C3-49CF-856F-AC25D1BC6B67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6758253-37C3-49CF-856F-AC25D1BC6B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6758253-37C3-49CF-856F-AC25D1BC6B67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -683,6 +689,7 @@ Global
 		{5422794F-51FA-498C-A25D-59A6F2E9ED08} = {F8939373-9D21-4D9F-B77A-59B094A2AB2D}
 		{A3B4687F-1B03-407A-BFC2-5806FBF6691C} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{381853ED-9824-47F8-9B66-871EFB42F949} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{C6758253-37C3-49CF-856F-AC25D1BC6B67} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}

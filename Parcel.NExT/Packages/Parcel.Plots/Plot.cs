@@ -48,7 +48,7 @@ namespace Parcel.Graphing
             numberText.LabelPadding = padding;
             numberText.LabelAlignment = ScottPlot.Alignment.MiddleCenter;
 
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 60 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 60 : configurations.ImageHeight);
             return new Image(path);
         }
@@ -90,7 +90,7 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.YAxis))
                 plot.Axes.Bottom.Label.Text = configurations.YAxis;
 
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
@@ -119,7 +119,7 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.YAxis))
                 plot.Axes.Bottom.Label.Text = configurations.YAxis;
 
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
@@ -156,7 +156,7 @@ namespace Parcel.Graphing
                 plot.Axes.Left.Label.Text = configurations.YAxis2;
             }
 
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
@@ -178,7 +178,7 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.YAxis))
                 plot.Axes.Left.Label.Text = configurations.YAxis;
 
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
@@ -197,7 +197,7 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.YAxis))
                 plot.Axes.Left.Label.Text = configurations.YAxis;
 
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
@@ -220,7 +220,7 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.YAxis))
                 plot.Axes.Left.Label.Text = configurations.YAxis;
 
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
@@ -281,7 +281,7 @@ namespace Parcel.Graphing
             plot.Add.VerticalLine(0, 1, ScottPlot.Colors.Black);
 
             // Save result
-            string path = GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth, configurations.ImageHeight);
             return new Image(path);
 
@@ -326,8 +326,6 @@ namespace Parcel.Graphing
         #endregion
 
         #region Helpers
-        internal static string GetTempImagePath()
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
         private static ScottPlot.Color Convert(Parcel.Types.Color color)
             => ScottPlot.Color.FromHex(color.ToString());
         #endregion

@@ -8,7 +8,7 @@ namespace Parcel.Data
         {
             string uri = GetPicsumPhotosUrl(width, height);
 
-            string outputPath = GetTempImagePath();
+            string outputPath = Image.GetTempImagePath();
             new HttpClient().DownloadFileTaskAsync(new Uri(uri), outputPath).GetAwaiter().GetResult();
             return new Image(outputPath);
 
@@ -21,11 +21,6 @@ namespace Parcel.Data
                 else return $"https://picsum.photos/{width}/{height}";
             }
         }
-
-        #region Helpers
-        private static string GetTempImagePath()
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
-        #endregion
     }
 
     public static class HTTPClientHelper

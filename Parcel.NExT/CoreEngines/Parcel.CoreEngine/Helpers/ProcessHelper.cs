@@ -10,8 +10,10 @@ namespace Parcel.CoreEngine.Helpers
         #region Process Summoning
         public static string GetOutput(string program, params string[] args)
             => GetOutput(program, Directory.GetCurrentDirectory(), args);
-        public static string GetOutput(string program, string workingDirectory, params string[] args)
+        public static string GetOutput(string program, string? workingDirectory, string[] args)
         {
+            workingDirectory ??= Directory.GetCurrentDirectory();
+
             ProcessStartInfo startInfo = new()
             {
                 FileName = program,

@@ -1,4 +1,5 @@
-﻿using Python.Runtime;
+﻿using Parcel.NExT.Python.Helpers;
+using Python.Runtime;
 
 namespace PythonNetPrintImplementation
 {
@@ -20,12 +21,7 @@ namespace Parcel.NExT.Python
         #region Construction
         public InteractivePython()
         {
-            var installedPython = Helpers.PythonRuntimeHelper.FindPythonDLL();
-            if (installedPython == null)
-                throw new ArgumentException("Cannot find any usable Python installation on the machine.");
-
-            Runtime.PythonDLL = installedPython;
-            PythonEngine.Initialize();
+            PythonRuntimeHelper.InitializeEngine();
             using (Py.GIL())
             {
                 PythonScope = Py.CreateScope();
@@ -39,7 +35,7 @@ namespace Parcel.NExT.Python
                 //    """);
             }
         }
-        PyModule PythonScope;
+        private PyModule PythonScope { get; }
         #endregion
 
         #region Methods
@@ -73,10 +69,6 @@ namespace Parcel.NExT.Python
                 // Clue: Ipython does something like this: https://github.com/ipython/ipython/blob/main/IPython/core/displayhook.py which might involve sys.displayhook and builtins._
                 // But do notice that `a = 5` in both python repl and ipython returns None
             }
-        }
-        public void Shutdown()
-        {
-            PythonEngine.Shutdown(); // Remark: This cause binary serialization exception
         }
         #endregion
     }

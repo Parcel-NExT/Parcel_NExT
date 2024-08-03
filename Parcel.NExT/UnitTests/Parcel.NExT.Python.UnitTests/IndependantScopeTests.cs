@@ -1,3 +1,5 @@
+using Parcel.NExT.Python.Helpers;
+
 namespace Parcel.NExT.Python.UnitTests
 {
     public class IndependantScopeTests

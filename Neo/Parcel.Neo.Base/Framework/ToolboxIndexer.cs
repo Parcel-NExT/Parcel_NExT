@@ -9,6 +9,7 @@ using Parcel.NExT.Interpreter.Types;
 using Parcel.CoreEngine.Service.Interpretation;
 using System.Numerics;
 using System.Drawing;
+using Zora.DomainSpecific.CGI;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -56,11 +57,14 @@ namespace Parcel.Neo.Base.Framework
             RegisterToolbox(toolboxAssemblies, "MiniGames", Assembly.Load("Parcel.MiniGames"));
             RegisterToolbox(toolboxAssemblies, "Document Model", Assembly.Load("Parcel.DocumentModel"));
             RegisterToolbox(toolboxAssemblies, "Static Report", Assembly.Load("Zora.StaticReport"));
-
-            // Index specific nodes
+            // Index toolbox nodes
             Dictionary<string, ToolboxNodeExport?[]> toolboxes = IndexToolboxes(toolboxAssemblies);
+
             // Register front-end specific toolboxes (In general we try to eliminate those, or to say the least standardization effort is needed to make sure those are understood across implementations
             AddToolbox(toolboxes, "Basic", new BasicToolbox());
+            // Register specific toolbox - 3D Modeling
+            RegisterType(toolboxes, "3D Modeling", typeof(Model3D));
+            RegisterType(toolboxes, "3D Modeling", typeof(Scene3D));
             // Register specific types - Parcel "Standard"
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));

@@ -29,7 +29,7 @@ namespace Parcel.Graphing
 
             plot.Title("Demo Normal Distribution");
 
-            string path = Plot.GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, PresetImageWidth, PresetImageHeight);
             return new Image(path);
         }
@@ -49,7 +49,7 @@ namespace Parcel.Graphing
 
             plot.Title("Demo Uniform Distribution");
 
-            string path = Plot.GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, PresetImageWidth, PresetImageHeight);
             return new Image(path);
         }
@@ -62,7 +62,7 @@ namespace Parcel.Graphing
             values = ScottPlot.Generate.RandomWalk(count, multiply, offset);
             plot.Add.Scatter(values.Select((v, i) => i).ToArray(), values);
 
-            string path = Plot.GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, PresetImageWidth, PresetImageHeight);
             return new Image(path);
         }
@@ -78,7 +78,7 @@ namespace Parcel.Graphing
             values = ScottPlot.Generate.Sin(count, multiply, offset);
             plot.Add.Scatter(values.Select((v, i) => i).ToArray(), values);
 
-            string path = Plot.GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, PresetImageWidth, PresetImageHeight);
             return new Image(path);
         }
@@ -91,7 +91,7 @@ namespace Parcel.Graphing
             values = ScottPlot.Generate.Cos(count, multiply, offset);
             plot.Add.Scatter(values.Select((v, i) => i).ToArray(), values);
 
-            string path = Plot.GetTempImagePath();
+            string path = Image.GetTempImagePath();
             plot.SavePng(path, PresetImageWidth, PresetImageHeight);
             return new Image(path);
         }
