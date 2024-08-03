@@ -131,23 +131,35 @@ namespace Parcel.Neo.PopupWindows
             if (Node.HasCache(output))
             {
                 ConnectorCache cache = Node[output];
+
+                // Primitives
                 if (cache.DataType.IsArray && PrimitiveTypes.Any(t => t.IsAssignableFrom(cache.DataType.GetElementType()))) // This should not be necessary since the handling of IList should have already handled it // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType
                     PreviewPrimitiveArray((Array)cache.DataObject);
                 else if (cache.DataObject is System.Collections.IList list)
                     PreviewCollections(list);
+                // Core
                 else if (PrimitiveTypes.Contains(cache.DataType))
                     PreviewPrimitives(cache.DataObject);
-                else if (cache.DataType == typeof(Types.DataGrid))
-                    PreviewDataGrid(cache.DataObject as Parcel.Types.DataGrid);
+                // DSL: Image Processing
                 else if (cache.DataType == typeof(Types.Image))
                 {
                     Types.Image image = (cache.DataObject as Types.Image)!;
                     PreviewImage(image);
                 }
+                // DSL: Data Analytics
+                else if (cache.DataType == typeof(Types.DataGrid))
+                    PreviewDataGrid(cache.DataObject as Parcel.Types.DataGrid);
                 else if (cache.DataType == typeof(DataColumn))
                     PreviewColumnData(cache.DataObject as Parcel.Types.DataColumn);
+                // DSL: CGI
+                else if (cache.DataType == typeof(Model3D))
+                {
+                    Scene3D scene = Scene3D.CreateScene(cache.DataObject as Model3D);
+                    PreviewImage(scene.GetPreviewRender());
+                }
                 else if (cache.DataType == typeof(Scene3D))
                     PreviewImage((cache.DataObject as Scene3D).GetPreviewRender());
+                // DSL: P9 Game
                 else if (cache.DataType == typeof(ActionResult))
                 {
                     ActionResult? actionResult = cache.DataObject as ActionResult;
@@ -156,6 +168,7 @@ namespace Parcel.Neo.PopupWindows
                     else
                         PreviewPrimitives(actionResult.Message);
                 }
+                // Fallback
                 else
                 {
                     TestLabel = $"No preview is available for this node ({cache.DataType.Name})'s output (String value: {cache.DataObject})";

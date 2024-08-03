@@ -38,17 +38,50 @@ namespace Zora.DomainSpecific.CGI
     public sealed class SceneProcedure
     {
         public SceneSetupProcedure SceneSetupProcedure { get; set; } = new();
-        public List<ModelProcedure> Models { get; set; } = [];
+        public List<Model3D> Models { get; set; } = [];
 
         #region Method
         internal void Execute(dynamic blenderModule)
         {
-            foreach (ModelProcedure model in Models)
+            foreach (Model3D model in Models)
                 model.Execute(blenderModule);
         }
         #endregion
     }
     #endregion
+
+    public class Model3D
+    {
+        #region Construction
+        private Model3D() { }
+        #endregion
+
+        #region Properties
+        public ModelProcedure Procedure { get; set; } = new();
+        #endregion
+
+        #region Primitives
+        public static Model3D CreateCube()
+        {
+            Model3D model = new();
+            return model;
+        }
+        #endregion
+
+        #region Model Operations
+        public void Bevel()
+        {
+            Procedure.Operations.Add(new BevelOperation());
+        }
+        #endregion
+
+        #region Method
+        internal void Execute(dynamic blenderModule)
+        {
+            Procedure.Execute(blenderModule);
+        }
+        #endregion
+    }
 
     /// <summary>
     /// A rerepresentation of final constructed scene, storing procedures and providing rendering visualization.
@@ -63,27 +96,23 @@ namespace Zora.DomainSpecific.CGI
         public SceneProcedure Procedure { get; } = new();
         #endregion
 
-        #region Primitives & Entry Points
-        public static Scene3D MakeEmpty()
+        #region Entry Points
+        public static Scene3D CreateScene(params Model3D[] models)
+        {
+            Scene3D scene = new();
+            scene.Procedure.SceneSetupProcedure.Clear = false;
+            scene.Procedure.Models = [.. models];
+            return scene;
+        }
+        public static Scene3D CreateEmptyScene()
         {
             Scene3D scene = new();
             scene.Procedure.SceneSetupProcedure.Clear = true;
             return scene;
         }
-        public static Scene3D MakeCube()
-        {
-            Scene3D scene = new();
-            scene.Procedure.SceneSetupProcedure.Clear = false;
-            scene.Procedure.Models.Add(new ModelProcedure());
-            return scene;
-        }
         #endregion
 
-        #region Operations
-        public void Bevel()
-        {
-            Procedure.Models.First().Operations.Add(new BevelOperation());
-        }
+        #region Scene Operations
         #endregion
 
         #region Routines
