@@ -1,3 +1,13 @@
+# Parcel.ProceduralGeneration.Planet
+
+Useful for practical purpose. Part of Raytrix initiative.
+
+Based on https://github.com/Charles-Zhang-Project-Nine-Experiments/ProceduralPlanet?tab=readme-ov-file.
+
+## TODO
+
+- [ ] Merge with Raytrix.
+
 # Procedural Planet (C# .Net 7)
 
 This code was derived (or a fork) from the original [planet.exe](https://github.com/Project-Nine-Tooling/planet) by [Torben Mogensen](http://hjemmesider.diku.dk/~torbenm/Planet/).
@@ -24,6 +34,11 @@ We have migrated original C# re-write, and original HDPlanet improvement, but ha
 
 - [ ] Need to figure out a way to re-implement original unit tests; Consider putting them inside a dedicated Parcel NExT UnitTests folder.
 - [ ] Remove the video generation aspect into a dedicated utility module so as to remove dependencies
+
+Basic usability:
+
+- [ ] Provide `Image` return type entry functions
+- [ ] Implement writting to PnG using Parcel.Image package
 
 ## Technical Notes
 

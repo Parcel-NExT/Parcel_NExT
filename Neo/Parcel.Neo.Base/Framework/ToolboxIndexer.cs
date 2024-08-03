@@ -66,7 +66,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "3D Modeling", typeof(Model3D));
             RegisterType(toolboxes, "3D Modeling", typeof(Scene3D));
             // Register specific toolbox - Procedural Planet
-            RegisterType(toolboxes, "Procedural Planet", typeof(HDPlanet.PlanetGenerator));
+            RegisterType(toolboxes, "Procedural Planet", typeof(HDPlanet.HDPlanetCLI));
             // Register specific types - Parcel "Standard"
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));

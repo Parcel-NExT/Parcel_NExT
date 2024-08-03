@@ -2,7 +2,7 @@
 
 namespace HDPlanet
 {
-    public static class Helper
+    internal static class Helper
     {
         public static Dictionary<string, string> GetEmbeddedColorResources()
         {

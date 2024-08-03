@@ -135,7 +135,7 @@ namespace HDPlanet
     }
     #endregion
 
-    public class PlanetGenerator
+    internal class PlanetGenerator
     {
         #region Constructor
         public GeneratorConfigurations Configurations { get; }

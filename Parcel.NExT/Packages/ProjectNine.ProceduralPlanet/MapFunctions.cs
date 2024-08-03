@@ -1,6 +1,4 @@
-﻿using HDPlanet;
-
-namespace ProjectNine.Tooling.Generative
+﻿namespace ProjectNine.Tooling.Generative
 {
     public abstract class MapFunction
     {

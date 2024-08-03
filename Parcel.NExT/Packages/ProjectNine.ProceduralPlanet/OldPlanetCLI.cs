@@ -1,6 +1,7 @@
 ﻿namespace PlanetCSharp
 {
-    internal class Program
+    [Obsolete("Gallery piece. Archive only.")]
+    internal class OldPlanetCLI
     {
         static void Main(string[] args)
         {

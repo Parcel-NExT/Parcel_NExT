@@ -4,7 +4,8 @@ using System.Text.RegularExpressions;
 
 namespace PlanetCSharp
 {
-    public class OldPlanetC
+    [Obsolete("Gallery piece. Archive only.")]
+    internal class OldPlanetC
     {
         #region Constants
         int BLACK = 0;
