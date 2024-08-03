@@ -22,8 +22,8 @@ namespace Zora.DomainSpecific.CGI
                 BlenderModule = Py.Import("bpy");
 
                 // Initial configuration
+                BlenderModule.ops.wm.read_homefile(app_template: ""); // This effectivesly restarts current bpy context
                 BlenderModule.ops.wm.save_as_mainfile(filepath: TempBlendFilePath);
-                BlenderModule.ops.wm.open_mainfile(filepath: TempBlendFilePath);
                 BlenderModule.context.scene.render.filepath = TempImageFilePath;
                 BlenderModule.context.scene.render.resolution_percentage = 40;
             }
@@ -40,7 +40,9 @@ namespace Zora.DomainSpecific.CGI
         #region Operations
         public void Bevel()
         {
-            // PENDING
+            var obj = BlenderModule.context.active_object;
+            var mod = obj.modifiers.@new("Bevel", "BEVEL");
+            mod.width = 0.5;
         }
         #endregion
 
