@@ -1,4 +1,5 @@
 ﻿using Parcel.Neo.Base.Framework.ViewModels;
+using Parcel.NExT.Python.Helpers;
 using System;
 using System.Windows.Input;
 
@@ -31,6 +32,9 @@ namespace Parcel.Neo
             var app = new App();
             app.InitializeComponent();
             app.Run();
+
+            // Some libraries may have used Python, here we shut it down if it's initialized; Otherwise the application will not terminate
+            PythonRuntimeHelper.TryShutdownEngine();
         }
     }
 }

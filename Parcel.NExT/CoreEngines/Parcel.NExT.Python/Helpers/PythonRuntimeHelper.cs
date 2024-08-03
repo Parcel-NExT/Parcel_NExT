@@ -74,6 +74,14 @@ namespace Parcel.NExT.Python.Helpers
 
             PythonEngineAlreadyInitialized = true;
         }
+        /// <summary>
+        /// This function should generally be called by the runtime (otherwise usually implemented on the front-end side), otherwise the entire application will NOT shutdown properly
+        /// </summary>
+        public static void TryShutdownEngine()
+        {
+            if (PythonEngineAlreadyInitialized)
+                PythonEngine.Shutdown(); // Remark: This may cause binary serialization exception (Remark) This was a well-known issue; We might have already fixed it. I remember it's related to changing some serialization setting.
+        }
         #endregion
 
         #region Methods
@@ -108,7 +116,7 @@ namespace Parcel.NExT.Python.Helpers
                 pythonScope.Exec(snippet);
             }
             if (shutDown)
-                PythonEngine.Shutdown();
+                TryShutdownEngine();
             return pythonScope;
         }
         #endregion

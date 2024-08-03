@@ -70,10 +70,6 @@ namespace Parcel.NExT.Python
                 // But do notice that `a = 5` in both python repl and ipython returns None
             }
         }
-        public void Shutdown()
-        {
-            PythonEngine.Shutdown(); // Remark: This cause binary serialization exception
-        }
         #endregion
     }
 }
