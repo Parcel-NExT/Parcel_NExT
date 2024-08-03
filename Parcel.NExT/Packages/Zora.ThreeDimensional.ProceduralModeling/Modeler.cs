@@ -1,71 +1,65 @@
 ﻿using Parcel.CoreEngine.Helpers;
-using Parcel.NExT.Python;
 using Parcel.NExT.Python.Helpers;
 using Parcel.Types;
 using Python.Runtime;
 
-namespace Parcel.DomainSpecific.CGI
+namespace Zora.DomainSpecific.CGI
 {
-    public sealed class Object3D
-    {
-
-    }
-
     public class Modeler
     {
-        #region Session (Obsolete)
-        private static InteractivePython _scriptSession;
-        private static InteractivePython ScriptSession
-        {
-            get => _scriptSession ??= new();
-        }
-        #endregion
-
         #region Explicit Session
-        private static Modeler _modeler;
-        private static Modeler Session
-        {
-            get => _modeler ??= new Modeler();
-        }
+        private readonly string TempBlendFilePath = Parcel.Standard.System.FileSystem.GetTempFilePath(".blend");
+        private readonly string TempImageFilePath = Image.GetTempImagePath();
+
         private dynamic BlenderModule { get; }
         private Modeler()
         {
             ValidateDependencies();
-
-            var installedPython = PythonRuntimeHelper.FindPythonDLL();
-            if (installedPython == null)
-                throw new ArgumentException("Cannot find any usable Python installation on the machine.");
-
-            Runtime.PythonDLL = installedPython;
-            PythonEngine.Initialize();
+            PythonRuntimeHelper.TryInitializeEngine();
             using (Py.GIL())
             {
+                // Load module
                 BlenderModule = Py.Import("bpy");
+
+                // Initial configuration
+                BlenderModule.ops.wm.save_as_mainfile(filepath: TempBlendFilePath);
+                BlenderModule.ops.wm.open_mainfile(filepath: TempBlendFilePath);
+                BlenderModule.context.scene.render.filepath = TempImageFilePath;
+                BlenderModule.context.scene.render.resolution_percentage = 40;
             }
         }
         #endregion
 
         #region Primitives
-        public static Image MakeCube()
+        public static Modeler MakeCube()
         {
-            string imagePath = Image.GetTempImagePath();
-            string blendPath = Parcel.Standard.System.FileSystem.GetTempFilePath(".blend");
-
-            Modeler session = Session;
-            session.BlenderModule.ops.wm.save_as_mainfile(filepath: blendPath);
-            session.BlenderModule.ops.wm.open_mainfile(filepath: blendPath);
-            session.BlenderModule.context.scene.render.filepath = imagePath;
-            session.BlenderModule.ops.render.render(write_still: true);
-            return new(imagePath, true);
+            return new();
         }
         #endregion
 
+        #region Operations
+        public void Bevel()
+        {
+            // PENDING
+        }
+        #endregion
+
+        #region Routines
+        /// <summary>
+        /// Generates a preview render of current scene
+        /// </summary>
+        public Image GetPreviewRender()
+        {
+            BlenderModule.ops.render.render(write_still: true);
+            return new(TempImageFilePath, false); // Don't save as reference since we are reusing same file and that will cause writing issues when making changes
+        }
+        #endregion
 
         #region Helper
         private static void ValidateDependencies()
         {
             // Check python availability
-            string? python = EnvironmentVariableHelper.FindProgram(PythonRuntimeHelper.PythonExecutableName) 
+            string? python = EnvironmentVariableHelper.FindProgram(PythonRuntimeHelper.PythonExecutableName)
                 ?? throw new FileNotFoundException($"Cannot find python on current computer.");
 
             // Check python version

@@ -49,6 +49,31 @@ namespace Parcel.NExT.Python.Helpers
             }
             return null;
         }
+
+        /// <summary>
+        /// Notice due to the way GIC works - the entire (Parcel) application can only have one single (shared) Python context.
+        /// All the libraries/packages that uses any part of Python functionality must play nicely and share such a context.
+        /// And this function (aka. python initialization) must be called only once ever.
+        /// </summary>
+        public static bool PythonEngineAlreadyInitialized { get; private set; } = false;
+        public static void TryInitializeEngine()
+        {
+            if (!PythonEngineAlreadyInitialized)
+                InitializeEngine();
+        }
+        public static void InitializeEngine()
+        {
+            if (PythonEngineAlreadyInitialized)
+                throw new ApplicationException($"Python engine can only be initialized once!");
+
+            string? installedPython = FindPythonDLL()
+                ?? throw new ArgumentException("Cannot find any usable Python installation on the machine.");
+
+            Runtime.PythonDLL = installedPython;
+            PythonEngine.Initialize();
+
+            PythonEngineAlreadyInitialized = true;
+        }
         #endregion
 
         #region Methods
@@ -74,12 +99,8 @@ namespace Parcel.NExT.Python.Helpers
         /// </summary>
         public static PyModule RunTopLevelSnippet(string snippet, bool shutDown = true)
         {
-            var installedPython = Helpers.PythonRuntimeHelper.FindPythonDLL();
-            if (installedPython == null)
-                throw new ArgumentException("Cannot find any usable Python installation on the machine.");
+            InitializeEngine();
 
-            Runtime.PythonDLL = installedPython;
-            PythonEngine.Initialize();
             PyModule pythonScope;
             using (Py.GIL())
             {

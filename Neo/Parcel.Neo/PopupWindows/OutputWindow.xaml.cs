@@ -19,6 +19,7 @@ using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 using Parcel.Neo.Helpers;
 using Parcel.Types;
+using Zora.DomainSpecific.CGI;
 
 namespace Parcel.Neo.PopupWindows
 {
@@ -145,6 +146,8 @@ namespace Parcel.Neo.PopupWindows
                 }
                 else if (cache.DataType == typeof(DataColumn))
                     PreviewColumnData(cache.DataObject as Parcel.Types.DataColumn);
+                else if (cache.DataType == typeof(Modeler))
+                    PreviewImage((cache.DataObject as Modeler).GetPreviewRender());
                 else if (cache.DataType == typeof(ActionResult))
                 {
                     ActionResult? actionResult = cache.DataObject as ActionResult;

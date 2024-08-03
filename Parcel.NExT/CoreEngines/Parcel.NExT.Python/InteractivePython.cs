@@ -1,4 +1,5 @@
-﻿using Python.Runtime;
+﻿using Parcel.NExT.Python.Helpers;
+using Python.Runtime;
 
 namespace PythonNetPrintImplementation
 {
@@ -20,12 +21,7 @@ namespace Parcel.NExT.Python
         #region Construction
         public InteractivePython()
         {
-            var installedPython = Helpers.PythonRuntimeHelper.FindPythonDLL();
-            if (installedPython == null)
-                throw new ArgumentException("Cannot find any usable Python installation on the machine.");
-
-            Runtime.PythonDLL = installedPython;
-            PythonEngine.Initialize();
+            PythonRuntimeHelper.InitializeEngine();
             using (Py.GIL())
             {
                 PythonScope = Py.CreateScope();
