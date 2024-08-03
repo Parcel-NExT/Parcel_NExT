@@ -16,6 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
     <ProjectReference Include="..\..\CoreEngines\Parcel.NExT.Python\Parcel.NExT.Python.csproj" />
+    <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
+    <ProjectReference Include="..\Parcel.Standard\Parcel.Standard.csproj" />
   </ItemGroup>
 
 </Project>

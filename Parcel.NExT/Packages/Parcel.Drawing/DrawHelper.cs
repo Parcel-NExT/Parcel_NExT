@@ -22,7 +22,7 @@ namespace Parcel.Graphing
 
             using SKImage image = surface.Snapshot();
             using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
-            string tempFile = GetTempImagePath();
+            string tempFile = Image.GetTempImagePath();
             using FileStream file = File.OpenWrite(tempFile);
             data.SaveTo(file);
             file.Dispose();
@@ -32,11 +32,6 @@ namespace Parcel.Graphing
 
         #region Procedural Wrappers
 
-        #endregion
-
-        #region Helpers
-        private static string GetTempImagePath()
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
         #endregion
     }
 }

@@ -437,8 +437,8 @@ namespace Parcel.Standard.System
         #region Path
         public static string GetTempFilePath()
             => Path.GetTempFileName();
-        public static string GetTempImagePath()
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+        public static string GetTempFilePath(string extension)
+            => Path.GetTempPath() + Guid.NewGuid().ToString() + extension;
         #endregion
     }
 

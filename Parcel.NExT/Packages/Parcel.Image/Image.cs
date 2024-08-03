@@ -166,5 +166,10 @@ namespace Parcel.Types
             return pixels;
         }
         #endregion
+
+        #region Utility
+        public static string GetTempImagePath()
+            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
+        #endregion
     }
 }

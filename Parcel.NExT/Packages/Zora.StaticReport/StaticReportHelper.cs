@@ -111,7 +111,7 @@ namespace Zora.Graphing
                     image = new(chart.Image.FileReference);
                 else
                 {
-                    var intermediateLocation = GetTempImagePath(); // We are generating a file to save the burden of implementing specific conversion; In the future we will implement in-memory conversion
+                    var intermediateLocation = Image.GetTempImagePath(); // We are generating a file to save the burden of implementing specific conversion; In the future we will implement in-memory conversion
                     chart.Image.Save(intermediateLocation);
                     image = new(intermediateLocation);
                 }
@@ -130,15 +130,13 @@ namespace Zora.Graphing
                 composition.Composite(image, (int)chart.Position.X + parameters.Margin, (int)chart.Position.Y + titleOffset + parameters.Margin, CompositeOperator.Over);
             }
 
-            string tempPath = GetTempImagePath();
+            string tempPath = Image.GetTempImagePath();
             composition.Write(tempPath);
             return new Image(tempPath);
         }
         #endregion
 
         #region Helpers
-        internal static string GetTempImagePath()
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + ".png";
         private static string ToHex(Color c)
             => "#" + c.Red.ToString("X2") + c.Green.ToString("X2") + c.Blue.ToString("X2");
         private static MagickColor ConvertColor(Color c)

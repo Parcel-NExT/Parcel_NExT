@@ -39,7 +39,7 @@ namespace Parcel.NExT.Python
                 //    """);
             }
         }
-        PyModule PythonScope;
+        private PyModule PythonScope { get; }
         #endregion
 
         #region Methods

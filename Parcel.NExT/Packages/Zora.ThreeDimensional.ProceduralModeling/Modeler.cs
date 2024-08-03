@@ -1,5 +1,8 @@
 ﻿using Parcel.CoreEngine.Helpers;
+using Parcel.NExT.Python;
 using Parcel.NExT.Python.Helpers;
+using Parcel.Types;
+using Python.Runtime;
 
 namespace Parcel.DomainSpecific.CGI
 {
@@ -10,12 +13,50 @@ namespace Parcel.DomainSpecific.CGI
 
     public class Modeler
     {
-        #region Primitives
-        public static Object3D MakeCube()
+        #region Session (Obsolete)
+        private static InteractivePython _scriptSession;
+        private static InteractivePython ScriptSession
+        {
+            get => _scriptSession ??= new();
+        }
+        #endregion
+
+        #region Explicit Session
+        private static Modeler _modeler;
+        private static Modeler Session
+        {
+            get => _modeler ??= new Modeler();
+        }
+        private dynamic BlenderModule { get; }
+        private Modeler()
         {
             ValidateDependencies();
 
-            return new();
+            var installedPython = PythonRuntimeHelper.FindPythonDLL();
+            if (installedPython == null)
+                throw new ArgumentException("Cannot find any usable Python installation on the machine.");
+
+            Runtime.PythonDLL = installedPython;
+            PythonEngine.Initialize();
+            using (Py.GIL())
+            {
+                BlenderModule = Py.Import("bpy");
+            }
+        }
+        #endregion
+
+        #region Primitives
+        public static Image MakeCube()
+        {
+            string imagePath = Image.GetTempImagePath();
+            string blendPath = Parcel.Standard.System.FileSystem.GetTempFilePath(".blend");
+
+            Modeler session = Session;
+            session.BlenderModule.ops.wm.save_as_mainfile(filepath: blendPath);
+            session.BlenderModule.ops.wm.open_mainfile(filepath: blendPath);
+            session.BlenderModule.context.scene.render.filepath = imagePath;
+            session.BlenderModule.ops.render.render(write_still: true);
+            return new(imagePath, true);
         }
         #endregion
 
