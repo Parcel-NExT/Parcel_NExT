@@ -195,6 +195,8 @@ namespace ProjectNine.Tooling.Generative
             {
                 case FileType.BMP:
                     return (".bmp");
+                case FileType.PNG:
+                    return (".png");
                 case FileType.PPM:
                     return (".ppm");
                 case FileType.XPM:

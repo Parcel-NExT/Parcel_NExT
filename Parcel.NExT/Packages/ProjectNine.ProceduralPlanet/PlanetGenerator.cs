@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Parcel.Types;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace HDPlanet
@@ -6,6 +7,7 @@ namespace HDPlanet
     #region Structs
     public enum FileType
     {
+        PNG,
         BMP,
         PPM,
         XPM,
@@ -369,6 +371,10 @@ namespace HDPlanet
                     case FileType.BMP:
                         if (Configurations.DoBW) WriteBMPBW(Configurations.FileName, Configurations.CommandLine);
                         else WriteBMP(Configurations.FileName, Configurations.CommandLine);
+                        break;
+                    case FileType.PNG:
+                        if (Configurations.DoBW) WritePNGBW(Configurations.FileName);
+                        else WritePNG(Configurations.FileName);
                         break;
                     case FileType.HeightField:
                         WriteHeights(Configurations.FileName);
@@ -923,6 +929,27 @@ namespace HDPlanet
                 }
         }
         /// <summary>
+        /// Write picture in PNG
+        /// </summary>
+        private void WritePNG(string fileName)
+        {
+            Pixel[][] pixels = new Pixel[Configurations.MapWidth][];
+            for (int i = 0; i < Configurations.MapHeight; i++)
+                pixels[i] = new Pixel[Configurations.MapHeight];
+
+            throw new NotImplementedException();
+
+            Image image = new Image();
+            image.Save(fileName);
+        }
+        /// <summary>
+        /// Write picture in PNG (B/W)
+        /// </summary>
+        private void WritePNGBW(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
         /// Prints picture in BMP format
         /// </summary>
         private void WriteBMP(string filename, string commandLine)
@@ -930,7 +957,7 @@ namespace HDPlanet
             int i, j, c, s0, s, W1;
 
             using FileStream file = File.Open(filename, FileMode.Create);
-            using BinaryWriter writer = new BinaryWriter(file, Encoding.ASCII, false);
+            using BinaryWriter writer = new(file, Encoding.ASCII, false);
 
             writer.Write("BM".ToCharArray());
 

@@ -6,7 +6,7 @@ namespace HDPlanet
     /// <summary>
     /// CLI program usage
     /// </summary>
-    public static class HDPlanetCLI
+    internal static class HDPlanetCLI
     {
         #region Methods
         public static void Main(string[] args)
