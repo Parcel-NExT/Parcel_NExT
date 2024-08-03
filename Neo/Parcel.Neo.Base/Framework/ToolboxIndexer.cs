@@ -56,6 +56,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterToolbox(toolboxAssemblies, "MiniGames", Assembly.Load("Parcel.MiniGames"));
             RegisterToolbox(toolboxAssemblies, "Document Model", Assembly.Load("Parcel.DocumentModel"));
             RegisterToolbox(toolboxAssemblies, "Static Report", Assembly.Load("Zora.StaticReport"));
+            RegisterToolbox(toolboxAssemblies, "3D Modeling", Assembly.Load("Zora.ThreeDimensional.ProceduralModeling"));
 
             // Index specific nodes
             Dictionary<string, ToolboxNodeExport?[]> toolboxes = IndexToolboxes(toolboxAssemblies);
