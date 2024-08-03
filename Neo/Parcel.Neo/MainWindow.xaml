@@ -33,6 +33,7 @@
             <converters:HiddenVisibilityConverter x:Key="HiddenVisibilityConverter" />
             <converters:NodeMessageTypeToBrushColorConverter x:Key="NodeMessageTypeToBrushColorConverter" />
             <converters:NodeLocationConverter x:Key="NodeLocationConverter" />
+            <converters:SizeToVector2DConverter x:Key="SizeToVector2DConverter" />
             <converters:GraphInputOutputComboDataTypeNameToTypeConverter x:Key="GraphInputOutputComboDataTypeNameToTypeConverter"/>
             <ObjectDataProvider x:Key="DictionaryEntryTypeEntriesFromEnum" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
                 <ObjectDataProvider.MethodParameters>
@@ -880,9 +881,14 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                 </nodify:Node>
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type baseNodes:CommentNode}">
-                                <nodify:GroupingNode Header="{Binding Title}"
-                  Content="{Binding Comment}"
-                  ActualSize="{Binding Size}" />
+                                <!--At the moment there is an issue with resizing comment node when there is long comment - we can only make it bigger but not smaller-->
+                                <nodify:GroupingNode Header="{Binding Title}" Content="{Binding Comment}" ActualSize="{Binding Size, Mode=TwoWay, Converter={StaticResource SizeToVector2DConverter}}" CanResize="True">
+                                    <nodify:GroupingNode.ContentTemplate>
+                                        <DataTemplate DataType="{x:Type baseNodes:CommentNode}">
+                                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                        </DataTemplate>
+                                    </nodify:GroupingNode.ContentTemplate>
+                                </nodify:GroupingNode>
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type baseNodes:KnotNode}">
                                 <nodify:KnotNode Content="{Binding Connector}"/>
