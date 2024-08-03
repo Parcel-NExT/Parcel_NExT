@@ -146,8 +146,8 @@ namespace Parcel.Neo.PopupWindows
                 }
                 else if (cache.DataType == typeof(DataColumn))
                     PreviewColumnData(cache.DataObject as Parcel.Types.DataColumn);
-                else if (cache.DataType == typeof(Modeler))
-                    PreviewImage((cache.DataObject as Modeler).GetPreviewRender());
+                else if (cache.DataType == typeof(Scene3D))
+                    PreviewImage((cache.DataObject as Scene3D).GetPreviewRender());
                 else if (cache.DataType == typeof(ActionResult))
                 {
                     ActionResult? actionResult = cache.DataObject as ActionResult;

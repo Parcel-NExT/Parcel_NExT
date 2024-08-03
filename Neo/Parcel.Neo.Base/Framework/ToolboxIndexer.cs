@@ -63,7 +63,7 @@ namespace Parcel.Neo.Base.Framework
             // Register front-end specific toolboxes (In general we try to eliminate those, or to say the least standardization effort is needed to make sure those are understood across implementations
             AddToolbox(toolboxes, "Basic", new BasicToolbox());
             // Register specific toolbox - 3D Modeling
-            RegisterType(toolboxes, "3D Modeling", typeof(Modeler));
+            RegisterType(toolboxes, "3D Modeling", typeof(Scene3D));
             // Register specific types - Parcel "Standard"
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));
