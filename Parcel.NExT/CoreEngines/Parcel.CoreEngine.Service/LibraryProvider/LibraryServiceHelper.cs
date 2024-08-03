@@ -1,6 +1,6 @@
 ﻿using Parcel.CoreEngine.Contracts;
 using Parcel.NExT.Interpreter.Scripting;
-using Parcel.NExT.Python;
+using Parcel.NExT.Python.Helpers;
 using System.Reflection;
 
 namespace Parcel.CoreEngine.Service.LibraryProvider

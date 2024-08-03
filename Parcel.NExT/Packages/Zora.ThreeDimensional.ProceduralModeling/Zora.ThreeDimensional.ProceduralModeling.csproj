@@ -9,4 +9,13 @@
 	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="pythonnet" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\..\CoreEngines\Parcel.NExT.Python\Parcel.NExT.Python.csproj" />
+  </ItemGroup>
+
 </Project>
