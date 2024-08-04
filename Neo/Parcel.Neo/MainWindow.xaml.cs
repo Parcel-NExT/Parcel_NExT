@@ -299,7 +299,7 @@ namespace Parcel.Neo
                 .ToArray();
 
             // Summon event picker interface
-            ActionEventPickerWindow picker = new(availableEndpoints);
+            ActionEventPickerWindow picker = new(this, availableEndpoints);
             if (picker.ShowDialog() == true)
             {
                 ProcessorNode? eventAnchor = picker.Result;

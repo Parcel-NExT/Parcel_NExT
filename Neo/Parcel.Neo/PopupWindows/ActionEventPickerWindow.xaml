@@ -7,7 +7,7 @@
         xmlns:baseNodes="clr-namespace:Parcel.Neo.Base.Framework.ViewModels.BaseNodes;assembly=Parcel.Neo.Base"
         xmlns:base="clr-namespace:Parcel.Neo"
         mc:Ignorable="d"
-        Title="ActionEventPickerWindow" Height="450" Width="300" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        Title="Action Definition" Height="450" Width="300" SizeToContent="Height" WindowStartupLocation="CenterOwner"
         Background="#192d3e"
         DataContext="{Binding RelativeSource={RelativeSource self}}">
     <Window.Resources>
@@ -15,27 +15,122 @@
             <ResourceDictionary.MergedDictionaries>
             </ResourceDictionary.MergedDictionaries>
 
+            <Style TargetType="Button">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Padding" Value="4"/>
+                <Setter Property="Margin" Value="2"/>
+                <Setter Property="Background" Value="#184872"/>
+                <Setter Property="Foreground" Value="WhiteSmoke"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Style>
+            <Style TargetType="ToggleButton">
+                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="Padding" Value="4"/>
+                <Setter Property="Margin" Value="2"/>
+                <Setter Property="Background" Value="DarkGoldenrod"/>
+                <Setter Property="Foreground" Value="WhiteSmoke"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="White"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Background" Value="DarkGreen"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style TargetType="Label">
                 <Setter Property="Foreground" Value="LightGray"/>
             </Style>
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="LightGray"/>
+                <Setter Property="Margin" Value="2"/>
+                <Setter Property="Padding" Value="2"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <Label DockPanel.Dock="Top" Content="Pick endpoint:"/>
-        <ListBox x:Name="EndpointListBox" ItemsSource="{Binding AvailableEndpoints}" MouseDoubleClick="ListBox_MouseDoubleClick">
-            <ListBox.Resources>
-                <Style TargetType="ListBox">
-                    <Setter Property="Background" Value="#192d3e"/>
-                </Style>
-            </ListBox.Resources>
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type baseNodes:ProcessorNode}">
-                    <Label Content="{Binding Title}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <!-- Signature Specification -->
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" HorizontalAlignment="Center">
+            <Label Content="Signature" FontStyle="Italic" FontSize="10"/>
+            <Border BorderThickness="2" BorderBrush="Black">
+                <Label Content="void Actoin(double A)" Foreground="Goldenrod"/>
+            </Border>
+        </StackPanel>
+        <!-- Helper information -->
+        <TextBlock DockPanel.Dock="Top">
+            Define behavior for this. You can use either:<LineBreak/>
+            1. Subgraph/Graph reference/Section action reference<LineBreak/>
+            2. Embedded subgraph<LineBreak/>
+            3. Code snippets
+        </TextBlock>
+        <!-- Implementation Mode Selection -->
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" HorizontalAlignment="Center">
+            <Label Content="Mode" FontStyle="Italic" FontSize="10" HorizontalAlignment="Center"/>
+            <Border BorderThickness="0" BorderBrush="Black">
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton Content="Endpoint"/>
+                    <ToggleButton Content="Subgraph"/>
+                    <ToggleButton Content="Snippet"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        <Button DockPanel.Dock="Bottom" Content="Confirm" Background="#519a3e" HorizontalAlignment="Center" Margin="4"/>
+        <!-- Snippet Mode -->
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="True">
+            <Label DockPanel.Dock="Top" Content="Snippet:"/>
+            <avalonEdit:TextEditor x:Name="CodeEditor" xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Disabled" WordWrap="True" FontFamily="Consolas" FontSize="10" Margin="0" Padding="3" SyntaxHighlighting="C#" ShowLineNumbers="True" VerticalScrollBarVisibility="Auto">
+                <avalonEdit:TextEditor.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="../Styling/ScrollbarResource.xaml"/>
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </avalonEdit:TextEditor.Resources>
+                <avalonEdit:TextEditor.Background>
+                    <LinearGradientBrush StartPoint="0 0" EndPoint="0.8 1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.1" Color="#192d3e" />
+                            <GradientStop Offset="1" Color="#182e42" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </avalonEdit:TextEditor.Background>
+                <avalonEdit:TextEditor.Foreground>
+                    <LinearGradientBrush StartPoint="0 0" EndPoint="0.8 1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.1" Color="#3f95d3" />
+                            <GradientStop Offset="1" Color="#4e9fda" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </avalonEdit:TextEditor.Foreground>
+            </avalonEdit:TextEditor>
+        </DockPanel>
+        <!-- Subgraph Mode -->
+        <Button Content="Create (Embedded) Subgraph" DockPanel.Dock="Bottom" HorizontalAlignment="Center"/>
+        <!-- Picking Mode -->
+        <DockPanel DockPanel.Dock="Bottom" LastChildFill="True">
+            <Label DockPanel.Dock="Top" Content="Pick from existing endpoint:"/>
+            <ListBox x:Name="EndpointListBox" ItemsSource="{Binding AvailableEndpoints}" MouseDoubleClick="ListBox_MouseDoubleClick">
+                <ListBox.Resources>
+                    <Style TargetType="ListBox">
+                        <Setter Property="Background" Value="#192d3e"/>
+                    </Style>
+                </ListBox.Resources>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type baseNodes:ProcessorNode}">
+                        <Label Content="{Binding Title}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
     </DockPanel>
 </base:BaseWindow>
