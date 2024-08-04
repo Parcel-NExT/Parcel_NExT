@@ -17,6 +17,8 @@ namespace Parcel.Neo.Base.Serialization
             => Encoding.UTF8.GetBytes(value);
         public static byte[] Serialize(bool value)
             => BitConverter.GetBytes(value);
+        public static byte[] Serialize(char value)
+            => BitConverter.GetBytes(value);
         public static byte[] Serialize(int value)
             => BitConverter.GetBytes(value);
         public static byte[] Serialize(double value)
@@ -74,6 +76,8 @@ namespace Parcel.Neo.Base.Serialization
         #region Deserialization
         public static string GetString(byte[] bytes)
             => Encoding.UTF8.GetString(bytes);
+        public static object GetChar(byte[] bytes)
+            => Encoding.UTF8.GetChars(bytes).Single();
         public static bool GetBool(byte[] bytes)
             => BitConverter.ToBoolean(bytes);
         public static int GetInt(byte[] bytes)

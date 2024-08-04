@@ -122,6 +122,8 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 InputConnector? connector = null;
                 if (inputType == typeof(bool))
                     connector = new PrimitiveBooleanInputConnector(defaultValue != DBNull.Value ? (bool)defaultValue : null) { Title = preferredTitle ?? "Bool", AllowsArrayCoercion = supportsCoercion };
+                else if (inputType == typeof(char))
+                    connector = new PrimitiveCharInputConnector(defaultValue != DBNull.Value ? (char)defaultValue : null) { Title = preferredTitle ?? "Char", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(string))
                     connector = new PrimitiveStringInputConnector(defaultValue != DBNull.Value ? (string)defaultValue : null) { Title = preferredTitle ?? "String", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType.IsEnum)

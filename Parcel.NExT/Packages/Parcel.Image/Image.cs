@@ -13,7 +13,7 @@ namespace Parcel.Types
         public byte Alpha {  get; set; }
 
         public Pixel(){ }
-        public Pixel(byte red, byte green, byte blue, byte alpha)
+        public Pixel(byte red, byte green, byte blue, byte alpha = 255)
         {
             Red = red;
             Green = green;
@@ -49,7 +49,11 @@ namespace Parcel.Types
 
         #region Constructors
         public Image()
-            => Pixels = AllocatePixles(0, 0);
+        {
+            Pixels = AllocatePixles(0, 0);
+            Width = 0;
+            Height = 0;
+        }
         public Image(string pngFile, bool doNotLoad = false) // Should be true
         {
             if (doNotLoad)
@@ -58,11 +62,23 @@ namespace Parcel.Types
                 Load(pngFile);
         }
         public Image(int width, int height)
-            => Pixels = AllocatePixles(width, height);
+        {
+            Pixels = AllocatePixles(width, height);
+            Width = width;
+            Height = height;
+        }
         public Image(Pixel[][] pixels)
-            => Pixels = pixels;
+        {
+            Pixels = pixels;
+            Width = Pixels[0].Length;
+            Height = Pixels.Length;
+        }
         public Image(uint[][] pixels)
-            => Pixels = ConvertUintGrids(pixels);
+        {
+            Pixels = ConvertUintGrids(pixels);
+            Width = Pixels[0].Length;
+            Height = Pixels.Length;
+        }
         #endregion
 
         #region Static Methods

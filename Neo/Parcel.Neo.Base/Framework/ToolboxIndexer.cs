@@ -10,6 +10,8 @@ using Parcel.CoreEngine.Service.Interpretation;
 using System.Numerics;
 using System.Drawing;
 using Zora.DomainSpecific.CGI;
+using ProjectNine.Tooling.Generative;
+using Parcel.Types;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -65,6 +67,8 @@ namespace Parcel.Neo.Base.Framework
             // Register specific toolbox - 3D Modeling
             RegisterType(toolboxes, "3D Modeling", typeof(Model3D));
             RegisterType(toolboxes, "3D Modeling", typeof(Scene3D));
+            // Register specific toolbox - Procedural Planet
+            RegisterType(toolboxes, "Procedural Planet", typeof(ProceduralPlanet));
             // Register specific types - Parcel "Standard"
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));
@@ -75,6 +79,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataGridIntegration));
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataProcessingHelper));
             RegisterType(toolboxes, "Math", typeof(Processing.Utilities.Calculator));
+            RegisterType(toolboxes, "Image Processing", typeof(Types.Image));
             // Register specific types - The Real Parcel Standard
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.ControlFlow));
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.InputHelpers));
