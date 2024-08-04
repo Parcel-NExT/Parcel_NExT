@@ -6,22 +6,24 @@ using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
 namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
 {
     /// <summary>
-    /// Provides a dedicated routing (compared to default main output and on-canvas preview of contents.
+    /// Provides a dedicated routing (compared to default main output).
     /// </summary>
-    /// <remarks>
-    /// TODO: @intern Revamp Preview node to provide on-surface preview instead of summoning a result window
-    /// </remarks>
-    public class PreviewNode : ProcessorNode
+    public class SelectOutputNode : ProcessorNode
     {
         #region Node Interface
         private readonly InputConnector _objectInput = new(typeof(object))
         {
             Title = "Object",
         };
-        public PreviewNode()
+        private readonly OutputConnector _objectOutput = new(typeof(object))
         {
-            Title = NodeTypeName = "Preview";
+            Title = "Object",
+        };
+        public SelectOutputNode()
+        {
+            Title = NodeTypeName = "Select Output";
             Input.Add(_objectInput);
+            Output.Add(_objectOutput);
         }
         #endregion
 
@@ -30,7 +32,10 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
         {
             object obj = _objectInput.FetchInputValue<object>();
 
-            return new NodeExecutionResult(new NodeMessage(obj.ToString()), []);
+            return new NodeExecutionResult(new NodeMessage(obj.ToString()), new Dictionary<OutputConnector, object>()
+            {
+                {_objectOutput, new ConnectorCache(obj)}
+            });
         }
         #endregion
 
