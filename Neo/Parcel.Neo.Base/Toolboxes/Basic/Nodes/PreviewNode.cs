@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
 using Parcel.Neo.Base.Framework.ViewModels.BaseNodes;
@@ -23,13 +24,14 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
             Title = NodeTypeName = "Preview";
             Input.Add(ObjectInput);
         }
+        public Action? OnExecute;
         #endregion
 
         #region Processor Interface
         protected override NodeExecutionResult Execute()
         {
             object obj = ObjectInput.FetchInputValue<object>();
-
+            OnExecute?.Invoke();
             return new NodeExecutionResult(new NodeMessage(obj.ToString()), []);
         }
         #endregion

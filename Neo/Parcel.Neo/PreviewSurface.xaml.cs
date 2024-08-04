@@ -37,26 +37,24 @@ namespace Parcel.Neo
         #endregion
 
         #region View Properties
-        public static readonly DependencyProperty NodeProperty = DependencyProperty.Register(nameof(Node),  typeof(ProcessorNode), typeof(PreviewSurface));
-        public static readonly DependencyProperty SourceConnectorProperty = DependencyProperty.Register(nameof(SourceConnector),  typeof(ProcessorNode), typeof(PreviewSurface));
+        private ProcessorNode _node;
         public ProcessorNode Node
         {
-            get => (ProcessorNode)GetValue(NodeProperty);
+            get => _node;
             set
             {
-                SetValue(NodeProperty, value);
-                NotifyPropertyChanged(nameof(Node));
+                SetField(ref _node, value);
                 GeneratePreviewForOutput(Node.MainOutput);
             }
         }
-        public OutputConnector SourceConnector
+        private InputConnector _sourceConnector;
+        public InputConnector SourceConnector
         {
-            get => (OutputConnector)GetValue(SourceConnectorProperty);
+            get => _sourceConnector;
             set
             {
-                SetValue(SourceConnectorProperty, value);
-                NotifyPropertyChanged(nameof(SourceConnector));
-                GeneratePreviewForOutput(SourceConnector);
+                SetField(ref _sourceConnector, value);
+                GeneratePreviewForOutput(SourceConnector.Connections.Single().Output as OutputConnector);
             }
         }
 

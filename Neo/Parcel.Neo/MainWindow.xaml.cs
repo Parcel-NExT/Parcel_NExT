@@ -174,6 +174,13 @@ namespace Parcel.Neo
             }
             e.Handled = true;
         }
+        private void PreviewNodePreviewSurface_Initialized(object sender, EventArgs e)
+        {
+            PreviewSurface control = sender as PreviewSurface;
+            PreviewNode node = control.DataContext as PreviewNode;
+
+            node.OnExecute = () => control.SourceConnector = node.ObjectInput;
+        }
         private void ProcessorNodeTogglePreviewButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!(sender is Border {Tag: ProcessorNode node} border)) return;
