@@ -99,7 +99,7 @@ namespace Parcel.Neo.Base.Framework
             // Register specific types - directly borrow from libraries
             RegisterType(toolboxes, "Types", typeof(Vector2));
             RegisterType(toolboxes, "Types", typeof(Size));
-            RegisterType(toolboxes, "Collections", typeof(Enumerable));
+            RegisterType(toolboxes, "Collections", typeof(Enumerable)); // System.Linq
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Statistics)); // TODO: Might provide selective set of functions instead of everything; Alternative, figure out how to do in-app documentation
             RegisterType(toolboxes, "Statistics", typeof(MathNet.Numerics.Statistics.Correlation));
             // RegisterType(toolboxes, "String Processing", typeof(InflectorExtensions)); // TODO: Provide Humanizer equivalent functions in PSL string processing

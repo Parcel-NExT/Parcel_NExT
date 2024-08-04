@@ -133,7 +133,21 @@ namespace Parcel.NExT.Interpreter.Types
         public object? StaticInvoke(object?[]? arguments)
         {
             if (Type == CallableType.StaticMethod || Type == CallableType.Snippet)
-                return Method!.Invoke(null, arguments);
+            {
+                // Deal with generic methods, e.g. LINQ
+                if (Method.ContainsGenericParameters && Method.DeclaringType == typeof(Enumerable)) // Remark: Special handle LINQ because we don't have better way to deal with generic yet
+                {
+                    MethodInfo generic = Method.MakeGenericMethod(arguments.Select(a => a.GetType().GetElementType()).ToArray()); // a.GetType().GetGenericArguments()[0]
+                    return generic.Invoke(null, arguments);
+                }
+                else if (Method.ContainsGenericParameters) // TODO: Notice this will NOT work perfectly when (e.g. in the case of LINQ)
+                {
+                    MethodInfo generic = Method.MakeGenericMethod(arguments.Select(a => a.GetType()).ToArray());
+                    return generic.Invoke(null, arguments);
+                }
+                else // A typical old good static method
+                    return Method!.Invoke(null, arguments);
+            }
             else if (Type == CallableType.Constructor)
                 return Constructor!.Invoke(arguments);
             else
