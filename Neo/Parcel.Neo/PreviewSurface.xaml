@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource self}}">
     <DockPanel LastChildFill="True">
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" Visibility="{Binding FileMenuVisibility}">
             <MenuItem Header="File">
                 <MenuItem Header="Load Preview" Visibility="Collapsed" ToolTip="Loads arbitrary file of supported format for preview purpose."/>
                 <MenuItem Header="Save Result" Click="MenuItem_Click" ToolTip="Saves the result into a file."/>

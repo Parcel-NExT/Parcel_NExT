@@ -174,10 +174,11 @@ namespace Parcel.Neo
             }
             e.Handled = true;
         }
-        private void PreviewNodePreviewSurface_Initialized(object sender, EventArgs e)
+        private void PreviewSurface_Loaded(object sender, RoutedEventArgs e)
         {
             PreviewSurface control = sender as PreviewSurface;
-            PreviewNode node = control.DataContext as PreviewNode;
+            DockPanel parent = control.Parent as DockPanel;
+            PreviewNode node = parent.DataContext as PreviewNode;
 
             node.OnExecute = () => control.SourceConnector = node.ObjectInput;
         }

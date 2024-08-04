@@ -725,8 +725,8 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                 </Style>
                                             </DataTemplate.Resources>
                                             <DockPanel LastChildFill="True" Width="400" Height="200">
-                                                <!--Not called-->
-                                                <local:PreviewSurface Initialized="PreviewNodePreviewSurface_Initialized"/>
+                                                <!--Notice this user control has its data context set to itself, so we will lost data context from this point-->
+                                                <local:PreviewSurface Loaded="PreviewSurface_Loaded" FileMenuVisibility="Collapsed"/>
                                             </DockPanel>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type advanced:GraphInputOutputNodeBase}">

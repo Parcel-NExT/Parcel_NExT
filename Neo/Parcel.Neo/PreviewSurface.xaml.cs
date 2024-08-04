@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using Nodify;
 using Parcel.MiniGame.Legends.Actions;
 using Parcel.Neo.Base.Framework;
 using Parcel.Neo.Base.Framework.ViewModels;
@@ -54,8 +55,17 @@ namespace Parcel.Neo
             set
             {
                 SetField(ref _sourceConnector, value);
-                GeneratePreviewForOutput(SourceConnector.Connections.Single().Output as OutputConnector);
+                
+                Node = _sourceConnector.Connections.Single().Input.Node as ProcessorNode; // TODO: Deal with router
+                GeneratePreviewForOutput(_sourceConnector.Connections.Single().Input as OutputConnector);
             }
+        }
+
+        private Visibility _fileMenuVisibility = Visibility.Visible;
+        public Visibility FileMenuVisibility
+        {
+            get => _fileMenuVisibility;
+            set => SetField(ref _fileMenuVisibility, value);
         }
 
         private string _testLabel;
