@@ -26,7 +26,7 @@
 
         public ShadeMode ShadeMode { get; internal set; }
         public bool NonLinear { get; internal set; }
-        public FileType OutputFileType { get; internal set; }
+        public FileType OutputFileType { get; internal set; } = FileType.BMP;
         public double ShadeAngle { get; internal set; }
         public double ShadeAngle2 { get; internal set; }
         public bool MatchMap { get; internal set; }

@@ -7,11 +7,11 @@ namespace HDPlanet
     #region Structs
     public enum FileType
     {
-        PNG,
         BMP,
         PPM,
         XPM,
-        HeightField
+        HeightField,
+        PNG,
     }
     internal struct Vertex
     {
@@ -49,7 +49,7 @@ namespace HDPlanet
         #region Map Type
         public bool NonLinear { get; internal set; }
         public char View { get; internal set; } = 'm';
-        public FileType OutputFileType { get; internal set; }
+        public FileType OutputFileType { get; internal set; } = FileType.BMP;
         public double RSeed { get; internal set; } = 0.123;
         public double VGrid { get; internal set; } = 0.0;
         public double HGrid { get; internal set; } = 0.0;
