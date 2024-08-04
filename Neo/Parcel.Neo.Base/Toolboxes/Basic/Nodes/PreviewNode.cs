@@ -17,7 +17,7 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
         #region Node Interface
         public readonly InputConnector ObjectInput = new(typeof(object))
         {
-            Title = "Object",
+            Title = string.Empty, // Make it empty to keep node surface more efficient
         };
         public PreviewNode()
         {
