@@ -8,45 +8,5 @@
             Title="{Binding Node, Converter={StaticResource ProcessorNodeToNodeFullNameConverter}}" 
             Height="200" MinWidth="420" SizeToContent="Width" WindowStartupLocation="CenterOwner"
             DataContext="{Binding RelativeSource={RelativeSource self}}">
-    <DockPanel LastChildFill="True">
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Load Preview" Visibility="Collapsed" ToolTip="Loads arbitrary file of supported format for preview purpose."/>
-                <MenuItem Header="Save Result" Click="MenuItem_Click" ToolTip="Saves the result into a file."/>
-            </MenuItem>
-        </Menu>
-        <Grid DockPanel.Dock="Bottom">
-            <!-- Image Preview -->
-            <Grid Visibility="{Binding PreviewImageVisibility}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Image x:Name="PreviewImageControl"/>
-            </Grid>
-
-            <!-- String Preview -->
-            <Grid Visibility="{Binding StringDisplayVisibility}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <ScrollViewer>
-                    <TextBox Text="{Binding TestLabel}" TextWrapping="WrapWithOverflow" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True"/>
-                </ScrollViewer>
-            </Grid>
-
-            <!-- Data Grid/Table Preview -->
-            <DockPanel Visibility="{Binding DataGridVisibility}"
-               LastChildFill="True"
-               VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Grid>
-                    <DataGrid x:Name="WpfDataGrid" IsReadOnly="True"
-                      AutoGenerateColumns="False" ItemsSource="{Binding DataGridData}"
-                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Margin="4,0,0,2" Background="LightGray">
-                        <TextBlock Text="{Binding DataGridDataColumns.Length}"/>
-                        <TextBlock Text=" Columns; "/>
-                        <TextBlock Text="{Binding DataGridData.Count}"/>
-                        <TextBlock Text=" Data Rows"/>
-                    </StackPanel>
-                </Grid>
-            </DockPanel>
-
-            <!-- What's This For? -->
-            <Grid x:Name="WindowGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></Grid>
-        </Grid>
-    </DockPanel>
+    <base:PreviewSurface x:Name="DisplaySurface"/>
 </base:BaseWindow>

@@ -35,7 +35,7 @@ namespace Parcel.Neo.PopupWindows
 
             if (processor is DataTable dataTable)
             {
-                OutputWindow.PopulateDataGrid(WpfDataGrid, dataTable.InitializeDataGrid(), out string[] dataGridDataColumns, out List<dynamic> dataGridData);
+                PreviewSurface.PopulateDataGrid(WpfDataGrid, dataTable.InitializeDataGrid(), out string[] dataGridDataColumns, out List<dynamic> dataGridData);
                 DataGridDataColumns = dataGridDataColumns;
                 DataGridData = dataGridData;
                 DataGridVisibility = Visibility.Visible;
