@@ -14,6 +14,9 @@ namespace Parcel.Processing
         Essential,
         Full
     }
+    /// <summary>
+    /// Implement video processing using ffmpeg directly
+    /// </summary>
     public static class VideoProcessing
     {
         #region Dependency Management
