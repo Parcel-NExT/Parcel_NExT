@@ -82,7 +82,10 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataGridIntegration));
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataProcessingHelper));
             RegisterType(toolboxes, "Math", typeof(Processing.Utilities.Calculator));
+            // Register specific types - Image processing
             RegisterType(toolboxes, "Image Processing", typeof(Types.Image));
+            // Register specific types - Video processing
+            RegisterType(toolboxes, "Video Processing", typeof(Processing.VideoProcessing));
             // Register specific types - The Real Parcel Standard
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.ControlFlow));
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.InputHelpers));

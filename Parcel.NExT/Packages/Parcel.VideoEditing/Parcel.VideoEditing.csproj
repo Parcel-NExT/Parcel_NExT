@@ -15,4 +15,9 @@
     <PackageReference Include="FFMpegCore" Version="5.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
+    <ProjectReference Include="..\Parcel.Standard\Parcel.Standard.csproj" />
+  </ItemGroup>
+
 </Project>
