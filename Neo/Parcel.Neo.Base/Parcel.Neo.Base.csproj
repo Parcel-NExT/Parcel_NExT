@@ -34,6 +34,7 @@
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.VideoEditing\Parcel.VideoEditing.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.WebPagesBuilder\Parcel.WebPagesBuilder.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.YahooFinance\Parcel.YahooFinance.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\ProjectNine.FictionalWorld\ProjectNine.FictionalWorld.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\ProjectNine.ProceduralPlanet\ProjectNine.ProceduralPlanet.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.StaticReport\Zora.StaticReport.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.Synth\Zora.Synth.csproj" />

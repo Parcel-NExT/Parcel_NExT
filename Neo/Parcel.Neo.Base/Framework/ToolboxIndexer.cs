@@ -93,6 +93,8 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.BooleanRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.LogicRoutines));
             RegisterType(toolboxes, "File System", typeof(Standard.System.FileSystem));
+            // Register specific types - Experimental
+            RegisterType(toolboxes, "Fictional World", typeof(ProjectNine.FictionalWorld.DataSet)); // "Project Nine" name should generally not be exposed directly; We use "Fictional World" in this case to refer to it.
             // Register specific types - Auxiliary
             RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Actions.GameActions));
             RegisterType(toolboxes, "MiniGame (Legends)", typeof(Parcel.MiniGame.Legends.Queries.Query));
