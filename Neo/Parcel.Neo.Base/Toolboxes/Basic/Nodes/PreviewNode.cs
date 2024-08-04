@@ -14,21 +14,21 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
     public class PreviewNode : ProcessorNode
     {
         #region Node Interface
-        private readonly InputConnector _objectInput = new(typeof(object))
+        public readonly InputConnector ObjectInput = new(typeof(object))
         {
             Title = "Object",
         };
         public PreviewNode()
         {
             Title = NodeTypeName = "Preview";
-            Input.Add(_objectInput);
+            Input.Add(ObjectInput);
         }
         #endregion
 
         #region Processor Interface
         protected override NodeExecutionResult Execute()
         {
-            object obj = _objectInput.FetchInputValue<object>();
+            object obj = ObjectInput.FetchInputValue<object>();
 
             return new NodeExecutionResult(new NodeMessage(obj.ToString()), []);
         }

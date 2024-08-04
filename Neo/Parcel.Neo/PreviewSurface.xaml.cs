@@ -37,14 +37,26 @@ namespace Parcel.Neo
         #endregion
 
         #region View Properties
-        private ProcessorNode _node;
+        public static readonly DependencyProperty NodeProperty = DependencyProperty.Register(nameof(Node),  typeof(ProcessorNode), typeof(PreviewSurface));
+        public static readonly DependencyProperty SourceConnectorProperty = DependencyProperty.Register(nameof(SourceConnector),  typeof(ProcessorNode), typeof(PreviewSurface));
         public ProcessorNode Node
         {
-            get => _node;
+            get => (ProcessorNode)GetValue(NodeProperty);
             set
             {
-                SetField(ref _node, value); 
-                GeneratePreviewForOutput();
+                SetValue(NodeProperty, value);
+                NotifyPropertyChanged(nameof(Node));
+                GeneratePreviewForOutput(Node.MainOutput);
+            }
+        }
+        public OutputConnector SourceConnector
+        {
+            get => (OutputConnector)GetValue(SourceConnectorProperty);
+            set
+            {
+                SetValue(SourceConnectorProperty, value);
+                NotifyPropertyChanged(nameof(SourceConnector));
+                GeneratePreviewForOutput(SourceConnector);
             }
         }
 
@@ -91,7 +103,7 @@ namespace Parcel.Neo
         #region Interface
         public void Update()
         {
-            GeneratePreviewForOutput();
+            GeneratePreviewForOutput(Node.MainOutput);
             UpdateLayout();
         }
         #endregion
@@ -125,16 +137,15 @@ namespace Parcel.Neo
             typeof(float),
             typeof(double),
         ];
-        private void GeneratePreviewForOutput()
+        private void GeneratePreviewForOutput(OutputConnector outputConnector)
         {
             WindowGrid.Children.Clear();
             StringDisplayVisibility = Visibility.Collapsed;
             DataGridVisibility = Visibility.Collapsed;
 
-            OutputConnector output = Node.MainOutput;
-            if (Node.HasCache(output))
+            if (Node.HasCache(outputConnector))
             {
-                ConnectorCache cache = Node[output];
+                ConnectorCache cache = Node[outputConnector];
 
                 // Primitives
                 if (cache.DataType.IsArray && PrimitiveTypes.Any(t => t.IsAssignableFrom(cache.DataType.GetElementType()))) // This should not be necessary since the handling of IList should have already handled it // TODO: Notice IsArray is potentially unsafe since it doesn't work on pass by ref arrays e.g. System.Double[]&; Consider using HasElementType

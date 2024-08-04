@@ -718,6 +718,16 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                             </Style.Triggers>
                                         </Style>
 
+                                        <DataTemplate DataType="{x:Type specialNodes:PreviewNode}">
+                                            <DataTemplate.Resources>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="Foreground" Value="White"></Setter>
+                                                </Style>
+                                            </DataTemplate.Resources>
+                                            <DockPanel LastChildFill="True" Width="400" Height="200">
+                                                <local:PreviewSurface Node="{Binding}" SourceConnector="{Binding ObjectInput}"/>
+                                            </DockPanel>
+                                        </DataTemplate>
                                         <DataTemplate DataType="{x:Type advanced:GraphInputOutputNodeBase}">
                                             <DataTemplate.Resources>
                                                 <Style TargetType="TextBox">
