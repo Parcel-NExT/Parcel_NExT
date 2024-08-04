@@ -1,14 +1,13 @@
-![FSMN Score (Screenshot)](./docs/imgs/score.png)
-
-See old repo for some documentataion and music scores (pending migration to a proper place): https://github.com/chaojian-zhang/FluentSynth 
+![FSMN Score (Screenshot)](https://github.com/chaojian-zhang/FluentSynth/blob/develop/docs/imgs/score.png)
 
 # Zora.Synth
 
 Tags: Package, #Experimental, DSL
 
 Based on FluentSynth, FluidSynth, for MIDI synthesization, generation, and basic music exploration. Demontrates flexibility of node graph.
+See old repo for some documentataion and music scores (pending migration to a proper place): https://github.com/chaojian-zhang/FluentSynth 
 
-Nodes:
+API Design Nodes:
 
 * Node A/B/C/D/E/F/G(Octave, Duration)
 * Chord (Notes, Duration)
@@ -16,26 +15,11 @@ Nodes:
 * Section (of channels; Same duration)
 * Composition (of sections)
 
-(Implementation) Behind the scene, converts to FluentSynth notation.
+Technical notes:
 
-## TODO
-(FluentSynth) Authorize MIDI file and use FluidSynth to play.
+* (Implementation) Behind the scene, converts to FluentSynth notation.
 
-# TODO
-
-- [ ] Clean up README
-
-# Fluent Synth
-
-Core dll library for Fluent API music synthesization. There are two flavours of API:
-
-1. Low level wave form sample based routines
-2. High level MIDI based routines
-3. This library also provides a simplified ASCII music score notation system
-
-One can mix and match from 2 into 1.
-
-# Fluent Synth
+## Fluent Synth (Original README)
 
 This project provides a C# Fluent API music composition library for use in a scripting environment e.g. [Pure](https://github.com/pure-the-Language/Pure/). Many years ago when Haskell was still new they had [Euterpea](https://www.euterpea.com/) which is a fun concept but tedious to use because Haskell is hard to use, and music composition is inherently a procedural thing so a functional approach is not the best way to model it.
 
@@ -58,6 +42,44 @@ Example:
 [C C G G] [A A G/2] [F F E E] [D D C/2]
 ```
 
+## TODO
+
+Notice current implementation will not work on server environment (although it will work once we are done with refactoring and let frontend decides what to do with the score, like Zora.ThreeDimensional.ProceduralModeling).
+
+General management:
+
+- [ ] Clean up README
+
+Feature completion:
+
+- [ ] Abstract score authorization/generation and actual playback; Let frontend (e.g. preview window) decide and actually perform playback
+- [ ] (FluentSynth) Authorize MIDI file and use FluidSynth to play.
+
+## TODO
+
+The overall infrastructure is established, in the future, the likely site of improvement is either [Orchestrator](./Core/FluentSynth/Orchestrator.cs) or [MusicalScoreParser](./Core/FluentSynth/MusicalScoreParser.cs).
+
+Low Level Pending:
+
+- PENDING
+
+MIDI Engine:
+
+- [ ] Convert of FSMN to .MIDI file.
+- [ ] Convert of FSMN/MIDI file into mp3/wav file.
+
+FSMN Score:
+
+- [ ] Relative and absolute path handling in vocal file specification (at the moment it's relative to current working directory)
+
+Audio Editing (Exposed only through Pure Scripting):
+
+- [ ] Quick cut and format conversion
+
+## Known Issues
+
+- [ ] When playing MIDI files directly from command line using FluentMusic, loading time is long and it's not memory efficient because the program loads everything at once without streaming. For the purpose of this program (targeting more on on-demand synth), we probably won't address this issue any time soon.
+
 ## Installation
 
 This application may depend on **.Net 7 runtime**, and it's available from [Microsoft](https://dotnet.microsoft.com/en-us/download/dotnet/7.0).
@@ -78,6 +100,18 @@ Demos:
 
 * https://youtu.be/qHAPr2-QYiw
 * (A complete tutorial on FSMN syntax and basic REPL and CLI usage will be uploaded in the future)
+
+## Components
+
+### Fluent Synth
+
+Core dll library for Fluent API music synthesization. There are two flavours of API:
+
+1. Low level wave form sample based routines
+2. High level MIDI based routines
+3. This library also provides a simplified ASCII music score notation system
+
+One can mix and match from 2 into 1.
 
 ## Methodology (Preliminary Note)
 
@@ -164,31 +198,6 @@ Vocal [_ _ V1 _]
 
 Vocals will ignore durations because durations of vocals are determined by the audio clip length.
 Attack of vocals determine volume.
-
-## TODO
-
-The overall infrastructure is established, in the future, the likely site of improvement is either [Orchestrator](./Core/FluentSynth/Orchestrator.cs) or [MusicalScoreParser](./Core/FluentSynth/MusicalScoreParser.cs).
-
-Low Level Pending:
-
-- PENDING
-
-MIDI Engine:
-
-- [ ] Convert of FSMN to .MIDI file.
-- [ ] Convert of FSMN/MIDI file into mp3/wav file.
-
-FSMN Score:
-
-- [ ] Relative and absolute path handling in vocal file specification (at the moment it's relative to current working directory)
-
-Audio Editing (Exposed only through Pure Scripting):
-
-- [ ] Quick cut and format conversion
-
-## Known Issues
-
-- [ ] When playing MIDI files directly from command line using FluentMusic, loading time is long and it's not memory efficient because the program loads everything at once without streaming. For the purpose of this program (targeting more on on-demand synth), we probably won't address this issue any time soon.
 
 ## References
 
