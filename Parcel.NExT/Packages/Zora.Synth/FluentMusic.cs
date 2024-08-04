@@ -52,11 +52,11 @@ namespace Zora.DomainSpecific.Music
             string fileName = Path.GetFileNameWithoutExtension(soundFontFilePath);
             string extension = Path.GetExtension(soundFontFilePath).TrimStart('.').ToUpper();
             Console.WriteLine($"Now playing using: {fileName} ({extension})");
-            List<string> history = new List<string>();
+            List<string> history = [];
             while (true)
             {
                 Console.Write("> ");
-                string input = Console.ReadLine();
+                string? input = Console.ReadLine();
 
                 if (input == "exit")
                     break;
