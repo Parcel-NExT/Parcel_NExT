@@ -3,6 +3,9 @@ using System.IO.Compression;
 
 namespace Parcel.Processing
 {
+    /// <summary>
+    /// Implements video editing using FFMpegCore
+    /// </summary>
     public static class VideoEditing
     {
         #region Methods
