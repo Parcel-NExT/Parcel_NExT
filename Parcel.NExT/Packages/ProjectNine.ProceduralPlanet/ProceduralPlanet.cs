@@ -1,4 +1,5 @@
-﻿using Parcel.Types;
+﻿using HDPlanet;
+using Parcel.Types;
 
 namespace ProjectNine.Tooling.Generative
 {
@@ -7,9 +8,19 @@ namespace ProjectNine.Tooling.Generative
     /// </remarks>
     public static class ProceduralPlanet
     {
-        public static Image GeneratePlanet(int width = 512, int height = 512, int magnification = 5, double longitude = 0.0, double latitude = 0.0, int hGridSize = 10, int vGridSize = 20, char projection = 'm')
+        #region Methods
+        public static Image GeneratePlanet(int width = 512, int height = 512, int magnification = 5, double longitude = 0.0, double latitude = 0.0, int hGridSize = 10, int vGridSize = 20, MapProjection projection = MapProjection.Mercator)
+            => GeneratePlanet(new Random().NextDouble(), width, height, magnification, longitude, latitude, hGridSize, vGridSize, projection);
+        public static Image GeneratePlanet(double seed = 0, int width = 512, int height = 512, int magnification = 5, double longitude = 0.0, double latitude = 0.0, int hGridSize = 10, int vGridSize = 20, MapProjection projection = MapProjection.Mercator)
         {
-            double seed = new Random().NextDouble();
+            Dictionary<MapProjection, char> mapping = HDPlanetCLI.GetProjectionParameterMapping();
+            return GeneratePlanet(seed, width, height, magnification, longitude, latitude, hGridSize, vGridSize, mapping[projection]);
+        }
+        #endregion
+
+        #region Routine
+        private static Image GeneratePlanet(double seed = 0, int width = 512, int height = 512, int magnification = 5, double longitude = 0.0, double latitude = 0.0, int hGridSize = 10, int vGridSize = 20, char projection = 'm')
+        {
             string tempImage = Image.GetTempImagePath();
 
             // TODO: At the moment both BMP saving and PNG saving seems corrupted
@@ -18,5 +29,6 @@ namespace ProjectNine.Tooling.Generative
 
             return new Image(tempImage, true);
         }
+        #endregion
     }
 }

@@ -159,6 +159,38 @@ namespace HDPlanet
                 { 'h', "heightfield (obsolete)" },
             };
         }
+        public static Dictionary<MapProjection, char> GetProjectionParameterMapping()
+        {
+            return new()
+            {
+                { MapProjection.Mercator, 'm' },
+                { MapProjection.Peters, 'p' },
+                { MapProjection.Square, 'q' },
+                { MapProjection.Mollweide, 'M' },
+                { MapProjection.Sinusoid, 'S' },
+                { MapProjection.Stereographic, 's' },
+                { MapProjection.Orthographic, 'o' },
+                { MapProjection.Gnomonic, 'g' },
+                { MapProjection.Icosahedral, 'i' },
+                { MapProjection.AreaPreservingAzimuthal, 'a' },
+                { MapProjection.Conical, 'c' },
+            };
+        }
         #endregion
+    }
+
+    public enum MapProjection
+    {
+        Mercator,
+        Peters,
+        Square,
+        Mollweide,
+        Sinusoid,
+        Stereographic,
+        Orthographic,
+        Gnomonic,
+        Icosahedral,
+        AreaPreservingAzimuthal,
+        Conical
     }
 }

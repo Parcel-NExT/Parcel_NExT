@@ -288,7 +288,16 @@ namespace Parcel.Neo.Base.Framework.ViewModels
             if (!type.IsEnum)
                 throw new ArgumentException($"Invalid type for enum input: {type.Name}");
             if (defaultValue is not int)
-                throw new ApplicationException("Expect raw int value from enum.");
+            {
+                try
+                {
+                    defaultValue = (int)defaultValue; // Try performing explicit cast
+                }
+                catch (Exception e)
+                {
+                    throw new ApplicationException($"Expect raw int value from enum: {e.Message}");
+                }
+            }
 
             string[] names = Enum.GetNames(type);
             int[] values = Enum.GetValues(type).Cast<int>().ToArray();
