@@ -55,6 +55,11 @@ namespace ProjectNine.Tooling.Generative
                         case 'o':
                             configurations.FileName = arguments[++i];
                             configurations.WriteToFile = true;
+
+                            // Automatic file type detection based on extension
+                            string extension = Path.GetExtension(configurations.FileName);
+                            if (extension == ".png")
+                                configurations.OutputFileType = FileType.PNG;
                             break;
                         case 'x':
                             configurations.OutputFileType = FileType.XPM;

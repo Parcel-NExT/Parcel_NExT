@@ -217,7 +217,7 @@ namespace Parcel.Neo.PopupWindows
         {
             string? address = image.FileReference;
             if (address != null && File.Exists(address))
-                PreviewImage(new BitmapImage(new Uri(address)));
+                PreviewImage(new BitmapImage(new Uri(Path.GetFullPath(address))));
             else
                 PreviewImage(ImageSourceHelper.ConvertToBitmapImage(image));
         }
