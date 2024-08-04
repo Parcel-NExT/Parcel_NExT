@@ -36,6 +36,8 @@ namespace Parcel.CoreEngine.Service.Interpretation
             OutputTypes = [.. nodeOutputTypes.Select(p => p.Type)];
             CallMarshal = nodeInputValues =>
             {
+                // TODO: Handle "action event" (graph endpoint reference, embedded subgraph, code snippet) (per ActionEventPickerWindow)
+
                 object[] nonOutMethodParameterValues = nodeInputValues.Skip(Method.IsStatic ? 0 : 1).ToArray();
 
                 int current = 0;
