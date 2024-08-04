@@ -12,6 +12,7 @@ namespace ProjectNine.Tooling.Generative
             double seed = new Random().NextDouble();
             string tempImage = Image.GetTempImagePath();
 
+            // TODO: At the moment both BMP saving and PNG saving seems corrupted
             string arguments = $"-ps -s {seed} -m {magnification} -L {latitude} -l {longitude} -G {hGridSize} -g {vGridSize} -w {width} -h {height} -p {projection} -o {tempImage} -E -b -z";
             new CommandLineParser().ParseArguments(arguments).Run();
 
