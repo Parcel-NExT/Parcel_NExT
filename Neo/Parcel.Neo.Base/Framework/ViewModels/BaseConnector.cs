@@ -219,7 +219,11 @@ namespace Parcel.Neo.Base.Framework.ViewModels
     }
 
     /// <remarks>
-    /// Storage is actual action; Serialization uses string as identifier
+    /// Storage is actual action (called an "Instruction"); Serialization uses string as identifier.
+    /// An instruciton can be either:
+    /// 1. A document graph/section referenc
+    /// 2. An embedded graph
+    /// 3. A code snippet
     /// </remarks>
     public sealed class PrimitiveActionInputConnector : PrimitiveInputConnector
     {

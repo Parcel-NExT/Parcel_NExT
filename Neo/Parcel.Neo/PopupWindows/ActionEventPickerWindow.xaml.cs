@@ -6,8 +6,9 @@ namespace Parcel.Neo.PopupWindows
     public partial class ActionEventPickerWindow : BaseWindow
     {
         #region Constructor
-        public ActionEventPickerWindow(ProcessorNode[] availableEndpoints)
+        public ActionEventPickerWindow(BaseWindow parentWindow, ProcessorNode[] availableEndpoints)
         {
+            Owner = parentWindow;
             AvailableEndpoints = new(availableEndpoints);
 
             InitializeComponent();
