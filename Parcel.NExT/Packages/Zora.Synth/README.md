@@ -2,6 +2,25 @@
 
 See old repo for some documentataion and music scores (pending migration to a proper place): https://github.com/chaojian-zhang/FluentSynth 
 
+# Zora.Synth
+
+Tags: Package, #Experimental, DSL
+
+Based on FluentSynth, FluidSynth, for MIDI synthesization, generation, and basic music exploration. Demontrates flexibility of node graph.
+
+Nodes:
+
+* Node A/B/C/D/E/F/G(Octave, Duration)
+* Chord (Notes, Duration)
+* Channel (of Chords)
+* Section (of channels; Same duration)
+* Composition (of sections)
+
+(Implementation) Behind the scene, converts to FluentSynth notation.
+
+## TODO
+(FluentSynth) Authorize MIDI file and use FluidSynth to play.
+
 # TODO
 
 - [ ] Clean up README
