@@ -1,5 +1,11 @@
 ![FSMN Score (Screenshot)](./docs/imgs/score.png)
 
+See old repo for some documentataion and music scores (pending migration to a proper place): https://github.com/chaojian-zhang/FluentSynth 
+
+# TODO
+
+- [ ] Clean up README
+
 # Fluent Synth
 
 Core dll library for Fluent API music synthesization. There are two flavours of API:

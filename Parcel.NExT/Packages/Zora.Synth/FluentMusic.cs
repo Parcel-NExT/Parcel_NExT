@@ -29,24 +29,9 @@ namespace Zora.DomainSpecific.Music
                 string inputFilePath = Path.GetFullPath(args.Last());
                 if (File.Exists(soundFontFilePath) && Path.GetExtension(soundFontFilePath) == ".sf2")
                 {
-                    CurrentPlaying = PlayMediaFile(soundFontFilePath, inputFilePath, out int duration);
+                    CurrentPlaying = ProceduralMusic.PlayMediaFile(soundFontFilePath, inputFilePath, out int duration);
                     Thread.Sleep(duration);
                 }
-            }
-        }
-
-        private static WaveOutEvent PlayMediaFile(string soundFontFilePath, string inputFilePath, out int duration)
-        {
-            Console.WriteLine($"Play {Path.GetFileNameWithoutExtension(inputFilePath)}...");
-            switch (Path.GetExtension(inputFilePath))
-            {
-                case ".fs":
-                    return new Synth(soundFontFilePath).Play(File.ReadAllText(inputFilePath), out duration);
-                case ".mid":
-                    return new Synth(soundFontFilePath).PlayMIDIFile(inputFilePath, out duration);
-                default:
-                    duration = 0;
-                    return null;
             }
         }
         #endregion
@@ -82,7 +67,7 @@ namespace Zora.DomainSpecific.Music
                 else if (input.StartsWith("save "))
                     File.WriteAllLines(input["save ".Length..].Trim().Trim('"'), history);
                 else if (input.StartsWith("play "))
-                    CurrentPlaying = PlayMediaFile(soundFontFilePath, input["play ".Length..].Trim().Trim('"'), out _);
+                    CurrentPlaying = ProceduralMusic.PlayMediaFile(soundFontFilePath, input["play ".Length..].Trim().Trim('"'), out _);
                 else
                 {
                     // Play melodies

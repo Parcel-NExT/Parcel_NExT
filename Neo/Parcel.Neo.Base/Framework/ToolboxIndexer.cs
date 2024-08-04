@@ -69,7 +69,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "3D Modeling", typeof(Model3D));
             RegisterType(toolboxes, "3D Modeling", typeof(Scene3D));
             // Register specific toolbox - Music
-            RegisterType(toolboxes, "Fluent Synth", typeof(FluentMusic));
+            RegisterType(toolboxes, "Fluent Synth", typeof(ProceduralMusic));
             // Register specific toolbox - Procedural Planet
             RegisterType(toolboxes, "Procedural Planet", typeof(ProceduralPlanet));
             // Register specific types - Parcel "Standard"
