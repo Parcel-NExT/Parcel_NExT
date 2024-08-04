@@ -174,6 +174,14 @@ namespace Parcel.Neo
             }
             e.Handled = true;
         }
+        private void PreviewSurface_Loaded(object sender, RoutedEventArgs e)
+        {
+            PreviewSurface control = sender as PreviewSurface;
+            DockPanel parent = control.Parent as DockPanel;
+            PreviewNode node = parent.DataContext as PreviewNode;
+
+            node.OnExecute = () => control.SourceConnector = node.ObjectInput;
+        }
         private void ProcessorNodeTogglePreviewButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!(sender is Border {Tag: ProcessorNode node} border)) return;

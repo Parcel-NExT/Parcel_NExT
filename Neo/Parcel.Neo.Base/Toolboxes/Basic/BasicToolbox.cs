@@ -15,9 +15,13 @@ namespace Parcel.Neo.Base.Toolboxes.Basic
             {
                 Tooltip = "A node that allows grouping other nodes together and provide descriptive comment."
             },
+            new("Select Output", typeof(SelectOutputNode))
+            {
+                Tooltip = "Select output from connected pin."
+            },
             new("Preview", typeof(PreviewNode))
             {
-                Tooltip = "Provides preview of output from connected pins."
+                Tooltip = "Preview results."
             },
             null, // Divisor line // Primitive Nodes
             new("Number", typeof(NumberNode))
