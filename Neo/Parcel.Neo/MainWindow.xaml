@@ -724,7 +724,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                                     <Setter Property="Foreground" Value="White"></Setter>
                                                 </Style>
                                             </DataTemplate.Resources>
-                                            <DockPanel LastChildFill="True" MinWidth="400" MinHeight="200">
+                                            <DockPanel LastChildFill="True" MinWidth="400" MinHeight="200" MaxHeight="800">
                                                 <!--Notice this user control has its data context set to itself, so we will lost data context from this point-->
                                                 <local:PreviewSurface Loaded="PreviewSurface_Loaded" FileMenuVisibility="Collapsed"/>
                                             </DockPanel>

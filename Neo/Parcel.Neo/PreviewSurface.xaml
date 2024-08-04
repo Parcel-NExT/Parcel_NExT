@@ -28,20 +28,14 @@
             </Grid>
 
             <!-- Data Grid/Table Preview -->
-            <DockPanel Visibility="{Binding DataGridVisibility}"
-           LastChildFill="True"
-           VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Grid>
-                    <DataGrid x:Name="WpfDataGrid" IsReadOnly="True"
-                  AutoGenerateColumns="False" ItemsSource="{Binding DataGridData}"
-                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                    <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Margin="4,0,0,2" Background="LightGray">
-                        <TextBlock Text="{Binding DataGridDataColumns.Length}"/>
-                        <TextBlock Text=" Columns; "/>
-                        <TextBlock Text="{Binding DataGridData.Count}"/>
-                        <TextBlock Text=" Data Rows"/>
-                    </StackPanel>
-                </Grid>
+            <DockPanel Visibility="{Binding DataGridVisibility}" LastChildFill="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0" Background="LightGray" HorizontalAlignment="Stretch">
+                    <TextBlock Text="{Binding DataGridDataColumns.Length}"/>
+                    <TextBlock Text=" Columns; "/>
+                    <TextBlock Text="{Binding DataGridData.Count}"/>
+                    <TextBlock Text=" Data Rows"/>
+                </StackPanel>
+                <DataGrid DockPanel.Dock="Top" x:Name="WpfDataGrid" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding DataGridData}"/>
             </DockPanel>
 
             <!-- What's This For? -->
