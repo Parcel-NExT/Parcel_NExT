@@ -12,6 +12,7 @@ using System.Drawing;
 using Zora.DomainSpecific.CGI;
 using ProjectNine.Tooling.Generative;
 using Parcel.Types;
+using Zora.DomainSpecific.Music;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -67,6 +68,8 @@ namespace Parcel.Neo.Base.Framework
             // Register specific toolbox - 3D Modeling
             RegisterType(toolboxes, "3D Modeling", typeof(Model3D));
             RegisterType(toolboxes, "3D Modeling", typeof(Scene3D));
+            // Register specific toolbox - Music
+            RegisterType(toolboxes, "Fluent Synth", typeof(FluentMusic));
             // Register specific toolbox - Procedural Planet
             RegisterType(toolboxes, "Procedural Planet", typeof(ProceduralPlanet));
             // Register specific types - Parcel "Standard"
