@@ -13,7 +13,7 @@ namespace Parcel.Types
         public byte Alpha {  get; set; }
 
         public Pixel(){ }
-        public Pixel(byte red, byte green, byte blue, byte alpha)
+        public Pixel(byte red, byte green, byte blue, byte alpha = 255)
         {
             Red = red;
             Green = green;

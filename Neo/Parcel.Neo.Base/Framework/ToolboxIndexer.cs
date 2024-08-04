@@ -11,6 +11,7 @@ using System.Numerics;
 using System.Drawing;
 using Zora.DomainSpecific.CGI;
 using ProjectNine.Tooling.Generative;
+using Parcel.Types;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -78,6 +79,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataGridIntegration));
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataProcessingHelper));
             RegisterType(toolboxes, "Math", typeof(Processing.Utilities.Calculator));
+            RegisterType(toolboxes, "Image Processing", typeof(Types.Image));
             // Register specific types - The Real Parcel Standard
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.ControlFlow));
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.InputHelpers));

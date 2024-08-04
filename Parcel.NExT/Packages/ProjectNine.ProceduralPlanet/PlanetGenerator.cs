@@ -20,6 +20,13 @@ namespace HDPlanet
         public double X, Y, Z; /* coordinates */
         public double Shadow; /* approximate rain shadow */
     }
+    public enum ShadeMode
+    {
+        None = 0,
+        BumpMap = 1, /* Bump Map */
+        BumpMapLandOnly = 2, /* Bump map on land only*/
+        DaylightShading = 3, /* Daylight shading */
+    }
     public class GeneratorConfigurations
     {
         #region Bookkeping
@@ -91,7 +98,7 @@ namespace HDPlanet
         /// <summary>
         /// Default 0
         /// </summary>
-        public int DoShade { get; internal set; }
+        public ShadeMode ShadeMode { get; internal set; }
         #endregion
 
         #region World Characteristics
@@ -249,7 +256,7 @@ namespace HDPlanet
             if (Configurations.OutputFileType == FileType.HeightField)
                 InitializeHeightField();
             InitializeColors();
-            if (Configurations.DoShade > 0)
+            if (Configurations.ShadeMode > 0)
                 InitializeShades();
 
             if (Configurations.VGrid != 0.0)
@@ -264,7 +271,7 @@ namespace HDPlanet
                 DrawLongitudes();
             if (Configurations.HGrid != 0.0)
                 DrawLatitudes();
-            if (Configurations.DoShade > 0)
+            if (Configurations.ShadeMode > 0)
                 Smoothshades();
             PlotPicture();
 
@@ -332,7 +339,7 @@ namespace HDPlanet
                         if (g)
                         {
                             if (Configurations.DoBW) Colors[i][j] = 0; else Colors[i][j] = (ushort)GRID;
-                            if (Configurations.DoShade > 0) Shades[i][j] = 255;
+                            if (Configurations.ShadeMode > 0) Shades[i][j] = 255;
                         }
                     }
             }
@@ -352,7 +359,7 @@ namespace HDPlanet
                         if (g)
                         {
                             if (Configurations.DoBW) Colors[i][j] = 0; else Colors[i][j] = (ushort)GRID;
-                            if (Configurations.DoShade > 0) Shades[i][j] = 255;
+                            if (Configurations.ShadeMode > 0) Shades[i][j] = 255;
                         }
                     }
             }
@@ -457,7 +464,7 @@ namespace HDPlanet
             projector.POWA = configurations.POWA;
             projector.DD2 = configurations.DD2;
 
-            projector.DoShade = configurations.DoShade;
+            projector.ShadeMode = configurations.ShadeMode;
             projector.NonLinear = configurations.NonLinear;
             projector.OutputFileType = configurations.OutputFileType;
             projector.ShadeAngle = configurations.ShadeAngle;
@@ -873,7 +880,7 @@ namespace HDPlanet
             writer.Write($"# Command line:\n# {commandLine}\n");
             writer.Write($"{Configurations.MapWidth} {Configurations.MapHeight} 255\n");
 
-            if (Configurations.DoShade != 0)
+            if (Configurations.ShadeMode != 0)
             {
                 for (j = 0; j < Configurations.MapHeight; j++)
                 {
@@ -937,9 +944,28 @@ namespace HDPlanet
             for (int i = 0; i < Configurations.MapHeight; i++)
                 pixels[i] = new Pixel[Configurations.MapHeight];
 
-            throw new NotImplementedException();
+            for (int row = 0; row < Configurations.MapHeight; row++)
+            {
+                for (int col = 0; col < Configurations.MapWidth; col++)
+                {
+                    if (Configurations.ShadeMode != 0)
+                    {
+                        int shade = Shades[col][row];
 
-            Image image = new Image();
+                        pixels[row][col] = new(
+                            (byte)int.Min(byte.MaxValue, shade * BTtable[Colors[col][row]] / 150),
+                            (byte)int.Min(byte.MaxValue, shade * GTable[Colors[col][row]] / 150),
+                            (byte)int.Min(byte.MaxValue, shade * RTable[Colors[col][row]] / 150));
+                    }
+                    else
+                        pixels[row][col] = new(
+                            (byte)int.Min(byte.MaxValue, BTtable[Colors[col][row]] / 150),
+                            (byte)int.Min(byte.MaxValue, GTable[Colors[col][row]] / 150),
+                            (byte)int.Min(byte.MaxValue, RTable[Colors[col][row]] / 150));
+                }
+            }
+
+            Image image = new(pixels);
             image.Save(fileName);
         }
         /// <summary>
@@ -947,28 +973,63 @@ namespace HDPlanet
         /// </summary>
         private void WritePNGBW(string fileName)
         {
-            throw new NotImplementedException();
+            Pixel[][] pixels = new Pixel[Configurations.MapWidth][];
+            for (int i = 0; i < Configurations.MapHeight; i++)
+                pixels[i] = new Pixel[Configurations.MapHeight];
+
+            for (int row = 0; row < Configurations.MapHeight; row++)
+            {
+                for (int col = 0; col < Configurations.MapWidth; col++)
+                {
+                    byte color;
+                    if (col < Configurations.MapWidth && Colors[col][row] >= WHITE)
+                        color = 128;
+                    else color = 0;
+
+                    if (col + 1 < Configurations.MapWidth && Colors[col + 1][row] >= WHITE)
+                        color += 64;
+                    if (col + 2 < Configurations.MapWidth && Colors[col + 2][row] >= WHITE)
+                        color += 32;
+                    if (col + 3 < Configurations.MapWidth && Colors[col + 3][row] >= WHITE)
+                        color += 16;
+                    if (col + 4 < Configurations.MapWidth && Colors[col + 4][row] >= WHITE)
+                        color += 8;
+                    if (col + 5 < Configurations.MapWidth && Colors[col + 5][row] >= WHITE)
+                        color += 4;
+                    if (col + 6 < Configurations.MapWidth && Colors[col + 6][row] >= WHITE)
+                        color += 2;
+                    if (col + 7 < Configurations.MapWidth && Colors[col + 7][row] >= WHITE)
+                        color += 1;
+
+                    pixels[row][col] = new(color, color, color);
+                }
+            }
+
+            Image image = new(pixels);
+            image.Save(fileName);
         }
         /// <summary>
         /// Prints picture in BMP format
         /// </summary>
         private void WriteBMP(string filename, string commandLine)
         {
-            int i, j, c, s0, s, W1;
+            // TODO: Refactor this into Parcel.Image
 
             using FileStream file = File.Open(filename, FileMode.Create);
             using BinaryWriter writer = new(file, Encoding.ASCII, false);
 
             writer.Write("BM".ToCharArray());
 
-            W1 = (3 * Configurations.MapWidth + 3);
-            W1 -= W1 % 4;
-            s0 = (commandLine.Length + "Command line:\n\n".Length + 3) & 0xffc;
-            s = s0 + 54 + W1 * Configurations.MapHeight; /* file size */
-            writer.Write((byte)(s & 255));
-            writer.Write((byte)((s >> 8) & 255));
-            writer.Write((byte)((s >> 16) & 255));
-            writer.Write((byte)(s >> 24));
+            int mapWidth = (3 * Configurations.MapWidth + 3); // remark-cz: The first 3* is for 3 pixels, but the +3 I don't get it.
+            mapWidth -= mapWidth % 4;
+            int commandLength = (commandLine.Length + "Command line:\n\n".Length + 3) & 0xffc;
+            int fileSize = commandLength + 54 + mapWidth * Configurations.MapHeight; /* file size */
+
+            // Write one byte at a time (big endian?)
+            writer.Write((byte)(fileSize & 255));
+            writer.Write((byte)((fileSize >> 8) & 255));
+            writer.Write((byte)((fileSize >> 16) & 255));
+            writer.Write((byte)(fileSize >> 24));
 
             writer.Write((byte)0);
             writer.Write((byte)0);
@@ -1032,40 +1093,43 @@ namespace HDPlanet
             writer.Write((byte)0);
             writer.Write((byte)0);
 
-            if (Configurations.DoShade != 0)
+            if (Configurations.ShadeMode != 0)
             {
-                for (j = Configurations.MapHeight - 1; j >= 0; j--)
+                for (int j = Configurations.MapHeight - 1; j >= 0; j--)
                 {
-                    for (i = 0; i < Configurations.MapWidth; i++)
+                    for (int i = 0; i < Configurations.MapWidth; i++)
                     {
-                        s = Shades[i][j];
-                        c = s * BTtable[Colors[i][j]] / 150;
+                        int shade = 0;
+                        shade = Shades[i][j];
+
+                        int c = shade * BTtable[Colors[i][j]] / 150;
                         if (c > 255) c = 255;
                         writer.Write((byte)c);
-                        c = s * GTable[Colors[i][j]] / 150;
+                        c = shade * GTable[Colors[i][j]] / 150;
                         if (c > 255) c = 255;
                         writer.Write((byte)c);
-                        c = s * RTable[Colors[i][j]] / 150;
+                        c = shade * RTable[Colors[i][j]] / 150;
                         if (c > 255) c = 255;
                         writer.Write((byte)c);
                     }
-                    for (i = 3 * Configurations.MapWidth; i < W1; i++) writer.Write((byte)0);
+                    for (int i = 3 * Configurations.MapWidth; i < mapWidth; i++) writer.Write((byte)0);
                 }
             }
             else
             {
-                for (j = Configurations.MapHeight - 1; j >= 0; j--)
+                for (int j = Configurations.MapHeight - 1; j >= 0; j--)
                 {
-                    for (i = 0; i < Configurations.MapWidth; i++)
+                    for (int i = 0; i < Configurations.MapWidth; i++)
                     {
                         writer.Write((byte)BTtable[Colors[i][j]]);
                         writer.Write((byte)GTable[Colors[i][j]]);
                         writer.Write((byte)RTable[Colors[i][j]]);
                     }
-                    for (i = 3 * Configurations.MapWidth; i < W1; i++) writer.Write((byte)0);
+                    for (int i = 3 * Configurations.MapWidth; i < mapWidth; i++) writer.Write((byte)0);
                 }
             }
 
+            // Command line record
             writer.Write($"Command line:\n{commandLine}\n".ToCharArray());
         }
         /// <summary>

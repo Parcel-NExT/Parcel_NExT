@@ -24,7 +24,7 @@
         public double POWA { get; internal set; }
         public double DD2 { get; internal set; }
 
-        public int DoShade { get; internal set; }
+        public ShadeMode ShadeMode { get; internal set; }
         public bool NonLinear { get; internal set; }
         public FileType OutputFileType { get; internal set; }
         public double ShadeAngle { get; internal set; }
@@ -291,7 +291,7 @@
             if (HGrid != 0.0 || VGrid != 0.0) YYY[i][j] = y;
 
             /* store shading info */
-            if (DoShade > 0) Shades[i][j] = (ushort)Shade;
+            if (ShadeMode > 0) Shades[i][j] = (ushort)Shade;
 
             return;
         }
@@ -418,7 +418,7 @@
             }
             else
             { /* level == 0 */
-                if (DoShade == 1 || DoShade == 2)
+                if (ShadeMode == ShadeMode.BumpMap || ShadeMode == ShadeMode.BumpMapLandOnly)
                 { /* bump map */
                     x1 = 0.25 * (a.X + b.X + c.X + d.X);
                     x1 = a.Height * (x1 - a.X) + b.Height * (x1 - b.X) + c.Height * (x1 - c.X) + d.Height * (x1 - d.X);
@@ -438,9 +438,9 @@
                             / l1 * 48.0 + 128.0);
                     if (Shade < 10) Shade = 10;
                     if (Shade > 255) Shade = 255;
-                    if (DoShade == 2 && (a.Height + b.Height + c.Height + d.Height) < 0.0) Shade = 150;
+                    if (ShadeMode == ShadeMode.BumpMapLandOnly && (a.Height + b.Height + c.Height + d.Height) < 0.0) Shade = 150;
                 }
-                else if (DoShade == 3)
+                else if (ShadeMode == ShadeMode.DaylightShading)
                 { /* daylight shading */
                     double hh = a.Height + b.Height + c.Height + d.Height;
                     if (hh <= 0.0)
@@ -553,7 +553,7 @@
                     for (i = 0; i < Width; i++)
                     {
                         Col[i][j] = (ushort)BACK;
-                        if (DoShade > 0) Shades[i][j] = 255;
+                        if (ShadeMode > 0) Shades[i][j] = 255;
                     }
                 else
                 {
@@ -594,7 +594,7 @@
                     for (i = 0; i < Width; i++)
                     {
                         Col[i][j] = (ushort)BACK;
-                        if (DoShade > 0) Shades[i][j] = 255;
+                        if (ShadeMode > 0) Shades[i][j] = 255;
                     }
                 else
                 {
@@ -659,7 +659,7 @@
                 if (Math.Abs(y1) >= 1.0) for (i = 0; i < Width; i++)
                     {
                         Col[i][j] = (ushort)BACK;
-                        if (DoShade > 0) Shades[i][j] = 255;
+                        if (ShadeMode > 0) Shades[i][j] = 255;
                     }
                 else
                 {
@@ -676,7 +676,7 @@
                             if (Math.Abs(theta1) > PI)
                             {
                                 Col[i][j] = (ushort)BACK;
-                                if (DoShade > 0) Shades[i][j] = 255;
+                                if (ShadeMode > 0) Shades[i][j] = 255;
                             }
                             else
                             {
@@ -714,7 +714,7 @@
                 if (Math.Abs(y + y) > PI) for (i = 0; i < Width; i++)
                     {
                         Col[i][j] = (ushort)BACK;
-                        if (DoShade > 0) Shades[i][j] = 255;
+                        if (ShadeMode > 0) Shades[i][j] = 255;
                     }
                 else
                 {
@@ -733,7 +733,7 @@
                             if (Math.Abs(theta1) > PI / 12.0)
                             {
                                 Col[i][j] = (ushort)BACK;
-                                if (DoShade > 0) Shades[i][j] = 255;
+                                if (ShadeMode > 0) Shades[i][j] = 255;
                             }
                             else
                             {
@@ -804,7 +804,7 @@
                     if (x * x + y * y > 1.0)
                     {
                         Col[i][j] = (ushort)BACK;
-                        if (DoShade > 0) Shades[i][j] = 255;
+                        if (ShadeMode > 0) Shades[i][j] = 255;
                     }
                     else
                     {
@@ -968,7 +968,7 @@
                     if (lat1 > 400.0)
                     {
                         Col[i][j] = (ushort)BACK;
-                        if (DoShade > 0) Shades[i][j] = 255;
+                        if (ShadeMode > 0) Shades[i][j] = 255;
                     }
                     else
                     {
@@ -1052,7 +1052,7 @@
                     if (z < -1.0)
                     {
                         Col[i][j] = (ushort)BACK;
-                        if (DoShade > 0) Shades[i][j] = 255;
+                        if (ShadeMode > 0) Shades[i][j] = 255;
                     }
                     else
                     {
@@ -1098,7 +1098,7 @@
                         if (theta1 < -PI || theta1 > PI)
                         {
                             Col[i][j] = (ushort)BACK;
-                            if (DoShade > 0) Shades[i][j] = 255;
+                            if (ShadeMode > 0) Shades[i][j] = 255;
                         }
                         else
                         {
@@ -1108,7 +1108,7 @@
                             if (theta2 > 0.5 * PI || theta2 < -0.5 * PI)
                             {
                                 Col[i][j] = (ushort)BACK;
-                                if (DoShade > 0) Shades[i][j] = 255;
+                                if (ShadeMode > 0) Shades[i][j] = 255;
                             }
                             else
                             {
@@ -1140,7 +1140,7 @@
                         if (theta1 < -PI || theta1 > PI)
                         {
                             Col[i][j] = (ushort)BACK;
-                            if (DoShade > 0) Shades[i][j] = 255;
+                            if (ShadeMode > 0) Shades[i][j] = 255;
                         }
                         else
                         {
@@ -1150,7 +1150,7 @@
                             if (theta2 > 0.5 * PI || theta2 < -0.5 * PI)
                             {
                                 Col[i][j] = (ushort)BACK;
-                                if (DoShade > 0) Shades[i][j] = 255;
+                                if (ShadeMode > 0) Shades[i][j] = 255;
                             }
                             else
                             {

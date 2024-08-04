@@ -181,6 +181,28 @@ namespace Parcel.Neo.Base.Framework.ViewModels
     }
 
     /// <remarks>
+    /// Storage is char
+    /// </remarks>
+    public sealed class PrimitiveCharInputConnector : PrimitiveInputConnector
+    {
+        public PrimitiveCharInputConnector(char? defaultValue = null) : base(typeof(char))
+            => Value = (char)(defaultValue ?? char.MinValue);
+
+        public override object Value
+        {
+            get => _defaultDataStorage.ToString();
+            set => SetField(ref _defaultDataStorage, value is string s ? s.Single() : (char)value);
+        }
+
+        #region Serialization
+        public override byte[] SerializeStorage()
+            => SerializationHelper.Serialize((char)_defaultDataStorage);
+        public override void DeserializeStorage(in byte[] raw)
+            => _defaultDataStorage = SerializationHelper.GetChar(raw);
+        #endregion
+    }
+
+    /// <remarks>
     /// Storage is string
     /// </remarks>
     public sealed class PrimitiveStringInputConnector : PrimitiveInputConnector

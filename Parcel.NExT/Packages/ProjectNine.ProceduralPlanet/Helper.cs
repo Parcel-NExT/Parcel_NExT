@@ -6,9 +6,10 @@ namespace HDPlanet
     {
         public static Dictionary<string, string> GetEmbeddedColorResources()
         {
+            const string defaultNameSpace = "ProjectNine.Tooling.Generative";
             return Assembly.GetExecutingAssembly().GetManifestResourceNames()
-                .Where(r => r.StartsWith(nameof(HDPlanet)))
-                .ToDictionary(r => r[$"{nameof(HDPlanet)}.Assets.Colors.".Length..], r => r);
+                .Where(r => r.StartsWith(defaultNameSpace))
+                .ToDictionary(r => r[$"{defaultNameSpace}.Assets.Colors.".Length..], r => r);
         }
         public static string ReadResource(string name)
         {

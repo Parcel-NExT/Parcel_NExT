@@ -110,13 +110,13 @@ namespace ProjectNine.Tooling.Generative
                             }
                             break;
                         case 'B':
-                            configurations.DoShade = 1; /* bump map */
+                            configurations.ShadeMode = ShadeMode.BumpMap; /* bump map */
                             break;
                         case 'b':
-                            configurations.DoShade = 2; /* bump map on land only */
+                            configurations.ShadeMode = ShadeMode.BumpMapLandOnly; /* bump map on land only */
                             break;
                         case 'd':
-                            configurations.DoShade = 3; /* daylight shading */
+                            configurations.ShadeMode = ShadeMode.DaylightShading; /* daylight shading */
                             break;
                         case 'P':
                             configurations.OutputFileType = FileType.PPM;
