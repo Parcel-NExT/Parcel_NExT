@@ -468,7 +468,8 @@ namespace Parcel.Neo
 
             Dictionary<string, string> additionalPackages = new()
             {
-                { "Telegram", Path.Combine(neoAssemblyPath, "Parcel.Telegram.dll") }
+                { "Telegram", Path.Combine(neoAssemblyPath, "Parcel.Telegram.dll") },
+                { "Dashboard Builder", Path.Combine(neoAssemblyPath, "Parcel.DashboardApp.dll") }
             };
             ListEntryPickPromptDialog prompt = new(this, "Load Standard Package", "Pick package to load", additionalPackages.Keys.ToArray(), additionalPackages.Keys.First());
             if (prompt.ShowDialog() == true)

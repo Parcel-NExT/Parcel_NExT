@@ -14,6 +14,7 @@
       <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.CoreEngine\Parcel.CoreEngine.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\CoreEngines\Parcel.NExT.Python\Parcel.NExT.Python.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Calculator\Parcel.Calculator.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DashboardApp\Parcel.DashboardApp.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataAnalytics.Integrations\Parcel.DataAnalytics.Integrations.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataAnalytics\Parcel.DataAnalytics.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.DataGrid\Parcel.DataGrid.csproj" />

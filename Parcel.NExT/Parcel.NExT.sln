@@ -225,9 +225,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.Synth", "Packages\Zora
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectNine.FictionalWorld", "Packages\ProjectNine.FictionalWorld\ProjectNine.FictionalWorld.csproj", "{BA6E94FF-7662-4B70-95DF-B4938CD6EBAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zora.NonOfficial.Services", "Packages\Zora.NonOfficial.Services\Zora.NonOfficial.Services.csproj", "{151EB1DA-775E-456C-9D36-EB3FADBEE5C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.NonOfficial.Services", "Packages\Zora.NonOfficial.Services\Zora.NonOfficial.Services.csproj", "{151EB1DA-775E-456C-9D36-EB3FADBEE5C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Telegram", "Packages\Parcel.Telegram\Parcel.Telegram.csproj", "{5EB039ED-E912-4CAC-95D2-8D0F70080AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Telegram", "Packages\Parcel.Telegram\Parcel.Telegram.csproj", "{5EB039ED-E912-4CAC-95D2-8D0F70080AF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DashboardApp", "Packages\Parcel.DashboardApp\Parcel.DashboardApp.csproj", "{C80D7042-302E-4161-9359-394F25F4F368}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -611,6 +613,10 @@ Global
 		{5EB039ED-E912-4CAC-95D2-8D0F70080AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EB039ED-E912-4CAC-95D2-8D0F70080AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EB039ED-E912-4CAC-95D2-8D0F70080AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80D7042-302E-4161-9359-394F25F4F368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80D7042-302E-4161-9359-394F25F4F368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80D7042-302E-4161-9359-394F25F4F368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80D7042-302E-4161-9359-394F25F4F368}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -718,6 +724,7 @@ Global
 		{BA6E94FF-7662-4B70-95DF-B4938CD6EBAF} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{151EB1DA-775E-456C-9D36-EB3FADBEE5C7} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{5EB039ED-E912-4CAC-95D2-8D0F70080AF4} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{C80D7042-302E-4161-9359-394F25F4F368} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}

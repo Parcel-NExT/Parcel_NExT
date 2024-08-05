@@ -28,7 +28,7 @@ namespace Parcel.NExT.Python.Helpers
             string? pip = EnvironmentVariableHelper.FindProgram(PipExecutableName);
             if (pip != null)
             {
-                string outputs = ProcessHelper.GetOutput(pip, "show", "bpy");
+                string outputs = ProcessHelper.GetOutput(pip, "show", module);
                 return Regex.Match(outputs, @"Version: (.*)")
                     .Groups[1].Value
                     .Replace(" ", string.Empty)

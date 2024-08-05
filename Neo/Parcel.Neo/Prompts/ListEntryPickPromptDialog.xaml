@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Parcel.Neo.Prompts"
         mc:Ignorable="d" 
-        Background="#145185" WindowStartupLocation="CenterOwner"
+        Background="#145185" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight"
         Title="StringEntryPromptDialog" Height="120" Width="260">
     <Window.Resources>
         <Style TargetType="Button">
@@ -32,8 +32,12 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Foreground" Value="LightGray"/>
         </Style>
+        <Style TargetType="ListBox">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
     </Window.Resources>
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel Orientation="Vertical" Margin="30">
         <Label x:Name="EntryLabel" Content="Label Message:"/>
         <ListBox x:Name="EntryListBox"/>
         <Button Content="Confirm" Click="ConfirmButton_Click" HorizontalAlignment="Center"/>
