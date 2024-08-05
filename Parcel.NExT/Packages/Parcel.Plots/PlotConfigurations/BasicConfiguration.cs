@@ -18,15 +18,18 @@ namespace Parcel.Graphing.PlotConfigurations
         public int ImageWidth { get; set; } = 600;
         public int ImageHeight { get; set; } = 400;
     }
+
+    #region Standard
+    public sealed class DrawVector2DConfiguration : BasicConfiguration
+    {
+        public int ArrowThickness { get; set; } = 2;
+        public Color ArrowColor { get; set; } = Colors.Red;
+    }
     public sealed class NumberDisplayConfiguration : BasicConfiguration
     {
         public int DecimalPlaces { get; set; } = 2;
         public Color NumberColor { get; set; } = Color.Parse("#1F77B4FF");
         public Color TitleColor { get; set; } = Color.Parse("#192a39FF");
-    }
-    public sealed class TableDisplayConfiguration : BasicConfiguration
-    {
-        public Color Color { get; set; } = Color.Parse("#1F77B4FF");
     }
     public sealed class ScatterPlotConfiguration : BasicConfiguration
     {
@@ -82,4 +85,12 @@ namespace Parcel.Graphing.PlotConfigurations
         public Color FemaleBarColor { get; set; } = Color.Parse("#FF7F0EFF");
         public double BarGap { get; set; } = 0.1;
     }
+    #endregion
+
+    #region Data Grid Integration
+    public sealed class TableDisplayConfiguration : BasicConfiguration
+    {
+        public Color Color { get; set; } = Color.Parse("#1F77B4FF");
+    }
+    #endregion
 }
