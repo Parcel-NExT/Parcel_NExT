@@ -14,6 +14,7 @@ using ProjectNine.Tooling.Generative;
 using Parcel.Types;
 using Zora.DomainSpecific.Music;
 using Zora.GUI.Feature;
+using Zora.Framework;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -66,13 +67,19 @@ namespace Parcel.Neo.Base.Framework
 
             // Register front-end specific toolboxes (In general we try to eliminate those, or to say the least standardization effort is needed to make sure those are understood across implementations
             AddToolbox(toolboxes, "Basic", new BasicToolbox());
-            // Register specific toolbox - 3D Modeling
+            // Register DSL specific toolbox - 3D Modeling
             RegisterType(toolboxes, "3D Modeling", typeof(Model3D));
             RegisterType(toolboxes, "3D Modeling", typeof(Scene3D));
-            // Register specific toolbox - Music
+            // Register DSL specific toolbox - Music
             RegisterType(toolboxes, "Fluent Synth", typeof(ProceduralMusic));
-            // Register specific toolbox - Procedural Planet
+            // Register DSL specific toolbox - Procedural Planet
             RegisterType(toolboxes, "Procedural Planet", typeof(ProceduralPlanet));
+            // Register DSL specific types - Image processing
+            RegisterType(toolboxes, "Image Processing", typeof(Types.Image));
+            // Register DSL specific types - Video processing
+            RegisterType(toolboxes, "Video Processing", typeof(Processing.VideoProcessing));
+            // Register DSL specific types - Data Processing
+            RegisterType(toolboxes, "Data Processing", typeof(Expresso));
             // Register specific types - Parcel "Standard"
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.Plot));
             RegisterType(toolboxes, "Plotting", typeof(Parcel.Graphing.MakeConfigurations));
@@ -83,10 +90,6 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataGridIntegration));
             RegisterType(toolboxes, "Data Grid", typeof(Integration.DataProcessingHelper));
             RegisterType(toolboxes, "Math", typeof(Processing.Utilities.Calculator));
-            // Register specific types - Image processing
-            RegisterType(toolboxes, "Image Processing", typeof(Types.Image));
-            // Register specific types - Video processing
-            RegisterType(toolboxes, "Video Processing", typeof(Processing.VideoProcessing));
             // Register specific types - The Real Parcel Standard
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.ControlFlow));
             RegisterType(toolboxes, "Programming", typeof(Standard.Programming.InputHelpers));
