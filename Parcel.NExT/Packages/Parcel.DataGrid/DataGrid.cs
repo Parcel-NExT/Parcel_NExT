@@ -536,6 +536,28 @@ namespace Parcel.Types
         }
         #endregion
 
+        #region Conversion Operations
+        /// <summary>
+        /// For two column data grid with first column as name
+        /// </summary>
+        public Dictionary<string, string> ToStringDictionaryOfStrings()
+        {
+            if (ColumnCount != 2)
+                throw new InvalidOperationException("Require two columns.");
+            if (Columns[0].Type != typeof(string))
+                throw new InvalidOperationException("First column must be string.");
+            if (Columns[1].Type != typeof(string))
+                throw new InvalidOperationException("First column must be string.");
+
+            string[] names = Columns[0].GetDataAs<string>().ToArray();
+            string[] distinctNames = names.Distinct().ToArray();
+            if (names.Length != distinctNames.Length)
+                throw new InvalidOperationException("First column names are not unique.");
+
+            throw NotImplementedException();
+        }
+        #endregion
+
         #region Numerical Computation
         public DataGrid CovarianceMatrix()
         {
