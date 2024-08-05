@@ -18,6 +18,9 @@ namespace Parcel.Graphing
     public static class Plot
     {
         #region Illustrational
+        /// <summary>
+        /// PlotVector(s)2D: Draws Vector2D in coordinate grid. Great for educational purpose (when comoaring before and after manipulation).
+        /// </summary>
         public static Image DrawVector2D(Vector2D vector, DrawVector2DConfiguration? configurations = null)
         {
             throw new NotImplementedException();

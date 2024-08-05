@@ -110,6 +110,7 @@ namespace Parcel.Neo.Base.Framework
             // Remark: Notice that boolean algebra and String are available in PSL - Pending deciding whether we need dedicated exposure
             // Register specific types - Everyday essential
             RegisterType(toolboxes, "News", typeof(Zora.Services.NewsReader));
+            RegisterType(toolboxes, "Public APIs", typeof(Zora.Services.PublicAPI));
 
             return toolboxes;
         }
