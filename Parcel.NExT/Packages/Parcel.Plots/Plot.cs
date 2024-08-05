@@ -1,4 +1,5 @@
 ﻿using Parcel.Graphing.PlotConfigurations;
+using Parcel.Neo.Base.DataTypes;
 using Parcel.Types;
 
 namespace Parcel.Graphing
@@ -16,6 +17,13 @@ namespace Parcel.Graphing
 
     public static class Plot
     {
+        #region Illustrational
+        public static Image DrawVector2D(Vector2D vector, DrawVector2DConfiguration? configurations = null)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
         #region Numerical Analytics
         public static Image NumberDisplay(string label, double number, NumberDisplayConfiguration? configurations = null)
         {
@@ -51,11 +59,6 @@ namespace Parcel.Graphing
             string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? 60 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 60 : configurations.ImageHeight);
             return new Image(path);
-        }
-        public static Image TableDisplay(DataGrid dataGrid, TableDisplayConfiguration configurations)
-        {
-            // Remark: This is gonna take some effort.
-            throw new NotImplementedException();
         }
         #endregion
 

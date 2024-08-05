@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Data;
-using System.Data.Common;
 using System.Dynamic;
 using System.Text;
 
@@ -146,6 +145,12 @@ namespace Parcel.Types
         }
         #endregion
     }
+    /// <summary>
+    /// A programmer/Pure/C#/Parcel friendly API for tabular data representation, with very versatile APIs.
+    /// </summary>
+    /// <remarks>
+    /// In general, unless absolutely necessary, for small return results, we should favour arrays instead of IEnumerables because that avoids one extra function call (e.g. ToArray) at the caller.
+    /// </remarks>
     public class DataGrid : IEnumerable<object[]>, IEnumerable
     {
         #region Helper
@@ -272,7 +277,7 @@ namespace Parcel.Types
 
         #region Accessors
         public int ColumnCount => Columns.Count;
-        public IEnumerable<string> ColumnHeaders => Columns.Select(c => c.Header);
+        public string[] ColumnHeaders => Columns.Select(c => c.Header).ToArray();
         public int RowCount => Columns.FirstOrDefault()?.Length ?? 0;
         /// <remarks>
         /// When used in a foreach statement, can retrieve directly as IDictionary<string, object> instead of dynamic
@@ -470,7 +475,7 @@ namespace Parcel.Types
             result.Columns = columnCopies.ToList();
             return result;
         }
-        public DataGrid Extract(string[] names)
+        public DataGrid Extract(params string[] names)
         {
             DataGrid result = new();
             IEnumerable<DataColumn> columnCopies = Columns
@@ -533,6 +538,80 @@ namespace Parcel.Types
             }
 
             return result;
+        }
+        #endregion
+
+        #region Conversion Operations
+        /// <summary>
+        /// For two column data grid with first column as name
+        /// </summary>
+        /// <returns>
+        /// Returns a variant of strongly typed Dictionary type, e.g. Dictionary<string, string>, Dictionary<string, double>, etc.
+        /// </returns>
+        public object ToDictionary()
+        {
+            // TODO: At the moment we are only implementing Dictionary<string, string>
+
+            // Column type validation
+            if (ColumnCount != 2)
+                throw new InvalidOperationException("Require two columns.");
+            if (Columns[0].Type != typeof(string) && Columns[0].Type != typeof(double) && Columns[0].Type != typeof(DateTime))
+                throw new InvalidOperationException("First column must be either: string, number or date.");
+            if (Columns[1].Type != typeof(string))
+                throw new InvalidOperationException("First column must be string.");
+
+            // Key column validation
+            if (Columns[0].Type == typeof(string))
+            {
+                string[] keys = Columns[0].GetDataAs<string>().ToArray();
+                string[] distinctValues = keys.Distinct().ToArray();
+                if (keys.Length != distinctValues.Length)
+                    throw new InvalidOperationException("First column values are not unique.");
+            }
+            else if (Columns[0].Type == typeof(double)) // Unsafe in general but it makes sense for integer values
+            {
+                double[] keys = Columns[0].GetDataAs<double>().ToArray();
+                double[] distinctValues = keys.Distinct().ToArray();
+                if (keys.Length != distinctValues.Length)
+                    throw new InvalidOperationException("First column values are not unique.");
+            }
+            else if (Columns[0].Type == typeof(DateTime))
+            {
+                DateTime[] keys = Columns[0].GetDataAs<DateTime>().ToArray();
+                DateTime[] distinctValues = keys.Distinct().ToArray();
+                if (keys.Length != distinctValues.Length)
+                    throw new InvalidOperationException("First column values are not unique.");
+            }
+
+            // Conversion
+            if (Columns[0].Type == typeof(string))
+            {
+                if (Columns[1].Type == typeof(string))
+                    return this.ToDictionary(r => (string)r[0], r => (string)r[1]);
+                else if (Columns[1].Type == typeof(double))
+                    return this.ToDictionary(r => (string)r[0], r => (double)r[1]);
+                else // Fallback
+                    return this.ToDictionary(r => (string)r[0], r => r[1]); // Dictionary<string, object>
+            }
+            else if (Columns[0].Type == typeof(double)) // Unsafe in general but it makes sense for integer values
+            {
+                if (Columns[1].Type == typeof(string))
+                    return this.ToDictionary(r => (double)r[0], r => (string)r[1]);
+                else if (Columns[1].Type == typeof(double))
+                    return this.ToDictionary(r => (double)r[0], r => (double)r[1]);
+                else // Fallback
+                    return this.ToDictionary(r => (double)r[0], r => r[1]); // Dictionary<string, object>
+            }
+            else if (Columns[0].Type == typeof(DateTime))
+            {
+                if (Columns[1].Type == typeof(DateTime))
+                    return this.ToDictionary(r => (DateTime)r[0], r => (string)r[1]);
+                else if (Columns[1].Type == typeof(double))
+                    return this.ToDictionary(r => (DateTime)r[0], r => (double)r[1]);
+                else // Fallback
+                    return this.ToDictionary(r => (DateTime)r[0], r => r[1]); // Dictionary<string, object>
+            }
+            else throw new InvalidOperationException("Unknown conversion type.");
         }
         #endregion
 

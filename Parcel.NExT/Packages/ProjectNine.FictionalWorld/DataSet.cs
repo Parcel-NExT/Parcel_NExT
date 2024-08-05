@@ -11,12 +11,12 @@ namespace ProjectNine.FictionalWorld
     {
         public static DataGrid GetPopulationData()
         {
-            DataGrid dataGrid = new DataGrid("Population Data", new DataColumn[]
+            DataGrid dataGrid = new("Population Data", new DataColumn[]
             {
-                new DataColumn("Name"),
-                new DataColumn("Age"),
-                new DataColumn("Date of Birth"),
-                new DataColumn("Race"),
+                new("Name"),
+                new("Age"),
+                new("Date of Birth"),
+                new("Race"),
             });
 
             // Seeds
