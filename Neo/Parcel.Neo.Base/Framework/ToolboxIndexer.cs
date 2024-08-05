@@ -108,6 +108,8 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "Console", typeof(Standard.System.Console));
             RegisterType(toolboxes, "Website Builder", typeof(Parcel.Framework.WebPages.WebPagesBuilder));
             // Remark: Notice that boolean algebra and String are available in PSL - Pending deciding whether we need dedicated exposure
+            // Register specific types - Everyday essential
+            RegisterType(toolboxes, "News", typeof(Zora.Services.NewsReader));
 
             return toolboxes;
         }
