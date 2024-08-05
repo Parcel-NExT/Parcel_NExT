@@ -488,6 +488,8 @@
                 <MenuItem x:Name="ShowNodesPaletteMenuItem" Header="Show Nodes Palette" IsCheckable="True" IsChecked="True" Checked="ShowNodesPaletteMenuItem_Checked" Unchecked="ShowNodesPaletteMenuItem_Unchecked" ToolTip="Toggle showing/hiding Nodes Palette, which allows drag-and-drop creation of nodes."/>
             </MenuItem>
             <MenuItem Header="Package">
+                <MenuItem Header="Load.." Click="LoadPackageMenuItem_Click" ToolTip="Load standard packages that come with distribution and not loaded by default."/>
+                <Separator/>
                 <MenuItem Header="Import" Click="ImportPackageMenuItem_Click" ToolTip="Import from local dll."/>
                 <MenuItem Header="Browse" Click="BrowsePackagesMenuItem_Click" ToolTip="Browse available packages (from both NuGet and Zora store). Can also download selected package."/>
                 <MenuItem Header="Download" Click="DownloadNamedPackageMenuItem_Click" ToolTip="Download named package directly."/>

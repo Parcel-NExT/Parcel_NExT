@@ -109,7 +109,7 @@ namespace Parcel.NExT.Interpreter
             static void AddDefaultLibraryFolderToEnvironmentPath()
             {
                 // Explicitly add "Libraries" to PATH
-                string path = Path.Combine(AssemblyHelper.ExecutingAssemblyDirectory, "Libraries");
+                string path = Path.Combine(AssemblyHelper.InterpreterAssemblyDirectory, "Libraries");
                 if (!Directory.Exists(path))
                     path = Path.Combine(Directory.GetCurrentDirectory(), "Libraries");
                 if (Directory.Exists(path))
@@ -228,7 +228,7 @@ namespace Parcel.NExT.Interpreter
 
     public static class AssemblyHelper
     {
-        public static string ParcelNExTDistributionRuntimeDirectory => ExecutingAssemblyDirectory;
+        public static string ParcelNExTDistributionRuntimeDirectory => InterpreterAssemblyDirectory;
         public static string CallingAssemblyDirectory
         {
             get
@@ -237,7 +237,7 @@ namespace Parcel.NExT.Interpreter
                 return Path.GetDirectoryName(assemblyPath);
             }
         }
-        public static string ExecutingAssemblyDirectory
+        public static string InterpreterAssemblyDirectory
         {
             get
             {

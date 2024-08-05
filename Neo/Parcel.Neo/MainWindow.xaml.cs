@@ -23,6 +23,8 @@ using Nodify;
 using Parcel.Neo.Base.Serialization;
 using Parcel.Neo.Prompts;
 using Zora.Infrastructure.Package;
+using Parcel.NExT.Interpreter;
+using System.IO;
 
 namespace Parcel.Neo
 {
@@ -459,6 +461,24 @@ namespace Parcel.Neo
             NodesPaletteColumn.Width = new GridLength(0);
             NodesPaletteSplitterColumn.Width = new GridLength(0);
             e.Handled = true;
+        }
+        private void LoadPackageMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            string neoAssemblyPath = AssemblyHelper.ParcelNExTDistributionRuntimeDirectory;
+
+            Dictionary<string, string> additionalPackages = new()
+            {
+                { "Telegram", Path.Combine(neoAssemblyPath, "Parcel.Telegram.dll") }
+            };
+            ListEntryPickPromptDialog prompt = new(this, "Load Standard Package", "Pick package to load", additionalPackages.Keys.ToArray(), additionalPackages.Keys.First());
+            if (prompt.ShowDialog() == true)
+            {
+                string assemblyFile = additionalPackages[prompt.Value];
+                if (!File.Exists(assemblyFile))
+                    throw new ApplicationException($"Non-existing assembly: {assemblyFile}. (There are issues with the assumption of where standard packages are located)");
+                ToolboxIndexer.AddTools(assemblyFile);
+                UpdatePaletteToolboxes();
+            }
         }
         private void ImportPackageMenuItem_Click(object sender, RoutedEventArgs e)
         {
