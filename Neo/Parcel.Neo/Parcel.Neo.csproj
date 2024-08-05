@@ -44,6 +44,7 @@
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Image\Parcel.Image.csproj" />
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB.WebSurveys\Parcel.InMemoryDB.WebSurveys.csproj" />
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.MiniGame.Legends\Parcel.MiniGame.Legends.csproj" />
+    <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Telegram\Parcel.Telegram.csproj" />
     <ProjectReference Include="..\Parcel.Neo.Base\Parcel.Neo.Base.csproj" />
   </ItemGroup>
 
@@ -55,6 +56,9 @@
 
   <ItemGroup>
     <Compile Update="PopupWindows\PackagePickerWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Prompts\ListEntryPickPromptDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
