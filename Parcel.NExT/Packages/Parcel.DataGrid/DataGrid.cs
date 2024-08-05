@@ -221,9 +221,8 @@ namespace Parcel.Types
         {
             TableName = name;
             DataColumn col = new("Values");
-            // TODO: Type detection and in-place type specification
             foreach (object value in values)
-                col.Add(value.ToString());
+                col.Add(value); // Remark: The first time value is added, DataColumn is smart enough to automatically perform type detection and in-place type specification for the column
             Columns.Add(col);
         }
         #endregion

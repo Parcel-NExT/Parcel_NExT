@@ -69,6 +69,21 @@ namespace Parcel.CoreEngine.Helpers
                 return GetOutput(programPath, startingFolder, arguments);
             return string.Empty;
         }
+        public static Process StartProcessInBackground(bool useShellExecute, string programName, string startingFolder, params string[] arguments)
+        {
+            Process subprocess = new()
+            {
+                StartInfo = new(programName)
+                {
+                    WorkingDirectory = startingFolder,
+                    CreateNoWindow = true,
+                    UseShellExecute = useShellExecute,
+                    Arguments = arguments?.JoinAsArguments() ?? string.Empty,
+                }
+            };
+            subprocess.Start();
+            return subprocess;
+        }
         #endregion
 
         #region Desktop System Behavior

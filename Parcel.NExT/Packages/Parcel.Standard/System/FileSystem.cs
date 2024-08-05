@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using NuGet.Packaging.Signing;
+using System.IO.Compression;
 using System.Text;
 
 namespace Parcel.Standard.System
@@ -435,10 +436,17 @@ namespace Parcel.Standard.System
         #endregion
 
         #region Path
+        public static string GetTempFolderPath(bool createFolder = true)
+        {
+            string folder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            if (createFolder)
+                Directory.CreateDirectory(folder);
+            return folder;
+        }
         public static string GetTempFilePath()
             => Path.GetTempFileName();
         public static string GetTempFilePath(string extension)
-            => Path.GetTempPath() + Guid.NewGuid().ToString() + extension;
+            => Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + extension);
         #endregion
     }
 
