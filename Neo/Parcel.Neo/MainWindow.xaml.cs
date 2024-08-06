@@ -25,6 +25,7 @@ using Parcel.Neo.Prompts;
 using Zora.Infrastructure.Package;
 using Parcel.NExT.Interpreter;
 using System.IO;
+using Zora.GUI.Feature;
 
 namespace Parcel.Neo
 {
@@ -531,6 +532,15 @@ namespace Parcel.Neo
 
             // Open output folder in file explorer (default program) after done
             ProcessHelper.OpenFileWithDefaultProgram(folderPath);
+        }
+        private void StartPresentationMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Generate presentation
+            Presentation presentation = new();
+
+            // Start presentation
+            PresentationWindow window = new(this, presentation);
+            window.ShowDialog();
         }
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
