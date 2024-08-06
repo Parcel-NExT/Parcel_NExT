@@ -542,7 +542,10 @@ namespace Parcel.Neo
                 .Where(n => n is ProcessorNode node && node.IsPreview == true)
                 .Select(n => n as ProcessorNode);
             if (processors.Any() == false)
+            {
                 MessageBox.Show("Nothing to present; Need presentation node setup.", "Invalid graph setup.");
+                return;
+            }
 
             ExecutionQueue graph = new();
             graph.InitializeGraph(processors);

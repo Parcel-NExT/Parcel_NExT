@@ -130,7 +130,7 @@ namespace Parcel.Neo.Base.Framework
             IEnumerable<ToolboxNodeExport> availableNodes = Toolboxes.SelectMany(toolbox => toolbox.Value);
             ToolboxNodeExport? found = availableNodes.FirstOrDefault(n => (!n?.IsFrontendNative ?? false) && n?.Descriptor.Method.GetRuntimeNodeTypeIdentifier() == functionResourceIdentifier);
             if (found == null)
-                throw new ApplicationException($"Loading from arbitrary dynamic assembly during serialization is not supported at this moment!");
+                throw new ApplicationException($"Node not found. This could be due to name change or assembly not loaded. Notice if the assembly is not loaded already - loading from arbitrary dynamic assembly during serialization is not supported at this moment!");
             return found.Descriptor;
         }
         #endregion
