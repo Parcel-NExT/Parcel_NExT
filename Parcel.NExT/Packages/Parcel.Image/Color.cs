@@ -66,6 +66,8 @@
 
     public static class Colors
     {
+        public static Color Empty => new(0, 0, 0, 0);
+
         #region (Static Readonly) Constants
         public static Color AliceBlue => new(240, 248, 255);
         public static Color AntiqueWhite => new(250, 235, 215);

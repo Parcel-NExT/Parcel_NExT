@@ -1,4 +1,5 @@
-﻿using Parcel.Types;
+﻿using Parcel.Neo.Helpers;
+using Parcel.Types;
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -10,7 +11,7 @@ namespace Parcel.Neo.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is Color parcelColor)
-                return System.Windows.Media.Color.FromArgb(parcelColor.Alpha, parcelColor.Red, parcelColor.Green, parcelColor.Blue);
+                return MediaHelper.ConvertColor(parcelColor);
             else if (value == null)
                 return System.Windows.Media.Color.FromArgb(0, 0, 0, 0);
 

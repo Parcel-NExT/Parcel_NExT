@@ -26,7 +26,6 @@ using Zora.Infrastructure.Package;
 using Parcel.NExT.Interpreter;
 using System.IO;
 using Zora.GUI.Feature;
-using SkiaSharp;
 
 namespace Parcel.Neo
 {
