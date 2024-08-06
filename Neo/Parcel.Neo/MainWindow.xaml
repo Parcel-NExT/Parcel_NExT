@@ -942,18 +942,12 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                         </nodify:NodifyEditor.Resources>
                         <nodify:NodifyEditor.ConnectionTemplate>
                             <DataTemplate DataType="{x:Type viewModels:BaseConnection}">
-                                <nodify:CircuitConnection Source="{Binding Input.Anchor, Converter={StaticResource NodeLocationConverter}}"
-                       Target="{Binding Output.Anchor, Converter={StaticResource NodeLocationConverter}}" 
-                       SourceOffset="10 0"
-                       TargetOffset="20 0"
-                       OffsetMode="Circle"
-                       Style="{StaticResource ConnectionStyle}"/>
+                                <nodify:CircuitConnection Source="{Binding Input.Anchor, Converter={StaticResource NodeLocationConverter}}" Target="{Binding Output.Anchor, Converter={StaticResource NodeLocationConverter}}" SourceOffset="10 0" TargetOffset="20 0" SourceOffsetMode="Circle" TargetOffsetMode="Circle" Style="{StaticResource ConnectionStyle}"/>
                             </DataTemplate>
                         </nodify:NodifyEditor.ConnectionTemplate>
                         <nodify:NodifyEditor.ItemContainerStyle>
                             <Style TargetType="{x:Type nodify:ItemContainer}">
-                                <Setter Property="Location"
-     Value="{Binding Location, Converter={StaticResource NodeLocationConverter}}" />
+                                <Setter Property="Location" Value="{Binding Location, Converter={StaticResource NodeLocationConverter}}" />
                             </Style>
                         </nodify:NodifyEditor.ItemContainerStyle>
                     </nodify:NodifyEditor>
