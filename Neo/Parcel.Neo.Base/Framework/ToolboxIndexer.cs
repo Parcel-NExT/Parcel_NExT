@@ -13,6 +13,7 @@ using Zora.DomainSpecific.CGI;
 using ProjectNine.Tooling.Generative;
 using Parcel.Types;
 using Zora.DomainSpecific.Music;
+using Zora.GUI.Feature;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -111,6 +112,8 @@ namespace Parcel.Neo.Base.Framework
             // Register specific types - Everyday essential
             RegisterType(toolboxes, "News", typeof(Zora.Services.NewsReader));
             RegisterType(toolboxes, "Public APIs", typeof(Zora.Services.PublicAPI));
+            // Register specific types - Features/Annotations
+            RegisterType(toolboxes, "Presentation", typeof(PresentationMaker));
 
             return toolboxes;
         }
@@ -127,7 +130,7 @@ namespace Parcel.Neo.Base.Framework
             IEnumerable<ToolboxNodeExport> availableNodes = Toolboxes.SelectMany(toolbox => toolbox.Value);
             ToolboxNodeExport? found = availableNodes.FirstOrDefault(n => (!n?.IsFrontendNative ?? false) && n?.Descriptor.Method.GetRuntimeNodeTypeIdentifier() == functionResourceIdentifier);
             if (found == null)
-                throw new ApplicationException($"Loading from arbitrary dynamic assembly during serialization is not supported at this moment!");
+                throw new ApplicationException($"Node not found. This could be due to name change or assembly not loaded. Notice if the assembly is not loaded already - loading from arbitrary dynamic assembly during serialization is not supported at this moment!");
             return found.Descriptor;
         }
         #endregion

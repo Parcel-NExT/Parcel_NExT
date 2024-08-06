@@ -36,7 +36,20 @@ namespace Parcel.Types
         /// <remarks>
         /// Row-major, aka. Pixels[Row][Col] or Pixels[Height][Width]
         /// </remarks>
-        public Pixel[][]? Pixels { get; private set; }
+        public Pixel[][]? Pixels 
+        {
+            get
+            {
+                if (FileReference != null)
+                {
+                    Load(FileReference);
+                    FileReference = null;
+                    return _pixels;
+                }
+                else return _pixels;
+            }
+        }
+        private Pixel[][]? _pixels;
         /// <summary>
         /// Use this to save having to load the file into memory.
         /// </summary>
@@ -50,32 +63,40 @@ namespace Parcel.Types
         #region Constructors
         public Image()
         {
-            Pixels = AllocatePixles(0, 0);
+            _pixels = AllocatePixles(0, 0);
             Width = 0;
             Height = 0;
         }
         public Image(string pngFile, bool doNotLoad = false) // Should be true
         {
             if (doNotLoad)
+            {
                 FileReference = pngFile;
+
+                // We still need width and height information
+                using FileStream stream = File.OpenRead(pngFile);
+                Png image = Png.Open(stream);
+                Width = image.Width;
+                Height = image.Height;
+            }
             else
                 Load(pngFile);
         }
         public Image(int width, int height)
         {
-            Pixels = AllocatePixles(width, height);
+            _pixels = AllocatePixles(width, height);
             Width = width;
             Height = height;
         }
         public Image(Pixel[][] pixels)
         {
-            Pixels = pixels;
+            _pixels = pixels;
             Width = Pixels[0].Length;
             Height = Pixels.Length;
         }
         public Image(uint[][] pixels)
         {
-            Pixels = ConvertUintGrids(pixels);
+            _pixels = ConvertUintGrids(pixels);
             Width = Pixels[0].Length;
             Height = Pixels.Length;
         }
@@ -89,7 +110,7 @@ namespace Parcel.Types
         #region Methods
         public void Load(string path)
         {
-            Pixels = LoadFile(path, out int width, out int height);
+            _pixels = LoadFile(path, out int width, out int height);
             Width = width;
             Height = height;
         }

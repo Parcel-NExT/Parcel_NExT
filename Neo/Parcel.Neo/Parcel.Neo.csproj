@@ -45,6 +45,7 @@
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.InMemoryDB.WebSurveys\Parcel.InMemoryDB.WebSurveys.csproj" />
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.MiniGame.Legends\Parcel.MiniGame.Legends.csproj" />
     <ProjectReference Include="..\..\Parcel.NExT\Packages\Parcel.Telegram\Parcel.Telegram.csproj" />
+    <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.SlidePresent\Zora.SlidePresent.csproj" />
     <ProjectReference Include="..\Parcel.Neo.Base\Parcel.Neo.Base.csproj" />
   </ItemGroup>
 
@@ -59,6 +60,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Prompts\ListEntryPickPromptDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Prompts\NumberEntryPromptDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

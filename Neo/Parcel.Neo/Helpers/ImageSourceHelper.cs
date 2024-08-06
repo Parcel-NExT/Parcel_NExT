@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using Parcel.Neo.PopupWindows;
 using Parcel.Types;
 
 namespace Parcel.Neo.Helpers

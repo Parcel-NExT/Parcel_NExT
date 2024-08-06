@@ -25,6 +25,7 @@ using Parcel.Neo.Prompts;
 using Zora.Infrastructure.Package;
 using Parcel.NExT.Interpreter;
 using System.IO;
+using Zora.GUI.Feature;
 
 namespace Parcel.Neo
 {
@@ -469,7 +470,8 @@ namespace Parcel.Neo
             Dictionary<string, string> additionalPackages = new()
             {
                 { "Telegram", Path.Combine(neoAssemblyPath, "Parcel.Telegram.dll") },
-                { "Dashboard Builder", Path.Combine(neoAssemblyPath, "Parcel.DashboardApp.dll") }
+                { "Dashboard Builder", Path.Combine(neoAssemblyPath, "Parcel.DashboardApp.dll") },
+                { "Presentation Builder", Path.Combine(neoAssemblyPath, "Zora.SlidePresent.dll") },
             };
             ListEntryPickPromptDialog prompt = new(this, "Load Standard Package", "Pick package to load", additionalPackages.Keys.ToArray(), additionalPackages.Keys.First());
             if (prompt.ShowDialog() == true)
@@ -531,6 +533,40 @@ namespace Parcel.Neo
 
             // Open output folder in file explorer (default program) after done
             ProcessHelper.OpenFileWithDefaultProgram(folderPath);
+        }
+        private void StartPresentationMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Compile and Execute Current Graph
+            IEnumerable<ProcessorNode> processors = Canvas.Nodes
+                .Where(n => n is ProcessorNode node && node.IsPreview == true)
+                .Select(n => n as ProcessorNode);
+            if (processors.Any() == false)
+            {
+                MessageBox.Show("Nothing to present; Need presentation node setup.", "Invalid graph setup.");
+                return;
+            }
+
+            ExecutionQueue graph = new();
+            graph.InitializeGraph(processors);
+            ProcessorNode lastNode = graph.Queue.Last();
+
+            if (lastNode is AutomaticProcessorNode auto && auto.Descriptor.Method.Type == NExT.Interpreter.Types.Callable.CallableType.StaticMethod && auto.Descriptor.Method.DeclaringType == typeof(PresentationMaker) && auto.Descriptor.Method.ReturnType == typeof(Presentation))
+            {
+                graph.ExecuteGraph();
+
+                // Generate presentation
+                Presentation? presentation = lastNode[lastNode.MainOutput].DataObject as Presentation;
+                if (presentation != null)
+                {
+                    // Start presentation
+                    PresentationWindow window = new(this, presentation);
+                    window.ShowDialog();
+                }
+                else
+                    MessageBox.Show("Failed to fetch presentation.", "Invalid graph setup.");
+            }
+            else
+                MessageBox.Show("Need Present node.", "Invalid graph setup.");
         }
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {

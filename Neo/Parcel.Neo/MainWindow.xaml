@@ -499,6 +499,9 @@
                 <MenuItem Header="Re-Import" Click="ReimportPackageMenuItem_Click" ToolTip="Re-Import from local dll; Useful during development." Visibility="Collapsed"/>
                 <MenuItem Header="Compile &amp; Import" Click="CompileAndReImportPackageMenuItem_Click" ToolTip="(Re-)Import by compiling using dotnet from local package; Useful during development." Visibility="Collapsed"/>
             </MenuItem>
+            <MenuItem Header="Present">
+                <MenuItem Header="Start Presentation" Click="StartPresentationMenuItem_Click"/>
+            </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="Manual" Visibility="Collapsed"/>
                 <MenuItem Header="Shortcuts" Visibility="Collapsed"/>
