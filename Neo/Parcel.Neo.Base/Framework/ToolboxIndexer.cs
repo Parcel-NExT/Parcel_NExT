@@ -13,6 +13,7 @@ using Zora.DomainSpecific.CGI;
 using ProjectNine.Tooling.Generative;
 using Parcel.Types;
 using Zora.DomainSpecific.Music;
+using Zora.GUI.Feature;
 
 namespace Parcel.Neo.Base.Framework
 {
@@ -111,6 +112,8 @@ namespace Parcel.Neo.Base.Framework
             // Register specific types - Everyday essential
             RegisterType(toolboxes, "News", typeof(Zora.Services.NewsReader));
             RegisterType(toolboxes, "Public APIs", typeof(Zora.Services.PublicAPI));
+            // Register specific types - Features/Annotations
+            RegisterType(toolboxes, "Presentation", typeof(PresentationMaker));
 
             return toolboxes;
         }

@@ -19,4 +19,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
+  </ItemGroup>
+
 </Project>

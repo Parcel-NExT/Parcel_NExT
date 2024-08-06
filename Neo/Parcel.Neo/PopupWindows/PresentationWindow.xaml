@@ -9,7 +9,7 @@
         Title="Presentation" Height="450" Width="800"
         WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized" WindowStartupLocation="CenterScreen"
         MouseDown="Window_MouseDown" KeyDown="BaseWindow_KeyDown">
-    <Grid>
+    <Grid x:Name="PresentationGrid">
 
     </Grid>
 </base:BaseWindow>
