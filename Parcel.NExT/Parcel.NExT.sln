@@ -231,10 +231,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.Telegram", "Packages
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parcel.DashboardApp", "Packages\Parcel.DashboardApp\Parcel.DashboardApp.csproj", "{C80D7042-302E-4161-9359-394F25F4F368}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zora.SlidePresent", "Packages\Zora.SlidePresent\Zora.SlidePresent.csproj", "{286DE52E-E53E-44AA-A1EE-542EB944358B}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.DashboardApp", "Packages\Parcel.DashboardApp\Parcel.DashboardApp.csproj", "{C80D7042-302E-4161-9359-394F25F4F368}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parcel.Telegram", "Packages\Parcel.Telegram\Parcel.Telegram.csproj", "{5EB039ED-E912-4CAC-95D2-8D0F70080AF4}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zora.Expresso", "Packages\Zora.Expresso\Zora.Expresso.csproj", "{5F1BD5C2-B79D-4A36-878E-2504577C7341}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.SlidePresent", "Packages\Zora.SlidePresent\Zora.SlidePresent.csproj", "{286DE52E-E53E-44AA-A1EE-542EB944358B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.Expresso", "Packages\Zora.Expresso\Zora.Expresso.csproj", "{5F1BD5C2-B79D-4A36-878E-2504577C7341}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -29,7 +29,9 @@ namespace Zora.GUI.Feature
             HeaderWithImage,
             HeaderWithOneBody,
             HeadertWithTwoBody,
-            HeaderWithThreeBody
+            HeaderWithThreeBody,
+            HeroVideo, // A slide featuring predominantly a full-sized image, optionally with title and header
+            HeroImage // A slide featuring predominantly a full-sized video, optionally with title and header
         }
 
         public SlideLayoutType LayoutType { get; set; }
@@ -53,6 +55,16 @@ namespace Zora.GUI.Feature
         #region Styling
         public SlideStyle SlideStyle { get; set; }
         #endregion
+
+        #region Additional Utility
+        /// <remarks>
+        /// Useful for archiving and image-based preview.
+        /// </remarks>
+        public Image RenderImage(PresentationSetting settings)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
     public sealed class Presentation
     {
@@ -60,6 +72,22 @@ namespace Zora.GUI.Feature
         public PresentationSetting Settings { get; set; } = new();
 
         #region Additional Utility
+        /// <summary>
+        /// Useful for archive purpose.
+        /// </summary>
+        public void RenderImages(string outputDirectory)
+        {
+            if (Slides.Count == 0) return;
+
+            outputDirectory = Path.GetFullPath(outputDirectory);
+            Directory.CreateDirectory(outputDirectory);
+            for (int i = 0; i < Slides.Count; i++)
+            {
+                Slide slide = Slides[i];
+                Image image = slide.RenderImage(Settings);
+                image.Save(Path.Combine(outputDirectory, $"Slide_{i}.png"));
+            }
+        }
         public string ToMarkdown()
         {
             // Remark: For image, just save the image as file then use reference
@@ -113,6 +141,19 @@ namespace Zora.GUI.Feature
         #endregion
 
         #region Slide Making
+        public enum HeaderLocation
+        {
+            AboveSubject,
+            BelowSubject
+        }
+        public static Slide HeroImageSlide(string? title, string? header, HeaderLocation headerLocation, Image image, SlideStyle? style = null)
+        {
+            throw new NotImplementedException();
+        }
+        public static Slide HeroVideoSlide(string? title, string? header, HeaderLocation headerLocation, string videoPath, SlideStyle? style = null)
+        {
+            throw new NotImplementedException();
+        }
         public static Slide TitleSlide(string title, string? subtitle, SlideStyle? style = null)
         {
             return new Slide()
