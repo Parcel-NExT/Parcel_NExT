@@ -38,6 +38,7 @@
       <ProjectReference Include="..\..\Parcel.NExT\Packages\ProjectNine.FictionalWorld\ProjectNine.FictionalWorld.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\ProjectNine.ProceduralPlanet\ProjectNine.ProceduralPlanet.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.NonOfficial.Services\Zora.NonOfficial.Services.csproj" />
+      <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.SlidePresent\Zora.SlidePresent.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.StaticReport\Zora.StaticReport.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.Synth\Zora.Synth.csproj" />
       <ProjectReference Include="..\..\Parcel.NExT\Packages\Zora.ThreeDimensional.ProceduralModeling\Zora.ThreeDimensional.ProceduralModeling.csproj" />

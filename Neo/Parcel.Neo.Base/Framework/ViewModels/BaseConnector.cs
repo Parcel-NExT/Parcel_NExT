@@ -440,8 +440,11 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         
         public Type DataType { get; set; }
         /// <summary>
-        /// Used for input nodes that haven't had any input yet
+        /// Connector-local parameter/attribute storage; For connector default values and literal values.
         /// </summary>
+        /// <remarks>
+        /// Used for input nodes that haven't had any input yet
+        /// </remarks>
         public object DefaultDataStorage 
         { 
             get => _defaultDataStorage;
