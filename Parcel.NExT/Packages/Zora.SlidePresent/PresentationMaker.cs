@@ -15,6 +15,9 @@ namespace Zora.GUI.Feature
         public string HeaderFont { get; set; } = "Verdana";
         public string SubHeaderFont { get; set; } = "Verdana";
         public string BodyFont { get; set; } = "Arial";
+
+        public Image? BackgroundImage { get; set; }
+        public Color BackgroundColor { get; set; } = Colors.White;
     }
     public sealed class Slide
     {
@@ -69,6 +72,26 @@ namespace Zora.GUI.Feature
     public static class PresentationMaker
     {
         #region Configuration
+        public static SlideStyle ConfigureSlide(int titleFontSize = 60, int subTitleFontSize = 24, int headerFontSize = 44, int subHeaderFontSize = 24, int bodyFontSize = 28, string titleFont = "Helvetica", string subTitleFont = "Helvetica", string headerFont = "Verdana", string subHeaderFont = "Verdana", string bodyFont = "Arial", Image? backgroundImage = null, Color? backgroundColor = null)
+        {
+            return new SlideStyle()
+            {
+                TitleFontSize = titleFontSize,
+                SubTitleFontSize = subTitleFontSize,
+                HeaderFontSize = headerFontSize,
+                SubHeaderFontSize = subHeaderFontSize,
+                BodyFontSize = bodyFontSize,
+                
+                TitleFont = titleFont,
+                BodyFont = bodyFont,
+                SubHeaderFont = subHeaderFont,
+                HeaderFont = headerFont,
+                SubTitleFont = subTitleFont,
+
+                BackgroundImage = backgroundImage,
+                BackgroundColor = backgroundColor ?? Colors.White,
+            };
+        }
         public static PresentationSetting ConfigurePresentation(bool showSlideNumber = true, string? footer = null)
         {
             return new()

@@ -87,10 +87,13 @@ namespace Parcel.Neo.PopupWindows
         private void MakeTitleSlide(Presentation presentation, Slide slide)
         {
             PresentationGrid.Children.Clear();
-            PresentationGrid.Background = new SolidColorBrush(Colors.White);
+            PresentationGrid.Background = new SolidColorBrush(MediaHelper.ConvertColor(slide.SlideStyle.BackgroundColor));
+
+            // Background
+            AddBackground(slide);
 
             // Container
-            StackPanel panel = new StackPanel()
+            StackPanel panel = new()
             {
                 Orientation = Orientation.Vertical,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
@@ -135,7 +138,10 @@ namespace Parcel.Neo.PopupWindows
         private void MakeHeaderWithOneBodySlide(Presentation presentation, Slide slide)
         {
             PresentationGrid.Children.Clear();
-            PresentationGrid.Background = new SolidColorBrush(Colors.White);
+            PresentationGrid.Background = new SolidColorBrush(MediaHelper.ConvertColor(slide.SlideStyle.BackgroundColor));
+
+            // Background
+            AddBackground(slide);
 
             // Container
             DockPanel panel = new()
@@ -192,7 +198,11 @@ namespace Parcel.Neo.PopupWindows
         private void MakeHeaderWithImageSlide(Presentation presentation, Slide slide)
         {
             PresentationGrid.Children.Clear();
-            PresentationGrid.Background = new SolidColorBrush(Colors.White);
+            PresentationGrid.Background = new SolidColorBrush(MediaHelper.ConvertColor(slide.SlideStyle.BackgroundColor));
+
+            // Background
+            AddBackground(slide);
+
             // Header
             PresentationGrid.Children.Add(new Label()
             {
@@ -250,6 +260,21 @@ namespace Parcel.Neo.PopupWindows
         #endregion
 
         #region Decorators
+        private void AddBackground(Slide slide)
+        {
+            if (slide.SlideStyle.BackgroundColor != null) 
+                PresentationGrid.Background = new SolidColorBrush(MediaHelper.ConvertColor(slide.SlideStyle.BackgroundColor));
+
+            if (slide.SlideStyle.BackgroundImage != null)
+                PresentationGrid.Children.Add(new Image()
+                {
+                    Source = ImageSourceHelper.ConvertToBitmapImage(slide.SlideStyle.BackgroundImage),
+                    Stretch = Stretch.UniformToFill,
+
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Stretch
+                });
+        }
         private void AddFooter(Presentation presentation)
         {
             if (presentation.Settings.Footer != null)
