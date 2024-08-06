@@ -1,6 +1,8 @@
 ﻿using Parcel.Neo.Helpers;
+using Parcel.Neo.Prompts;
 using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Zora.GUI.Feature;
 
@@ -330,6 +332,16 @@ namespace Parcel.Neo.PopupWindows
             // Exit
             else if (e.Key == System.Windows.Input.Key.Escape)
                 DialogResult = true;
+            // Shortcut: Go to slide
+            else if (e.Key == System.Windows.Input.Key.G && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                NumberEntryPromptDialog prompt = new(this, "Select Slide", $"Enter slide number: (1 - {Presentation.Slides.Count + 1})", CurrentSlide + 1, 1, Presentation.Slides.Count + 1);
+                if (prompt.ShowDialog() == true)
+                {
+                    CurrentSlide = (int)(prompt.Value - 1);
+                    ShowSlide(CurrentSlide);
+                }
+            }
         }
         #endregion
     }

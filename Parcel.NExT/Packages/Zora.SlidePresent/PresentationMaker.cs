@@ -58,6 +58,16 @@ namespace Zora.GUI.Feature
     {
         public List<Slide> Slides { get; set; } = [];
         public PresentationSetting Settings { get; set; } = new();
+
+        #region Additional Utility
+        public string ToMarkdown()
+        {
+            // Remark: For image, just save the image as file then use reference
+            throw new NotImplementedException();
+        }
+        public void SaveAsMarkdownFile(string path)
+            => File.WriteAllText(path, ToMarkdown());
+        #endregion
     }
     public sealed class PresentationSetting
     {
@@ -136,6 +146,14 @@ namespace Zora.GUI.Feature
         #endregion
 
         #region Start Presentation
+        public static Presentation PresentFromMarkdownFile(string filePath, PresentationSetting? setting = null)
+            => PresentFromMarkdown(File.ReadAllText(filePath), setting);
+        public static Presentation PresentFromMarkdown(string markdown, PresentationSetting? setting = null)
+        {
+            setting ??= new();
+
+            throw new NotImplementedException();
+        }
         public static Presentation Present(Slide[] slides, PresentationSetting? setting = null)
         {
             setting ??= new();
