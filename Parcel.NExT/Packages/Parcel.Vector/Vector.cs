@@ -23,7 +23,7 @@
             => [.. vector.Select(v => v - other)];
         public static double[] Add(this double[] vector, double other)
             => [.. vector.Select(v => v + other)];
-        public static double[] Divide(this double[] vector, double other)
+        public static double[] Divide(this double[] vector, double other = 1)
             => [.. vector.Select(v => v / other)];
         public static double[] Multiply(this double[] vector, double other)
             => [.. vector.Select(v => v * other)];
