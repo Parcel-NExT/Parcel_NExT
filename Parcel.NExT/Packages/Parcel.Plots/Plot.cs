@@ -230,6 +230,42 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
             return new Image(path);
         }
+
+        public static Image BubbleChart(double[] x, double[] y, double[] radius, BubbleChartConfiguration? configurations = null)
+        {
+            if (x == null || y == null || radius == null)
+                throw new ArgumentNullException();
+            if (x.Length != y.Length || y.Length != radius.Length)
+                throw new ArgumentException("Unmatching data length.");
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+
+            for (int i = 0; i < x.Length; i++)
+            {
+                var c = plot.Add.Circle(
+                        xCenter: x[i],
+                        yCenter: y[i],
+                        radius: radius[i]
+                    );
+                c.FillStyle.Color = c.LineColor.WithAlpha(.5);
+            }
+
+            // To remain bubbles being circular.
+            ScottPlot.AxisRules.SquareZoomOut squareRule = new(plot.Axes.Bottom, plot.Axes.Left);
+            plot.Axes.Rules.Add(squareRule);
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Left.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+
+            string path = Image.GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            return new Image(path);
+        }
         #endregion
 
         #region Standard Charts

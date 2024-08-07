@@ -108,6 +108,21 @@ namespace Parcel.Graphing
             };
         }
         /// <summary>
+        /// Create a configuration for Bubble Chart
+        /// </summary>
+        public static BubbleChartConfiguration ConfigureBubbleChart(string title = "", string xAxis = "", string yAxis = "", int imageWidth = 600, int imageHeight = 400)
+        {
+
+            return new BubbleChartConfiguration()
+            {
+                Title = title,
+                XAxis = xAxis,
+                YAxis = yAxis,
+                ImageWidth = imageWidth,
+                ImageHeight = imageHeight
+            };
+        }
+        /// <summary>
         /// Create a configuration for PopulationPyramid
         /// </summary>
         public static PopulationPyramidConfiguration ConfigurePopulationPyramid(string title = "", Double barSize = 0.8, int labelFontSize = 12, Color[]? ageGroupColors = null, Double barGap = 0.1, int imageWidth = 600, int imageHeight = 400)
