@@ -1,7 +1,9 @@
-﻿using Parcel.Neo.Helpers;
+﻿using MdXaml;
+using Parcel.Neo.Helpers;
 using Parcel.Neo.Prompts;
 using System;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Zora.GUI.Feature;
@@ -172,25 +174,58 @@ namespace Parcel.Neo.PopupWindows
             };
             DockPanel.SetDock(headerLabel, Dock.Top);
             panel.Children.Add(headerLabel);
-            
+
             // Body
-            var bodyText = new TextBlock()
+            if (slide.SlideStyle.UsesMarkdown == true)
             {
-                Text = slide.Body1,
-                Foreground = new SolidColorBrush(Colors.Black),
+                // Styling: https://github.com/whistyun/MdXaml/wiki/How-to-customise-style
+                MarkdownScrollViewer markdownDocument = new()
+                {
+                    Markdown = slide.Body1,
+                    Foreground = new SolidColorBrush(Colors.Black),
 
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                TextAlignment = System.Windows.TextAlignment.Left,
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Top,
 
-                FontSize = slide.SlideStyle.BodyFontSize,
-                Margin = new System.Windows.Thickness(slide.SlideStyle.HeaderFontSize, 0, slide.SlideStyle.HeaderFontSize, slide.SlideStyle.HeaderFontSize),
-                Padding = new System.Windows.Thickness(slide.SlideStyle.HeaderFontSize, 0, slide.SlideStyle.HeaderFontSize, slide.SlideStyle.HeaderFontSize),
+                    FontSize = slide.SlideStyle.BodyFontSize,
+                    Margin = new System.Windows.Thickness(slide.SlideStyle.HeaderFontSize, 0, slide.SlideStyle.HeaderFontSize, slide.SlideStyle.HeaderFontSize),
+                    Padding = new System.Windows.Thickness(slide.SlideStyle.HeaderFontSize, 0, slide.SlideStyle.HeaderFontSize, slide.SlideStyle.HeaderFontSize),
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                    MarkdownStyleName = "Standard",
 
-                FontFamily = new FontFamily(slide.SlideStyle.BodyFont)
-            };
-            DockPanel.SetDock(bodyText, Dock.Bottom);
-            panel.Children.Add(bodyText);
+                    FontFamily = new FontFamily(slide.SlideStyle.BodyFont)
+                };
+
+                Viewbox scaleView = new()
+                {
+                    StretchDirection = StretchDirection.Both,
+                    Stretch = Stretch.Uniform,
+                    Child = markdownDocument
+                };
+
+                DockPanel.SetDock(scaleView, Dock.Bottom);
+                panel.Children.Add(scaleView);
+            }
+            else
+            {
+                TextBlock bodyText = new TextBlock()
+                {
+                    Text = slide.Body1,
+                    Foreground = new SolidColorBrush(Colors.Black),
+
+                    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                    VerticalAlignment = System.Windows.VerticalAlignment.Top,
+                    TextAlignment = System.Windows.TextAlignment.Left,
+
+                    FontSize = slide.SlideStyle.BodyFontSize,
+                    Margin = new System.Windows.Thickness(slide.SlideStyle.HeaderFontSize, 0, slide.SlideStyle.HeaderFontSize, slide.SlideStyle.HeaderFontSize),
+                    Padding = new System.Windows.Thickness(slide.SlideStyle.HeaderFontSize, 0, slide.SlideStyle.HeaderFontSize, slide.SlideStyle.HeaderFontSize),
+
+                    FontFamily = new FontFamily(slide.SlideStyle.BodyFont)
+                };
+                DockPanel.SetDock(bodyText, Dock.Bottom);
+                panel.Children.Add(bodyText);
+            }
 
             // Footer
             AddFooter(presentation);

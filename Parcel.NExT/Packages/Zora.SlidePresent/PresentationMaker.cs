@@ -18,6 +18,8 @@ namespace Zora.GUI.Feature
 
         public Image? BackgroundImage { get; set; }
         public Color BackgroundColor { get; set; } = Colors.White;
+
+        public bool UsesMarkdown { get; set; } = false;
     }
     public sealed class Slide
     {
@@ -127,7 +129,7 @@ namespace Zora.GUI.Feature
                 SubTitleFont = subTitleFont,
 
                 BackgroundImage = backgroundImage,
-                BackgroundColor = backgroundColor ?? Colors.White,
+                BackgroundColor = backgroundColor ?? Colors.White
             };
         }
         public static PresentationSetting ConfigurePresentation(bool showSlideNumber = true, string? footer = null)
@@ -164,14 +166,17 @@ namespace Zora.GUI.Feature
                 SlideStyle = style ?? DefaultSlideStyle
             };
         }
-        public static Slide OneBodySlide(string header, string body, SlideStyle? style = null)
+        public static Slide OneBodySlide(string header, string body, SlideStyle? style = null, bool markdown = false)
         {
+            style ??= DefaultSlideStyle;
+            style.UsesMarkdown = markdown;
+
             return new Slide()
             {
                 LayoutType = Slide.SlideLayoutType.HeaderWithOneBody,
                 Header = header,
                 Body1 = body,
-                SlideStyle = style ?? DefaultSlideStyle
+                SlideStyle = style
             };
         }
         public static Slide OneBodySlide(string header, Image image, SlideStyle? style = null)
