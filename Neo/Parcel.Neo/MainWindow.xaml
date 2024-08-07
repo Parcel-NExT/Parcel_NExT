@@ -647,25 +647,16 @@
                             </DataTemplate>
                         </nodify:NodifyEditor.PendingConnectionTemplate>
                         <nodify:NodifyEditor.InputBindings>
-                            <KeyBinding Key="Delete"
-     Command="{Binding Canvas.DeleteSelectionCommand}" />
+                            <KeyBinding Key="Delete" Command="{Binding Canvas.DeleteSelectionCommand}" />
+                            <!--<KeyBinding Key="C" Command="{Binding Canvas.CommentSelectionCommand}" />-->
+                            <KeyBinding Key="R" Command="{Binding RepeatLastCommand}" />
 
-                            <KeyBinding Key="C"
-     Command="{Binding Canvas.CommentSelectionCommand}" />
-                            <KeyBinding Key="R"
-     Command="{Binding RepeatLastCommand}" />
+                            <KeyBinding Key="C" Modifiers="Control" Command="{Binding CreateCalculatorNodeCommand}" />
+                            <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewCanvasCommand}" />
+                            <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCanvasCommand}" />
+                            <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCanvasCommand}" />
 
-                            <KeyBinding Key="C" Modifiers="Control"
-     Command="{Binding CreateCalculatorNodeCommand}" />
-                            <KeyBinding Key="N" Modifiers="Control"
-     Command="{Binding NewCanvasCommand}" />
-                            <KeyBinding Key="O" Modifiers="Control"
-     Command="{Binding OpenCanvasCommand}" />
-                            <KeyBinding Key="S" Modifiers="Control"
-     Command="{Binding SaveCanvasCommand}" />
-
-                            <KeyBinding Key="F1"
-     Command="{Binding ShowHelpCommand}" />
+                            <KeyBinding Key="F1" Command="{Binding ShowHelpCommand}" />
                         </nodify:NodifyEditor.InputBindings>
                         <nodify:NodifyEditor.Resources>
                             <!--Custom Styling-->
