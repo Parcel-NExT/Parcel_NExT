@@ -233,8 +233,6 @@ namespace Parcel.Graphing
 
         public static Image BubbleChart(double[] x, double[] y, double[] radius, BubbleChartConfiguration? configurations = null)
         {
-            if (x == null || y == null || radius == null)
-                throw new ArgumentNullException();
             if (x.Length != y.Length || y.Length != radius.Length)
                 throw new ArgumentException("Unmatching data length.");
             configurations ??= new();
@@ -243,15 +241,60 @@ namespace Parcel.Graphing
 
             for (int i = 0; i < x.Length; i++)
             {
-                var c = plot.Add.Circle(
-                        xCenter: x[i],
-                        yCenter: y[i],
-                        radius: radius[i]
-                    );
-                c.FillStyle.Color = c.LineColor.WithAlpha(.5);
+                PlotBubble(plot, x[i], y[i], radius[i]);
             }
 
-            // To remain bubbles being circular.
+            // To keep bubbles circular.
+            ScottPlot.AxisRules.SquareZoomOut squareRule = new(plot.Axes.Bottom, plot.Axes.Left);
+            plot.Axes.Rules.Add(squareRule);
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Left.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+
+            string path = Image.GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            return new Image(path);
+        }
+
+        public static Image BubbleChart(double[][] xs, double[][] ys, double[][] radiuss, BubbleChartMultiSeriesConfiguration? configurations = null)
+        {
+            if (xs.Length != ys.Length || ys.Length != radiuss.Length)
+                throw new ArgumentException("Unmatching data length.");
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+            var cmap = new ScottPlot.Colormaps.Turbo();
+
+            for (int i = 0; i < xs.Length; i++)
+            {
+                var x = xs[i];
+                var y = ys[i];
+                var radius = radiuss[i];
+
+                if (x.Length != y.Length || y.Length != radius.Length)
+                    throw new ArgumentException("Unmatching data length.");
+
+                for (int j = 0; j < x.Length; j++)
+                {
+                    PlotBubble(plot, x[j], y[j], radius[j], cmap.GetColor(i));
+                }
+
+                if (configurations.Legends != null)
+                {
+                    plot.Legend.IsVisible = true;
+                    plot.Legend.ManualItems.Add(new ScottPlot.LegendItem
+                    {
+                        FillColor = cmap.GetColor(i),
+                        LabelText = configurations.Legends[i]
+                    });
+                }
+            }
+
+            // To keep bubbles circular.
             ScottPlot.AxisRules.SquareZoomOut squareRule = new(plot.Axes.Bottom, plot.Axes.Left);
             plot.Axes.Rules.Add(squareRule);
 
@@ -370,6 +413,20 @@ namespace Parcel.Graphing
         #region Helpers
         private static ScottPlot.Color Convert(Parcel.Types.Color color)
             => ScottPlot.Color.FromHex(color.ToString());
+
+        private static void PlotBubble(ScottPlot.Plot plot, double x, double y, double radius, ScottPlot.Color? color = null)
+        {
+            var c = plot.Add.Circle(
+                xCenter: x,
+                yCenter: y,
+                radius: radius
+            );
+            if (color != null)
+            {
+                c.LineColor = color.Value;
+            }
+            c.FillStyle.Color = c.LineColor.WithAlpha(.5);
+        }
         #endregion
     }
 }
