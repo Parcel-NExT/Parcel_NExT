@@ -17,8 +17,11 @@ namespace Parcel.Graphing
 
     public static class Plot
     {
+        #region Constants
         private const int DefaultWidth = 400;
         private const int DefaultHeight = 300;
+        #endregion
+
         #region Illustrational
         /// <summary>
         /// PlotVector(s)2D: Draws Vector2D in coordinate grid. Great for educational purpose (when comoaring before and after manipulation).
