@@ -235,6 +235,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.SlidePresent", "Packag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zora.Expresso", "Packages\Zora.Expresso\Zora.Expresso.csproj", "{5F1BD5C2-B79D-4A36-878E-2504577C7341}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zora.PDF", "Packages\Zora.PDF\Zora.PDF.csproj", "{4BC22818-1465-441B-881E-478C98EB8507}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -629,6 +631,10 @@ Global
 		{5F1BD5C2-B79D-4A36-878E-2504577C7341}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F1BD5C2-B79D-4A36-878E-2504577C7341}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F1BD5C2-B79D-4A36-878E-2504577C7341}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BC22818-1465-441B-881E-478C98EB8507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BC22818-1465-441B-881E-478C98EB8507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BC22818-1465-441B-881E-478C98EB8507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BC22818-1465-441B-881E-478C98EB8507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -739,6 +745,7 @@ Global
 		{C80D7042-302E-4161-9359-394F25F4F368} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{286DE52E-E53E-44AA-A1EE-542EB944358B} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 		{5F1BD5C2-B79D-4A36-878E-2504577C7341} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
+		{4BC22818-1465-441B-881E-478C98EB8507} = {5DAC94E8-D40A-48D4-81A8-206229E281E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B4518FF-AD85-4526-85C6-E56D3444D58C}
