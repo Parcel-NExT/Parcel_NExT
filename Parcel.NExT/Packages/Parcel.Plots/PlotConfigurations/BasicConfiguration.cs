@@ -76,6 +76,19 @@ namespace Parcel.Graphing.PlotConfigurations
         public string YAxis { get; set; } = string.Empty;
         public int HisogramBars { get; set; } = 10;
     }
+    public sealed class BubbleChartConfiguration : BasicConfiguration
+    {
+        public string Title { get; set; } = string.Empty;
+        public string XAxis { get; set; } = string.Empty;
+        public string YAxis { get; set; } = string.Empty;
+    }
+    public sealed class BubbleChartMultiSeriesConfiguration : BasicConfiguration
+    {
+        public string Title { get; set; } = string.Empty;
+        public string XAxis { get; set; } = string.Empty;
+        public string YAxis { get; set; } = string.Empty;
+        public string[]? Legends { get; set; } = null;
+    }
     public sealed class PopulationPyramidConfiguration : BasicConfiguration
     {
         public string Title { get; set; } = string.Empty;

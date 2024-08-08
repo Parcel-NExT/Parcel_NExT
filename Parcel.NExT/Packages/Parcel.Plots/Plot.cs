@@ -17,6 +17,11 @@ namespace Parcel.Graphing
 
     public static class Plot
     {
+        #region Constants
+        private const int DefaultWidth = 400;
+        private const int DefaultHeight = 300;
+        #endregion
+
         #region Illustrational
         /// <summary>
         /// PlotVector(s)2D: Draws Vector2D in coordinate grid. Great for educational purpose (when comoaring before and after manipulation).
@@ -97,7 +102,7 @@ namespace Parcel.Graphing
                 plot.Axes.Bottom.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
-            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
         public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration? configurations = null)
@@ -126,7 +131,7 @@ namespace Parcel.Graphing
                 plot.Axes.Bottom.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
-            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
         public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[] y2, ScatterPlotTwoAxesConfiguration? configurations = null)
@@ -163,7 +168,7 @@ namespace Parcel.Graphing
             }
 
             string path = Image.GetTempImagePath();
-            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
         public static Image LinePlot(double[] x, double[] y, LinePlotConfiguration? configurations = null)
@@ -185,7 +190,7 @@ namespace Parcel.Graphing
                 plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
-            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
         public static Image BarChart(double[] values, BarChartConfiguration? configurations = null)
@@ -204,7 +209,7 @@ namespace Parcel.Graphing
                 plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
-            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
         public static Image Histogram(double[] values, HisogramConfiguration? configurations = null)
@@ -227,7 +232,82 @@ namespace Parcel.Graphing
                 plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
-            plot.SavePng(path, configurations.ImageWidth == 0 ? 400 : configurations.ImageWidth, configurations.ImageHeight == 0 ? 300 : configurations.ImageHeight);
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
+            return new Image(path);
+        }
+
+        public static Image BubbleChart(double[] x, double[] y, double[] radius, BubbleChartConfiguration? configurations = null)
+        {
+            if (x.Length != y.Length || y.Length != radius.Length)
+                throw new ArgumentException("Unmatching data length.");
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+
+            for (int i = 0; i < x.Length; i++)
+                PlotBubble(plot, x[i], y[i], radius[i]);
+
+            // To keep bubbles circular
+            ScottPlot.AxisRules.SquareZoomOut squareRule = new(plot.Axes.Bottom, plot.Axes.Left);
+            plot.Axes.Rules.Add(squareRule);
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Left.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+
+            string path = Image.GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
+            return new Image(path);
+        }
+
+        public static Image BubbleChart(double[][] xs, double[][] ys, double[][] radii, BubbleChartMultiSeriesConfiguration? configurations = null)
+        {
+            if (xs.Length != ys.Length || ys.Length != radii.Length)
+                throw new ArgumentException("Unmatching data length.");
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+            var cmap = new ScottPlot.Colormaps.Jet();
+
+            for (int i = 0; i < xs.Length; i++)
+            {
+                var x = xs[i];
+                var y = ys[i];
+                var radius = radii[i];
+
+                if (x.Length != y.Length || y.Length != radius.Length)
+                    throw new ArgumentException("Unmatching data length.");
+
+                for (int j = 0; j < x.Length; j++)
+                    PlotBubble(plot, x[j], y[j], radius[j], cmap.GetColor(i));
+
+                if (configurations.Legends != null)
+                {
+                    plot.Legend.IsVisible = true;
+                    plot.Legend.ManualItems.Add(new ScottPlot.LegendItem
+                    {
+                        FillColor = cmap.GetColor(i),
+                        LabelText = configurations.Legends[i]
+                    });
+                }
+            }
+
+            // To keep bubbles circular
+            ScottPlot.AxisRules.SquareZoomOut squareRule = new(plot.Axes.Bottom, plot.Axes.Left);
+            plot.Axes.Rules.Add(squareRule);
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Left.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+
+            string path = Image.GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
         #endregion
@@ -334,6 +414,18 @@ namespace Parcel.Graphing
         #region Helpers
         private static ScottPlot.Color Convert(Parcel.Types.Color color)
             => ScottPlot.Color.FromHex(color.ToString());
+
+        private static void PlotBubble(ScottPlot.Plot plot, double x, double y, double radius, ScottPlot.Color? color = null)
+        {
+            var c = plot.Add.Circle(
+                xCenter: x,
+                yCenter: y,
+                radius: radius
+            );
+            if (color != null)
+                c.LineColor = color.Value;
+            c.FillStyle.Color = c.LineColor.WithAlpha(.5);
+        }
         #endregion
     }
 }
