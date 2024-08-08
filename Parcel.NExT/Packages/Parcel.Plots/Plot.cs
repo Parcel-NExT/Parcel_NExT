@@ -18,8 +18,8 @@ namespace Parcel.Graphing
     public static class Plot
     {
         #region Constants
-        private const int DefaultWidth = 400;
-        private const int DefaultHeight = 300;
+        public const int DefaultWidth = 400;
+        public const int DefaultHeight = 300;
         #endregion
 
         #region Illustrational
@@ -235,7 +235,6 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-
         public static Image BubbleChart(double[] x, double[] y, double[] radius, BubbleChartConfiguration? configurations = null)
         {
             if (x.Length != y.Length || y.Length != radius.Length)
@@ -262,7 +261,6 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-
         public static Image BubbleChart(double[][] xs, double[][] ys, double[][] radii, BubbleChartMultiSeriesConfiguration? configurations = null)
         {
             if (xs.Length != ys.Length || ys.Length != radii.Length)
@@ -298,6 +296,52 @@ namespace Parcel.Graphing
             // To keep bubbles circular
             ScottPlot.AxisRules.SquareZoomOut squareRule = new(plot.Axes.Bottom, plot.Axes.Left);
             plot.Axes.Rules.Add(squareRule);
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Left.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+
+            string path = Image.GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
+            return new Image(path);
+        }
+        public static Image FunnelChart(double[] values, FunnelChartConfiguration? configurations = null)
+        {
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+
+            foreach (var ((upperX, lowerX), i) in values
+                .Zip(values.Append(values.Last()).Skip(1))
+                .Reverse()  // Reverse since values are given from top to bottom, while segments are plotted from bottom to top
+                .Zip(Enumerable.Range(0, values.Count())))
+            {
+                plot.Add.Polygon(
+                [
+                    new(-upperX, i+1),
+                    new(upperX, i+1),
+                    new(lowerX, i),
+                    new(-lowerX, i)
+                ]);
+                var text = plot.Add.Text(upperX.ToString(), new(0, i + .5));
+                text.Alignment = ScottPlot.Alignment.MiddleCenter;
+            };
+            plot.HideAxesAndGrid();
+
+            if (configurations.Labels != null)
+            {
+                ScottPlot.TickGenerators.NumericManual ticks = new();
+                var labels = configurations.Labels.Reverse().ToArray();
+                for (int i = 0; i < labels.Length; i++)
+                    ticks.AddMajor(i + .5, labels[i]);
+                plot.Axes.Left.TickGenerator = ticks;
+                plot.Axes.Left.IsVisible = true;
+                plot.Axes.Left.FrameLineStyle.IsVisible = false;
+            }
+
 
             if (!string.IsNullOrEmpty(configurations.Title))
                 plot.Title(configurations.Title);
