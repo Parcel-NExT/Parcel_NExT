@@ -1,3 +1,5 @@
+# TODO: Might want to enable ReadyToRun with specific (windows) runtime specifier for a bit performance optimization
+
 # Save pwd for later recover
 $PrevPath = Get-Location
 
