@@ -10,3 +10,4 @@ Provides Parcel NExT abstraction for in-memory DB and related services. This pac
 	- [ ] Investigate further and see whether we can do more with Dapper
 - [ ] Think about the utility of this library compared to using raw Dapper.
 - [ ] Handle the case with network connection (current implementation only deals with local connections)
+- [ ] Take a look at Zora.Expresso and see how we can further consolidate things.
