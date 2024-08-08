@@ -33,7 +33,7 @@ namespace Notebook
                     Notebook for Pure 2 (Core Version: {Interpreter.DistributionVersion})
                     """, null, args.Length > 2 ? args.Skip(2).ToArray() : null, null, null);
             // Remark-cz: Update for Notebook post .Net 8 upgrade, where we build Notebook.exe in dedicated Windows folder
-            string assemblyParentFolder = Path.GetDirectoryName(AssemblyHelper.ExecutingAssemblyDirectory);
+            string assemblyParentFolder = Path.GetDirectoryName(AssemblyHelper.CallingAssemblyDirectory);
             string librariesPath = Path.Combine(assemblyParentFolder, "Libraries");
             Interpreter.Start(OutputHandlerNonMainThread, additionalLibraryDllPaths: Directory.Exists(librariesPath) ? [librariesPath] : null);
 
