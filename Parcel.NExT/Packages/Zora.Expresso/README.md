@@ -1,7 +1,8 @@
 # Zora Expresso
 
 Tags: Framework, Data Analytics, Ingest  
-RFC: PENDING
+RFC: PENDING  
+Status: Pending further consolidation with InMemoryDB; Might not be applicable to Parcel NExT.  
 
 A SQL based functional paradigm dataflow processing framework. Consumes various tabular source formats and process using SQL.
 
@@ -15,4 +16,9 @@ Management:
 
 ## Notes
 
-Based on https://github.com/chaojian-zhang/Expresso
+* Based on https://github.com/chaojian-zhang/Expresso
+* Similar functionalities might already available with InMemoryDB and Parcel - we might not need to provide a dedicated package for it. Instead, we could name "InMemoryDB" as "Expresso" when shown in toolbox.
+
+## Technical Remark
+
+Expresso was largely SQL driven - and those functionalities are already available in InMemoryDB (pending further implementation and consolidation). Other than that, maybe only the data readers/writers are of reference value, otherwise we don't need to pursue this library further.
