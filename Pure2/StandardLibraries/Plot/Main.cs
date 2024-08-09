@@ -1,4 +1,5 @@
-﻿using ScottPlot;
+﻿using Parcel.Scripting.Utilities;
+using ScottPlot;
 using System.Reflection;
 
 namespace Graphing
@@ -62,7 +63,7 @@ namespace Graphing
                 settings = [$"--{nameof(PlotOptions.OutputImage)}", .. settings];
 
             // Parse arguments
-            var options = CLI.Main.Parse<PlotOptions>(settings);
+            var options = CLI.Parse<PlotOptions>(settings);
             return options;
         }
         /// <summary>

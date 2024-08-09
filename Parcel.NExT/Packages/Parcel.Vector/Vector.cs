@@ -29,27 +29,27 @@
             => [.. vector.Select(v => v * other)];
 
         public static double[] Sine(this double[] vector)
-            => [.. vector.Select(Math.Sin)];
+            => [.. vector.Select(System.Math.Sin)];
         public static double[] Cosine(this double[] vector)
-            => [.. vector.Select(Math.Cos)];
+            => [.. vector.Select(System.Math.Cos)];
         public static double[] SqaureRoot(this double[] vector)
-            => [.. vector.Select(Math.Sqrt)];
+            => [.. vector.Select(System.Math.Sqrt)];
         public static double[] AbsoluteValue(this double[] vector)
-            => [.. vector.Select(Math.Abs)];
+            => [.. vector.Select(System.Math.Abs)];
         public static double[] Arccosine(this double[] vector)
-            => [.. vector.Select(Math.Acos)];
+            => [.. vector.Select(System.Math.Acos)];
         public static double[] Arcsine(this double[] vector)
-            => [.. vector.Select(Math.Asin)];
+            => [.. vector.Select(System.Math.Asin)];
         public static double[] Log10(this double[] vector)
-            => [.. vector.Select(Math.Log10)];
+            => [.. vector.Select(System.Math.Log10)];
         public static double[] Tangent(this double[] vector)
-            => [.. vector.Select(Math.Tan)];
+            => [.. vector.Select(System.Math.Tan)];
         public static double[] Modulus(this double[] vector, double divisor)
             => [.. vector.Select(v => v % divisor)];
         public static double[] Log2(this double[] vector)
-            => [.. vector.Select(Math.Log2)];
+            => [.. vector.Select(System.Math.Log2)];
         public static double[] Power(this double[] vector, double exponent)
-            => [.. vector.Select(v => Math.Pow(v, exponent))];
+            => [.. vector.Select(v => System.Math.Pow(v, exponent))];
 
         public static double Minimum(this double[] vector)
             => vector.Min();
