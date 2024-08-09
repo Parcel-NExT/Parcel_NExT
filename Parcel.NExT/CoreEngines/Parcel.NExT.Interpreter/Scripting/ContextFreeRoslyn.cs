@@ -86,6 +86,8 @@ namespace Parcel.NExT.Interpreter.Scripting
         /// </summary>
         /// <remarks>
         /// This function is similar to <seealso cref="EvaluateLocalSnippet(Dictionary{string, object}, string)"/> but serves different purpose.
+        /// 
+        /// This is not efficient for things that runs often - in which case we should compile and extract MethodInfo using CodeAnalyzer instead rely on Roslyn.
         /// </remarks>
         public static TType EvaluateLocalReturn<TType>(string codeFragment, Dictionary<string, object>? globalVariables = null)
         {
