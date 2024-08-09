@@ -146,6 +146,7 @@ namespace Parcel.NExT.Interpreter.Types
                     return generic.Invoke(null, arguments);
                 }
                 else // A typical old good static method
+                    // TODO: Support implicit conversion, e.g. between double[] and vector
                     return Method!.Invoke(null, arguments);
             }
             else if (Type == CallableType.Constructor)

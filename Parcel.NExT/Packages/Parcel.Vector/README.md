@@ -6,6 +6,13 @@ Very comprehensive vector library for handling with 1D data. The goal is short-h
 
 Also provides domain-specific extensions, utilities and analytics. Those are implemented as partial classes.
 
+## Technical Note
+
+A note regarding engine level support and adoption:
+
+* In general, for anything that's "Parcel" related we should use Vector instead of double[]
+* For packages that wishes not having heavy dependency, they can use double[] because runtime should support automatic double[]/Vector conversion (both way)
+
 ## Usage
 
 ```C#

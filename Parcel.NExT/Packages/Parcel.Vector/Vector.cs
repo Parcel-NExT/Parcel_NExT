@@ -72,6 +72,10 @@ namespace Parcel.Math.Types
         /// Implicit constructor
         /// </summary>
         public static implicit operator Vector(double[] values) => new(values);
+        /// <summary>
+        /// Implicit converter
+        /// </summary>
+        public static implicit operator double[](Vector vector) => vector.Values;
         #endregion
 
         #region Data Loading and Saving

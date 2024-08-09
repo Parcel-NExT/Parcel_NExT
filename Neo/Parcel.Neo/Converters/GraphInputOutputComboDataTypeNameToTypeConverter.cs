@@ -19,7 +19,7 @@ namespace Parcel.Neo.Converters
                 return "DateTime";
             else if (value == typeof(Parcel.Types.DataGrid))
                 return "DataGrid";
-            else if (value == typeof(double[]))
+            else if (value == typeof(double[])) // TODO: Consolidate with Parcel.Math.Types.Vector type
                 return "Vector";
             else
                 throw new ArgumentException();
@@ -35,7 +35,7 @@ namespace Parcel.Neo.Converters
                 "String" => typeof(string),
                 "DateTime" => typeof(DateTime),
                 "DataGrid" => typeof(Parcel.Types.DataGrid),
-                "Vector" => typeof(double[]),
+                "Vector" => typeof(double[]), // TODO: Consolidate with Parcel.Math.Types.Vector type
                 _ => throw new ArgumentException()
             };
         }

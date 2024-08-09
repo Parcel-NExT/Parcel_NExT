@@ -150,6 +150,7 @@ namespace Parcel.Types
     /// </summary>
     /// <remarks>
     /// In general, unless absolutely necessary, for small return results, we should favour arrays instead of IEnumerables because that avoids one extra function call (e.g. ToArray) at the caller.
+    /// TODO: Consolidate with Parcel.Math.Types.Vector type
     /// </remarks>
     public class DataGrid : IEnumerable<object[]>, IEnumerable
     {
