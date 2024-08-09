@@ -410,9 +410,7 @@ namespace Parcel.Types
                 throw new ArgumentException("Wrong number of row elements.");
 
             for (int i = 0; i < values.Length; i++)
-            {
                 Columns[i].Add(values[i]);
-            }
         }
         public DataColumn AddColumn(string columnName)
         {

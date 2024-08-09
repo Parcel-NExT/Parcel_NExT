@@ -41,7 +41,7 @@ namespace Parcel.Integration
         public static DataGrid FilterRows(this DataGrid original, string expression)
         {
             // TODO: Might want to do a pass of quick syntax analysis to ensure snippet conforms to expectation
-            // TODO: Support using "and" and "or" for && and || operator in mini expression syntax
+            // TODO: Implement proper support using "and" and "or" for && and || operator in mini expression syntax
             // Remark: Notice Roslyn does NOT work with dynamic/expando object as globals
 
             List<DataColumn> columns = original.Columns;
@@ -50,13 +50,14 @@ namespace Parcel.Integration
 
                 public static bool CheckRow({{string.Join(", ", columns.Select(c => $"{c.Type.FullName} {c.Header.Replace(" ", string.Empty) /*Deal with illegal variable names*/}"))}})
                 {
-                    return {{expression}}; // Mini DSL
+                    return {{expression.Replace(" and ", " && ").Replace(" or ", " || ").Replace(" = ", " == ") /*Notice those are not safe e.g. won't work with strings; Might require proper syntax analysis*/}}; // Mini DSL
                 }
                 """;
             FunctionalNodeDescription? compilation = CodeAnalyzer.CompileFunctionalNode(pesudoFunction);
 
-            // TODO: Convert expando back to proper data grid initialization argument
-            return new(original.TableName, original.Rows.Where(row =>
+            // TODO: Refine DataGrid to provide proper and more convinient constructor
+            DataGrid result = new(original.TableName, original.ColumnHeaders.Select(c => new DataColumn(c)).ToArray()); // TODO: The API with IEnumerable is very bad and very misleading and easily get things confused
+            foreach (var row in original.Rows.Where(row =>
             {
                 IDictionary<string, object> expando = row as ExpandoObject;
                 bool result = (bool)compilation.Method.StaticInvoke(expando.Values.ToArray()); // TODO: Check property order match column order
@@ -64,7 +65,25 @@ namespace Parcel.Integration
                 return result;
 
                 // Remark: `(bool?)CSharpScript.RunAsync(snippet, ScriptOptions.Default, row).Result.ReturnValue ?? false` won't work due to expando/dynamic object issue
-            }));
+            }))
+            {
+                result.AddRow(((IDictionary<string, object>)(row as ExpandoObject)).Values.ToArray());
+            }
+            return result;
+        }
+        /// <summary>
+        /// Group a data grid by group key then perform transform to get a flat table
+        /// </summary>
+        public static DataGrid GroupBy(this DataGrid origina, string groupKeyExpression, Func<Dictionary<string, object>, object> processorFunction)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Group a data grid by group key then perform transform to get a flat table
+        /// </summary>
+        public static DataGrid GroupBy(this DataGrid origina, string groupKeyExpression, string processingSnippet)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
