@@ -2,9 +2,9 @@
 
 Provides Parcel NExT abstraction for numerical Vector.
 
-# Vector
-
 Very comprehensive vector library for handling with 1D data. The goal is short-hand utility of common functions.
+
+Also provides domain-specific extensions, utilities and analytics. Those are implemented as partial classes.
 
 ## Usage
 

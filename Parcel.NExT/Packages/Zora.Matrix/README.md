@@ -1,6 +1,10 @@
-# Matrix
+# Zora.Matrix
 
-Provides basic numerical matrix helper routines. Not targeted for linear algebra, but more for table-like data manipulation.
+Provides basic numerical matrix helper routines. 
+
+Application domains:
+* Table-like data manipulation.
+* Not targeted for linear algebra at the moment, but will consider.
 
 ## Changelog
 

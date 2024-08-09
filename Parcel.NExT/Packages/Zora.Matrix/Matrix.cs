@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Text;
 
-namespace Math
+namespace Parcel.Math.Types
 {
     /// <summary>
     /// Main definition of the Matrix type
     /// </summary>
-    public class Matrix : ExperimentalLibrary, IEnumerable<Vector1D>, IEnumerable
+    [Obsolete("Deprecated. Migrated from Pure. Remove this in the future and use package YAML instead. Or consolidate this into Parcel NExT.")]
+    public class Matrix : ExperimentalLibrary, IEnumerable<Vector>, IEnumerable
     {
         #region Library Metadata
         /// <summary>
@@ -115,7 +116,7 @@ namespace Math
         /// <summary>
         /// Get row as Vector1D
         /// </summary>
-        public Vector1D this[int index]
+        public Vector this[int index]
             => new(_data[index]);
         #endregion
 
@@ -123,19 +124,19 @@ namespace Math
         /// <summary>
         /// Enumerate matrix rows
         /// </summary>
-        public IEnumerator<Vector1D> GetEnumerator()
+        public IEnumerator<Vector> GetEnumerator()
             => new MatrixRowEnumerator(_data);
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
         #endregion
     }
 
-    public class MatrixRowEnumerator(double[][] data) : IEnumerator<Vector1D>
+    public class MatrixRowEnumerator(double[][] data) : IEnumerator<Vector>
     {
         private readonly double[][] _data = data;
         private int _row = 0;
 
-        public Vector1D Current => new(_data[_row]);
+        public Vector Current => new(_data[_row]);
         object IEnumerator.Current => Current;
 
         public void Dispose()

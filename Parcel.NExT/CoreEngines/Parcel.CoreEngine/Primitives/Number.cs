@@ -15,7 +15,7 @@
 
         #region Methods (Object)
         public static Number Add(Number a, Number b)
-            => new Number(a.Value + b.Value);
+            => new(a.Value + b.Value);
         #endregion
 
         #region Methods (Primitives)
