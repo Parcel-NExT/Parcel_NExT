@@ -96,6 +96,7 @@ namespace Parcel.Neo.Base.Framework
             RegisterType(toolboxes, "String Processing", typeof(Standard.Types.StringRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.BooleanRoutines));
             RegisterType(toolboxes, "Boolean Logic", typeof(Standard.Types.LogicRoutines));
+            RegisterType(toolboxes, "Number", typeof(Standard.Types.NumberRoutines));
             RegisterType(toolboxes, "File System", typeof(Standard.System.FileSystem));
             // Register specific types - Experimental
             RegisterType(toolboxes, "Fictional World", typeof(ProjectNine.FictionalWorld.DataSet)); // "Project Nine" name should generally not be exposed directly; We use "Fictional World" in this case to refer to it.

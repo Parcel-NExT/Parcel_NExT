@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<RootNamespace>Parcel.Math.Types</RootNamespace>
+	<Version>0.1.1</Version>
+	<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Pure2\StandardLibraries\CorePackage\CorePackage.csproj" />
+    <ProjectReference Include="..\Parcel.Vector\Parcel.Vector.csproj" />
+  </ItemGroup>
+
+</Project>

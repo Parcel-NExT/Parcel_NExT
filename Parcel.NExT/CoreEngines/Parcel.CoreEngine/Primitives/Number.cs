@@ -1,5 +1,8 @@
 ﻿namespace Parcel.CoreEngine.Primitives
 {
+    /// <remarks>
+    /// Consolidate with standard library NumberRoutines
+    /// </remarks>
     public sealed class Number
     {
         #region Construction
@@ -15,7 +18,7 @@
 
         #region Methods (Object)
         public static Number Add(Number a, Number b)
-            => new Number(a.Value + b.Value);
+            => new(a.Value + b.Value);
         #endregion
 
         #region Methods (Primitives)

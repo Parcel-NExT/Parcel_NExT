@@ -114,7 +114,7 @@ namespace Parcel.Neo.Base.Toolboxes.Basic.Nodes
             // Populate data
             if (Data != null)
             {
-                for (int col = 0; col < Math.Min(Data.Length, Definitions.Count); col++)
+                for (int col = 0; col < System.Math.Min(Data.Length, Definitions.Count); col++)
                     for (int row = 0; row < Data[col].Length; row++)
                         dataGrid.Columns[col].Add(Data[col][row]);
             }
