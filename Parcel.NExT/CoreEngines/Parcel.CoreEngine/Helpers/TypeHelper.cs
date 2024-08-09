@@ -5,7 +5,7 @@ namespace Parcel.CoreEngine.Helpers
 {
     public static class TypeHelper
     {
-        #region Type Calssification
+        #region Type Classification
         /// <summary>
         /// Check whether a type can represent number, which is parcel defaults to double
         /// </summary>
