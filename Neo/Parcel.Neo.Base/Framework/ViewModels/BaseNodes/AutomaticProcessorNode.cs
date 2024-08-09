@@ -196,7 +196,10 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 object[] outputs = marshal.Invoke(Input.Select((input, index) =>
                 {
                     // Notice we have issue with Vector/double[] handling here
-                    if (input.AllowsArrayCoercion && !input.Connections.Any(c => c.Input.DataType.HasElementType)) //Remark: Notice IsArray is not robust enough since it doesn't work on pass by ref arrays e.g. System.Double[]&
+                    if (input.AllowsArrayCoercion &&
+                        // Check if incoming data is directly assignable, if not, attempt to fetch as element type
+                        // Remark: Notice for checking whether some type is array type, `IsArray` is not robust enough since it doesn't work on pass by ref arrays e.g. System.Double[]&; We can use `HasElementType` to check in that case
+                        !input.Connections.Any(c => TypeHelper.CanConvert(c.Input.DataType, input.DataType)))
                         return input.FetchArrayInputValues(InputTypes[index].GetElementType());
                     else 
                         return input.FetchInputValue<object>();

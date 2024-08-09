@@ -46,7 +46,9 @@ namespace Parcel.CoreEngine.Helpers
             => CanConvert(instance.GetType(), to);
         public static bool CanConvert(Type from, Type to)
         {
-            if (TypeDescriptor.GetConverter(from).CanConvertTo(to)) // Requires IConvertible; This doesn't cover everything
+            if (from == to)
+                return true;
+            else if (TypeDescriptor.GetConverter(from).CanConvertTo(to)) // Requires IConvertible; This doesn't cover everything
                 return true;
             else if (from == typeof(string) && (IsNumericalType(to) || typeof(IParcelSerializable).IsAssignableFrom(to)))
                 return true;
@@ -61,7 +63,14 @@ namespace Parcel.CoreEngine.Helpers
         public static bool TryConvert(object instance, Type to, out object? result)
         {
             Type from = instance.GetType();
-            if (TypeDescriptor.GetConverter(from).CanConvertTo(to)) // This doesn't cover everything
+            // Handle Raw assignment
+            if (from == to)
+            {
+                result = instance;
+                return true;
+            }
+            // Handle primitives and convertibles
+            else if (TypeDescriptor.GetConverter(from).CanConvertTo(to)) // This doesn't cover everything
             {
                 result = Convert.ChangeType(instance, to);
                 return true;

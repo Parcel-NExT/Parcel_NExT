@@ -7,6 +7,7 @@ using Parcel.Neo.Base.DataTypes;
 using System.ComponentModel;
 using System.Numerics;
 using Parcel.Neo.Base.Serialization;
+using Parcel.CoreEngine.Helpers;
 
 namespace Parcel.Neo.Base.Framework.ViewModels
 {
@@ -540,7 +541,9 @@ namespace Parcel.Neo.Base.Framework.ViewModels
                 {
                     BaseConnection con = Connections[i];
                     object value = ExtractSingleValue(con, elementType);
-                    array.SetValue(value, i);
+                    if (TypeHelper.TryConvert(value, elementType, out object? converted))
+                        array.SetValue(converted, i);
+                    else throw new ArgumentException($"Cannot convert value of type {value.GetType().Name} to {elementType.Name}.");
                 }
                 return array;
             }
