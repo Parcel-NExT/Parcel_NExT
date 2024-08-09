@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Parcel.DataGrid\Parcel.DataGrid.csproj" />
     <ProjectReference Include="..\Parcel.Drawing\Parcel.Drawing.csproj" />
     <ProjectReference Include="..\Parcel.Image\Parcel.Image.csproj" />
+    <ProjectReference Include="..\Parcel.Vector\Parcel.Vector.csproj" />
   </ItemGroup>
 
   <ItemGroup>
