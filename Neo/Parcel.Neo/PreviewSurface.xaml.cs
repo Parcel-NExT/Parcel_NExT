@@ -159,9 +159,11 @@ namespace Parcel.Neo
                     PreviewPrimitiveArray((Array)cache.DataObject);
                 else if (cache.DataObject is System.Collections.IList list)
                     PreviewCollections(list);
-                // Core
                 else if (PrimitiveTypes.Contains(cache.DataType))
                     PreviewPrimitives(cache.DataObject);
+                // Core
+                else if (cache.DataType == typeof(Parcel.Math.Types.Vector))
+                    PreviewPrimitiveArray(((Parcel.Math.Types.Vector)cache.DataObject).Raw);
                 // DSL: Image Processing
                 else if (cache.DataType == typeof(Types.Image))
                 {
