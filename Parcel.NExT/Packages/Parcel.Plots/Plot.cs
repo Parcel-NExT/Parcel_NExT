@@ -1,6 +1,7 @@
 ﻿using Parcel.Graphing.PlotConfigurations;
 using Parcel.Neo.Base.DataTypes;
 using Parcel.Types;
+using Parcel.Math.Types;
 
 namespace Parcel.Graphing
 {
@@ -71,7 +72,7 @@ namespace Parcel.Graphing
         #endregion
 
         #region Standard Plots
-        public static Image ScatterPlot(double[] x, double[][] ys, ScatterPlotMultiSeriesConfiguration? configurations = null)
+        public static Image ScatterPlot(Vector x, Vector[] ys, ScatterPlotMultiSeriesConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -105,7 +106,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image ScatterPlot(double[] x, double[] y, ScatterPlotConfiguration? configurations = null)
+        public static Image ScatterPlot(Vector x, Vector y, ScatterPlotConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -134,7 +135,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image ScatterPlotTwoAxes(double[] x, double[] y1, double[] y2, ScatterPlotTwoAxesConfiguration? configurations = null)
+        public static Image ScatterPlotTwoAxes(Vector x, Vector y1, Vector y2, ScatterPlotTwoAxesConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -171,7 +172,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image LinePlot(double[] x, double[] y, LinePlotConfiguration? configurations = null)
+        public static Image LinePlot(Vector x, Vector y, LinePlotConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -193,7 +194,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image BarChart(double[] values, BarChartConfiguration? configurations = null)
+        public static Image BarChart(Vector values, BarChartConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -212,7 +213,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image Histogram(double[] values, HisogramConfiguration? configurations = null)
+        public static Image Histogram(Vector values, HisogramConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -235,7 +236,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image BubbleChart(double[] x, double[] y, double[] radius, BubbleChartConfiguration? configurations = null)
+        public static Image BubbleChart(Vector x, Vector y, Vector radius, BubbleChartConfiguration? configurations = null)
         {
             if (x.Length != y.Length || y.Length != radius.Length)
                 throw new ArgumentException("Unmatching data length.");
@@ -261,7 +262,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image BubbleChart(double[][] xs, double[][] ys, double[][] radii, BubbleChartMultiSeriesConfiguration? configurations = null)
+        public static Image BubbleChart(Vector[] xs, Vector[] ys, Vector[] radii, BubbleChartMultiSeriesConfiguration? configurations = null)
         {
             if (xs.Length != ys.Length || ys.Length != radii.Length)
                 throw new ArgumentException("Unmatching data length.");
@@ -308,7 +309,7 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-        public static Image FunnelChart(double[] values, FunnelChartConfiguration? configurations = null)
+        public static Image FunnelChart(Vector values, FunnelChartConfiguration? configurations = null)
         {
             configurations ??= new();
 
@@ -358,7 +359,7 @@ namespace Parcel.Graphing
         #region Standard Charts
         /// <alias>Age Population Chart</alias>
         /// <remarks>Notice a population pyramid devides humans into male and female and might not be a gender neural way to represent diversity within population</remarks>
-        public static Image PopulationPyramid(string[] ageGroups, double[] maleData, double[] femaleData, PopulationPyramidConfiguration? configurations = null)
+        public static Image PopulationPyramid(string[] ageGroups, Vector maleData, Vector femaleData, PopulationPyramidConfiguration? configurations = null)
         {
             // TODO: Move age group outside of drawing frame and well aligned on the left side of the drawing area; Might need to use custom text labels for this
 
@@ -388,7 +389,7 @@ namespace Parcel.Graphing
             float margin = MeasureWidth(ageGroups.OrderByDescending(s => s.Length).First(), fontSize);
             double maleMax = maleData.Max();
             double femaleMax = femaleData.Max();
-            double absMax = Math.Max(maleMax, femaleMax);
+            double absMax = System.Math.Max(maleMax, femaleMax);
             double additionalPadding = absMax / 4; // Notice charts autoamtically adjusts scale based on actual data being plotted; We use 1/4 for additional padding
             plot.Axes.SetLimitsX(-maleMax - margin - additionalPadding, + femaleMax + margin / 2); // Include extra margin to account for label
             plot.Layout.Frameless();
@@ -415,7 +416,7 @@ namespace Parcel.Graphing
             return new Image(path);
 
             // Helper
-            static void CreateDataBars(double[] data, ScottPlot.Plot plot, bool male, PopulationPyramidConfiguration configuration)
+            static void CreateDataBars(Vector data, ScottPlot.Plot plot, bool male, PopulationPyramidConfiguration configuration)
             {
                 ScottPlot.Plottables.BarPlot barPlot = plot.Add.Bars(male ? data.Select(d => -d).ToArray() : data);
                 int index = 0;
@@ -426,7 +427,7 @@ namespace Parcel.Graphing
                     bar.Position = index * (configuration.BarSize + configuration.BarGap);
 
                     // Set label
-                    bar.Label = Math.Abs(bar.Value).ToString();
+                    bar.Label = System.Math.Abs(bar.Value).ToString();
                     index++;
                 }
                 // Customize label style
