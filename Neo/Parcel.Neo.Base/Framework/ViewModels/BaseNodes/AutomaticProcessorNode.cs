@@ -133,9 +133,9 @@ namespace Parcel.Neo.Base.Framework.ViewModels.BaseNodes
                 else if (TypeHelper.IsNumericalType(inputType))
                     connector = new PrimitiveNumberInputConnector(inputType, defaultValue == DBNull.Value ? null : defaultValue) { Title = preferredTitle ?? "Number", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(DateTime))
-                    connector = new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion };
+                    connector = new PrimitiveDateTimeInputConnector(defaultValue != DBNull.Value ? (DateTime?)defaultValue : null) { Title = preferredTitle ?? "Date", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(Color))
-                    connector = new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion };
+                    connector = new PrimitiveColorInputConnector(defaultValue != DBNull.Value ? (Color?)defaultValue : null) { Title = preferredTitle ?? "Color", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(Vector2))
                     connector = new PrimitiveVector2InputConnector(defaultValue != DBNull.Value ? (Vector2)defaultValue : null) { Title = preferredTitle ?? "Vector2", AllowsArrayCoercion = supportsCoercion };
                 else if (inputType == typeof(System.Drawing.Size))

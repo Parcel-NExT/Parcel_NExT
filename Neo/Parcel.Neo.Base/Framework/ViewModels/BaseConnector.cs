@@ -147,7 +147,7 @@ namespace Parcel.Neo.Base.Framework.ViewModels
         public override object? Value
         {
             get => _defaultDataStorage;
-            set => SetField(ref _defaultDataStorage, value is string s ? Color.Parse(s) : (Color)value);
+            set => SetField(ref _defaultDataStorage, value is string s ? Color.Parse(s) : (Color?)value);
         }
 
         #region Serialization
@@ -163,14 +163,18 @@ namespace Parcel.Neo.Base.Framework.ViewModels
     /// </remarks>
     public sealed class PrimitiveDateTimeInputConnector : PrimitiveInputConnector
     {
-        public PrimitiveDateTimeInputConnector(DateTime? defaultValue = null) : base(typeof(DateTime)) 
-            => Value = defaultValue ?? DateTime.Now.Date;
+        #region Construction
+        public PrimitiveDateTimeInputConnector(DateTime? defaultValue = null) : base(typeof(DateTime))
+            => Value = defaultValue; // Can be null
+        #endregion
 
-        public override object Value 
-        {  
+        #region Value & View Binding
+        public override object? Value
+        {
             get => _defaultDataStorage;
-            set => SetField(ref _defaultDataStorage, value is string s ? DateTime.Parse(s) : value); 
+            set => SetField(ref _defaultDataStorage, value is string s ? DateTime.Parse(s) : (DateTime?)value);
         }
+        #endregion
 
         #region Serialization
         public override byte[] SerializeStorage()

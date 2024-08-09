@@ -10,7 +10,7 @@ namespace Parcel.Generators
         public static (DateTime Date, double value)[] GenerateRandomTimeSeries(DateTime? start = null, DateTime? end = null, double startValue = 100, double returnMean = 0.1, double returnStandardDeviation = 15.25)
         {
             start ??= new DateTime(1970, 1, 1);
-            end ??= new DateTime(2010, 12, 31);
+            end ??= start.Value.AddYears(40);
 
             int days = (int)(end.Value - start.Value).TotalDays;
             DateTime[] dates = Enumerable.Range(0, days).Select(d => start.Value.AddDays(d)).ToArray();
