@@ -1,5 +1,8 @@
 ﻿namespace Parcel.CoreEngine.Primitives
 {
+    /// <remarks>
+    /// Consolidate with standard library NumberRoutines
+    /// </remarks>
     public sealed class Number
     {
         #region Construction
