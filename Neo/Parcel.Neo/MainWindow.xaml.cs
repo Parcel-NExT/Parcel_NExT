@@ -603,7 +603,8 @@ namespace Parcel.Neo
                 ToolboxNodeExport nodeDef = nodeItem.Definition;
 
                 // Spawn node
-                Point position = e.GetPosition(sender as NodifyEditor);
+                var editor = sender as NodifyEditor;
+                Point position = editor.ViewportTransform.Inverse.Transform(e.GetPosition(editor));
                 BaseNode node = SpawnNode(nodeDef, new Vector2D(position.X, position.Y));
 
                 // Automatically select node
