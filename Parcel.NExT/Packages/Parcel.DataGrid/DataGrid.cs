@@ -151,6 +151,7 @@ namespace Parcel.Types
     /// <remarks>
     /// In general, unless absolutely necessary, for small return results, we should favour arrays instead of IEnumerables because that avoids one extra function call (e.g. ToArray) at the caller.
     /// TODO: Consolidate with Parcel.Math.Types.Vector type
+    /// TODO: Make this type completely immutable.
     /// </remarks>
     public class DataGrid : IEnumerable<object[]>, IEnumerable
     {
@@ -218,6 +219,7 @@ namespace Parcel.Types
         /// <summary>
         /// Initialize from an array of values (double, int, string).
         /// </summary>
+        [Obsolete("Semantical ambiguity. Initialize from data column instead.")]
         public DataGrid(string name, IEnumerable values)
         {
             TableName = name;
@@ -650,10 +652,23 @@ namespace Parcel.Types
         {
             throw new NotImplementedException();
         }
-    #endregion
+        public DataGrid Apply(Func<dynamic, Dictionary<string, object>> transform)
+        {
+            Dictionary<string, object>[] resultRows = Rows.Select(row =>
+            {
+                Dictionary<string, object> resultRow = transform(row);
+                return resultRow;
+            }).ToArray(); // TODO: Replace with IEnumerable for efficiency
 
-    #region Routines
-    public struct ColumnInfo
+            DataGrid result = new DataGrid(TableName, resultRows.First().Select(f => new DataColumn(f.Key)));
+            foreach (Dictionary<string, object> item in resultRows)
+                result.AddRow(item.Values);
+            return result;
+        }
+        #endregion
+
+        #region Routines
+        public struct ColumnInfo
         {
             public string NewKey { get; set; }
             public string OriginalHeader { get; set; }

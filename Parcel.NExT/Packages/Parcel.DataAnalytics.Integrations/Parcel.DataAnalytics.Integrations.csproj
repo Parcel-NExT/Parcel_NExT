@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CoreEngines\Parcel.NExT.Interpreter\Parcel.NExT.Interpreter.csproj" />
     <ProjectReference Include="..\Parcel.CSV\Parcel.CSV.csproj" />
     <ProjectReference Include="..\Parcel.DataGrid\Parcel.DataGrid.csproj" />
   </ItemGroup>
