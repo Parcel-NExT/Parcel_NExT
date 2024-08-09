@@ -18,8 +18,8 @@ namespace Parcel.Graphing
     public static class Plot
     {
         #region Constants
-        private const int DefaultWidth = 400;
-        private const int DefaultHeight = 300;
+        internal const int DefaultWidth = 400;
+        internal const int DefaultHeight = 300;
         #endregion
 
         #region Illustrational
@@ -97,9 +97,9 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.Title))
                 plot.Title(configurations.Title);
             if (!string.IsNullOrEmpty(configurations.XAxis))
-                plot.Axes.Left.Label.Text = configurations.XAxis;
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
             if (!string.IsNullOrEmpty(configurations.YAxis))
-                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+                plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
@@ -126,9 +126,9 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.Title))
                 plot.Title(configurations.Title);
             if (!string.IsNullOrEmpty(configurations.XAxis))
-                plot.Axes.Left.Label.Text = configurations.XAxis;
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
             if (!string.IsNullOrEmpty(configurations.YAxis))
-                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+                plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
@@ -235,7 +235,6 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-
         public static Image BubbleChart(double[] x, double[] y, double[] radius, BubbleChartConfiguration? configurations = null)
         {
             if (x.Length != y.Length || y.Length != radius.Length)
@@ -254,15 +253,14 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.Title))
                 plot.Title(configurations.Title);
             if (!string.IsNullOrEmpty(configurations.XAxis))
-                plot.Axes.Left.Label.Text = configurations.XAxis;
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
             if (!string.IsNullOrEmpty(configurations.YAxis))
-                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+                plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
-
         public static Image BubbleChart(double[][] xs, double[][] ys, double[][] radii, BubbleChartMultiSeriesConfiguration? configurations = null)
         {
             if (xs.Length != ys.Length || ys.Length != radii.Length)
@@ -302,9 +300,54 @@ namespace Parcel.Graphing
             if (!string.IsNullOrEmpty(configurations.Title))
                 plot.Title(configurations.Title);
             if (!string.IsNullOrEmpty(configurations.XAxis))
-                plot.Axes.Left.Label.Text = configurations.XAxis;
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
             if (!string.IsNullOrEmpty(configurations.YAxis))
-                plot.Axes.Bottom.Label.Text = configurations.YAxis;
+                plot.Axes.Left.Label.Text = configurations.YAxis;
+
+            string path = Image.GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
+            return new Image(path);
+        }
+        public static Image FunnelChart(double[] values, FunnelChartConfiguration? configurations = null)
+        {
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+
+            // Derive Y positions to the center of each value segment
+            double[] ys = Enumerable.Range(0, values.Length).Reverse().Select(y => y + .5).ToArray();
+            foreach (var ((upperX, lowerX), y) in values
+                .Zip(values.Append(values.Last()).Skip(1))
+                .Zip(ys))
+            {
+                plot.Add.Polygon(
+                [
+                    new(-upperX, y+.5), // Upper left
+                    new(upperX, y+.5),  // Upper right
+                    new(lowerX, y-.5),  // Lower right
+                    new(-lowerX, y-.5)  // Lower left
+                ]);
+                var text = plot.Add.Text(upperX.ToString(), new(0, y));
+                text.Alignment = ScottPlot.Alignment.MiddleCenter;
+            };
+
+            plot.HideGrid();
+            // Hide axes but leave their titles visible
+            plot.Axes.GetAxes().ToList().ForEach(x =>
+            {
+                x.FrameLineStyle.IsVisible = false;
+                x.SetTicks([], []);
+            });
+
+            if (configurations.Labels != null)
+                plot.Axes.Left.SetTicks(ys, configurations.Labels);
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+            if (!string.IsNullOrEmpty(configurations.XAxis))
+                plot.Axes.Bottom.Label.Text = configurations.XAxis;
+            if (!string.IsNullOrEmpty(configurations.YAxis))
+                plot.Axes.Left.Label.Text = configurations.YAxis;
 
             string path = Image.GetTempImagePath();
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);

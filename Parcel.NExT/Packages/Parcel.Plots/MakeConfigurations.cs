@@ -11,7 +11,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for ScatterPlot
         /// </summary>
-        public static ScatterPlotConfiguration ConfigureScatterPlot(string title = "", string xAxis = "", string yAxis = "", string legend = "", Color? color = null, int imageWidth = 600, int imageHeight = 400)
+        public static ScatterPlotConfiguration ConfigureScatterPlot(string title = "", string xAxis = "", string yAxis = "", string legend = "", Color? color = null, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
             color ??= Parcel.Types.Color.Parse("#1F77B4FF");
             return new ScatterPlotConfiguration()
@@ -28,7 +28,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for ScatterPlotMultiSeries
         /// </summary>
-        public static ScatterPlotMultiSeriesConfiguration ConfigureScatterPlotMultiSeries(string title = "", string xAxis = "", string yAxis = "", String[]? legends = null, Color[]? colors = null, int imageWidth = 600, int imageHeight = 400)
+        public static ScatterPlotMultiSeriesConfiguration ConfigureScatterPlotMultiSeries(string title = "", string xAxis = "", string yAxis = "", String[]? legends = null, Color[]? colors = null, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
 
             return new ScatterPlotMultiSeriesConfiguration()
@@ -45,7 +45,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for LinePlot
         /// </summary>
-        public static LinePlotConfiguration ConfigureLinePlot(string title = "", string xAxis = "", string yAxis = "", string legend = "", int imageWidth = 600, int imageHeight = 400)
+        public static LinePlotConfiguration ConfigureLinePlot(string title = "", string xAxis = "", string yAxis = "", string legend = "", int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
 
             return new LinePlotConfiguration()
@@ -61,7 +61,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for ScatterPlotTwoAxes
         /// </summary>
-        public static ScatterPlotTwoAxesConfiguration ConfigureScatterPlotTwoAxes(string title = "", string xAxis = "", string yAxis1 = "", string yAxis2 = "", string legend1 = "", string legend2 = "", int imageWidth = 600, int imageHeight = 400)
+        public static ScatterPlotTwoAxesConfiguration ConfigureScatterPlotTwoAxes(string title = "", string xAxis = "", string yAxis1 = "", string yAxis2 = "", string legend1 = "", string legend2 = "", int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
 
             return new ScatterPlotTwoAxesConfiguration()
@@ -79,7 +79,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for BarChart
         /// </summary>
-        public static BarChartConfiguration ConfigureBarChart(string title = "", string xAxis = "", string yAxis = "", int imageWidth = 600, int imageHeight = 400)
+        public static BarChartConfiguration ConfigureBarChart(string title = "", string xAxis = "", string yAxis = "", int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
 
             return new BarChartConfiguration()
@@ -94,7 +94,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for Hisogram
         /// </summary>
-        public static HisogramConfiguration ConfigureHisogram(string title = "", string xAxis = "", string yAxis = "", int hisogramBars = 10, int imageWidth = 600, int imageHeight = 400)
+        public static HisogramConfiguration ConfigureHisogram(string title = "", string xAxis = "", string yAxis = "", int hisogramBars = 10, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
 
             return new HisogramConfiguration()
@@ -110,7 +110,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for BubbleChart
         /// </summary>
-        public static BubbleChartConfiguration ConfigureBubbleChart(string title = "", string xAxis = "", string yAxis = "", int imageWidth = 600, int imageHeight = 400)
+        public static BubbleChartConfiguration ConfigureBubbleChart(string title = "", string xAxis = "", string yAxis = "", int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
             return new BubbleChartConfiguration()
             {
@@ -124,7 +124,7 @@ namespace Parcel.Graphing
         /// <summary>
         /// Create a configuration for BubbleChartMultiSeries
         /// </summary>
-        public static BubbleChartMultiSeriesConfiguration ConfigureBubbleChartMultiSeries(string title = "", string xAxis = "", string yAxis = "", String[]? legends = null, int imageWidth = 600, int imageHeight = 400)
+        public static BubbleChartMultiSeriesConfiguration ConfigureBubbleChartMultiSeries(string title = "", string xAxis = "", string yAxis = "", String[]? legends = null, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
             return new BubbleChartMultiSeriesConfiguration()
             {
@@ -137,9 +137,24 @@ namespace Parcel.Graphing
             };
         }
         /// <summary>
+        /// Create a configuration for FunnelChart
+        /// </summary>
+        public static FunnelChartConfiguration ConfigureFunnelChart(string title = "", string xAxis = "", string yAxis = "", String[]? labels = null, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
+        {
+            return new FunnelChartConfiguration()
+            {
+                Title = title,
+                XAxis = xAxis,
+                YAxis = yAxis,
+                Labels = labels,
+                ImageWidth = imageWidth,
+                ImageHeight = imageHeight
+            };
+        }
+        /// <summary>
         /// Create a configuration for PopulationPyramid
         /// </summary>
-        public static PopulationPyramidConfiguration ConfigurePopulationPyramid(string title = "", Double barSize = 0.8, int labelFontSize = 12, Color[]? ageGroupColors = null, Double barGap = 0.1, int imageWidth = 600, int imageHeight = 400)
+        public static PopulationPyramidConfiguration ConfigurePopulationPyramid(string title = "", Double barSize = 0.8, int labelFontSize = 12, Color[]? ageGroupColors = null, Double barGap = 0.1, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
         {
 
             return new PopulationPyramidConfiguration()
