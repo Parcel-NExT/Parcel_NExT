@@ -1,4 +1,5 @@
-﻿using Parcel.NExT.Interpreter.Types;
+﻿using Parcel.CoreEngine.Helpers;
+using Parcel.NExT.Interpreter.Types;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -57,8 +58,11 @@ namespace Parcel.CoreEngine.Service.Interpretation
                         // Remark: notice the addition of this step could potentially make reflection based interpretative execution significantly slower
 
                         // Automatic conversion of number values
-                        if (nonOutMethodParameterValues[current] != null && nonOutMethodParameterValues[current].GetType() != item.ParameterType && TypeDescriptor.GetConverter(nonOutMethodParameterValues[current].GetType()).CanConvertTo(item.ParameterType)) // Requires IConvertible
-                            methodExpectedParameterValuesArray[i] = Convert.ChangeType(nonOutMethodParameterValues[current], item.ParameterType);
+                        if (nonOutMethodParameterValues[current] != null && nonOutMethodParameterValues[current].GetType() != item.ParameterType)
+                        {
+                            if (TypeHelper.TryConvert(nonOutMethodParameterValues[current], item.ParameterType, out object? result))
+                                methodExpectedParameterValuesArray[i] = result;
+                        }
                         else
                             methodExpectedParameterValuesArray[i] = nonOutMethodParameterValues[current];
                         current++;
