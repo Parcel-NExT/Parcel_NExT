@@ -354,6 +354,37 @@ namespace Parcel.Graphing
             plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
             return new Image(path);
         }
+        public static Image RadarChart(Vector[] values, RadarChartConfiguration? configurations = null)
+        {
+            configurations ??= new();
+
+            ScottPlot.Plot plot = new();
+
+            ScottPlot.Colormaps.Jet cmap = new();
+            List<ScottPlot.RadarSeries> series = values.Select((v, i) => new ScottPlot.RadarSeries()
+            {
+                Values = [.. v],
+                Label = configurations.Legends?[i] ?? string.Empty,
+                FillColor = cmap.GetColor(i).WithAlpha(.5)
+            }).ToList();
+
+            ScottPlot.Plottables.Radar radar = plot.Add.Radar(series);
+
+            if (configurations.Axes != null)
+                radar.Labels = configurations.Axes
+                    .Select(s => new ScottPlot.LabelStyle() { Text = s, Alignment = ScottPlot.Alignment.MiddleCenter})
+                    .ToArray();
+
+            plot.HideGrid();
+            plot.Axes.Frameless();
+
+            if (!string.IsNullOrEmpty(configurations.Title))
+                plot.Title(configurations.Title);
+
+            string path = Image.GetTempImagePath();
+            plot.SavePng(path, configurations.ImageWidth == 0 ? DefaultWidth : configurations.ImageWidth, configurations.ImageHeight == 0 ? DefaultHeight : configurations.ImageHeight);
+            return new Image(path);
+        }
         #endregion
 
         #region Standard Charts

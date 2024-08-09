@@ -96,6 +96,12 @@ namespace Parcel.Graphing.PlotConfigurations
         public string YAxis { get; set; } = string.Empty;
         public string[]? Labels { get; set; } = null;
     }
+    public sealed class RadarChartConfiguration : BasicConfiguration
+    {
+        public string Title { get; set; } = string.Empty;
+        public string[]? Legends { get; set; } = null;
+        public string[]? Axes { get; set; } = null;
+    }
     public sealed class PopulationPyramidConfiguration : BasicConfiguration
     {
         public string Title { get; set; } = string.Empty;
