@@ -697,7 +697,7 @@ BasedOn="{StaticResource {x:Type TextBox}}">
                                             <PasswordBox PasswordChanged="PrimitiveInputPasswordBox_PasswordChanged" MinWidth="100" Margin="5 0 0 0" />
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type primitives:TextNode}">
-                                            <TextBox Text="{Binding Value}" AcceptsReturn="True" AcceptsTab="True" Width="100" Height="60" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="5 2 0 2" TextAlignment="Left" VerticalContentAlignment="Top"/>
+                                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" AcceptsTab="True" Width="100" Height="60" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="5 2 0 2" TextAlignment="Left" VerticalContentAlignment="Top"/>
                                         </DataTemplate>
                                     </nodify:Node.Resources>
                                 </nodify:Node>
