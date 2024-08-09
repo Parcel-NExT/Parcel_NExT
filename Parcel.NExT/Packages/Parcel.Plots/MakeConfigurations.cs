@@ -152,6 +152,20 @@ namespace Parcel.Graphing
             };
         }
         /// <summary>
+        /// Create a configuration for RadarChart
+        /// </summary>
+        public static RadarChartConfiguration ConfigureRadarChart(string title = "", string[]? legends = null, string[]? axes = null, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
+        {
+            return new RadarChartConfiguration()
+            {
+                Title = title,
+                Legends = legends,
+                Axes = axes,
+                ImageWidth = imageWidth,
+                ImageHeight = imageHeight
+            };
+        }
+        /// <summary>
         /// Create a configuration for PopulationPyramid
         /// </summary>
         public static PopulationPyramidConfiguration ConfigurePopulationPyramid(string title = "", Double barSize = 0.8, int labelFontSize = 12, Color[]? ageGroupColors = null, Double barGap = 0.1, int imageWidth = Plot.DefaultWidth, int imageHeight = Plot.DefaultHeight)
